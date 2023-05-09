@@ -1,0 +1,156 @@
+name: Nightly Test Docker images matrix
+run-name: Nightly Create WebImpetus Docker image, push it & create tags
+
+on:
+  push:
+    branches: [ dummy ]
+  schedule:
+    - cron: "0 0 * * 0"
+    #- cron: "0 0 * * 0"
+
+  workflow_dispatch:
+    inputs:
+      BRANCH_REF:
+        type: choice
+        description: 'Please choose the Target Environment'
+        default: 'test'
+        required: true
+        options:
+        - prod
+        - test
+        - dev
+
+      PUSH_TO_DOCKER_REGISTRY_PUBLIC:
+        type: choice
+        description: 'Push image it to Docker public repository as well?'
+        default: 'No'
+        required: true
+        options:
+        - Yes
+        - No 
+
+      IMAGE_REGISTRY:
+        type: choice
+        description: 'Please choose docker image registry to push'
+        default: 'docker.io/bwalia'
+        required: true
+        options:
+        - 123154119074.dkr.ecr.eu-west-2.amazonaws.com 
+        - registry.workstation.co.uk
+        - docker.io/bwalia
+
+      IMAGE_NAME:
+        type: choice
+        description: 'Please choose docker image name to push'
+        default: 'webimpetus'
+        required: true
+        options:
+        - webimpetus
+        - workstation
+    
+      IMAGE_TAG:
+        type: choice
+        description: 'Please choose docker image tag to push'
+        default: 'test'
+        required: true
+        options:
+        - latest
+        - stable
+        - prod
+        - acc
+        - test
+        - dev
+
+env:
+  PUSH_TO_DOCKER_REGISTRY_PUBLIC: ${{ github.event.inputs.PUSH_TO_DOCKER_REGISTRY_PUBLIC }}
+  IMAGE_REGISTRY: ${{ github.event.inputs.IMAGE_REGISTRY }}
+  IMAGE_NAME: ${{ github.event.inputs.IMAGE_NAME }}
+  IMAGE_TAG: ${{ github.event.inputs.IMAGE_TAG }}
+  BRANCH_REF: ${{ github.event.inputs.BRANCH_REF }}
+
+jobs:
+  deployment:
+    runs-on: 'ubuntu-latest'
+    steps:
+
+    - name: Checkout WebImpetus Repository
+      uses: actions/checkout@v3
+      with:
+        ref: main
+
+    - name: Generate a short-sha based on the git commit
+      uses: benjlevesque/short-sha@v1.2
+      with:
+        length: 6
+
+    - run: echo $SHA
+      env:
+       SHA: ${{ steps.short-sha.outputs.sha }}
+
+    - run: echo $SHA
+      env:
+       SHA: ${{ env.SHA }}
+        
+    - name: Build, tag, and push WebImpetus Docker image to the Docker Public Registry
+      run: |
+        if [ "${{ env.PUSH_TO_DOCKER_REGISTRY_PUBLIC }}" == "Yes" ]; then
+        IMAGE_REGISTRY=bwalia
+        IMAGE_NAME=webimpetus
+        IMAGE_TAG=test
+        if [ -z "${{ env.BRANCH_REF }}" ]; then
+          echo "BRANCH_REF=main" >> $GITHUB_ENV
+        fi
+        docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWD }}
+        docker build -f $(pwd)/devops/docker/Dockerfile --build-arg BASE_TAG=latest -t $IMAGE_NAME . --no-cache
+        docker tag $IMAGE_NAME $IMAGE_REGISTRY/$IMAGE_NAME:$IMAGE_TAG
+        docker push $IMAGE_REGISTRY/$IMAGE_NAME:$IMAGE_TAG
+        fi
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Build, tag, and push WebImpetus Docker image to the AWS ECR mentioned 
+      run: |
+        IMAGE_REGISTRY=123154119074.dkr.ecr.eu-west-2.amazonaws.com
+        IMAGE_NAME=webimpetus
+        IMAGE_TAG=test
+        if [ -z "${{ env.BRANCH_REF }}" ]; then
+          echo "BRANCH_REF=main" >> $GITHUB_ENV
+        fi
+        docker build -f $(pwd)/devops/docker/Dockerfile --build-arg BASE_TAG=latest -t $IMAGE_NAME . --no-cache
+        docker tag $IMAGE_NAME $IMAGE_REGISTRY/$IMAGE_NAME:$IMAGE_TAG
+        docker push $IMAGE_REGISTRY/$IMAGE_NAME:$IMAGE_TAG
+
+  # tag_update:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #     with:
+  #       fetch-depth: 0
+  #   - name: Git config
+  #     run: |
+  #       git config user.name github-actions
+  #       git config user.email github-actions@github.com
+  #   - name: Tag new target
+  #     run: git tag -f ${{ env.SHA }} ${{ github.event.inputs.target }}
+  #   - name: Push new tag
+  #     run: git push origin ${{ github.event.inputs.main_version }} --force
+
+    - name: Slack Notification for Webimpetus - Docker Images Matrix Manager 
+      uses: rtCamp/action-slack-notify@v2
+      env:
+        SLACK_CHANNEL: general
+        SLACK_COLOR: ${{ job.status }}
+        SLACK_ICON: https://github.com/rtCamp.png?size=48
+        SLACK_MESSAGE: 'Post Content :rocket:'
+        SLACK_TITLE: Post Title
+        SLACK_USERNAME: rtCamp
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
