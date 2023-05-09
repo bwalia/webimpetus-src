@@ -17,7 +17,23 @@ The key modules available are:
 - Employees and HR management
 - E-commerce
 
-# INSTALLATION
+# DEPLOY WEBIMPETUS AS A DEV DOCKER CONTAINER
+
+Use the helm package manager [helm](https://webimpetus.io/en/stable/) to install WebImpetus.
+
+### Prerequisite docker must be installed on the target machine:
+
+```shell or bash
+`docker compose up` or `docker compose up -d`
+```
+
+```shell or bash
+`docker compose ps` to view the webimpetus containers are running. The connection secrets must be supplied at runtime see `sync.sh` to inject mariadb creds into docker container after it is running
+```
+
+# DEPLOY WEBIMPETUS TO KUBERNETES (SUITABLE FOR DEVELOPMENT PODS, TEST, INT, ACC and or PROD environments)
+
+### Prerequisite k3s, k8s, EKS, AKS or GKE must be accessible from the target machine:
 
 Use the helm package manager [helm](https://webimpetus.io/en/stable/) to install WebImpetus.
 
@@ -33,7 +49,7 @@ Use the helm package manager [helm](https://webimpetus.io/en/stable/) to install
 
 ```http://localhost:{your port number}```
 
-![Landing Page](https://github.com/bwalia/webimpetus/blob/fbe14861c236e35687c573cd9470521598afd260/webimpetus_login_page_v1_2022.png)
+![Landing Page](https://github.com/bwalia/webimpetus-src/blob/b16260a53f53b37d6036abbc91a2c3db6e8c07c8/webimpetus_login_page_v1_2022.png)
 
 ## CONTRIBUTING
 
