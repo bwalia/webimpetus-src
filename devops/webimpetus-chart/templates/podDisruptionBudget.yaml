@@ -1,0 +1,10 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: wsl-pdb-{{ .Values.targetEnv }}
+spec:
+  maxUnavailable: {{ .Values.autoscaling.maxUnavailable }}
+#  minAvailable: {{ .Values.autoscaling.minReplicas }}
+  selector:
+    matchLabels:
+      app: wsl-{{ .Values.targetEnv }}

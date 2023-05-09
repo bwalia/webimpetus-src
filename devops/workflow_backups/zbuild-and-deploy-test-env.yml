@@ -1,0 +1,76 @@
+# on:
+#   push:
+#     branches: [ dummy ]
+#   pull_request:
+#     branches: [ feature/test* ]
+#   workflow_dispatch:
+#     inputs:
+#       workflow_action:
+#         type: choice
+#         description: 'Please choose the test Workstation CI4 Project action'
+#         default: 'deploy'
+#         required: true
+#         options:
+#         - deploy
+#         - rollback
+#         - Choose
+
+# env:
+#   TARGET_USER_PASSWD: "${{ secrets.TARGET_USER_PASSWD }}"
+
+# name: __DO_NOT_USE__ Build and Deploy My Workstation CMS and CRM using Docker compose in test env at https://test-my.workstation.co.uk/
+# # A workflow run is made up of one or more jobs that can run sequentially or in parallel
+# jobs:
+#   # This workflow contains a single job called "build"
+#   build:
+#     # The type of runner that the job will run on
+#     runs-on: self-hosted
+#     # Steps represent a sequence of tasks that will be executed as part of the job
+#     steps:
+#     # - name: Run bash script to prepare dev environment a clean start
+#     #   run: |
+#     #       chmod +x ./prepare_workspace_env.sh
+#     #       ./prepare_workspace_env.sh
+#     #   shell: bash
+
+#     - name: Check out this repo code
+#       uses: actions/checkout@v3
+#       with:
+#         ref: main
+#         clean: true
+
+#     - name: Run bash script to prep the deployment
+#       run: |
+#           chmod +x ./build_and_deploy_env.sh
+#           ./build_and_deploy_env.sh test
+#       shell: bash
+
+#       # run: docker run --network container:webapp-frontend appropriate/curl -s --retry 10 --retry-connrefused http://localhost:5000/
+#     - name: Run bash script to exec into containers
+#       run: |
+#           chmod +x ./reset_containers.sh
+#           ./reset_containers.sh test
+#       shell: bash
+
+#     # - name: Run bash script to prep the deployment
+#     #   run: |
+#     #       chmod +x ./reset_env.sh
+#     #       ./reset_env.sh
+#     #   shell: bash
+#     - name: Healthcheck url test-my.workstation.co.uk
+#       uses: wei/curl@master
+#       with:
+#         args: https://test-my.workstation.co.uk/
+
+#     - name: Slack Notification
+#       uses: rtCamp/action-slack-notify@v2
+#       env:
+#         SLACK_CHANNEL: general
+#         SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
+#         SLACK_ICON: https://github.com/rtCamp.png?size=48
+#         SLACK_MESSAGE: 'Post Content :rocket:'
+#         SLACK_TITLE: Post Title
+#         SLACK_USERNAME: rtCamp
+#         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+
+

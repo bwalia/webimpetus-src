@@ -1,0 +1,45 @@
+ARG ALPINE_VERSION=3.17
+
+FROM alpine:${ALPINE_VERSION}
+
+ENV KUBECONFIG_BASE64 ""
+ENV RUN_BASH_BASE64 ""
+
+WORKDIR /src
+# --no-cache 
+RUN apk update && \
+    apk add --virtual \
+    build-base \
+    # coreutils \
+    curl \
+    bash \
+# Install helm
+    helm    
+
+    # git \
+    # vim \
+
+# RUN apk add openssh-keygen
+# RUN apk add openssh-client
+# RUN apk add aws-cli
+
+RUN which bash
+RUN bash --version
+
+RUN mkdir -p /src/scripts
+RUN chmod -R 775 /src/scripts
+
+# #RUN 'echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check'
+
+COPY devops/scripts/ /src/scripts/
+RUN chmod +x /src/scripts/*.sh
+RUN ls -altr /src/scripts/
+
+# Install kubeclt
+RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/linux/amd64/kubectl
+RUN chmod +x /src/kubectl 
+RUN mv /src/kubectl /usr/local/bin/kubectl
+
+# ENV PATH=$PATH:/bin/:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin
+
+CMD [ "/bin/bash", "/src/scripts/kube_runner.sh" ]

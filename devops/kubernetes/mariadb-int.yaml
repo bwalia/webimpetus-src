@@ -1,0 +1,82 @@
+# mysql pvc
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: wsl-pvc-db
+  namespace: int
+  labels:
+    app: mariadb-int
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi  
+
+#mysql service
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mariadb-int # host
+  namespace: int
+  labels:
+    app: mariadb-int
+spec:
+  ports:
+  - name: int-db-port
+    port: 3306
+    targetPort: 3306
+  selector:
+    app: mariadb-int
+    
+
+#mysql deployment
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: mariadb-int
+  namespace: int
+spec: 
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mariadb-int   
+  strategy:
+    type: Recreate
+  template: 
+    metadata: 
+      labels: 
+        app: mariadb-int      
+    spec:
+      containers:
+       - image: mariadb:latest
+         name: mariadb-int-cont
+         env:
+         - name: MYSQL_DATABASE
+           value: "wsl-int"
+         - name: MYSQL_PASSWORD
+           value: "TUU~E48E^?h1N+rp"
+         - name: MYSQL_ROOT_PASSWORD
+           value: "TUU~E48E^?h1N+rp"
+         - name: MYSQL_USER
+           value: "root"
+         resources: {}
+            #limits:
+            #  cpu: 800m # the CPU limit is define in milicore (m)
+            #  memory: 800Mi # the Memory is define in Mebibytes (Mi)
+            #requests:
+            #  cpu: 500m
+         ports:
+         - containerPort: 3306
+         volumeMounts:
+         - name: wsl-volume
+           mountPath: /var/lib/mysql
+      volumes:
+      - name: wsl-volume
+        persistentVolumeClaim:
+          claimName: wsl-pvc-db
+
+status: {}
+

@@ -1,0 +1,75 @@
+# on:
+#   push:
+#     branches: [ dummy ]
+#   pull_request:
+#     branches: [ dummy ]
+#   workflow_dispatch:
+  
+# name: __DO_NOT_USE__ Main image ZZZ
+# # A workflow run is made up of one or more jobs that can run sequentially or in parallel
+# jobs:
+#   # This workflow contains a single job called "build"
+#   build:
+#     # The type of runner that the job will run on
+#     runs-on: self-hosted
+#     # Steps represent a sequence of tasks that will be executed as part of the job
+#     steps:
+#     - name: Check out this repo code
+#       uses: actions/checkout@v2
+
+#     - name: Run script file
+#       run: |
+#          chmod +x ./devops/scripts/fetch_env_vars.sh
+#          ./devops/scripts/fetch_env_vars.sh
+#       shell: bash
+
+#     - name: short-sha
+#       uses: benjlevesque/short-sha@v1.2
+#       with:
+#         length: 6
+        
+#       # Runs a single command using the runners shell
+#     - name: Configure AWS credentials
+#       uses: aws-actions/configure-aws-credentials@v1
+#       with:
+#         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#         aws-region: eu-west-2
+
+#     - name: Login to Amazon ECR
+#       id: login-ecr
+#       uses: aws-actions/amazon-ecr-login@v1
+
+#     - run: echo $SHA
+#       env:
+#        SHA: ${{ steps.short-sha.outputs.sha }}
+
+#     - run: echo $SHA
+#       env:
+#        SHA: ${{ env.SHA }}
+     
+#       # Build and push docker image to customer AWS ECR
+#     - name: Build, tag, and push WebImpetus ci4 image to Amazon ECR
+#       run: |
+#         docker build -f devops/docker/Dockerfile -t 123154119074.dkr.ecr.eu-west-2.amazonaws.com/tenthmatrix/webimpetus-ci4:${{ env.SHA }} .
+#         docker push 123154119074.dkr.ecr.eu-west-2.amazonaws.com/tenthmatrix/webimpetus-ci4:${{ env.SHA }}
+
+#     - name: helm deploy
+#       uses: koslib/helm-eks-action@master
+#       env:
+#         KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+#       with:
+#         command: helm upgrade -i ci4baseimagetest ./devops/webimpetus --set=image.tag=${{ env.SHA }}
+
+#     - name: Slack Notification
+#       uses: rtCamp/action-slack-notify@v2
+#       env:
+#         SLACK_CHANNEL: general
+#         SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
+#         SLACK_ICON: https://github.com/rtCamp.png?size=48
+#         SLACK_MESSAGE: 'Post Content :rocket:'
+#         SLACK_TITLE: Post Title
+#         SLACK_USERNAME: rtCamp
+#         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+
+

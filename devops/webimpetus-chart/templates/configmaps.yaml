@@ -1,0 +1,316 @@
+---
+######################################################
+# Configmaps: Create Multiples Configmaps data
+######################################################
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.service_name }}-bootstrap-cm-apache2-{{ .Values.targetEnv }}
+data:
+    bootstrap-apache2.sh: |
+        #!/bin/bash
+        set -x
+        # # Set Timezone
+        # FILE=/usr/local/etc/php-fpm.d/www.conf
+        # echo "date.timezone = '{{ .Values.envPreferences.timeZone }}'" >> $FILE
+
+        FILE=/etc/resolv.conf
+        echo "Workstation On Starting Pod Bootstrap Script"
+            # Set DNS to cloudflare Name servers for faster DNS resolution
+        echo "nameserver 1.1.1.1" >> $FILE
+        echo "nameserver 1.0.0.1" >> $FILE
+
+        echo "Workstation Apache2 Bootstrap Script"
+        echo "==========================="
+            
+        cp -r /src/* /var/www/html/
+        chmod 755 -R /var/www/html/
+        chown www-data:root -R /var/www/html/
+
+        SUB_DIR=$FILE"writable/"
+        if [ -f "$SUB_DIR" ];then
+        mkdir -p $SUB_DIR
+        chmod 777 -R ${SUB_DIR}
+        fi
+        SUB_DIR=$FILE"writable/"
+        SUB_DIR=$SUB_DIR"cache/"
+        if [ -f "$SUB_DIR" ];then
+        mkdir -p $SUB_DIR
+        chmod 777 -R ${SUB_DIR}
+        fi
+        SUB_DIR=$FILE"writable/"
+        SUB_DIR=$SUB_DIR"session/"
+        if [ -f "$SUB_DIR" ];then
+        mkdir -p $SUB_DIR
+        chmod 777 -R ${SUB_DIR}
+        fi
+        SUB_DIR=$FILE"writable/"
+        SUB_DIR=$SUB_DIR"session/"
+        if [ -f "$SUB_DIR" ];then
+        mkdir -p $SUB_DIR
+        chmod 777 -R ${SUB_DIR}/
+        fi
+        cp /tmp/secrets/.env /var/www/html/.env
+        FILE=/var/www/html/.env
+        if test -f "$FILE"; then
+        if grep -rnw $FILE -e "#----WEBIMPETUS-SYSTEM-INFO----"
+           then
+            echo "#----WEBIMPETUS-SYSTEM-INFO---- Found"
+        else
+            echo "#----WEBIMPETUS-SYSTEM-INFO---- Not Found, Adding"
+            echo "#----WEBIMPETUS-SYSTEM-INFO----" >> $FILE
+        fi
+            echo "$FILE exists."
+            echo "==========================="
+            echo "Workstation Bootstrap Script Copied"
+            echo "==========================="
+        fi
+            echo "Starting Workstation"
+            echo "==========================="
+            php -v
+        echo "==========================="
+        #   sed '/#----WEBIMPETUS-SYSTEM-INFO----/q' $FILE
+        export COMPOSER_ALLOW_SUPERUSER=1
+        yes | composer update
+        chmod 777 -R /var/www/html/writable/
+        chmod 777 -R /var/www/html/writable/cache/
+        chmod 777 -R /var/www/html/writable/session/
+        declare -a webimpetus_array # declare the array                                                                                                                                                                  
+        # Read each line and use regex parsing (with Bash's `=~` operator)
+        # to extract the value.
+        while read -r line; do
+        # Extract the value from between the double quotes
+        # and add it to the array.
+        [[ $line =~ :[[:blank:]]+\"(.*)\" ]] && webimpetus_array+=( "${BASH_REMATCH[1]}" )
+        done </var/www/html/webimpetus.json                                                                                                                                 
+
+        #declare -p webimpetus_array # print the array
+        for i in ${!webimpetus_array[@]}; do
+        if [ $i -eq "1" ]; then
+        APP_FULL_VERSION_NO="${webimpetus_array[$i]}"
+        export APP_FULL_VERSION_NO="${webimpetus_array[$i]}"
+        fi
+        if [ $i -eq "2" ]; then
+        APP_FULL_BUILD_NO="${webimpetus_array[$i]}"
+        export APP_FULL_BUILD_NO="${webimpetus_array[$i]}"
+        fi
+        done
+        echo $APP_FULL_VERSION_NO
+        echo $APP_FULL_BUILD_NO
+        APP_RELEASE_NOTES_DOC_URL="https://webimpetus.cloud/docs/"
+        export APP_RELEASE_NOTES_DOC_URL=$APP_RELEASE_NOTES_DOC_URL
+        DATE_GEN_VERSION=$(date +"%Y%m%d%I%M%S")
+        export DATE_GEN_VERSION=$(date +"%Y%m%d%I%M%S")
+        export APP_DEPLOYED_AT=$DATE_GEN_VERSION
+        echo APP_DEPLOYED_AT=$DATE_GEN_VERSION >> $FILE
+        echo APP_ENVIRONMENT="{{ .Values.targetEnv }}" >> $FILE
+        export APP_ENVIRONMENT="{{ .Values.targetEnv }}"
+        echo APP_TARGET_CLUSTER="{{ .Values.targetCluster }}" >> $FILE
+        export APP_TARGET_CLUSTER="{{ .Values.targetCluster }}"
+        echo APP_RELEASE_NOTES_DOC_URL=$APP_RELEASE_NOTES_DOC_URL >> $FILE
+        echo DYNAMIC_SCRIPTS_PATH=/tmp >> $FILE
+        echo "==========================="
+        echo "Copy apache config file for Workstation"
+        cp /tmp/configmap/workstation.conf /etc/apache2/sites-available/000-default.conf
+        echo "==========================="
+        echo "Restart apache2"
+        apachectl graceful
+        php spark migrate
+        #apachectl restart
+        # a2ensite 000-default
+        # service apache2 reload
+        echo "==========================="
+        echo "Workstation Apache2 Bootstrap Script Completed"   
+    workstation.conf: |
+        <VirtualHost *:80>
+            ServerAdmin webmaster@localhost
+            DocumentRoot /var/www/html/public
+            DirectoryIndex index.html index.php
+            ServerName {{ .Values.targetEnv }}-my.workstation.co.uk
+                <Directory /var/www/html/public>
+                        AllowOverride all
+                </Directory>
+        </VirtualHost>
+        ServerName 127.0.0.1
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.service_name }}-bootstrap-cm-openresty-{{ .Values.targetEnv }}
+#   namespace: {{ .Values.targetNS }}
+data:
+    bootstrap-openresty.sh: |
+        #!/bin/bash
+        set -x
+        # Set Timezone
+        #FILE=/usr/local/etc/php-fpm.d/www.conf
+        #echo "date.timezone = '{{ .Values.envPreferences.timeZone }}'" >> $FILE
+        FILE=/etc/resolv.conf
+        echo "Workstation On Starting Pod Bootstrap Script"
+            # Set DNS to cloudflare Name servers for faster DNS resolution
+        echo "nameserver 1.1.1.1" >> $FILE
+        echo "nameserver 1.0.0.1" >> $FILE
+        CLOUDFLARE_DNS_1="1.1.1.1"
+        if grep -rnw $FILE -e $CLOUDFLARE_DNS_1; then
+            echo "Cloudflare DNS already set"
+        else
+            echo "nameserver $CLOUDFLARE_DNS_1" >> $FILE
+            echo "nameserver $CLOUDFLARE_DNS_2" >> $FILE
+        fi
+
+        echo "Workstation Nginx Bootstrap Script"
+        export COMPOSER_ALLOW_SUPERUSER=1
+        yes | composer update
+        echo "==========================="
+        FILE=/src/
+        if [ -d "$FILE" ]; then
+        FILE=/var/www/html/
+        cp -r /src/* $FILE
+        if [ -d "$FILE" ]; then
+        chmod 755 -R $FILE
+        chown www-data:root -R $FILE
+
+        SUB_DIR=$FILE"writable/"
+        if [ ! -d "$SUB_DIR" ];then
+        mkdir -p $SUB_DIR
+        chmod 777 -R ${SUB_DIR}
+        fi
+        SUB_DIR=$FILE"writable/"
+        SUB_DIR=$SUB_DIR"cache/"
+        if [ ! -d "$SUB_DIR" ];then
+        mkdir -p $SUB_DIR
+        chmod 777 -R ${SUB_DIR}
+        fi
+        SUB_DIR=$FILE"writable/"
+        SUB_DIR=$SUB_DIR"session/"
+        if [ ! -d "$SUB_DIR" ];then
+        mkdir -p $SUB_DIR
+        chmod 777 -R ${SUB_DIR}
+        fi
+        SUB_DIR=$FILE"writable/"
+        SUB_DIR=$SUB_DIR"session/"
+        if [ ! -d "$SUB_DIR" ];then
+        mkdir -p $SUB_DIR
+        chmod 777 -R ${SUB_DIR}/
+        fi
+        
+        cp /tmp/secrets/.env $FILE.env
+        FILE=/var/www/html/.env
+        
+        if [ -f "$FILE" ];then
+        if grep -rnw $FILE -e "#----WEBIMPETUS-SYSTEM-INFO----"
+           then
+            echo "#----WEBIMPETUS-SYSTEM-INFO---- Found"
+        else
+            echo "#----WEBIMPETUS-SYSTEM-INFO---- Not Found, Adding"
+            echo "#----WEBIMPETUS-SYSTEM-INFO----" >> $FILE
+        fi
+            echo "$FILE exists."
+            echo "==========================="
+            echo "Workstation Bootstrap Script Copied"
+            echo "==========================="
+        fi
+            echo "Starting Workstation"
+            echo "==========================="
+            php -v
+        echo "==========================="
+        #   sed '/"#----WEBIMPETUS-SYSTEM-INFO----"/q' $FILE
+        echo "Workstation Src copy to /var/www/html Complete"
+        fi
+        fi
+        
+        FILE=/var/www/html/writable/
+        if [ -d "$FILE" ]; then
+            echo "$FILE exists."
+            chmod 777 -R $FILE
+        fi
+        FILE=/var/www/html/writable/cache/
+        if [ -d "$FILE" ]; then
+            echo "$FILE exists."
+            chmod 777 -R $FILE
+        fi
+        FILE=/var/www/html/writable/session/
+        if [ -d "$FILE" ]; then
+            echo "$FILE exists."
+            chmod 777 -R $FILE
+        fi
+        declare -a webimpetus_array # declare the array                                                                                                                                                                  
+        # Read each line and use regex parsing (with Bash's `=~` operator)
+        # to extract the value.
+        while read -r line; do
+        # Extract the value from between the double quotes
+        # and add it to the array.
+        [[ $line =~ :[[:blank:]]+\"(.*)\" ]] && webimpetus_array+=( "${BASH_REMATCH[1]}" )
+        done </var/www/html/webimpetus.json                                                                                                                                 
+
+        #declare -p webimpetus_array # print the array
+        for i in ${!webimpetus_array[@]}; do
+        if [ $i -eq "1" ]; then
+        APP_FULL_VERSION_NO="${webimpetus_array[$i]}"
+        export APP_FULL_VERSION_NO="${webimpetus_array[$i]}"
+        fi
+        if [ $i -eq "2" ]; then
+        APP_FULL_BUILD_NO="${webimpetus_array[$i]}"
+        export APP_FULL_BUILD_NO="${webimpetus_array[$i]}"
+        fi
+        done
+        echo $APP_FULL_VERSION_NO
+        echo $APP_FULL_BUILD_NO
+        FILE=/var/www/html/.env
+        echo "APP_FULL_VERSION_NO='$APP_FULL_VERSION_NO'" >> $FILE
+        echo "APP_FULL_BUILD_NO='$APP_FULL_BUILD_NO'" >> $FILE
+        export APP_FULL_VERSION_NO=$APP_FULL_VERSION_NO
+        export APP_FULL_BUILD_NO=$APP_FULL_BUILD_NO
+        APP_RELEASE_NOTES_DOC_URL="https://webimpetus.cloud/docs/"
+        export APP_RELEASE_NOTES_DOC_URL=$APP_RELEASE_NOTES_DOC_URL
+        DATE_GEN_VERSION=$(date +"%Y%m%d%I%M%S")
+        export DATE_GEN_VERSION=$(date +"%Y%m%d%I%M%S")
+        export APP_DEPLOYED_AT=$DATE_GEN_VERSION
+        echo "APP_DEPLOYED_AT='$DATE_GEN_VERSION'" >> $FILE
+        echo "APP_ENVIRONMENT='{{ .Values.targetEnv }}'" >> $FILE
+        export APP_ENVIRONMENT="'{{ .Values.targetEnv }}'"
+        echo "APP_TARGET_CLUSTER='{{ .Values.targetCluster }}'" >> $FILE
+        export APP_TARGET_CLUSTER="{{ .Values.targetCluster }}'"
+        echo "APP_RELEASE_NOTES_DOC_URL='$APP_RELEASE_NOTES_DOC_URL'" >> $FILE
+        echo DYNAMIC_SCRIPTS_PATH=/tmp >> $FILE
+        echo "==========================="
+        echo "Copy openresty config file for Workstation"
+        cp /tmp/configmap/workstation.conf /etc/nginx/sites-enabled/workstation.conf
+        echo "==========================="
+        echo "Restart openresty nginx"
+        openresty -s reload
+        php spark migrate
+        echo "==========================="
+        echo "Workstation Nginx Bootstrap Script Completed"      
+    workstation.conf: |
+{{- range .Values.ingress.hosts }}
+        # Workstation Nginx Conf workstation.conf src ConfigMap loaded by openresty
+        server {
+        listen         80;
+        server_name {{ .host | quote }};
+        root  /var/www/html/public;
+        index          index.html  index.php;
+        location / {
+            try_files $uri $uri/ /index.php?$args;
+        }
+        location ~ [^/]\.php(/|$) {
+            access_log      /var/log/nginx/access.log;
+            fastcgi_split_path_info ^(.+?\.php)(/.*)$;
+            if (!-f $document_root$fastcgi_script_name) {
+            return 404;
+        }
+        fastcgi_param HTTP_PROXY "";
+        fastcgi_intercept_errors on;
+        fastcgi_index  index.php;
+        include        fastcgi_params;
+        fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+        fastcgi_param CI_ENVIRONMENT "";
+        fastcgi_pass   unix:/var/run/php-fpm/php8-fpm.sock;
+        #fastcgi_pass 127.0.0.1:9000;
+        location ~ /\. {
+            deny all;
+        }
+        }
+        }
+{{- end }}
+        

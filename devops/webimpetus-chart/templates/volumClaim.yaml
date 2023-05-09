@@ -1,0 +1,15 @@
+# # mysql pvc
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: ci4-claim-db-{{ .Values.targetEnv }}
+#  namespace: {{ .Values.targetNS }}
+#   labels:
+#     app: project-ci4
+# spec:
+#   accessModes:
+#   - ReadWriteOnce
+#   resources:
+#     requests:
+#       storage: 3Gi  
+

@@ -1,0 +1,25 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wsl-nodeport-{{ .Values.targetEnv }}
+spec:
+  selector:
+    app: wsl-{{ .Values.targetEnv }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.port }}
+      nodePort: {{ .Values.svcAccessPort }}
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wsl-svc-{{ .Values.targetEnv }}
+spec:
+  selector:
+    app: wsl-{{ .Values.targetEnv }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.port }}
+  type: ClusterIP

@@ -1,0 +1,64 @@
+AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 172.31.0.4. Set the 'ServerName' directive globally to suppress this message
+[Sat Aug 06 11:48:21.557528 2022] [mpm_prefork:notice] [pid 1] AH00163: Apache/2.4.38 (Debian) PHP/7.4.2 OpenSSL/1.1.1n configured -- resuming normal operations
+[Sat Aug 06 11:48:21.558447 2022] [core:notice] [pid 1] AH00094: Command line: 'apache2 -D FOREGROUND'
+[Sat Aug 06 11:49:50.436165 2022] [mpm_prefork:notice] [pid 1] AH00170: caught SIGWINCH, shutting down gracefully
+AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 192.168.0.5. Set the 'ServerName' directive globally to suppress this message
+[Sat Aug 06 11:50:50.093730 2022] [mpm_prefork:notice] [pid 1] AH00163: Apache/2.4.38 (Debian) PHP/7.4.2 OpenSSL/1.1.1n configured -- resuming normal operations
+[Sat Aug 06 11:50:50.094737 2022] [core:notice] [pid 1] AH00094: Command line: 'apache2 -D FOREGROUND'
+[Sat Aug 06 11:50:53.337020 2022] [mpm_prefork:notice] [pid 1] AH00170: caught SIGWINCH, shutting down gracefully
+AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 192.168.16.5. Set the 'ServerName' directive globally to suppress this message
+[Sat Aug 06 11:51:24.583655 2022] [mpm_prefork:notice] [pid 1] AH00163: Apache/2.4.38 (Debian) PHP/7.4.2 OpenSSL/1.1.1n configured -- resuming normal operations
+[Sat Aug 06 11:51:24.585220 2022] [core:notice] [pid 1] AH00094: Command line: 'apache2 -D FOREGROUND'
+[Sat Aug 06 11:51:27.363561 2022] [php7:error] [pid 18] [client 192.168.16.1:57298] script '/var/www/html/index.php' not found or unable to stat
+[Sat Aug 06 11:51:27.995120 2022] [php7:error] [pid 18] [client 192.168.16.1:57298] script '/var/www/html/index.php' not found or unable to stat
+[Sat Aug 06 11:51:28.234498 2022] [php7:error] [pid 18] [client 192.168.16.1:57298] script '/var/www/html/index.php' not found or unable to stat
+[Sat Aug 06 11:51:28.475962 2022] [php7:error] [pid 18] [client 192.168.16.1:57298] script '/var/www/html/index.php' not found or unable to stat
+[Sat Aug 06 11:51:28.643464 2022] [php7:error] [pid 18] [client 192.168.16.1:57298] script '/var/www/html/index.php' not found or unable to stat
+[Sat Aug 06 11:51:28.827472 2022] [php7:error] [pid 18] [client 192.168.16.1:57298] script '/var/www/html/index.php' not found or unable to stat
+[Sat Aug 06 11:51:28.996882 2022] [php7:error] [pid 18] [client 192.168.16.1:57298] script '/var/www/html/index.php' not found or unable to stat
+[Sat Aug 06 11:51:29.171659 2022] [php7:error] [pid 18] [client 192.168.16.1:57298] script '/var/www/html/index.php' not found or unable to stat
+[Sat Aug 06 11:51:29.395076 2022] [php7:error] [pid 18] [client 192.168.16.1:57298] script '/var/www/html/index.php' not found or unable to stat
+[Sat Aug 06 11:51:29.618822 2022] [php7:error] [pid 18] [client 192.168.16.1:57298] script '/var/www/html/index.php' not found or unable to stat
+[Sat Aug 06 11:51:29.828704 2022] [php7:error] [pid 18] [client 192.168.16.1:57298] script '/var/www/html/index.php' not found or unable to stat
+[Sat Aug 06 11:51:30.012835 2022] [php7:error] [pid 18] [client 192.168.16.1:57298] script '/var/www/html/index.php' not found or unable to stat
+[Sat Aug 06 11:51:31.639825 2022] [autoindex:error] [pid 18] [client 192.168.16.1:57298] AH01276: Cannot serve directory /var/www/html/: No matching DirectoryIndex (index.php,index.html) found, and server-generated directory index forbidden by Options directive
+[Sat Aug 06 11:51:32.130341 2022] [autoindex:error] [pid 18] [client 192.168.16.1:57298] AH01276: Cannot serve directory /var/www/html/: No matching DirectoryIndex (index.php,index.html) found, and server-generated directory index forbidden by Options directive
+[Sat Aug 06 11:51:32.345132 2022] [autoindex:error] [pid 18] [client 192.168.16.1:57298] AH01276: Cannot serve directory /var/www/html/: No matching DirectoryIndex (index.php,index.html) found, and server-generated directory index forbidden by Options directive
+[Sat Aug 06 11:51:32.493074 2022] [autoindex:error] [pid 18] [client 192.168.16.1:57298] AH01276: Cannot serve directory /var/www/html/: No matching DirectoryIndex (index.php,index.html) found, and server-generated directory index forbidden by Options directive
+[Sat Aug 06 11:51:32.649824 2022] [autoindex:error] [pid 18] [client 192.168.16.1:57298] AH01276: Cannot serve directory /var/www/html/: No matching DirectoryIndex (index.php,index.html) found, and server-generated directory index forbidden by Options directive
+[Sat Aug 06 11:51:32.818073 2022] [autoindex:error] [pid 18] [client 192.168.16.1:57298] AH01276: Cannot serve directory /var/www/html/: No matching DirectoryIndex (index.php,index.html) found, and server-generated directory index forbidden by Options directive
+[Sat Aug 06 11:51:33.004423 2022] [autoindex:error] [pid 18] [client 192.168.16.1:57298] AH01276: Cannot serve directory /var/www/html/: No matching DirectoryIndex (index.php,index.html) found, and server-generated directory index forbidden by Options directive
+[Sat Aug 06 11:51:33.177769 2022] [autoindex:error] [pid 18] [client 192.168.16.1:57298] AH01276: Cannot serve directory /var/www/html/: No matching DirectoryIndex (index.php,index.html) found, and server-generated directory index forbidden by Options directive
+[Sat Aug 06 11:52:04.136110 2022] [mpm_prefork:notice] [pid 1] AH00170: caught SIGWINCH, shutting down gracefully
+AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 192.168.32.5. Set the 'ServerName' directive globally to suppress this message
+[Sat Aug 06 11:52:19.860497 2022] [mpm_prefork:notice] [pid 1] AH00163: Apache/2.4.38 (Debian) PHP/7.4.2 OpenSSL/1.1.1n configured -- resuming normal operations
+[Sat Aug 06 11:52:19.861261 2022] [core:notice] [pid 1] AH00094: Command line: 'apache2 -D FOREGROUND'
+[Sat Aug 06 11:53:22.139301 2022] [mpm_prefork:notice] [pid 1] AH00170: caught SIGWINCH, shutting down gracefully
+AH00112: Warning: DocumentRoot [/var/www/html/public] does not exist
+AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 192.168.48.5. Set the 'ServerName' directive globally to suppress this message
+[Sat Aug 06 13:03:11.574718 2022] [mpm_prefork:notice] [pid 1] AH00163: Apache/2.4.38 (Debian) PHP/7.4.2 OpenSSL/1.1.1n configured -- resuming normal operations
+[Sat Aug 06 13:03:11.575773 2022] [core:notice] [pid 1] AH00094: Command line: 'apache2 -D FOREGROUND'
+[Sat Aug 06 13:04:18.886405 2022] [mpm_prefork:notice] [pid 1] AH00170: caught SIGWINCH, shutting down gracefully
+AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 192.168.80.5. Set the 'ServerName' directive globally to suppress this message
+[Sat Aug 06 13:04:41.951829 2022] [mpm_prefork:notice] [pid 1] AH00163: Apache/2.4.38 (Debian) PHP/7.4.2 OpenSSL/1.1.1n configured -- resuming normal operations
+[Sat Aug 06 13:04:41.952687 2022] [core:notice] [pid 1] AH00094: Command line: 'apache2 -D FOREGROUND'
+[Sat Aug 06 13:05:55.127691 2022] [mpm_prefork:notice] [pid 1] AH00170: caught SIGWINCH, shutting down gracefully
+AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 192.168.96.5. Set the 'ServerName' directive globally to suppress this message
+[Sat Aug 06 13:06:04.456274 2022] [mpm_prefork:notice] [pid 1] AH00163: Apache/2.4.38 (Debian) PHP/7.4.2 OpenSSL/1.1.1n configured -- resuming normal operations
+[Sat Aug 06 13:06:04.457347 2022] [core:notice] [pid 1] AH00094: Command line: 'apache2 -D FOREGROUND'
+AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 192.168.96.2. Set the 'ServerName' directive globally to suppress this message
+[Sun Aug 07 13:45:36.395020 2022] [mpm_prefork:notice] [pid 1] AH00163: Apache/2.4.38 (Debian) PHP/7.4.2 OpenSSL/1.1.1n configured -- resuming normal operations
+[Sun Aug 07 13:45:36.419947 2022] [core:notice] [pid 1] AH00094: Command line: 'apache2 -D FOREGROUND'
+AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 192.168.96.3. Set the 'ServerName' directive globally to suppress this message
+[Mon Aug 08 06:50:59.485421 2022] [mpm_prefork:notice] [pid 1] AH00163: Apache/2.4.38 (Debian) PHP/7.4.2 OpenSSL/1.1.1n configured -- resuming normal operations
+[Mon Aug 08 06:50:59.486005 2022] [core:notice] [pid 1] AH00094: Command line: 'apache2 -D FOREGROUND'
+AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 192.168.96.3. Set the 'ServerName' directive globally to suppress this message
+[Tue Aug 09 11:18:03.047923 2022] [mpm_prefork:notice] [pid 1] AH00163: Apache/2.4.38 (Debian) PHP/7.4.2 OpenSSL/1.1.1n configured -- resuming normal operations
+[Tue Aug 09 11:18:03.048790 2022] [core:notice] [pid 1] AH00094: Command line: 'apache2 -D FOREGROUND'
+[Tue Aug 09 11:23:18.550708 2022] [mpm_prefork:notice] [pid 1] AH00170: caught SIGWINCH, shutting down gracefully
+AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 192.168.96.3. Set the 'ServerName' directive globally to suppress this message
+[Tue Aug 09 11:25:30.731204 2022] [mpm_prefork:notice] [pid 1] AH00163: Apache/2.4.38 (Debian) PHP/7.4.2 OpenSSL/1.1.1n configured -- resuming normal operations
+[Tue Aug 09 11:25:30.731656 2022] [core:notice] [pid 1] AH00094: Command line: 'apache2 -D FOREGROUND'
+AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 192.168.96.3. Set the 'ServerName' directive globally to suppress this message
+[Tue Aug 09 14:52:51.035445 2022] [mpm_prefork:notice] [pid 1] AH00163: Apache/2.4.38 (Debian) PHP/7.4.2 OpenSSL/1.1.1n configured -- resuming normal operations
+[Tue Aug 09 14:52:51.412723 2022] [core:notice] [pid 1] AH00094: Command line: 'apache2 -D FOREGROUND'

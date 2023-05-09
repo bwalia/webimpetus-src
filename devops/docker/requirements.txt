@@ -1,0 +1,4 @@
+inotify==0.2.10
+pyyaml==5.4.1
+hvac==0.10.9
+requests-unixsocket==0.2.0

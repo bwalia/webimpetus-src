@@ -1,0 +1,1143 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "WebImpetus API V2",
+        "version": "2.0"
+    },
+    "paths": {
+        "/api/v2/businesses": {
+            "get": {
+                "tags": [
+                    "Businesses"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get the businesses data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Businesses"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Created a business data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/businesses/{uuid}": {
+            "get": {
+                "tags": [
+                    "Businesses"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get the single business data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Businesses"
+                ],
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "query",
+                        "description": "The businesse uuid",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated a businesse data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Businesses"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Delete a businesse"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/categories": {
+            "get": {
+                "tags": [
+                    "Categories"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get the category data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Categories"
+                ],
+                "parameters": [
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "business uuid required",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Created a category data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/categories/{uuid}": {
+            "get": {
+                "tags": [
+                    "Categories"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get the single category data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Categories"
+                ],
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "query",
+                        "description": "The category uuid",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated a category data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Categories"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Delete a category"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/contacts": {
+            "get": {
+                "tags": [
+                    "Contacts"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get the contacts data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Contacts"
+                ],
+                "parameters": [
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "business uuid required",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Created a contact data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/contacts/{uuid}": {
+            "get": {
+                "tags": [
+                    "Contacts"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get the single contact data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Contacts"
+                ],
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "query",
+                        "description": "The contact uuid",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated a contact data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Contacts"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Delete a contact"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/customers": {
+            "get": {
+                "tags": [
+                    "Customers"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get the Customers data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Customers"
+                ],
+                "parameters": [
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "business uuid required",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Created a customer data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/customers/{uuid}": {
+            "get": {
+                "tags": [
+                    "Customers"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get the single customer data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Customers"
+                ],
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "query",
+                        "description": "The customer uuid",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated a customer data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Customers"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Delete a customer"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/employees": {
+            "get": {
+                "tags": [
+                    "Employee"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get the employees data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Employee"
+                ],
+                "parameters": [
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "business uuid required",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Created a employee data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/employees/{uuid}": {
+            "get": {
+                "tags": [
+                    "Employee"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get the single Employee data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Employee"
+                ],
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "query",
+                        "description": "The employee uuid",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated a employee data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Employee"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Delete a employee"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/menu": {
+            "get": {
+                "tags": [
+                    "Menu"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get the menues data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Menu"
+                ],
+                "parameters": [
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "business uuid required",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Created a menu data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/menu/{uuid}": {
+            "get": {
+                "tags": [
+                    "Menu"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get the single menu data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Menu"
+                ],
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "query",
+                        "description": "The menu uuid",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated a menu data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Menu"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Delete a menu"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/projects": {
+            "get": {
+                "tags": [
+                    "Projects"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get the projects data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Projects"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Created a sprint data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/projects/{uuid}": {
+            "get": {
+                "tags": [
+                    "Projects"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get the single project data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Projects"
+                ],
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "query",
+                        "description": "The project uuid",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated a project data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Projects"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Delete a project"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/sprints": {
+            "get": {
+                "tags": [
+                    "Sprints"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get the sprints data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Sprints"
+                ],
+                "parameters": [
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "business uuid required",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Created a sprint data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/sprints/{uuid}": {
+            "get": {
+                "tags": [
+                    "Sprints"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get the single sprint data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Sprints"
+                ],
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "query",
+                        "description": "The sprint uuid",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated a sprint data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Sprints"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Delete a sprint"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/tasks": {
+            "get": {
+                "tags": [
+                    "Tasks"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get the tasks data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Tasks"
+                ],
+                "parameters": [
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "business uuid required",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Created a task"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/tasks/{uuid}": {
+            "get": {
+                "tags": [
+                    "Tasks"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get the single task data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Tasks"
+                ],
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "query",
+                        "description": "The task uuid",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated a task data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Tasks"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Delete a task"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/timeslips": {
+            "get": {
+                "tags": [
+                    "Timeslips"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get the timeslips data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Timeslips"
+                ],
+                "parameters": [
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "business uuid required",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Created a timeslip"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/timeslips/{uuid}": {
+            "get": {
+                "tags": [
+                    "Timeslips"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get the single timeslip data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Timeslips"
+                ],
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "query",
+                        "description": "The timeslip uuid",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated a timeslip data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Timeslips"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Delete a timeslip"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/users": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get the users data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "parameters": [
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "business uuid required",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated a user data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/users/{uuid}": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get the single user data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "User"
+                ],
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "query",
+                        "description": "The user uuid",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated a user data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "User"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Delete a user"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/webpages": {
+            "get": {
+                "tags": [
+                    "Webpages"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get the webpage data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/webpages/{uuid}": {
+            "get": {
+                "tags": [
+                    "Webpages"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get the single webpage data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "name": "bearerAuth",
+                "in": "header",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    }
+}

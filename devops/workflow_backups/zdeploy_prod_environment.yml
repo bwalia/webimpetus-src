@@ -1,0 +1,73 @@
+# name: "__DO_NOT_USE__ (Prod) Workstation CRM Build and Deployment pipeline"
+
+# # Description: This workflow Builds and Deploys My Workstation CRM service in Docker compose
+# # environments, both in test or Prod. My Workstation is a service provided using WebImpetus open source
+# # software.
+# # Note: Prod environment run at host https://my.workstation.co.uk/
+
+# on:
+#   push:
+#     branches: [ "dummy" ]
+#   pull_request:
+#     branches: [ "feature/main*" ]
+
+#   workflow_dispatch:
+#     inputs:
+#       workflow_action:
+#         type: choice
+#         description: 'Please choose the action for My Workstation'
+#         default: 'deploy'
+#         required: true
+#         options:
+#         - deploy
+#         - delete
+#         - rollback
+#         - Choose
+#       # targetEnv:
+#       #   type: choice
+#       #   description: 'Please choose the target env for My Workstation'
+#       #   default: 'test'
+#       #   required: true
+#       #   options:
+#       #   - test
+#       #   - acc
+#       #   - prod
+
+# # permissions:
+# #   contents: read
+
+# jobs:
+#   build:
+
+#     runs-on: self-hosted
+#     # self hosted runner runs this job on Edgeone Ubuntu Server
+#     steps:
+
+#     - name: Check out this repo code
+#       uses: actions/checkout@v3
+#       with:
+#         ref: main
+#         clean: true
+
+#     - name: Run bash script to build the docker image and deployment
+#       run: |
+#           chmod +x ./webimpetus_kubernetes.sh
+#           ./webimpetus_kubernetes.sh prod prod install
+#       shell: bash
+#     # For Lamp stack use release_manager_lamp_stack.sh bash script instead of webimpetus_kubernetes.sh
+#     # - name: Healthcheck url my.workstation.co.uk
+#     #   uses: wei/curl@master
+#     #   with:
+#     #     args: https://my.workstation.co.uk/
+
+#     - name: Slack Notification for Workstation CRM release 
+#       uses: rtCamp/action-slack-notify@v2
+#       env:
+#         SLACK_CHANNEL: general
+#         SLACK_COLOR: ${{ job.status }}
+#         SLACK_ICON: https://github.com/rtCamp.png?size=48
+#         SLACK_MESSAGE: 'Post Content :rocket:'
+#         SLACK_TITLE: Post Title
+#         SLACK_USERNAME: rtCamp
+#         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+

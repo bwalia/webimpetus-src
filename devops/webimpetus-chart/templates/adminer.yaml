@@ -1,0 +1,102 @@
+{{- if .Values.serviceAdminer.enabled }}
+# adminer pvc
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: adminer-pvc-{{ .Values.targetNS }}
+  namespace: {{ .Values.targetNS }}
+  labels:
+    app: adminer-{{ .Values.targetNS }}
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+status: {}
+
+---
+# adminer cluster ip service
+apiVersion: v1
+kind: Service
+metadata:
+  name: adminer-svc-{{ .Values.targetNS }}
+  namespace: {{ .Values.targetNS }}
+  labels:
+    app: adminer-{{ .Values.targetNS }}
+spec:
+  type: ClusterIP
+  ports:
+  - name: adminer-svc-{{ .Values.targetNS }}
+    port: 8080
+    targetPort: 8080
+  selector:
+    app: adminer-{{ .Values.targetNS }}
+# phpmyadmin deployment
+
+---
+# adminer node port service
+apiVersion: v1
+kind: Service
+metadata:
+  name: adminer-nodeport-{{ .Values.targetNS }}
+  namespace: {{ .Values.targetNS }}
+  labels:
+    app: adminer-{{ .Values.targetNS }}
+spec:
+  type: NodePort
+  ports:
+  - name: adminer-nodeport-svc-{{ .Values.targetNS }}
+    port: 8080
+    targetPort: 8080
+    nodePort: {{ .Values.adminer.port }}
+  selector:
+    app: adminer-{{ .Values.targetNS }}
+# phpmyadmin deployment
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adminer-{{ .Values.targetNS }}
+  namespace: {{ .Values.targetNS }}
+  labels:
+    app: adminer-{{ .Values.targetNS }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: adminer-{{ .Values.targetNS }}
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: adminer-{{ .Values.targetNS }}
+    spec:
+      containers:
+      - env:
+        - name: TEST_ENV
+          valueFrom:
+            secretKeyRef:
+              name: mariadb-secret-{{ .Values.targetEnv }}
+              key: password
+        image: adminer
+        name: adminer-{{ .Values.targetNS }}
+        ports:
+        - containerPort: 8080
+
+        resources: {}
+        volumeMounts:
+        - mountPath: /sessions
+          name: adminer-pvc-{{ .Values.targetNS }}
+        #- mountPath: /usr/local/etc/php/conf.d/php-adminer.ini
+        #  name: adminer-claim
+      restartPolicy: Always
+      volumes:
+      - name: adminer-pvc-{{ .Values.targetNS }}
+        persistentVolumeClaim:
+          claimName: adminer-pvc-{{ .Values.targetNS }}
+status: {}
+{{- end }}

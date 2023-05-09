@@ -1,0 +1,15 @@
+ARG TAG=latest
+
+FROM bwalia/webimpetus:$TAG
+
+WORKDIR /var/www/html
+
+RUN apt update && apt upgrade -y && apt install -y \
+    curl \
+    # git \
+    jq \
+    vim \
+    wget
+
+COPY ci4 /src
+COPY config/php/php.ini /usr/local/etc/php

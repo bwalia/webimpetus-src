@@ -1,0 +1,158 @@
+######################################################
+# Secret: Create Multiples encripted data
+######################################################
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: wsl-secret-prod
+  namespace: {{ .Values.targetNS }}
+spec:
+  encryptedData:
+    env_file: AgC0hn7hdUMClQyFOeMATxJgK266y9JE5twfQ4hHj4RFKtsxfX2lt3r0WUQZw39PG+8VSOj04B8g1BUk9H/CV/PsSxb3XyXYfUaHfyhEJKq+JsTctPcz/4UiL5HD8gRoCk3UGOCAq7fLP1aszmzlmOgHqviXKxLPdE0jQuAZTcDpaZasf0ufRulxOSShhR0jEZ3dGGLrm4rQZHEV70VrpHvXCZ3yzNyKr/y5HpA5xmG/BluhplwyHYXrfxXz9S6Okt7jkRCXIHpF+5JFmKs51IZmevHpJ9HXlhXzyq7QvriuCjvHYC29a8DlO9kPUDJsH0qn4a7s6TM66jxpJGf/TC4yfFMXiUd8KSTaeKWyQPVKwC7Kk1rGoTh/M+DnzjyNa/UltrgvAAAYl2msEjOvlmAFAUs8tJ6dvCu9Bh5P1LA14qx0QZqM1uVsa76UpNqc3srdaAmCEwKgx4UWyag679TRD7/+Vfuoi4njij7TewHHoI1eDnBMDFPYq+mYvND2l7M4Ljn1crWmFXx1JFX30k3AA5vdyanf4ECafmOP0+KMm7LztBFSx63Uyuq/TIvTPM3ifjIvLyCqKcAJr5+aS1nkg0yXcnsExOvaLgLW964SGAt96EOCD+kUO2S4VbS1VHJz1bpU346b8Af+jusH8a9OI5GHlOksMK7xeYfnbhKSo/KXMSvSin1EBW7FTLJMHkryx75LpqQ9SHn36ueX22wcWaulqe16d7C/vCfh44GTenkZYgGH9bUSB4TmFwe8DHi8H+9bVd4dC7FleT1igP4eUDKd6ujoP0FWlXYGZsPAnbld5L8PYVe7lp2tOlf/lbxgTd2mGHBmkAOtEemUYhRIYxaOyXgEKBYMA999IWvjwpliNF2ryGh8rP/ZE6tSvmNUYlQTjPWeRVVkcd5l6y9fA4WLPcONotWu42rQnkRlfwmlhSWHMtaLSMpKYhBqh/+KrbyHwvfpRvzZcKOtCfHy63wzO4ihkSA8V/zAxvbLzSgV0nJy1SUtQ9vH1bEMkiEltbLBnihEq0tLT8Z7XDrogn1yweATBYzJWS7wat8TH0LXjrnTXeqqxRyfzfqo/c7W6NMme7kPvlLBEa/n/Y0xqtWopM5Q1YcTzFtyYfkgPbO30s+jJyUQ4tUh3eLZLREUUslZO/Sb3NsoJfwAvINg/rDvMERTUC/h3TIorwC+MAiUZIDgBlrgyJGAbRYkizWLv1uO6cwKGyeCX7nlUTd3NZDdvdNzWmvP1PogGnDV2Oez4vnG1GpKwQHL43zKTbCQgOJs7HhvPzJb1xWNhu/K0TkLVWwGShb5t7OC9brXGXQfLUq79UQSSvdABNB4TJla9zOAvIQQoe1swR3pqmJgPUn/TtPsTYqGENpzOOUMsRLXV8FF4x9DWZMVyTwsy8urmkV8TaHLNqdSdYuat/jZGO7iYyk7/E0mEQ53/ZDg8ZbPecyLwAOwO4X24JgY1QUCALX35xTK09C/lcIwuzjt3rDxpc9+cLR4Xo0XnyUFwa9EsKkudfUpQwnutupkjgbHgEyeoxidv6bRQ0XzpkbqlOttBZeK3XHUKjLHMkjwPO4NPARrF507EsUDqBMPjGHsrr4FpFtoPmrBOufRT6z4B6smm7ojzsL3eVqWC4bFZ9GrIJxaTJvyueL5NQcqlCLTboAPOJq3iB14f4NIhGWJsj7AOlL8Q9Z3y8L8LVqVWtCZU4EhUathHyaDTWhQRCnldCCzoHD1T/V4a50qwSbcl+g64FuGySlo/V6XJagn8mKDLliFd0dGwkQ9AnK9aFZu9TXYzuXyiQ6KjfIBNnIO+1a/st45327ETsqRJyjvMnil+n6mst0F9u+BRFGKef6oHIfq8pAhRJV8RSrNjnCvDqiyXxuWYqMvjZFeFpar532XrHL7YbpvIIGkxzAnCjvCU4EwJx+A1ngwAHFk086skkmMQBF5VPCwaD2K+4aB76T77yX5y9C6RDZrF55RoUXjVSTBz3157RK7XGmGwSVqkOfGMvzT7rxTUgv0aL0sVvZDmZGYZONeM3iqqvB7GozkcldKjYyKLgFbytoKdOreVcpUn7K+X1mciT6iHFsfF15t/aNyI6XzWRGIC0FsVbHPxT/tgYDKBFXQ9ESMiDQDRTBi95q+RO82Mx3fRR/t9qhJ2HZD7+ZnLUwWg2b/f+e0r49cbymxslTVhC6fE2JWfT3NIOz3udULisNjBWbObLPz9a83GNTaEXHziMu7z9Dq4nfc8/adXRhlKuuzPOMVqmLdu2vxk7Cad7qzcbS9t/BpfknJ+HyLkpE0FKtsNSbvROMiHTKRd8GfEqYYN4tCA0dM9HSd31wwDOFxnAwak7KgUHNJg+AAl19jTznczh3V/ge7BZuS/a4KPuia0271Xe2ZmVRa573sp/RsR6Z1nEr6jllgLcPhIDQWXp9/ZeitXHxwG/nIn1OM1Ps76/yCGyP1zkYqWvoe97Nc7SH1FanTWdqTLjUC2bpMh49aWUXQ1olGWSsWx+NyH05Wuope4SbpINWYX+t+KJK6F7OhCHNFyKj6ie8i2UAL0EvtedaVFzQEM8J43VYGcKPlXgORTgk2/pwcz6BJuUvETffem37+SqJ8bITvnPQtFWz0r98E0Z6bInGgX2gkNwmKtZD85EyKbCZ9h6y1DLphQZVP/PSrtFMnzlFSQACqR/3iV8SEOyj8r/nouEzT5nByxBYXF0uw7aQ+77LT9tJHqDzde95CEkSBuyobG7ZGYmh4W21rIMFNmG/Dry5sj9omxORKfvjyqUp9pFokqD1atswdRxpx08Kk3xxgadwQ6TzZne0iawZq1Try5eVruCuCCdrDAGRCDB5vcb7viKE2HQpLMRlwrOEBZojtDYC3Ss8tsx/NMtygjJMeG4F6FSj4HCyT+soMuGUjY9OqCbmx/f1lsvv5+Gjc/qd96sBiTxqWHIoyJuY41zMeWpcOQrm6KNYor+xNxBAS/3BulZCIWI1aLa2BqSnHCk3k2g9syQaousC2Un19sxymICZW4bn8HkeR5A4wI/S2ilvDTgJXNX6kwFmOjpR2jsmo0DfKM3CnkuaNa1bDjDPM0yjGYkqSyqerCW1NP0Hjo9Jjcqdy6lcfqTYGzB0AudQehOIfA/0vl/WfNnCdYeXezodt9rFQgxkq0RK8pOEmtTDiKWAxZdNGu//eyfnNWMEz2FlD9TmfxJoRzE4iNtq5r601UXGZr3m0Nb9UrtpfynsaNngnQUtfSQjchbd61Y1u/s5UQPfUtVcoyRumWy4RM1WnKwAR/JEWhlJLAUAZkOX4ZNwRD7FvB/V03q7Y6sStDe3LNxSmQTETlA6gXvUnurGVW2QDuAl5hd27g/Dyr3w+ppqXU013nXJicrOvjFxg0962PjO6YLotB7H1YmVTXFfVtTgTa7CTagA7qH+XjG064JM5UcHy9hL0dQcMCaBCpBF8pAh9ESA2ecXp+RyUs2f2NMegPHeQRQ3G0/S0dLR5QZniBMqkuswXRoopNaX+icrtxLzbGc68kHKlATvJCjcbd9nnBF2E94bQw2Y14ER3WiaahjypNSW3sYzGhb5ZGDM7t6cH8oeifp7E/c25emcYIU60WBAtGpZK1nRaF8p0UfWP3cHmpLjlmVRH1J8Kdeel1XAOGvghZDH0thNkyRht0gGwAA1GHMOp+/10DMqqM1mgrDHLhrIu00DQSqXJN7pBYaeL7BYm0GoEWr5Sr4GXeeRAUnY5qxTrRaPeqTxjnGn2b9wK0vAe1WG2De0akhEYgoVQIDctmrl0Zv6RWOkIh5he6+Uh34bduKwuj659N22ZVmXDaJiOfChF514Bn1mITVLRg4zTIlrFwZ9/2kBgJiWgGFePrnstMtcENog6z2M9nDyaDv0JxaIDFzcWPeOv1WNXspjhS5S+cSPapbl1ULc5Mar48rasCYNVG4fUZ/AVdyAd44NO2Djnhf8HHeZl3KRwWCjDntb6CxuT15wed1ZrnvS/0yRh32GNCMzxXDV/g/sW9RB6E2/WRXf4HZ7GmBBB1GYOW+C/SP+6A+t9BHOYpIUzrCwtaNwsigiuJnZoFXubon8T91J/1Qb1di840xnVOpk5rAYdlGKcSdMhVnBO+V3uYG6+648dlpq/7NxBF9q9yY+j8md9Jst0zjavsA6rb1RlDvKKrl4M5jinmbTWdoC/sMrfP+bq1Xn54nFbSgBdUbEuKAVX22bJP2loxCbg6mT3rPIzyrK/cWX6Myv/0+/xQyHTW9Hw72wkE3xeP+ntk4T9Pzv0o3PjS83e5YYeYPah8Tbm9ZtmD+ncfKQeewN0LRTztNkSwAvcfU1ORsqfno5S9dps7HuTh8WCbl4Y+xC4rSP5YlSKeAh9A2r9C8rUUldnHCVg9jz/6MLQfm6s08+7gZfcirREOrAUMwHn6oFJl+Vv8eIqFa+Nvs+MKDlsrrtGBO54CJW8nm6ZLIM+yAi2X9MvcxOYVSaKqcd61+iVS16m4dpWDle1rqW7ZiT+qHDQIZUrIwsEeNFFKPPAem5cIqoHgRGoeoipakZ1oya3bflS4RB5XxMaybykoqrSgHuHwGdmXdeKi+uwvcolW9wV6gcRSfdlGVu8GTQwq4PbgVISIZUyk64eoW/JGa1D0LvwXY8SQK5xv3VdLblyvzRyaZ8BdTRYBlk/qB/6XeXttBhQl0CPgGZOo+MxRf5mYiAeXBLHZrkL5vncuqwfy6BU7UaDxzH76WhSzpGa52LNpARTN7WwgsXS7Km4JIOh7eTDoowNNeFZtYqJ6FgSR5xP8TmSGTSi3SK9ZY1ciSmoV2vHrY3NyeqrLHt3eKdsWBI6/od7Po8SVaC+vUZ/4Xby7BCY7EF/rBi713lvETT/d4jQHAjKTqAEIbjcethZ/0hb6gU//31ci8UfwdthnOcwpImI3+sHDE3TO33STxF8H35lw0gf+DqsJ8lhvE5wIDZhCWHOwXZkpDOBVQ6jZY2NYHKp9fL3YhaV+CmNb35Sl1Z24V5BA6w3T4bsWU7b2HKTP4pS/UPWKUwE78+aN+zIONms5JfdKaVDtKIfHpTGzz8UJyme2Wv0De6pDefguzoaRZDLCYWWJTr5iWZl7yzpzFAS+LGVFi3clO+8X82JpAYiWuahTcM/F0RlTNc7kvmNLaE3FTNWpjOb0JMgOcfaSsNWXSe15b9T8/UPTQDhLQZKU+UuZoLry/Alzcoj72AtTUM38p1/989yflt+f0k8xizkvm+qkpoUQ6FTMo2g8rQym/Sd+6PWafFqlATn3Fja9r3eDUaUBURM+NdxSKU2Nfeqs5xNCUUGBXLF8jP2yBiG7x7WJ0/z96SGC0NUvK4I+2/u8Z5Od9l4zNYZYoVwMNMXoEBxjcsGTxyBhp+p5rv603XV1QRpFXmH7xKnqbHxRbN71Xj+8BOsgeX1SwSnomhS2SRrK9LPOkIXepI5ohQaO87cpIREtduRkZByRUoB/QwYjFReqRzI/eBOEtbzq77nkQ3hFhtOgWfXKzHQ1ujwa8GKGRjdrTQY23rKuQBwqcgTdWEzhFFa+qxpS4Y1kRCDIbMaedVG9Eshav/BWVnTDVm1byWeGFwPLiUBeUV7C1p80o3ydoOBYLb3ib8gkwWBr6+N9voeU6lBnJszyZRcEAvCgS10joVZCMj9GOfrTlhudPCzOqiP4ulrFvLOLzOUxeZU9cQnaV3tGLubKS54RyyZr0EWYZOWVWN3HgVyG66qTI8tpeU5/kHpOvPo3NeA/jbR7YmP4EQuumScLO7RqsHRNGU0SvGxVY7tWmrvIr4MicI3DRW/PJYBsfchopJA7TGtOi8KgfSpIR/gj8X64P/wALV7hyUjmOddwz9+wNqBubGewsjZ5xh+Zj+HGyi7IpAzmGC2DZLZdx3e3tC7xKQJdqHhNjLyLqSoTIgWKjJD2LfkoGlrVhms07bJ0C158RG2K2aPY8l9b/jZJrYn4BeNb1cFIIvwr3S473CcKxM60A3SLVocpX0XThcgaVeQtkQT1Nmy17mw1pVGizdNWz3Qc7BygT10S1hbxs7dWkrhKwzPpeJ0sNfuQKoHRnFolOl27Rl74kdBV6y5CgEMzFHh41mYbIFO6wRytbWz9BVlcZShYDpxHGfkRSOmzxmH+efqg5CYEo6Y9OF4ZRr6UkUb0aKKrs5FFo8bTFQ4CnRDAd5yoe0Sjg9rSyHGAMHm36v+BwQvqhZDpglxiv38bNsTJITiwbz+XHe35CAqioBM+7yxc/DlLcqRP6cpaUYzmg2Iog/5rFahywpwlB3FWwmgr1h7N/koRZWOL8o609NTgAdVOlEjm7PFnJi7lJpcbMf0LCks9PecQRuP2vBsdD3kNCpgr1BnpdUqZgxs34fZTGQZ//kTZsbzzbcsKr7EvVR2dD+lcf4PQMtRcHNci6Xgzf7dS58JOvMhcXYdg27mZuCiwlWoV0lvifurzO3j/HIkkiTbVgu9/22iDEEUgdtsSnYleDRRoVMQmcaXUfhKK4Hp1CjzuOwQBfhrEOany3Pme4pMdc9boF+J71ZTstKCejJMlGIO0Ojl7ao5tQ5InGBEOjsTJne4vKkS5RvGYkz2qfsiaEY9RGB3QSl1yTmpezhWqGSefqMhmMIlKoxIqTZLka/e2uhmNlTQHH1wYgEAitqZb4jbFqAdU7IxYs74w317JkWDYyH9DUaNvx5N0refkImFQX3op2HQOS1ieu3pZpGORL5oOfe4QPJn7DpxUuhlGbe1n7nDtlwx2eqHNpVAuGjTqhXXGh7DrS8WBruflw0yuuMoTflxxEORiklUkihAEPL8HtJcE5Nhqa/jpdynR/4=
+  template:
+    metadata:
+      name: wsl-secret-prod
+      namespace: {{ .Values.targetNS }}
+---
+######################################################
+# Configmaps: Create Multiples Configmaps data
+######################################################
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.service_name }}-bootstrap-cm-apache2-prod
+  namespace: {{ .Values.targetNS }}
+data:
+    bootstrap-apache2.sh: |
+        #!/bin/bash
+        set -x
+        echo "Workstation Bootstrap Script"
+        echo "==========================="
+        cp /tmp/secrets/.env /var/www/html/.env
+        FILE=/var/www/html/.env
+        if test -f "$FILE"; then
+            echo "$FILE exists."
+            echo "==========================="
+            echo "Workstation Bootstrap Script Copied"
+            echo "==========================="
+        fi
+            echo "Starting Workstation"
+            echo "==========================="
+            php -v
+        echo "==========================="
+        yes | composer update
+        chmod 777 -R /var/www/html/writable/
+        chmod 777 -R /var/www/html/writable/cache/
+        chmod 777 -R /var/www/html/writable/session/
+        APP_RELEASE_NOTES_DOC_URL="https://webimpetus.cloud/docs/"
+        export APP_RELEASE_NOTES_DOC_URL=$APP_RELEASE_NOTES_DOC_URL
+        DATE_GEN_VERSION=$(date +"%Y%m%d%I%M%S")
+        export DATE_GEN_VERSION=$(date +"%Y%m%d%I%M%S")
+        echo APP_DEPLOYED_AT=$DATE_GEN_VERSION >> $FILE
+        echo APP_ENVIRONMENT="Prod" >> $FILE
+        echo APP_RELEASE_NOTES_DOC_URL=$APP_RELEASE_NOTES_DOC_URL >> $FILE
+        echo "==========================="
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: wsl-ingress-prod
+  annotations:
+    #kubernetes.io/ingress.class: nginx
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: my.workstation.co.uk
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: wsl-svc-prod
+            port:
+              number: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wsl-nodeport-prod
+spec:
+  selector:
+    app: wslprod
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 32180
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wsl-svc-prod
+spec:
+  selector:
+    app: wslprod
+  ports:
+    - port: 80
+      targetPort: 80
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wslprod
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: wslprod
+  template:
+    metadata:
+      labels:
+        app: wslprod
+    spec:
+      volumes:
+        - name: {{ .Values.service_name }}-bootstrap-cm-apache2-vol
+          # Populate the volume with config map data
+          configMap:
+            # `name` here must match the name 
+            # specified in the ConfigMap's YAML 
+            name: {{ .Values.service_name }}-bootstrap-cm-apache2-prod
+        - name: wslenv-vol-prod
+          secret:
+            secretName: wsl-secret-prod
+            items:
+            - key: env_file
+              path: .env
+
+      containers:
+        - name: workstation
+          image: registry.workstation.co.uk/workstation:latest
+          ports:
+            - containerPort: 80
+          env:
+            - name: "APACHE_CONFDIR"
+              value: "/etc/apache2"
+            - name: "APACHE_DOCUMENT_ROOT"
+              value: "/var/www/html/public"
+            - name: "APACHE_ENVVARS"
+              value: "/etc/apache2/envvars"
+            - name: "APACHE_RUN_DIR"
+              value: "/var/run/apache2"
+            - name: DYNAMIC_SCRIPTS_PATH
+              value: "/var/www/html/writable/"
+          imagePullPolicy: Always
+          lifecycle:
+            postStart:
+              exec:
+                command: ["/bin/sh", "-c", "stat -c %a /tmp && ls -la /tmp && cp /tmp/configmap/bootstrap-apache2.sh /usr/local/bin/bootstrap-apache2.sh && chmod +x /usr/local/bin/bootstrap-apache2.sh && sh /usr/local/bin/bootstrap-apache2.sh"]
+          volumeMounts:
+            - name: wslenv-vol-prod
+              mountPath: /tmp/secrets
+              # `bootstrap` mount bash script from configmap {{ .Values.service_name }}-bootstrap-cm-apache2-prod
+              # execute in the poststrat lifecycle hook
+            - name: {{ .Values.service_name }}-bootstrap-cm-apache2-vol
+              mountPath: /tmp/configmap
+              

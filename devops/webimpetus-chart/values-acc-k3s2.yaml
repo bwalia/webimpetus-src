@@ -1,0 +1,83 @@
+service_name: wsl
+
+targetCluster: k3s2
+targetEnv: acc
+targetNS: acc
+
+envPreferences:
+  timeZone: Europe/London
+  codeIgniterEnv: acceptance
+
+architecture:
+  http_server_type: openresty   # apache2 | openresty are supported
+
+targetImage: "bwalia/webimpetus"
+targetImageTag: "latest"
+
+safeSealedSecret: AgDE3hcxmOdQUrnYwRhV1MYc2opM6f1eby+dHlaojNQ0mTIZNFE6XwYIWIrPmjg+HXmyJOJvdKOcVeojqApm7wsENKN70Dme4HoaG0MoXGHcG/h05bGP/dS/K1CS+L/Jna4te3xgmDNqSzVrHYeJGvPDBretRfZQndfD+bOVl/FXH8WMfVqa/cz/UGrhDF79F2ART+wnLaU3yET01CwSn8B0rtfdKiLNpdVEZxabqtiT5umDml4m7gyf8M9kbH76Pl0NYL9mLgWpHAJb/xFR0ihCVVXiPtP5OG2flxFnEQOXCosDF9hBJ48YUgX1oQ3uArdURIRxScQ2z0B5fZp6RgYZaccWd2rX6NIQ9fsN44qOsjW87zWBmmz78zWmxbeuzZ0SnkSc7V4O+uxHv/6rHzqbl+TQ1nhRPtNpcu29XPPb0ZO5/PyH6p8RRZZF6vRXOYfaftoLTOSTfB3tQUUYKeaSb6LaaQlS5UdTzNJ979/u0Jh8CwpRYZyGYKvNmFtZAHArv43fBYXMa8Hl514+wUJ5XNA0AvU1RiRDHxt6rrU1Yd5YCs3dzlUcFYR8/QgOLaZE9jZT3LxvXh34K03IMSFG3Br5M6AC9hRaJScsQghMLqfelOL6xLT71L9O8BeEPCFb8qMmm9pwIxd4ucVA7980P28H70SjYRj2v+fC0+H4MOCt29jLY7MF6yzp2WUwyzTBkP3Scmh53qddll0uHEQx4xBBMHDeG/cBPDHOwlWepH2/izJ7ZWBrLlVDFPB5X39NMe4EDP3+nFLZzbrGpbQ3GKIPNK98Gop2fbYUu+MYRgWPBvotOSDeWB01fXtrXofLtFB6ETm37j2/R0MtfybtmyexRHjqZa6ie4NwLSgT15/YNp+cN9WAOUuwjG/qdUzJdOzj0zHbHF/Ic8FBhUc/1+fxmBbSDgjnrBGqRCoDU8ZCAs+otA3GvO4YUm42tiDgUtw7UU/ojQhoHtnS99J8Pgq02hvin3PW1k60twxfrfU69Ld3y5uvFbaxQKU5/xOEAc4EGFM83yocp71mE5YDE6pX7M79uw1ot4dMNIJfzmT6OyVyx5v6Jh3MBxf/acOW0CdsDas/gorI7CMeD7ey4M399gjnN6X1b0XW1fQNYG9bf3RFyjLBscJBxc3R1e4UAMnc4iJR1Ry2+VW592GX/wvQAcD3Hm0mATYAmH45lL/rbShF9Q3J2tA+2MdV4TZY87h7n7DK4pIlNa1LE0oLPKBaS2JLiPppw+0R9iz8hAwilkPtPg2EYoTx2ovDrNewkIop72J04tZxSK4wnOVdBWErodGh2IPCnPuHVUR+8d3ZahauNE+9KLNtga2rZq4QP4Sy+mmIPDOXcIZYNCe+bM755b8h2PLxusWJTQoLfoCUVD03gQqp7iLknHE22qrVn9jCKB4f/oy0AQ7j/fWtBr59gkA589IkMXlpmdDKAKeCfQzx5fjAYvUQBKVafyC8FMrpJLqFBmomLJoKv5piaWYSLneBz/7kRN+YjZTWVrdL+cKSOcxA6JkYl6KT6SD99B+1uTRHgHovLWbfc+BUOt2duHj9mGr05dQRivdblyP6el3v99wDexTvNwrxefWInuI85N1Tf0B2mvlG+dBZSVsMxgjl/tXyIJH/LyWtLVSj7/JMeu89UjKWYfv8aGy5nLo2BielD2D3ob7REy8rn1l4Q9cgl6MTQj9Oj1hjM8MGaCayW/Vn3hIe0JGckR7hYBiLFFpEQ4S1K8rWL13/sFXWFHyOPgtNhpuz4q5XI7LZErPiJUa8kkTdgZz3O9IFFZNJag5IBvifweZgidMwOyUxjgyopg==
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+# ports
+svcAccessPort: 31192
+
+# mysql / mariadb
+db:
+    hostname: AgCy032dTtKbZPoQ7GmpEYMLv1c/65yOgRKTx1ZFVMk2EPizJdTHLSdwibGjUlSJvduX4YtmyX8AJJeQSy9OsSvHeg2idGJBqWQV+d4JlCbKYF1Wyx2WOeoKdcnRNoHjt5GIVL7theobTGaqdOHvb9FPgwdXAdunr0knoR1KHc4kVUgEz57wjkf34BwVm/+GrgX7OaJUAEw/7PcCal6EYZf4YGMXx0WT5W4lbvfvdb5FQ9NASlgTOSGp8VMRpDuGH5gw/WG72lDIdHBzFpWMnmeHHb9bUqoYUjmnt2vPAZDAVh96VG7rQOgY02t5PreiyeAgxcH4HCfEyhnTP3F2pwBn9z/NNrE1rqceSFlY/jE9mQf+3FV5tOoNa71kQKoNrQviWDGo1kyqVPF6cuSVKT3BuQ77D65ecogTUfpLDRyUCoWn7+gGWjAygsgo0acoTbHx3EzdXJLhAxD/ZFZicPhHmqMKXSK0fWVE3xFwxVMZuj7JFcsztIUaWC+10ZBtnkcXQKWH3FQKY9BKfjspjE1kbcBbxtMraZOxrpvs2wnT0XOdd003QYKkuh60yMcLswxOGy5y5Urq2WhwP9mHIXuq7gM4HWbITjBDjLpx2d08FPr4cL/DJ2GKUIohJql+h0UCAKAzSVyQR1zltiAYhHiYoLh+Prb9qSrt/F0328/c66egeNHnUxcD5aP3uPk5sYxsnuorqLNUK424GKOMEEIu8UJiGq3O
+    password: AgB7HJSVIKVbdLw/AhzXe1F0WNgPQZG7WcSANPIxZlDMXHVJLzEG7fQMtmSHr2dBanTfpfk/rgKgG9ccaOPHtQPtMClpzcc0qHVecvwk3sQjey+XPj5JvVnbQs/3TZ8Lu3p7p/+9ybSrn3fWaoZI6Q0QJCMqfPYyz6uOcKyVAPuUJfwHphOSQKLtjzaYZzf4Vb9A8Na/ejYGJFF7KViWdEeX0VghBWtorWzUSwmc1vWM0rUQzXJog/2A5N+leOQFb7K8nIxaSgCI8O6c092dgm7OqA+iR34FUEC54aEs1x/gG2E+icIFLAssT3EmO8nmG5NtIuoEEmhfIazmcKuS52sJm09JcT/A2YdtN2xL/NFq3JeVYlzrEF63kATDx7qb4a6JuGg/8OQHHJIYu8lob8onvJc1xeGdq5JN/BA6gAAY4rIUBQuKvB985f/Ot00g2s3dIM24JKoMsS6tKvbmA1QVtcXWtsHNWSxvSFNnxrNEsjWNk/JChnaH2XNtYH3gIVTwCFlAUWm7NWyVpJqAxo5oc+WEUavhCVxinFjhlhy1lQs1F+NU3PYizsILHWVvBEv9folV1pGnfQFeJscIRQOiH0w4yzZKGPRWqcx4YFlkzWQvyJvAYNPXWop41IyEi9ASKWJpa1Yj3vfGKFcYDRNwOE6O2IkYNwNfFORPFW4iMQdO2IW3+2s8nr4scEutaqpkVVg324nBvXWLag==
+    port: AgC9SEmdUC69O1bv1m8mjt8EV7abbr8XqPsXZ2nnrBpe5BDwoA9zPw/1UoYPm6tHuDhv/YKPlp192j349OzBRddO9TFPOht5y6oOvb/cWF3OJR6MxPfQbakhZ1wNlRFtYMoqK9tS72qrF/AYdpcNit1brKCoMK1PAG/Y2SgnPXHbA/Un9M3si92VkFiUXneS3bnaywvHO4FlahJ7uudxqbdlrwA+3EJAICiPwqYoDfQwv8A+MLv4/ECxX61Z00oahGOikY6kM92Y7SIDTncYbxU0xgFNc5VYzWPMo34hJSNIeXAucN0BOGRR1mY3YepDdSVCoI7znkxu5Lol/7N90oVTZhfAw4EpOgFxk++k9E7fqmPUV5a16Z5ER02mIpdQbKORIZPB5Lr+SjowpoC2CfPnjCjbbZ2vouwrcZN9Gm7MMPdJDWqXwN6UJtH142zwDVi5APC15a1qmIvh0LcaUn8aQR8Jbhe4IZyX1Pdh1gsPbvcOpI2kKV6+6REBw1ZpP5Kza9GAIlyHnPaGgSPM3xLqLAvps9MaF7Nx8kf/XJFc0E2yAV0si0Zg/VRXbT3euGJ707HLxeBXxfpYqKb4KENn2ZCtF6gSY/5q7r9R73KWp48Wdxn2nVEukn9zHisiFtuZW4CtH0NizuWCeOQcQ36TnENS0jsMiftMOA5JYASX+ncsS2bZlLicz5OK813TD+IhH/m1PQ==
+    rootPassword: AgCppUKE+hLZylay3bthMmkq4SOhSk/kdFTbdAvM3oTgj2JghdA8rGloLBKz7bF65/ishcpnUuiqA7BSBwC9ns/esXWyarc1DS8h7Oqh3k6PdYEGOp3miESBX2V9NE8tWzbPkK1P2BQac6492W7POzUs6uuGkMahPngFOuBYU6nzcGzd4Sv8Nc3zQr6lpUvDlC+xrfed2iEEX8C61KDi+PATdPh288sJTI49bIzbPlxbQbcsWSmjonjscTSsqSJioD3iAxXHqjt2fFpq3WMDswwvQeHWRx5qFf/n27NKfqPbCjY5LjoMo3v8YdDBcGmI030N3sUK5rcePX4L5He5b09oc35+JLqRwXVn4z6q+O/PghLLo1+8Qyuv2zt0BW6rY43+d+a+AutuKKt+HZCZ3Jtwspx2wDcDzZXoy6veaioR/QZPDKMRc4OHORbSg55hxjtADnooHHFCgHvkDuh91X8xs59+vushMbXOYnf8V4ZJr9lFsvfyVevRwVzTAb5ndphrZjd2/lTVpkNpGiz+JP6seaGGUUCKt5U02771/JRmfJRCI/x0L5vll0mgArTe8NVb19zj1E4nXGhcX56GM7AuI+tsBdt3/5tY54G1niKeS50T5lMpMNmobIBPnjdzu8FULiKXrWzIIAIoh3pG9b7V6SrstjY/RAaJT32qmpIUYGk0Ksl0ClL5gxsjC7ugafzg1eYrB47jD1gkEQ==
+    username: AgBlp+jwBI2e6XdUxmnJ6FTSE0ZcEwfqtPfqszJVteq9zGrMtwC9w0nzzjibHj0CkJNfYZpc6CvRic/o6zuZKLo2eubUetL7IRxGPVwVAGG7tcECjxDPhUE+i6Q8YzfNiJoM9NUYWiqGUjw9YeobUORKJEktiMkKQq1/tkuI7RhWbaQP9UcxLdXigrzMK/1LhDlygZ7Pqg91cq1In62RaDoZYNPXch8sPVFbPuaqQEAzc7S97wBnIJhd/7yKg5Re7AbKmfHGXiQPUH+hwqQPWNIqg7J+gO5SPnUs9HtigE29qSHIkXtYUGc2Ak1IG25rFNlyNuGur7cIYMWRyHi/yZrQXXT87lQSL4rnlpvZNSDlgzmIiC4dP9ThE3zjrEdr9M842Zj9xFrak1gNfT+FUKzPyilAz/o+xyrBv4nuR1elDntVogk8oTzns3ugSOy1YW5/90cozAdmo7axZkk5pEIL/LwXyIGjt2PHsgiv2Iwn2dDZS78g29TR0dtbQFHlAsld5BZREToJp6nDlVQkIk1TxA85B2eC7xUUmT8X8JojNWCbtTVHzAP8HTxnAu4R/nmCyf7qgiTWm2ZMqJyaG1gf9EZGXWerFO5wCiuyOMmUDR0q/Qg/BdaZ1gtYSqO+6Xgp175NOo8ePKNFGugu/mgYvA5+qiF1PugV1s6+YoWazfX8QnG2kYoGtJiAW7dOOoKdw4UA
+
+service:
+  type: ClusterIP
+  port: 80
+
+serviceAdminer:
+  type: ClusterIP
+  port: 8080
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: acc-my.workstation.co.uk
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+ingressAdminer:
+  enabled: false
+  className: "nginx"
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: acc-adminer.workstation.co.uk
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+adminer:
+  port: 30882
+  
+resources: {}
+
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 10
+  maxUnavailable: 1
+  targetCPUUtilizationPercentage: 80

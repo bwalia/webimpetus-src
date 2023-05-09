@@ -1,0 +1,1 @@
+http://localhost:8080/home/verify_token/aYCEIDBwsqBj9tHG
