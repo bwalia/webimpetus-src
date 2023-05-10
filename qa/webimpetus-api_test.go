@@ -181,7 +181,7 @@ func TestCreateUser(t *testing.T) {
 	payload := &bytes.Buffer{}
 	writer := multipart.NewWriter(payload)
 	_ = writer.WriteField("name", "test")
-	_ = writer.WriteField("email", "test.3@testing.com")
+	_ = writer.WriteField("email", "test.4@testing.com")
 	_ = writer.WriteField("password", "test123")
 	_ = writer.WriteField("uuid_business_id", businessId)
 	err := writer.Close()
@@ -233,7 +233,7 @@ func TestUpdateUsers(t *testing.T) {
 	}
 	data := UserData{
 		UUID:  userId,
-		Email: "test.3@testing.com",
+		Email: "test.4@testing.com",
 		Name:  "dixanew",
 	}
 	//t.Log(data)
