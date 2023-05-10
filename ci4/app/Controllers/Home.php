@@ -265,6 +265,23 @@ class Home extends BaseController
 		session()->set('uuid_business', $bid);
 	}
 
+	public function get_uptime(){
+		$uptime = exec("uptime");
+		//$uptime = explode(" ",$uptime);
+		// $days = $uptime[3]; # NetBSD: $days = $uptime[4];
+		// $time = explode(",",$uptime[5]); # NetBSD: $time = split(",",$uptime[7]);
+		// if (sizeof($hourmin = explode(":",$time[0])) < 2){ ;
+		// $hours = "0";
+		// $mins = $hourmin[0];
+		// } else {
+		// $hourmin=explode(":",$time[0]);
+		// $hours = $hourmin[0];
+		// $mins = $hourmin[1];
+		// }
+		// $calcuptime =  "Uptime: ".$days." days ".$hours." hours ".$mins." mins" ;
+		return $uptime;
+	}
+
 	public function ping()
 	{
 		header('Content-Type: application/json; charset=utf-8');
@@ -276,6 +293,8 @@ class Home extends BaseController
 
 		$json['response'] = "pong";
 		$json['php_version'] = phpversion();
+		$json['deployment_time'] = getenv('APP_DEPLOYED_AT');
+		$json['up_time'] = $this->get_uptime();
 
 		echo json_encode($json); die;
 	}

@@ -17,12 +17,15 @@ class Customers extends CommonController
 
     public function getAdditionalData($id)
     {
+        //die(session('uuid_business'));
         $model = new Common_model();
         $builder = $this->db->table("contacts");
         $builder->select("id as contact_id,first_name,surname,email as contact_email");
         $builder->where("client_id", $id);
         $builder->where("uuid_business_id", session('uuid_business'));
         $data["contacts"]  = $builder->get()->getResultArray();
+        //echo $this->db->getLastQuery();
+        //print_r($data["contacts"]);die;
         return  $data;
     }
 
@@ -57,31 +60,32 @@ class Customers extends CommonController
             session()->setFlashdata('alert-class', 'alert-danger');
         } else {
 
-            $row_data = $this->model->getRowsByUUID($data["uuid"])->getRow();
-            $id = $row_data->id;
+            // $row_data = $this->model->getRowsByUUID($data["uuid"])->getRow();
+            // $id = $row_data->uuid;
 
             $i = 0;
             foreach ($post["first_name"] as $firstName) {
                 $contact["first_name"] = $firstName;
-                $contact["client_id"] = $id;
+                $contact["client_id"] = $uuid;
                 $contact["surname"] = $post["surname"][$i];
                 $contact["email"] = $post["contact_email"][$i];
                 $contact["uuid_business_id"] = session('uuid_business');
                 $contactId =  @$post["contact_id"][$i];
+                if(empty($contactId))$contact["uuid"] = UUID::v5(UUID::v4(), 'contacts');
                 if (strlen(trim($firstName)) > 0 || strlen(trim($contact["surname"]) > 0) || strlen(trim($contact["email"]) > 0)) {
                     $this->insertOrUpdate("contacts", $contactId, $contact);
                 }
                 $i++;
             }
 
-            $this->model->deleteTableData("customer_categories", $id, "customer_id");
+            $this->model->deleteTableData("customer_categories", $uuid, "customer_id");
 
             if (isset($post["categories"])) {
                 foreach ($post["categories"] as $key => $categories_id) {
 
                     $c_data = [];
 
-                    $c_data['customer_id'] = $id;
+                    $c_data['customer_id'] = $uuid;
                     $c_data['categories_id'] = $categories_id;
 
                     $this->model->insertTableData($c_data, "customer_categories");
