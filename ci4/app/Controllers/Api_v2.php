@@ -871,6 +871,8 @@ class Api_v2 extends BaseController
         // echo '<pre>';print_r($post); die;
         if(!empty($this->request->getPost('uuid'))){
 
+            $post = $this->request->getPost(); 
+
             $count = $this->common_model->getCount('employees',['email'=>$this->request->getPost('email'),'id!='=>$this->request->getPost('uuid')]);
             if(!empty($count)){
                 $data['status'] = 400;
@@ -1497,8 +1499,9 @@ class Api_v2 extends BaseController
     { 
         if(!empty($this->request->getPost('uuid'))){		
 
-            $uuidNamespace = UUID::v4();
-            $uuid = UUID::v5($uuidNamespace, 'businesses');
+            // $uuidNamespace = UUID::v4();
+            // $uuid = UUID::v5($uuidNamespace, 'businesses');
+            $post = $this->request->getPost();
             $data_array = array();
             if(!empty($post["name"])) $data_array["name"] = @$post["name"];
             if(!empty($post["language_code"])) $data_array["language_code"] = @$post["language_code"];
@@ -1517,7 +1520,7 @@ class Api_v2 extends BaseController
             if(!empty($post["default_business"])) $data_array["default_business"] = @$post["default_business"];
             //echo json_encode($data_array); die;
             $this->common_model->CommonInsertOrUpdate('businesses',$this->request->getPost('uuid'), $data_array);
-            $data['data'] = $data_array;
+            $data['data'] = $post;
             $data['status'] = 200;
             echo json_encode($data); die;           
 
@@ -1533,6 +1536,7 @@ class Api_v2 extends BaseController
         if(!empty($this->request->getPost('uuid_business_id')) && !empty($this->request->getPost('uuid')) && !empty($this->request->getPost('name'))){
             // $uuidNamespace = UUID::v4();
             // $uuid = UUID::v5($uuidNamespace, 'categories');
+            $post = $this->request->getPost(); 
             $data_array = array(
                 'name'  => $this->request->getPost('name'),
                 'uuid_business_id'  => $this->request->getPost('uuid_business_id'),
@@ -1559,6 +1563,7 @@ class Api_v2 extends BaseController
         if(!empty($this->request->getPost('id')) && !empty($this->request->getPost('uuid_business_id')) && !empty($this->request->getPost('uuid')) && !empty($this->request->getPost('name'))){
             // $uuidNamespace = UUID::v4();
             // $uuid = UUID::v5($uuidNamespace, 'categories');
+            $post = $this->request->getPost(); 
             $data_array = array(
                 'name'  => $this->request->getPost('name'),
                 'uuid_business_id'  => $this->request->getPost('uuid_business_id'),
@@ -1595,7 +1600,7 @@ class Api_v2 extends BaseController
             $data_array["currency"] = !empty($post["currency"])?@$post["currency"]:1;
             $data_array["active"] = !empty($post["active"])?@$post["active"]:1;
             
-            $this->common_model->CommonInsertOrUpdate('projects','',$data_array);
+            $data_array["uuid"] = $this->common_model->CommonInsertOrUpdate('projects','',$data_array);
             $data['data'] = $data_array;
             $data['status'] = 200;
             echo json_encode($data); die;           
@@ -1610,6 +1615,7 @@ class Api_v2 extends BaseController
     public function updateProject()
     { 
         if(!empty($this->request->getPost('id')) && !empty($this->request->getPost('uuid_business_id')) && !empty($this->request->getPost('customers_id')) && !empty($this->request->getPost('name'))){
+            $post = $this->request->getPost();
             $data_array = array(
                 'name'  => $this->request->getPost('name'),
                 'uuid_business_id'  => $this->request->getPost('uuid_business_id'),
@@ -1621,7 +1627,7 @@ class Api_v2 extends BaseController
             $data_array["rate"] = !empty($post["rate"])?@$post["rate"]:0.00;
             $data_array["currency"] = !empty($post["currency"])?@$post["currency"]:1;
             $data_array["active"] = !empty($post["active"])?@$post["active"]:1;
-            
+            $data_array["uuid"] =  $this->request->getPost('uuid');
             $this->common_model->CommonInsertOrUpdate('projects',$this->request->getPost('id'),$data_array);
             $data['data'] = $data_array;
             $data['status'] = 200;
@@ -1780,6 +1786,7 @@ class Api_v2 extends BaseController
         if(!empty($this->request->getPost('uuid_business_id')) && !empty($this->request->getPost('start_date')) && !empty($this->request->getPost('sprint_name')) && !empty($this->request->getPost('end_date'))){
             // $uuidNamespace = UUID::v4();
             // $uuid = UUID::v5($uuidNamespace, 'sprints');
+            $post = $this->request->getPost();
             $data_array = array(
                 'sprint_name'  => $this->request->getPost('sprint_name'),
                 'uuid_business_id'  => $this->request->getPost('uuid_business_id'),
@@ -1788,7 +1795,7 @@ class Api_v2 extends BaseController
             );
             if(!empty($post["note"])) $data_array["note"] = @$post["note"];
             
-            $this->common_model->CommonInsertOrUpdate('sprints','',$data_array);
+            $data_array["uuid"] = $this->common_model->CommonInsertOrUpdate('sprints','',$data_array);
             $data['data'] = $data_array;
             $data['status'] = 200;
             echo json_encode($data); die;           
@@ -1805,6 +1812,7 @@ class Api_v2 extends BaseController
         if(!empty($this->request->getPost('uuid_business_id')) && !empty($this->request->getPost('uuid')) && !empty($this->request->getPost('start_date')) && !empty($this->request->getPost('sprint_name')) && !empty($this->request->getPost('end_date'))){
             // $uuidNamespace = UUID::v4();
             // $uuid = UUID::v5($uuidNamespace, 'sprints');
+            $post = $this->request->getPost();
             $data_array = array(
                 'sprint_name'  => $this->request->getPost('sprint_name'),
                 'uuid_business_id'  => $this->request->getPost('uuid_business_id'),
@@ -1812,7 +1820,7 @@ class Api_v2 extends BaseController
                 'end_date' => $this->request->getPost('end_date')
             );
             if(!empty($post["note"])) $data_array["note"] = @$post["note"];
-            
+            $data_array["uuid"] =  $this->request->getPost('uuid');
             $this->common_model->CommonInsertOrUpdate('sprints',$this->request->getPost('uuid'),$data_array);
             $data['data'] = $data_array;
             $data['status'] = 200;
@@ -1880,7 +1888,7 @@ class Api_v2 extends BaseController
                 'uuid_business_id'  => $this->request->getPost('uuid_business_id'),
                 'description' => $this->request->getPost('description')
             );
-            $this->common_model->CommonInsertOrUpdate('taxes','',$data_array);
+            $data_array['id'] = $this->common_model->CommonInsertOrUpdate('taxes','',$data_array);
             $data['data'] = $data_array;
             $data['status'] = 200;
             echo json_encode($data); die;           
@@ -1927,7 +1935,7 @@ class Api_v2 extends BaseController
                 'phone'  => $this->request->getPost('phone'),
                 'message' => $this->request->getPost('message')
             );
-            $this->common_model->CommonInsertOrUpdate('enquiries','',$data_array);
+            $data_array['id'] = $this->common_model->CommonInsertOrUpdate('enquiries','',$data_array);
             $data['data'] = $data_array;
             $data['status'] = 200;
             echo json_encode($data); die;           
@@ -1951,7 +1959,7 @@ class Api_v2 extends BaseController
             if(!empty($this->request->getPost["phone"])) $data_array["phone"] = @$this->request->getPost["phone"];
             if(!empty($this->request->getPost["uuid_business_id"])) $data_array["uuid_business_id"] = @$this->request->getPost["uuid_business_id"];
 
-            $this->common_model->CommonInsertOrUpdate('enquiries',$this->request->getPost('id'),$data_array);
+            $data_array['id'] = $this->common_model->CommonInsertOrUpdate('enquiries',$this->request->getPost('id'),$data_array);
             $data['data'] = $data_array;
             $data['status'] = 200;
             echo json_encode($data); die;           
