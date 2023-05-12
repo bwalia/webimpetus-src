@@ -294,7 +294,7 @@ class Home extends BaseController
 		$json['response'] = "pong";
 		$json['php_version'] = phpversion();
 		$json['deployment_time'] = getenv('APP_DEPLOYED_AT');
-		$json['up_time'] = $this->get_uptime();
+		$json['uptime'] = $this->get_uptime();
 
 		echo json_encode($json); die;
 	}
