@@ -14477,3 +14477,5 @@ p.dashTitle {
 .header_search_form {
   width: 100%;
 }
+
+.profile_info:after { content: ' \f06e'; font-family: 'Font Awesome 5 Free'; } 
