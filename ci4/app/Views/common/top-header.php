@@ -46,8 +46,7 @@ window.location.href="/";
                         <div class="profile_info">
                             <img src="<?=(!empty($_SESSION['profile_img']))?'data:image/jpeg;base64,'.$_SESSION['profile_img']:'/assets/img/1.jpg'?>" alt="#">
 
-                            <?=!empty($_SESSION['role']) && $_SESSION['role']==1?'A':''?>
-
+                            <!--empty($_SESSION['role']) && $_SESSION['role']==1?'':''-->
 
                             <div class="profile_info_iner">
                                 <div class="profile_author_name">                                    
