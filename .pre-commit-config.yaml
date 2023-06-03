@@ -1,0 +1,21 @@
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.3.0
+    hooks:
+    -   id: check-yaml
+-   repo: https://github.com/codespell-project/codespell.git
+    rev: v2.2.4
+    hooks:
+    -   id: codespell
+-   repo: https://github.com/pre-commit/pre-commit-hooks.git
+    rev: v4.4.0
+    hooks:
+    -   id: no-commit-to-branch # Not allow to commit directly to main branch
+    -   id: check-json
+    -   id: check-merge-conflict
+    -   id: check-symlinks #checks for symlinks which do not point to anything.
+    -   id: trailing-whitespace
+# -   repo: https://github.com/jumanjihouse/pre-commit-hooks.git
+#     rev: 3.0.0
+#     hooks:
+#     -   id: git-check #Check both committed and uncommitted files for git conflict+ Whitespace error
