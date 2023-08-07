@@ -17,10 +17,10 @@ function getJWTFromRequest($authenticationHeader): string
 function validateJWTFromRequest(string $encodedToken)
 {
     $key = Services::getSecretKey();
-    $decodedToken = JWT::decode($encodedToken, $key, ['HS256']);
+    JWT::decode($encodedToken, $key, ['HS256']);
     //$userModel = new Users_model();
     $userModel = new Contact();
-    $userModel->findUserByEmailAddress($decodedToken->email);
+    // $userModel->findUserByEmailAddress($decodedToken->email);
 }
 
 function getSignedJWTForUser(string $email)

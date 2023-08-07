@@ -64,7 +64,7 @@ return $this
             ]
         ];
 
-$input = $this->getRequestInput($this->request);
+        $input = $this->getRequestInput($this->request);
 
 
         if (!$this->validateRequest($input, $rules, $errors)) {
@@ -74,39 +74,65 @@ $input = $this->getRequestInput($this->request);
                     ResponseInterface::HTTP_BAD_REQUEST
                 );
         }
-       return $this->getJWTForUser($input['email'],$input['password']);
+        return $this->getJWTForUser($input['email'], $input['password'], "contact");
+    }
 
-       
+    public function user_login() {
+        $rules = [
+            'email' => 'required|min_length[6]|max_length[50]|valid_email',
+            'password' => 'required|min_length[3]'
+        ];
+
+        $errors = [
+            'password' => [
+                'validateUser' => 'Invalid login credentials provided'
+            ]
+        ];
+
+        $input = $this->getRequestInput($this->request);
+
+
+        if (!$this->validateRequest($input, $rules, $errors)) {
+            return $this
+                ->getResponse(
+                    $this->validator->getErrors(),
+                    ResponseInterface::HTTP_BAD_REQUEST
+                );
+        }
+        return $this->getJWTForUser($input['email'], $input['password'], "user");
     }
 
     private function getJWTForUser(
         string $emailAddress,
         string $password,
+        string $loginType,
         int $responseCode = ResponseInterface::HTTP_OK
-    )
-    {
+    ) {
         try {
-            //$model = new Users_model();
             $model = new Contact(); // using customer contact
-            $user = $model->findUserByEmailAddress($emailAddress);
-            if($user['password']!=md5($password)){
-                return $this
-                ->getResponse(
-                    [
-                        'error' => 'Password Not match',
-                    ],
-                    $responseCode
-                ); 
+            if ($loginType == "user") {
+                $model = new Users_model();
             }
-            
-          if($user['allow_web_access'] != '1'){
+            $user = $model->findUserByEmailAddress($emailAddress);
+            if ($user['password'] != md5($password)) {
                 return $this
-                ->getResponse(
-                    [
-                        'error' => 'User do do have access to webpage!',
-                    ],
-                    $responseCode
-                ); 
+                    ->getResponse(
+                        [
+                            'error' => 'Password Not match',
+                        ],
+                        $responseCode
+                    );
+            }
+            if ($loginType == "contact") {
+                if ($user['allow_web_access'] != '1') {
+                    return $this
+                        ->getResponse(
+                            [
+                                'error' => 'User do do have access to webpage!',
+                            ],
+                            $responseCode
+                        );
+                }
             }
 
             unset($user['password']);

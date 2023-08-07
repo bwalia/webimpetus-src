@@ -25,9 +25,36 @@ use App\Models\Sales_invoice_model;
 use App\Models\Work_orders_model;
 use App\Models\Purchase_orders_model;
 use App\Models\Meta_model;
+use App\Models\Projects_model;
 use App\Libraries\UUID;
 class Api_v2 extends BaseController
 {
+    public $smodel;
+    public $tmodel;
+    public $dmodel;
+    public $catmodel;
+    public $cmodel;
+    public $emodel;
+    public $bmodel;
+    public $gmodel;
+    public $sec_model;
+    public $documents_model;
+    public $customer_model;
+    public $webCategory_model;
+    public $cusCategory_model;
+    public $emailModel;
+    public $menuModel;
+    public $userModel;
+    public $timeSlipsModel;
+    public $tasksModel;
+    public $common_model;
+    public $purchase_invoice_model;
+    public $sales_invoice_model;
+    public $work_orders_model;
+    public $user_business_model;
+    public $purchase_orders_model;
+    public $meta_model;
+    public $projects_model;
     public function __construct()
     {
       $this->smodel = new Service_model();
@@ -55,6 +82,7 @@ class Api_v2 extends BaseController
       $this->work_orders_model = new Work_orders_model();
       $this->purchase_orders_model = new Purchase_orders_model();
       $this->meta_model = new Meta_model();
+      $this->projects_model = new Projects_model();
         $this->request = \Config\Services::request();
         header('Content-Type: application/json; charset=utf-8');
         if($_SERVER['REQUEST_METHOD']=='PUT'){

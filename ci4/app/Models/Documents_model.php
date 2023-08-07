@@ -6,6 +6,7 @@ use CodeIgniter\Model;
 class Documents_model extends Model
 {
     protected $table = 'documents';
+    public $businessUuid;
      
     public function __construct()
     {

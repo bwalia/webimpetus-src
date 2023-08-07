@@ -10,7 +10,8 @@ use App\Libraries\UUID;
 
 class Users extends CommonController
 {
-
+	public $userModel;
+	public $menu_model;
 	function __construct()
 	{
 		parent::__construct();

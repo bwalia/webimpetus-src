@@ -13,7 +13,10 @@ use App\Models\Sprints_model;
 
 class Tasks extends CommonController
 {
-
+    public $Tasks_model;
+    public $Users_model;
+    public $Email_model;
+    public $sprintModel;
     function __construct()
     {
         parent::__construct();

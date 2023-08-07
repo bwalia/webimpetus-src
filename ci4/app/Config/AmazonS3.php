@@ -120,6 +120,7 @@ class AmazonS3 extends BaseConfig
     |--------------------------------------------------------------------------
     |
     */
+    public $region;
     public function __construct()
 	{
 		parent::__construct();
