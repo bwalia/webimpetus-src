@@ -16,12 +16,16 @@ class CommonController extends BaseController
 	protected $table;
 	protected $model;
 	protected $businessUuid;
+	protected $whereCond;
+	protected $Amazon_s3_model;
+	protected $rawTblName;
+	protected $menucode;
 	protected $notAllowedFields = array();
 
 	function __construct()
 	{
 		parent::__construct();
-		$this->session = \Config\Services::session();
+		$this->session = Services::session();
         if(!$this->session->get('uuid')){
             header('Location:/');die();
         }; 

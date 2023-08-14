@@ -46,6 +46,7 @@ class BaseController extends Controller
     protected $db;
 
     protected $session;
+    protected $data;
 
     /**
      * Constructor.
