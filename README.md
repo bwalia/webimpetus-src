@@ -46,6 +46,10 @@ Use the helm package manager [helm](https://webimpetus.io/en/stable/) to install
 
 ```http://localhost:8080```
 
+## API DOCS
+You can access API documentation here:
+```/api-docs``` or ```https://test-my.workstation.co.uk/api-docs/```
+
 ![Landing Page](https://github.com/bwalia/webimpetus-src/blob/b16260a53f53b37d6036abbc91a2c3db6e8c07c8/webimpetus_login_page_v1_2022.png)
 
 ## CONTRIBUTING
