@@ -25,8 +25,8 @@
         FILE=/var/www/html/
         cp -r /src/* $FILE
         if [ -d "$FILE" ]; then
-        chmod 755 -R $FILE
-        chown www-data:root -R $FILE
+        # chmod 755 -R $FILE
+        # chown www-data:root -R $FILE
 
         SUB_DIR=$FILE"writable/"
         if [ ! -d "$SUB_DIR" ];then
@@ -139,4 +139,4 @@
         openresty -s reload
         php spark migrate
         echo "==========================="
-        echo "Workstation Nginx Bootstrap Script Completed"      
+        echo "Workstation Nginx Bootstrap Script Completed"

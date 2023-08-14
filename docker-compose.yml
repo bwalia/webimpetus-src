@@ -5,10 +5,10 @@ services:
     image: mariadb:latest
     restart: always
     environment:
-      MYSQL_DATABASE: 'webimpetus'
-      MYSQL_USER: 'web_dev'
-      MYSQL_PASSWORD: '123'
-      MYSQL_ROOT_PASSWORD: '1234'
+      MYSQL_DATABASE: 'myworkstation_dev'
+      MYSQL_USER: 'wsl_dev'
+      MYSQL_PASSWORD: 'CHANGE_ME'
+      MYSQL_ROOT_PASSWORD: 'CHANGE_ME_DEFINITELY'
     ports:
       - '3306:3306'
     expose:
@@ -38,6 +38,7 @@ services:
           - "webimpetus-db"
       volumes:
       - ./ci4:/var/www/html
+      - .env:/var/www/html/.env
       networks: 
       - webimpetus-network
       depends_on: 
