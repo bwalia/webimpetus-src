@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
@@ -39,11 +38,13 @@ func TestGetAllProjects(t *testing.T) {
 	if resp.StatusCode != http.StatusOK {
 		t.Error("Unexpected response status code", resp.StatusCode)
 		return
+	} else {
+		t.Log("Successfully get the projects data")
+
 	}
 }
 
 func TestCreateProject(t *testing.T) {
-	fmt.Println(tokenValue)
 
 	url := targetHost + "/api/v2/projects/"
 	method := "POST"
@@ -101,6 +102,9 @@ func TestCreateProject(t *testing.T) {
 	}
 	if !strings.Contains(string(body), "test project") {
 		t.Error("Returned unexpected body")
+	} else {
+		t.Log("Successfully created a new project")
+
 	}
 
 }
@@ -154,7 +158,7 @@ func TestUpdateProjects(t *testing.T) {
 	if !strings.Contains(string(body), "new project") {
 		t.Error("Returned unexpected body")
 	} else {
-		fmt.Println("Updated")
+		t.Log("Successfully updated the project")
 	}
 
 }
@@ -178,6 +182,9 @@ func TestDeleteProjects(t *testing.T) {
 	if resp.StatusCode != http.StatusOK {
 		t.Error("Unexpected response status code", resp.StatusCode)
 		return
+	} else {
+		t.Log("Successfully deleted the project")
+
 	}
 
 }
@@ -202,5 +209,11 @@ func TestGetSingleProject(t *testing.T) {
 	body, err := ioutil.ReadAll(resp.Body)
 	if false {
 		t.Log(string(body))
+	}
+	if !strings.Contains(string(body), "null") {
+		t.Error("Returned unexpected body")
+	} else {
+		t.Log("The delete action for the project is verified")
+
 	}
 }

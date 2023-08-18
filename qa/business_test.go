@@ -89,6 +89,7 @@ func TestAddBusiness(t *testing.T) {
 	} else {
 		businessesId = jsonData.Data.UUID
 		//t.Log(businessesId)
+		t.Log("Successfully created new business")
 	}
 }
 
@@ -140,6 +141,9 @@ func TestUpdateBusiness(t *testing.T) {
 	}
 	if !strings.Contains(string(body), "business renew") {
 		t.Error("Returned unexpected body")
+	} else {
+		t.Log("Successfully updated business")
+
 	}
 
 }
@@ -164,6 +168,9 @@ func TestDeleteBusiness(t *testing.T) {
 	if resp.StatusCode != http.StatusOK {
 		t.Error("Unexpected response status code", resp.StatusCode)
 		return
+	} else {
+		t.Log("Successfully deleted business")
+
 	}
 
 }
@@ -190,5 +197,8 @@ func TestGetSingleBusiness(t *testing.T) {
 	}
 	if !strings.Contains(string(body), "null") {
 		t.Error("Returned unexpected body")
+	} else {
+		t.Log("The delete action for the Business is verified")
+
 	}
 }

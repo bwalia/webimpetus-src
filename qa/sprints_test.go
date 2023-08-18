@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
@@ -39,6 +38,9 @@ func TestGetAllSprints(t *testing.T) {
 	if resp.StatusCode != http.StatusOK {
 		t.Error("Unexpected response status code", resp.StatusCode)
 		return
+	} else {
+		t.Log("Successfully get all sprints data")
+
 	}
 }
 
@@ -101,6 +103,8 @@ func TestCreateSprint(t *testing.T) {
 	}
 	if !strings.Contains(string(body), "test sprint") {
 		t.Error("Returned unexpected body")
+	} else {
+		t.Log("Successfully created a new sprint")
 	}
 
 }
@@ -156,7 +160,7 @@ func TestUpdateSprint(t *testing.T) {
 	if !strings.Contains(string(body), "new sprint") {
 		t.Error("Returned unexpected body")
 	} else {
-		fmt.Println("Updated")
+		t.Log("Successfully updated the sprint")
 	}
 
 }
@@ -180,6 +184,9 @@ func TestDeleteSprint(t *testing.T) {
 	if resp.StatusCode != http.StatusOK {
 		t.Error("Unexpected response status code", resp.StatusCode)
 		return
+	} else {
+		t.Log("Successfully deleted the sprint")
+
 	}
 
 }
@@ -204,5 +211,11 @@ func TestGetSingleSprint(t *testing.T) {
 	body, err := ioutil.ReadAll(resp.Body)
 	if false {
 		t.Log(string(body))
+	}
+	if !strings.Contains(string(body), "null") {
+		t.Error("Returned unexpected body")
+	} else {
+		t.Log("The delete action for the sprints is verified")
+
 	}
 }

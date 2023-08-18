@@ -14,7 +14,6 @@ repos:
     -   id: check-json
     -   id: check-merge-conflict
     -   id: check-symlinks #checks for symlinks which do not point to anything.
-    -   id: trailing-whitespace
 # -   repo: https://github.com/jumanjihouse/pre-commit-hooks.git
 #     rev: 3.0.0
 #     hooks:

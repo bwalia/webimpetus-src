@@ -13,15 +13,15 @@ import (
 )
 
 var tokenValue string
+var businessId string
 
 var email = os.Getenv("QA_LOGIN_EMAIL")
 var password = os.Getenv("QA_LOGIN_PASSWORD")
-var businessId = os.Getenv("QA_BUSINESS_ID")
 
 const targetHost = "https://test-my.workstation.co.uk"
 
 func TestLoginAuth(t *testing.T) {
-	url := targetHost + "/auth/login"
+	url := targetHost + "/auth/user_login"
 
 	payload := &bytes.Buffer{}
 	writer := multipart.NewWriter(payload)
@@ -65,12 +65,15 @@ func TestLoginAuth(t *testing.T) {
 }
 
 func TestFetchToken(t *testing.T) {
-
 	type AuthResponse struct {
 		AccessToken string `json:"access_token"`
+
+		User struct {
+			UUID_Business string `json:"uuid_business_id"`
+		} `json:"user"`
 	}
 
-	url := "https://test-my.workstation.co.uk/auth/login"
+	url := "https://test-my.workstation.co.uk/auth/user_login"
 
 	payload := &bytes.Buffer{}
 	writer := multipart.NewWriter(payload)
@@ -95,6 +98,7 @@ func TestFetchToken(t *testing.T) {
 		t.Log(err)
 		return
 	}
+	//fmt.Println(resp.Body)
 	defer resp.Body.Close()
 
 	var decodeValue AuthResponse
@@ -103,4 +107,8 @@ func TestFetchToken(t *testing.T) {
 		t.Log(err)
 	}
 	tokenValue = decodeValue.AccessToken
+	businessId = decodeValue.User.UUID_Business
+
+	//fmt.Println(businessId)
+	//fmt.Println(tokenValue)
 }

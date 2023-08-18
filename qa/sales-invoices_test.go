@@ -37,6 +37,9 @@ func TestGetAllSalesInvoices(t *testing.T) {
 	if resp.StatusCode != http.StatusOK {
 		t.Error("Unexpected response status code", resp.StatusCode)
 		return
+	} else {
+		t.Log("Successfully get all sales invoices data")
+
 	}
 }
 
@@ -95,6 +98,8 @@ func TestCreateSalesInvoice(t *testing.T) {
 	} else {
 		salesInvoicesUUId = jsonData.Data.UUID
 		//t.Log(salesInvoicesUUId)
+		t.Log("Successfully created a new sales invoice")
+
 	}
 
 }
@@ -146,6 +151,9 @@ func TestUpdateSalesInvoice(t *testing.T) {
 	}
 	if !strings.Contains(string(body), "net 15") {
 		t.Error("Returned unexpected body")
+	} else {
+		t.Log("Successfully updated the sales invoice")
+
 	}
 
 }
@@ -169,6 +177,9 @@ func TestDeleteSalesInvoice(t *testing.T) {
 	if resp.StatusCode != http.StatusOK {
 		t.Error("Unexpected response status code", resp.StatusCode)
 		return
+	} else {
+		t.Log("Successfully deleted the sales invoice")
+
 	}
 
 }
@@ -196,5 +207,8 @@ func TestGetSingleSalesInvoice(t *testing.T) {
 	}
 	if !strings.Contains(string(body), "null") {
 		t.Error("Returned unexpected body")
+	} else {
+		t.Log("The delete action for the sales onvoice is verified")
+
 	}
 }
