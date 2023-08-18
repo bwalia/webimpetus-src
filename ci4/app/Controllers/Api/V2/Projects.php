@@ -177,4 +177,11 @@ class Projects extends ResourceController
         $data['status'] = 200;
         return $this->respond($data);    
     }
+
+    public function projectsByBId ($bid) {
+        $api =  new Api_v2();
+        $data['data'] = $api->projects_model->getBusinessProjectList($bid);
+        $data['status'] = 200;
+        return $this->respond($data);    
+    }
 }

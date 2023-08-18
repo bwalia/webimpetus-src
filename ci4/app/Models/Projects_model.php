@@ -6,6 +6,7 @@ use CodeIgniter\Model;
 class Projects_model extends Model
 {
     protected $table = 'projects';
+    public $businessUuid;
      
     public function __construct()
     {
@@ -43,4 +44,12 @@ class Projects_model extends Model
 		$query = $this->db->table($this->table)->update($data, array('id' => $id));
 		return $query;
 	}
+
+    public function getBusinessProjectList($bid)
+    {
+        $builder = $this->db->table($this->table);
+        $builder->where($this->table.".uuid_business_id",  $bid);
+
+        return $builder->get()->getResultArray();
+    }
 }

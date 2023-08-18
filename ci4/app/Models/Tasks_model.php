@@ -124,4 +124,12 @@ class Tasks_model extends Model
         return $this->getWhere(['uuid' => $id])->getRow();
     }
 
+    public function tasksByPId($bId, $pId) {
+        $builder = $this->db->table($this->table);
+        $builder->where($this->table.".uuid_business_id",  $bId);
+        $builder->where($this->table.".projects_id",  $pId);
+
+        return $builder->get()->getResultArray();
+    }
+
 }

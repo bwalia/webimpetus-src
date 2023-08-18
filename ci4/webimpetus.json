@@ -1,6 +1,6 @@
 {
 	"app": "WebImpetus",
-	"version": "1.0.3",
-	"build": "20230411134600",
+	"version": "1.0.4",
+	"build": "20230814155200",
 	"stack": "CodeIgniter 4.1.8"
 }

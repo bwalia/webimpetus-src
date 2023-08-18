@@ -23,12 +23,13 @@ Use the helm package manager [helm](https://webimpetus.io/en/stable/) to install
 
 ### Prerequisite docker must be installed on the target machine:
 
-```shell or bash
-`docker compose up` or `docker compose up -d`
+```configure your settings in the .env file
+`see .env sample file in the root folder`
 ```
 
+
 ```shell or bash
-`docker compose ps` to view the webimpetus containers are running. The connection secrets must be supplied at runtime see `sync.sh` to inject mariadb creds into docker container after it is running
+`sudo sh ./install-docker.sh` or `sudo bash ./install-docker.sh`
 ```
 
 # DEPLOY WEBIMPETUS TO KUBERNETES (SUITABLE FOR DEVELOPMENT PODS, TEST, INT, ACC and or PROD environments)
@@ -38,16 +39,12 @@ Use the helm package manager [helm](https://webimpetus.io/en/stable/) to install
 Use the helm package manager [helm](https://webimpetus.io/en/stable/) to install WebImpetus.
 
 ```shell or bash
-`sh ./build.sh`
-```
-
-```shell or bash
-`sh ./install.sh`
+`sudo sh ./install-kubernetes.sh` or `sudo bash ./install-docker.sh`
 ```
 
 ## USAGE
 
-```http://localhost:{your port number}```
+```http://localhost:8080```
 
 ![Landing Page](https://github.com/bwalia/webimpetus-src/blob/b16260a53f53b37d6036abbc91a2c3db6e8c07c8/webimpetus_login_page_v1_2022.png)
 

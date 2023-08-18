@@ -9,6 +9,7 @@ class Common_model extends Model
     protected $table = '';
     private $whereCond = array();
     private $doesUuidBusinessIdFieldExists = false;
+    private $session = "";
 
     function __construct()
     {

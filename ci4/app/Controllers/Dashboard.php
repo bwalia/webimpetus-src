@@ -9,6 +9,9 @@ use App\Models\Dashboard_model;
 use App\Models\Core\Common_model;
 class Dashboard extends CommonController
 {
+	public $meta_model;
+	public $common_model;
+	public $dashboard_model;
 	public function __construct()
 	{
 	  parent::__construct();

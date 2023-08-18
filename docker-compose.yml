@@ -5,58 +5,50 @@ services:
     image: mariadb:latest
     restart: always
     environment:
-      MYSQL_DATABASE: 'webimpetus-dev'
-      # So you don't have to use root, but you can if you like
-      MYSQL_USER: 'user'
-      # You can use whatever password you like
-      MYSQL_PASSWORD: 'password'
-      # Password for root access
-      MYSQL_ROOT_PASSWORD: 'password'
+      MYSQL_DATABASE: 'myworkstation_dev'
+      MYSQL_USER: 'wsl_dev'
+      MYSQL_PASSWORD: 'CHANGE_ME'
+      MYSQL_ROOT_PASSWORD: 'CHANGE_ME_DEFINITELY'
     ports:
-      # <Port exposed> : < MySQL Port running inside container>
       - '3306:3306'
     expose:
-      # Opens port 3306 on the container
       - '3306'
-      # Where our data will be persisted
     volumes:
-      - webimpetus-db-vol:/var/lib/mysql
+      - ./myworkstation_test_db.sql:/docker-entrypoint-initdb.d/myworkstation_test_db.sql
     networks: 
     - webimpetus-network
 
   adminer:
     container_name: "webimpetus-admin"
-    image: adminer
+    image: adminer:latest
+    environment:
+      ADMINER_DEFAULT_SERVER: webimpetus-db
     restart: always
     ports:
-      - 8081:8080
+      - 8081:8082
     networks:
       - webimpetus-network
 
   webimpetus-php8-openresty:
       container_name: "webimpetus-dev"
-      image: bwalia/webimpetus
+      build:
+        context: .
       restart: always
       links:
           - "webimpetus-db"
+      volumes:
+      - ./ci4:/var/www/html
+      - .env:/var/www/html/.env
       networks: 
       - webimpetus-network
       depends_on: 
       - webimpetus-db # This service depends on mysql. Start that first.
-      volumes:
-      - webimpetus-src-vol:/var/www/html
       ports:
-        - '8083:80'
-                        #      command: "/bin/sh -c "php -r copy('https://getcomposer.org/installer', 'composer-setup.php'); && php composer-setup.php --install-dir=/usr/local/bin --filename=composer && php -r unlink('composer-setup.php'); && cd /var/www/html && composer update"
+        - "8080:80"
       environment:
         CI_ENVIRONMENT: 'development'
-        database.default.hostname: 'webimpetus-db:3306'
-        database.default.username: 'user'
-        database.default.database: 'webimpetus-dev'
-        database.default.password: 'password'
-        database.default.DBDriver: 'MySQLi'
-        app.baseURL: 'http://localhost:8083'
-        logger.threshold: 4
+        app.baseURL: 'http://localhost:8080/'
+
 networks:
   webimpetus-network:
                         # Names our volume
