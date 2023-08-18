@@ -37,6 +37,9 @@ func TestGetAllPurchaseOrders(t *testing.T) {
 	if resp.StatusCode != http.StatusOK {
 		t.Error("Unexpected response status code", resp.StatusCode)
 		return
+	} else {
+		t.Log("Successfully get all purchase orders data")
+
 	}
 }
 
@@ -91,6 +94,8 @@ func TestCreatePurchaseOrder(t *testing.T) {
 	} else {
 		purchaseOrdersUUId = jsonData.Data.UUID
 		//t.Log(workOrdersUUId)
+		t.Log("Successfully created a new purchase order")
+
 	}
 
 }
@@ -142,6 +147,9 @@ func TestUpdatePurchaseOrders(t *testing.T) {
 	}
 	if !strings.Contains(string(body), "16") {
 		t.Error("Returned unexpected body")
+	} else {
+		t.Log("Successfully updated the purchase order")
+
 	}
 
 }
@@ -165,6 +173,9 @@ func TestDeletePurchaseOrder(t *testing.T) {
 	if resp.StatusCode != http.StatusOK {
 		t.Error("Unexpected response status code", resp.StatusCode)
 		return
+	} else {
+		t.Log("Successfully deleted the purchase order")
+
 	}
 
 }
@@ -195,5 +206,8 @@ func TestGetSinglePurchaseOrder(t *testing.T) {
 	}
 	if !strings.Contains(string(body), "null") {
 		t.Error("Returned unexpected body")
+	} else {
+		t.Log("The delete action for the purchase order is verified")
+
 	}
 }

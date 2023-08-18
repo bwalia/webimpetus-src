@@ -40,6 +40,9 @@ func TestGetAllWorkOrders(t *testing.T) {
 	if resp.StatusCode != http.StatusOK {
 		t.Error("Unexpected response status code", resp.StatusCode)
 		return
+	} else {
+		t.Log("Successfully get all work orders data")
+
 	}
 }
 
@@ -97,6 +100,8 @@ func TestCreateWorkOrder(t *testing.T) {
 	} else {
 		workOrdersUUId = jsonData.Data.UUID
 		//t.Log(workOrdersUUId)
+		t.Log("Successfully created a new work order")
+
 	}
 
 }
@@ -148,6 +153,8 @@ func TestUpdateWorkOrders(t *testing.T) {
 	}
 	if !strings.Contains(string(body), "16") {
 		t.Error("Returned unexpected body")
+	} else {
+		t.Log("Successfully updated the work order")
 	}
 
 }
@@ -171,6 +178,8 @@ func TestDeleteWorkOrder(t *testing.T) {
 	if resp.StatusCode != http.StatusOK {
 		t.Error("Unexpected response status code", resp.StatusCode)
 		return
+	} else {
+		t.Log("Successfully deleted the work order")
 	}
 
 }
@@ -201,5 +210,8 @@ func TestGetSingleWorkOrder(t *testing.T) {
 	}
 	if !strings.Contains(string(body), "null") {
 		t.Error("Returned unexpected body")
+	} else {
+		t.Log("The delete action for the work order is verified")
+
 	}
 }

@@ -40,6 +40,9 @@ func TestGetAllPurchaseInvoices(t *testing.T) {
 	if resp.StatusCode != http.StatusOK {
 		t.Error("Unexpected response status code", resp.StatusCode)
 		return
+	} else {
+		t.Log("Successfully get the purchase invoices data")
+
 	}
 }
 
@@ -101,6 +104,8 @@ func TestCreatePurchaseInvoice(t *testing.T) {
 	} else {
 		purchaseInvoicesUUId = jsonData.Data.UUID
 		//t.Log(purchaseInvoicesUUId)
+		t.Log("Successfully created a new purchase invoice")
+
 	}
 
 }
@@ -152,6 +157,9 @@ func TestUpdatePurchaseInvoice(t *testing.T) {
 	}
 	if !strings.Contains(string(body), "net 15") {
 		t.Error("Returned unexpected body")
+	} else {
+		t.Log("Successfully updated the purchase invoice")
+
 	}
 
 }
@@ -175,6 +183,9 @@ func TestDeletePurchaseInvoice(t *testing.T) {
 	if resp.StatusCode != http.StatusOK {
 		t.Error("Unexpected response status code", resp.StatusCode)
 		return
+	} else {
+		t.Log("Successfully deleted the purchase invoice")
+
 	}
 
 }
@@ -205,5 +216,7 @@ func TestGetSinglePurchaseInvoice(t *testing.T) {
 	}
 	if !strings.Contains(string(body), "null") {
 		t.Error("Returned unexpected body")
+	} else {
+		t.Log("The delete action for the purchase invoice is verified")
 	}
 }
