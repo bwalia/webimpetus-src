@@ -25,6 +25,7 @@ Use the helm package manager [helm](https://webimpetus.io/en/stable/) to install
 
 ```configure your settings in the .env file
 `see .env sample file in the root folder`
+`this shell script assumes you have docker compose installed and working`
 ```
 
 
@@ -39,7 +40,8 @@ Use the helm package manager [helm](https://webimpetus.io/en/stable/) to install
 Use the helm package manager [helm](https://webimpetus.io/en/stable/) to install WebImpetus.
 
 ```shell or bash
-`sudo sh ./install-kubernetes.sh` or `sudo bash ./install-docker.sh`
+`sudo sh ./install-kubernetes.sh` or `sudo bash ./install-kubernetes.sh`
+`this shell script assumes you have a working kubernetes cluster and connection to kubernetes configured and working`
 ```
 
 ## USAGE
