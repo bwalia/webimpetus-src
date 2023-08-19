@@ -30,7 +30,7 @@ Use the helm package manager [helm](https://webimpetus.io/en/stable/) to install
 
 
 ```shell or bash
-`sudo sh ./install-docker.sh` or `sudo bash ./install-docker.sh`
+`sudo sh ./deploy-to-docker.sh` or `sudo bash ./deploy-to-docker.sh`
 ```
 
 # DEPLOY WEBIMPETUS TO KUBERNETES (SUITABLE FOR DEVELOPMENT PODS, TEST, INT, ACC and or PROD environments)
@@ -40,7 +40,7 @@ Use the helm package manager [helm](https://webimpetus.io/en/stable/) to install
 Use the helm package manager [helm](https://webimpetus.io/en/stable/) to install WebImpetus.
 
 ```shell or bash
-`sudo sh ./install-kubernetes.sh` or `sudo bash ./install-kubernetes.sh`
+`sudo sh ./deploy-to-kubernetes.sh` or `sudo bash ./deploy-to-kubernetes.sh`
 `this shell script assumes you have a working kubernetes cluster and connection to kubernetes configured and working`
 ```
 
