@@ -25,7 +25,7 @@ services:
       ADMINER_DEFAULT_SERVER: webimpetus-db
     restart: always
     ports:
-      - 8081:8082
+      - 8082:8082
     networks:
       - webimpetus-network
 
