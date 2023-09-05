@@ -83,11 +83,26 @@ $('#filter').keyup(delay(function (e) {
         window.createPagination(0);
 
     }
+    // window.clearFilters = function(){
+    //     const url = new URL(window.location.href);
+    //     url.searchParams.delete('filter');
+    //     url.searchParams.delete('list_week');
+    //     url.searchParams.delete('list_month');
+    //     url.searchParams.delete('list_year');
+    //     window.history.replaceState(null, null, url); // or pushState
+
+    // }
     window.createPagination = function(pageNum) {
         var filter = document.getElementById('filter').value;
         var list_week = document.getElementById('list_week').value;
         var list_month = document.getElementById('list_monthpicker2').value;
         var list_year = document.getElementById('list_yearpicker2').value;
+        const url = new URL(window.location.href);
+        url.searchParams.set('filter', filter);
+        url.searchParams.set('list_week', list_week);
+        url.searchParams.set('list_month', list_month);
+        url.searchParams.set('list_year', list_year);
+        window.history.replaceState(null, null, url); // or pushState
             pageNum=pageNum+1
             $.ajax({
                 url: '<?=base_url()?>/api/<?=$tableName?>/<?=$uuid_business?>/?page='+pageNum+'&filter='+filter+'&list_week='+list_week+'&list_month='+list_month+'&list_year='+list_year,
