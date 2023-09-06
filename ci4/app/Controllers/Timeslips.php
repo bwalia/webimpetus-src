@@ -35,8 +35,8 @@ class Timeslips extends CommonController
         $list_monthpicker = $_GET['list_month'] ?? $this->session->get('list_monthpicker');
         $list_yearpicker = $_GET['list_year'] ?? $this->session->get('list_yearpicker');
         $data['list_week']=$list_week;
-        $data['list_monthpicker']=$list_monthpicker;
-        $data['list_yearpicker']=$list_yearpicker;
+        $data['list_monthpicker'] = empty($list_monthpicker) ? date('m') : $list_monthpicker;
+        $data['list_yearpicker'] = empty($list_yearpicker) ? date('Y') : $list_yearpicker;
         $timeslip_where = [];
         //echo $list_week; die;
         $this->session->set('list_week',$list_week);
