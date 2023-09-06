@@ -6,7 +6,7 @@ if (empty(@$timeslips['slip_start_date'])) {
     $startDate = @$timeslips['slip_start_date'];
 }
 if (empty(@$timeslips['slip_timer_started'])) {
-    $slip_timer_started = date("H:i:s", time());
+    $slip_timer_started = date("h:i:s a");
 } else {
     $slip_timer_started = @$timeslips['slip_timer_started'];
 }
@@ -166,6 +166,11 @@ if (empty(@$timeslips['slip_timer_started'])) {
                     <input id="slip_hours" name="slip_hours" class="form-control" value="<?php echo @$timeslips['slip_hours']; ?>">
                 </div>
 
+                <div class="col-md-1"></div>
+                <div class="col-md-4">
+                    <button type="button" class="btn btn-info calculate-time"><?php echo lang('Timeslips.calculate_time');?></button>
+                </div>
+
             </div>
 
             <div class="form-row">
@@ -174,7 +179,7 @@ if (empty(@$timeslips['slip_timer_started'])) {
                     <span class="redstar">*</span>
                 </div>
                 <div class="form-group col-md-4">
-                    <textarea id="slip_description" name="slip_description" class="form-control"><?php echo @$timeslips['slip_description']; ?></textarea>
+                    <textarea required id="slip_description" name="slip_description" class="form-control"><?php echo @$timeslips['slip_description']; ?></textarea>
                 </div>
 
             </div>
@@ -240,21 +245,29 @@ if (empty(@$timeslips['slip_timer_started'])) {
 
         $(".set-current-time").click(function() {
             var el = $(this);
+            console.dir({element: el[0]});
             setCurrentTime(el, calculateTime)
+        });
+
+        $(".calculate-time").click(function() {
+            calculateTime();
         });
     })
 
     function setCurrentTime(el, callback) {
-        var d = new Date();
-        var h = d.getHours();
-        h = h < 10 ? '0' + h : h;
-        var m = d.getMinutes();
-        m = m < 10 ? '0' + m : m;
-        var s = d.getSeconds();
-        s = s < 10 ? '0' + s : s;
-        var meridiem = h >= 12 ? "pm" : "am";
-        var time = h + ':' + m + ':' + s + ' ' + meridiem;
-        el.closest('.form-row').find('input.timepicker').val(time);
+        const now = new Date();
+        let hours = now.getHours();
+        const minutes = now.getMinutes();
+        const seconds = now.getSeconds();
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        // Convert hours to 12-hour format
+        hours = hours % 12 || 12;
+        // Add leading zero to minutes and seconds if necessary
+        const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+        const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds;
+        // Create the formatted time string
+        const formattedTime = `${hours}:${formattedMinutes}:${formattedSeconds} ${ampm}`;
+        el.closest('.form-row').find('input.timepicker').val(formattedTime);
         callback();
     }
 

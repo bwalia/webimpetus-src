@@ -24,4 +24,5 @@ return [
     'modified_at' => 'Modified at',
     'billing_status' => 'Billing Status',
     'id' => 'ID',
+    'calculate_time' => 'Calculate Slip Time',
 ];
