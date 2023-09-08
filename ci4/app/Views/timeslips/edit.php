@@ -101,6 +101,7 @@ if (empty(@$timeslips['slip_timer_started'])) {
                             <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                         </div>
                     </div>
+                    <span class="form-control-feedback" id="end_date_error"></span>
                 </div>
             </div>
 
@@ -115,6 +116,7 @@ if (empty(@$timeslips['slip_timer_started'])) {
                             <span class="input-group-text"><i class="fa fa-clock"></i></span>
                         </div>
                     </div>
+                    <span class="form-control-feedback" id="end_timer_error"></span>
                 </div>
                 <div class="col-md-1"></div>
                 <div class="col-md-4">
@@ -222,7 +224,7 @@ if (empty(@$timeslips['slip_timer_started'])) {
             <div class="form-row">
                 <div class="col-md-3"></div>
                 <div class="col-md-4">
-                    <button type="submit" class="btn btn-primary"><?php echo lang('Common.submit');?></button>
+                    <button type="submit" class="btn btn-primary timeslip-submit-btn"><?php echo lang('Common.submit');?></button>
                     <a href="/<?php echo strtolower($tableName).(!empty($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''); ?>" type="button" class="btn btn-secondary"><?php echo lang('Common.cancel');?></a>
                 </div>
             </div>
@@ -252,7 +254,79 @@ if (empty(@$timeslips['slip_timer_started'])) {
         $(".calculate-time").click(function() {
             calculateTime();
         });
-    })
+
+        $("#slip_end_date").change(function (evt) {
+            const slipStartDate = document.getElementById("slip_start_date").value;
+            const slipEndDate = evt.target.value;
+            slipEndDateVarify(slipStartDate, slipEndDate, null);
+        })
+
+        $(".timeslip-submit-btn").click(function (e) {
+            const slipStartDate = document.getElementById("slip_start_date").value;
+            const slipEndDate = document.getElementById("slip_end_date").value;
+            slipEndDateVarify(slipStartDate, slipEndDate, e);
+            slipTimerVerify(e)
+        });
+
+        $("#slip_timer_end").focusout(function () {
+            slipTimerVerify(null);
+        })
+    });
+
+    function slipEndDateVarify (slipStartDate, slipEndDate, evt) {
+         // Convert date strings to Date objects
+        const endDate = new Date(slipEndDate);
+        const startDate = new Date(slipStartDate);
+        // Calculate the time difference in milliseconds
+        const timeDifference = endDate - startDate;
+        // Convert milliseconds to days (rounded to the nearest day)
+        const daysDifference = Math.round(timeDifference / (1000 * 60 * 60 * 24));
+        if (daysDifference < 0) {
+            $("#end_date_error").text("Slip end date should be greater than the slip start date.");
+            if (evt !== null) {
+                evt.preventDefault();
+            }
+            return false;
+        } else {
+            $("#end_date_error").text("");
+        }
+    }
+
+    function slipTimerVerify(evt) {
+        const slipStartDate = document.getElementById("slip_start_date").value;
+        const slipEndDate = document.getElementById("slip_end_date").value;
+        const endDate = new Date(slipEndDate);
+        const startDate = new Date(slipStartDate);
+        const timeDifference = endDate - startDate;
+        const daysDifference = Math.round(timeDifference / (1000 * 60 * 60 * 24));
+        if (daysDifference == 0) {
+            const slipStartTime = document.getElementById("slip_timer_started").value;
+            const slipEndTimer = document.getElementById("slip_timer_end").value;
+            const endedTime = new Date(`1970-01-01 ${slipEndTimer}`);
+            const startedTime = new Date(`1970-01-01 ${slipStartTime}`);
+
+            // Check if the first time is greater than the second time
+            if (endedTime <= startedTime) {
+                $("#end_timer_error").text("Slip end time should be greater than the slip start time.");
+                if (evt !== null) {
+                    evt.preventDefault();
+                }
+                return false; 
+            } else {
+                const timeDifference = endedTime - startedTime;
+
+                // Convert milliseconds to hours, minutes, and seconds
+                const secondsDifference = Math.abs(Math.floor(timeDifference / 1000));
+                const minutesDifference = Math.floor(secondsDifference / 60);
+                const hoursDifference = Math.floor(minutesDifference / 60);
+
+                // Calculate the remaining minutes and seconds
+                const remainingMinutes = minutesDifference % 60;
+                const remainingSeconds = secondsDifference % 60;
+                $("#end_timer_error").text("");
+            }
+        }
+    }
 
     function setCurrentTime(el, callback) {
         const now = new Date();

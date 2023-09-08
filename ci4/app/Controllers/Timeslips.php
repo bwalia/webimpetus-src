@@ -182,6 +182,7 @@ class Timeslips extends CommonController
         $slipEndDate = strtotime($currentDate . ' ' . $eTime);
         $slipEndDate = $slipEndDate ? $slipEndDate : null;
         $data = array(
+            'week_no' => $this->request->getPost('week_no') ?? date("W"),
             'task_name' => $this->request->getPost('task_id'),
             'employee_name' => $this->request->getPost('emp_id'),
             'slip_start_date' => $slipStartDate,
