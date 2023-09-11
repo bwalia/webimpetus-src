@@ -80,7 +80,7 @@ $('#filter').keyup(delay(function (e) {
     window.searchTimeslips = function(){
         executed = false;
         $('#myPager').html('');
-        window.createPagination(0);
+        window.createPagination(0, true);
 
     }
     // window.clearFilters = function(){
@@ -92,16 +92,16 @@ $('#filter').keyup(delay(function (e) {
     //     window.history.replaceState(null, null, url); // or pushState
 
     // }
-    window.createPagination = function(pageNum) {
+    window.createPagination = function(pageNum, relaod) {
         var filter = document.getElementById('filter').value;
         var list_week = document.getElementById('list_week').value;
         var list_month = document.getElementById('list_monthpicker2').value;
         var list_year = document.getElementById('list_yearpicker2').value;
         const url = new URL(window.location.href);
-        url.searchParams.set('filter', filter);
-        url.searchParams.set('list_week', list_week);
-        url.searchParams.set('list_month', list_month);
-        url.searchParams.set('list_year', list_year);
+        filter && url.searchParams.set('filter', filter);
+        list_week && url.searchParams.set('list_week', list_week);
+        list_month && url.searchParams.set('list_month', list_month);
+        list_year && url.searchParams.set('list_year', list_year);
         window.history.replaceState(null, null, url); // or pushState
             pageNum=pageNum+1
             $.ajax({
@@ -127,6 +127,7 @@ $('#filter').keyup(delay(function (e) {
                         executed = true;
                     }
                     window.paginationData(responseData.data);
+                    if (relaod)window.location.reload();
                 }
             });
         }
@@ -159,7 +160,7 @@ $('#filter').keyup(delay(function (e) {
 
 
 $(document).ready(function () {    
-    window.createPagination(0);    
+    window.createPagination(0, false);    
 });
 </script>
 <script>
