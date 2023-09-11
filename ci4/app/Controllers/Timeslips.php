@@ -14,7 +14,7 @@ class Timeslips extends CommonController
     public function __construct()
     {
         parent::__construct();
-		$this->session = \Config\Services::session();
+        $this->session = \Config\Services::session();
         $this->timeSlipsModel = new TimeslipsModel();
         $this->templateModel = new Template_model();
     }
@@ -25,31 +25,30 @@ class Timeslips extends CommonController
         $data['columns'] = $this->db->getFieldNames($this->table);
         $data['fields'] = array_slice(array_diff($data['columns'], $this->notAllowedFields), 0, 6, true);
 
-        if(isset($_GET['reset']) && $_GET['reset']==1){
-            $this->session->set('list_week','');
-            $this->session->set('list_monthpicker','');
-            $this->session->set('list_yearpicker','');
+        if (isset($_GET['reset']) && $_GET['reset'] == 1) {
+            $this->session->set('list_week', '');
+            $this->session->set('list_monthpicker', '');
+            $this->session->set('list_yearpicker', '');
         }
-
-        $list_week = $_GET['list_week'] ?? $this->session->get('list_week');
-        $list_monthpicker = $_GET['list_month'] ?? $this->session->get('list_monthpicker');
+        
+        // echo $this->session->get('list_monthpicker'); die;
+        $list_week = isset($_GET['list_week']) ? $_GET['list_week'] : $this->session->get('list_week');
+        $list_monthpicker = isset($_GET['list_month']) ? $_GET['list_month'] : $this->session->get('list_monthpicker');
         $list_yearpicker = $_GET['list_year'] ?? $this->session->get('list_yearpicker');
-        $data['list_week']=$list_week;
+        $data['list_week'] = $list_week;
         $data['list_monthpicker'] = empty($list_monthpicker) ? date('m') : $list_monthpicker;
         $data['list_yearpicker'] = empty($list_yearpicker) ? date('Y') : $list_yearpicker;
         $timeslip_where = [];
-        //echo $list_week; die;
-        $this->session->set('list_week',$list_week);
+        $this->session->set('list_week', $list_week);
         if (!empty($list_week)) {
             $timeslip_where['week_no'] = $list_week;
         }
-
         if (!empty($list_monthpicker) && !empty($list_yearpicker)) {
-            $this->session->set('list_monthpicker',$list_monthpicker);
-            $this->session->set('list_yearpicker',$list_yearpicker);
+            $this->session->set('list_monthpicker', $list_monthpicker);
+            $this->session->set('list_yearpicker', $list_yearpicker);
             $lmonth = "{$list_yearpicker}-{$list_monthpicker}-01";
             $submitted_time = strtotime($lmonth);
-            $submitted_time2 = strtotime("{$list_yearpicker}-{$list_monthpicker}-".date("t", strtotime($lmonth)));
+            $submitted_time2 = strtotime("{$list_yearpicker}-{$list_monthpicker}-" . date("t", strtotime($lmonth)));
             $timeslip_where['slip_start_date >='] = $submitted_time;
             $timeslip_where['slip_end_date <='] = $submitted_time2;
         }
@@ -78,15 +77,15 @@ class Timeslips extends CommonController
         return view($viewPath, $data);
     }
 
-    public function clone($uuid = null)
+    public function clone ($uuid = null)
     {
         $data = $this->timeSlipsModel->getSingleData($uuid);
         $uuidVal = UUID::v5(UUID::v4(), 'timeslips_saving');
-        unset($data['id'],$data['created_at'],$data['modified_at']);
-        
+        unset($data['id'], $data['created_at'], $data['modified_at']);
+
         $data['uuid'] = $uuidVal;
-        $data['slip_start_date'] = strtotime(date("Y-m-d",strtotime("+ 1 day")));
-        $data['slip_end_date'] = strtotime(date("Y-m-d",strtotime("+ 1 day")));
+        $data['slip_start_date'] = strtotime(date("Y-m-d", strtotime("+ 1 day")));
+        $data['slip_end_date'] = strtotime(date("Y-m-d", strtotime("+ 1 day")));
         $data['slip_timer_started'] = '09:00:00 am';
         $data['slip_timer_end'] = '05:00:00 pm';
         //echo '<pre>'; print_r($data); die;
@@ -94,7 +93,7 @@ class Timeslips extends CommonController
         $this->timeSlipsModel->saveByUuid('', $data);
         session()->setFlashdata('message', 'Data cloned Successfully!');
         session()->setFlashdata('alert-class', 'alert-success');
-        return redirect()->to($this->table."/edit/".$uuidVal);
+        return redirect()->to($this->table . "/edit/" . $uuidVal);
     }
 
     public function edit($uuid = null)
@@ -201,12 +200,14 @@ class Timeslips extends CommonController
         $employeeData = $this->db->table('employees')->select('CONCAT_WS(" ", saludation, first_name, surname) as name')->getWhere(array('id' => $data['employee_name'], 'uuid_business_id' => $this->businessUuid))->getFirstRow();
         $title = "{" . $currentDateMonth . " " . getTitleHour($sTime) . " - " . $currentDateMonth . " " . getTitleHour($eTime) . "} " . $employeeData->name . ": " . $taskData->name;
 
-        return json_encode(array(
-            'uuid' => $uuid,
-            'title' => $title,
-            'start' => render_date($slipStartDate, "", "Y-m-d H:i:s"),
-            'end' => render_date($slipEndDate, "", "Y-m-d H:i:s"),
-        ));
+        return json_encode(
+            array(
+                'uuid' => $uuid,
+                'title' => $title,
+                'start' => render_date($slipStartDate, "", "Y-m-d H:i:s"),
+                'end' => render_date($slipEndDate, "", "Y-m-d H:i:s"),
+            )
+        );
     }
 
     public function downloadPdf()
@@ -262,17 +263,24 @@ class Timeslips extends CommonController
         $pdf->SetHTMLFooter($footerdata);
 
         $pdf->AddPage(
-            '', // L - landscape, P - portrait
+            '',
+            // L - landscape, P - portrait
             '',
             '',
             '',
             '',
-            10, // margin_left
-            10, // margin right
-            30, // margin top
-            15, // margin bottom
-            8, // margin header
-            0, // margin footer
+            10,
+            // margin_left
+            10,
+            // margin right
+            30,
+            // margin top
+            15,
+            // margin bottom
+            8,
+            // margin header
+            0,
+            // margin footer
             '',
             '',
             '',
@@ -295,9 +303,9 @@ class Timeslips extends CommonController
 
         $builder = $this->db->table("timeslips");
         //var_dump($employee_id); die;
-        $firstDayOfCurrentMonth = strtotime($this->firstDay($requestMonth,  $year));
+        $firstDayOfCurrentMonth = strtotime($this->firstDay($requestMonth, $year));
 
-        $lastDayMonth = strtotime($this->lastday($requestMonth,  $year)); // hard-coded '01' for first day
+        $lastDayMonth = strtotime($this->lastday($requestMonth, $year)); // hard-coded '01' for first day
 
         $builder->select("timeslips.*, tasks.name as tasks_name, employees.first_name as employee_first_name, employees.surname as employee_surname");
         $builder->join("tasks", "tasks.id = timeslips.task_name", "left");
