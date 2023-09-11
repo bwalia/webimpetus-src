@@ -79,7 +79,7 @@
     filterInput.addEventListener('keyup', event => {
         clearTimeout(timer);
         timer = setTimeout(() => {
-            window.createPagination(0, true);
+            window.searchTimeslips();
         }, waitTime);
     });
 
