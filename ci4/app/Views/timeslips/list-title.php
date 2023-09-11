@@ -71,7 +71,7 @@
                                         </div>
                                         <div class="form-group mr-3">
                                             <select class="form-control" id="list_week" name="list_week" onchange="window.searchTimeslips()">
-                                                <option value="">--<?php echo lang('Common.select_week');?>--</option>
+                                                <option value="none">--<?php echo lang('Common.select_week');?>--</option>
                                                 <?php foreach ($weeks as $row) : ?>
                                                     <option <?= (($list_week ?? "") == $row["week_no"] ?  "selected" : "") ?> value="<?php echo ($row["week_no"]) ?>"><?= $row["week_no"] ?></option>
                                                 <?php endforeach; ?>
@@ -79,7 +79,7 @@
                                         </div>
                                         <div class="form-group mr-3">
                                             <select class="form-control" id="list_monthpicker2" name="list_monthpicker" onchange="window.searchTimeslips()">
-                                                <option value="">--<?php echo lang('Common.select_month');?>--</option>
+                                                <option value="none">--<?php echo lang('Common.select_month');?>--</option>
                                                 <?php for($iM =1;$iM<=12;$iM++){ ?>
                                                     <option <?= (($list_monthpicker ?? "") == $iM ?  "selected" : "") ?> value="<?php echo ($iM) ?>"><?php echo date('F', mktime(0, 0, 0, $iM, 10)); ?></option>
                                                 <?php } ?>
@@ -87,7 +87,7 @@
                                         </div>
                                         <div class="form-group mr-3">
                                             <select class="form-control" id="list_yearpicker2" name="list_yearpicker" onchange="window.searchTimeslips()">
-                                                <option value="">--<?php echo lang('Common.select_year');?>--</option>
+                                                <option value="none">--<?php echo lang('Common.select_year');?>--</option>
 
                                                 <?php for($iM =0;$iM<=4;$iM++){ ?>
                                                     <option <?= (($list_yearpicker ?? "") == date("Y",strtotime("-".$iM." year")) ?  "selected" : "") ?> value="<?php echo date("Y",strtotime("-".$iM." year")) ?>"><?php echo date("Y",strtotime("-".$iM." year")); ?></option>

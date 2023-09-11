@@ -103,9 +103,12 @@ $('#filter').keyup(delay(function (e) {
         list_month && url.searchParams.set('list_month', list_month);
         list_year && url.searchParams.set('list_year', list_year);
         window.history.replaceState(null, null, url); // or pushState
+        const listWeek = list_week == "none" ? "" : list_week;
+        const listMonth = list_month == "none" ? "" : list_month;
+        const listYear = list_year == "none" ? "" : list_year;
             pageNum=pageNum+1
             $.ajax({
-                url: '<?=base_url()?>/api/<?=$tableName?>/<?=$uuid_business?>/?page='+pageNum+'&filter='+filter+'&list_week='+list_week+'&list_month='+list_month+'&list_year='+list_year,
+                url: '<?=base_url()?>/api/<?=$tableName?>/<?=$uuid_business?>/?page='+pageNum+'&filter='+filter+'&list_week='+listWeek+'&list_month='+listMonth+'&list_year='+listYear,
                 headers: {
                     'Authorization':'Basic <?=!empty($token)?$token:''?>',
                     //'X-CSRF-TOKEN':'xxxxxxxxxxxxxxxxxxxx',
@@ -127,7 +130,7 @@ $('#filter').keyup(delay(function (e) {
                         executed = true;
                     }
                     window.paginationData(responseData.data);
-                    if (relaod)window.location.reload();
+                    if (relaod) window.location.reload();
                 }
             });
         }
