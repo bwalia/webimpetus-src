@@ -6,37 +6,37 @@ use CodeIgniter\Model;
 
 class TimeslipsModel extends Model
 {
-    protected $table                = 'timeslips';
-    protected $primaryKey           = 'id';
-    protected $useAutoIncrement     = true;
-    protected $insertID             = 0;
-    protected $returnType           = 'array';
-    protected $useSoftDeletes       = false;
-    protected $protectFields        = true;
-    protected $allowedFields        = [];
+    protected $table = 'timeslips';
+    protected $primaryKey = 'id';
+    protected $useAutoIncrement = true;
+    protected $insertID = 0;
+    protected $returnType = 'array';
+    protected $useSoftDeletes = false;
+    protected $protectFields = true;
+    protected $allowedFields = [];
 
     // Dates
-    protected $useTimestamps        = false;
-    protected $dateFormat           = 'datetime';
-    protected $createdField         = 'created_at';
-    protected $updatedField         = 'modified_at';
+    protected $useTimestamps = false;
+    protected $dateFormat = 'datetime';
+    protected $createdField = 'created_at';
+    protected $updatedField = 'modified_at';
 
     // Validation
-    protected $validationRules      = [];
-    protected $validationMessages   = [];
-    protected $skipValidation       = false;
+    protected $validationRules = [];
+    protected $validationMessages = [];
+    protected $skipValidation = false;
     protected $cleanValidationRules = true;
 
     // Callbacks
-    protected $allowCallbacks       = true;
-    protected $beforeInsert         = [];
-    protected $afterInsert          = [];
-    protected $beforeUpdate         = [];
-    protected $afterUpdate          = [];
-    protected $beforeFind           = [];
-    protected $afterFind            = [];
-    protected $beforeDelete         = [];
-    protected $afterDelete          = [];
+    protected $allowCallbacks = true;
+    protected $beforeInsert = [];
+    protected $afterInsert = [];
+    protected $beforeUpdate = [];
+    protected $afterUpdate = [];
+    protected $beforeFind = [];
+    protected $afterFind = [];
+    protected $beforeDelete = [];
+    protected $afterDelete = [];
 
     private $businessUuid;
     private $whereCond;
@@ -133,9 +133,8 @@ class TimeslipsModel extends Model
         return $db->table($this->table)->select('week_no')->orderBy('week_no', 'ASC')->distinct()->getWhere(array('uuid_business_id' => $this->businessUuid, 'week_no !=' => NULL))->getResultArray();
     }
 
-    public function getApiRows($id = false, $timeslip_where = array(),$search='')
+    public function getApiRows($id = false, $timeslip_where = array(), $search = '', $secondSearch = null)
     {
-
         $table = $this->table;
         $selectFields = array(
             $table . '.uuid',
@@ -164,53 +163,58 @@ class TimeslipsModel extends Model
         $this->select($selectFields);
         $this->join('tasks', 'tasks.id = ' . $table . '.task_name');
         $this->join('employees', 'employees.id = ' . $table . '.employee_name');
-        
+
         if ($id === false) {
             if (empty($timeslip_where)) {
-                if(!empty($search)){
+                if (!empty($search)) {
                     $this->groupStart();
-                    $this->like('tasks.name',$search);
-                    $this->orLike('employees.first_name',$search);
-                    $this->orLike('employees.surname',$search);
+                    $this->like('tasks.name', $search, false);
+                    $this->orLike('employees.first_name', $search, false);
+                    if ($secondSearch != null) {
+                        $this->orLike('employees.surname', $secondSearch, false);
+                    }
+                    $this->orLike('employees.surname', $search, false);
                     $this->groupEnd();
                 }
 
-                if(!empty($_GET['field']) && !empty($_GET['order'])){
-                    $this->orderBy($table . '.' .$_GET['field'],$_GET['order']);
-                }else {
-                    $this->orderBy($table . '.slip_start_date','DESC');
+                if (!empty($_GET['field']) && !empty($_GET['order'])) {
+                    $this->orderBy($table . '.' . $_GET['field'], $_GET['order']);
+                } else {
+                    $this->orderBy($table . '.slip_start_date', 'DESC');
                 }
-                $_GET['perPage'] = !empty($_GET['perPage'])?$_GET['perPage']:10;
+                $_GET['perPage'] = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
                 return $this->paginate($_GET['perPage']);
             } else {
-                
-                if(!empty($search)){
+                if (!empty($search)) {
                     $this->groupStart();
-                    $this->like('tasks.name',$search);
-                    $this->orLike('employees.first_name',$search);
-                    $this->orLike('employees.surname',$search);
+                    $this->like('tasks.name', $search, false);
+                    $this->orLike('employees.first_name', $search, false);
+                    if ($secondSearch != null) {
+                        $this->orLike('employees.surname', $secondSearch, false);
+                    }
+                    $this->orLike('employees.surname', $search, false);
                     $this->groupEnd();
                 }
                 $this->where($timeslip_where);
 
-                if(!empty($_GET['field']) && !empty($_GET['order'])){
-                    $this->orderBy($table . '.' .$_GET['field'],$_GET['order']);
-                }else {
-                    $this->orderBy($table . '.slip_start_date','DESC');
-                }         
-                
-                $_GET['perPage'] = !empty($_GET['perPage'])?$_GET['perPage']:10;
+                if (!empty($_GET['field']) && !empty($_GET['order'])) {
+                    $this->orderBy($table . '.' . $_GET['field'], $_GET['order']);
+                } else {
+                    $this->orderBy($table . '.slip_start_date', 'DESC');
+                }
+
+                $_GET['perPage'] = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
                 return $this->paginate($_GET['perPage']);
             }
         } else {
-            $whereCond = array_merge(array($table .'.uuid' => $id), $timeslip_where);
+            $whereCond = array_merge(array($table . '.uuid' => $id), $timeslip_where);
             return $this->where($whereCond)->get()->getRow();
         }
 
         //echo '<pre>'; print_r($timeslip_where); die;
     }
 
-    public function getApiCount($id = false, $timeslip_where = array(),$search='')
+    public function getApiCount($id = false, $timeslip_where = array(), $search = '', $secondSearch = null)
     {
 
         $table = $this->table;
@@ -220,29 +224,35 @@ class TimeslipsModel extends Model
         );
         $this->select($selectFields);
         $this->join('tasks', 'tasks.id = ' . $table . '.task_name');
-        $this->join('employees', 'employees.id = ' . $table . '.employee_name');        
-        
-            if (empty($timeslip_where)) {
-                if(!empty($search)){
-                    $this->groupStart();
-                    $this->like('tasks.name',$search);
-                    $this->orLike('employees.first_name',$search);
-                    $this->orLike('employees.surname',$search);
-                    $this->groupEnd();
+        $this->join('employees', 'employees.id = ' . $table . '.employee_name');
+
+        if (empty($timeslip_where)) {
+            if (!empty($search)) {
+                $this->groupStart();
+                $this->like('tasks.name', $search, false);
+                $this->orLike('employees.first_name', $search, false);
+                if ($secondSearch != null) {
+                    $this->orLike('employees.surname', $secondSearch, false);
                 }
-                return $this->countAllResults();
-            } else {
-                
-                if(!empty($search)){
-                    $this->groupStart();
-                    $this->like('tasks.name',$search);
-                    $this->orLike('employees.first_name',$search);
-                    $this->orLike('employees.surname',$search);
-                    $this->groupEnd();
-                }
-                $this->where($timeslip_where);
-                
-                return $this->countAllResults();
+                $this->orLike('employees.surname', $search, false);
+                $this->groupEnd();
             }
+            return $this->countAllResults();
+        } else {
+
+            if (!empty($search)) {
+                $this->groupStart();
+                $this->like('tasks.name', $search, false);
+                $this->orLike('employees.first_name', $search, false);
+                if ($secondSearch != null) {
+                    $this->orLike('employees.surname', $secondSearch, false);
+                }
+                $this->orLike('employees.surname', $search, false);
+                $this->groupEnd();
+            }
+            $this->where($timeslip_where);
+
+            return $this->countAllResults();
+        }
     }
 }

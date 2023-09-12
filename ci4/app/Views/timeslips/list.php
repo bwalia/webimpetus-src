@@ -79,6 +79,12 @@
     filterInput.addEventListener('keyup', event => {
         clearTimeout(timer);
         timer = setTimeout(() => {
+            if (event.target.value == "") {
+                const url = new URL(window.location.href);
+                url.searchParams.delete('filter');
+                window.history.replaceState(null, null, url);
+                document.getElementById('filter').value = "";
+            }
             window.searchTimeslips();
         }, waitTime);
     });

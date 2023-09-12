@@ -642,6 +642,12 @@ class Api extends BaseController
     {
         $arr2 = [];
         $search = !empty($_GET['filter']) ? $_GET['filter'] : '';
+        $secondSearch = null;
+        if (preg_match('/\s/', $search)) {
+            $explodeFilter = explode(" ", $search);
+            $search = $explodeFilter[0];
+            $secondSearch = $explodeFilter[1];
+        }
         if (!empty($ubusiness_id)) {
             $arr2 = ['tasks.uuid_business_id' => $ubusiness_id];
         }
@@ -669,9 +675,10 @@ class Api extends BaseController
             $arr2['YEAR(CAST(FROM_UNIXTIME(slip_start_date) as date))'] = $list_yearpicker;
         }
         //print_r($arr2);
-        $count = $this->timeSlipsModel->getApiCount(false, $arr2, $search);
-        $rows = $this->timeSlipsModel->getApiRows(false, $arr2, $search);
-        //echo $this->timeSlipsModel->getLastQuery()->getQuery();die;
+        $count = $this->timeSlipsModel->getApiCount(false, $arr2, $search, $secondSearch);
+        $rows = $this->timeSlipsModel->getApiRows(false, $arr2, $search, $secondSearch);
+        
+        // echo $this->timeSlipsModel->getLastQuery()->getQuery();die;
         $data['data'] = $rows;
         $data['total'] = $count;
         $data['status'] = 'success';
