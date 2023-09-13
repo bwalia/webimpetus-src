@@ -14,39 +14,28 @@ else
 fi
 
 if [ -z "$2" ]; then
-   echo "targetNs is empty, so setting it to default (dev)"
-   targetNs="dev"
+   echo "cluster name is empty, so setting it to default (dev)"
+   clusterName="k3s0"
 else
-   echo "targetNs is provided, so setting it to $2"
-   targetNs=$2
+   echo "cluster name is provided, so setting it to $2"
+   clusterName=$2
 fi
 
 if [ -z "$3" ]; then
-   echo "IMAGE_TAG is empty, so setting it to default (latest)"
-   IMAGE_TAG=""
+   echo "targetNs is empty, so setting it to default (dev)"
+   targetNs="dev"
 else
-   echo "IMAGE_TAG is provided, so setting it to $3"
-   IMAGE_TAG=$3
-fi
-
-if [ -z "$4" ]; then
-   echo "build_environment is empty, so setting it to default (empty)"
-   build_environment="install"
-else
-   echo "build_environment is provided, so setting it to $4"
-   build_environment=$4
-fi
-
-if [ $build_environment == "build" ] || [ $build_environment == "build_install" ]; then
-./build.sh $targetEnv $targetEnv $deployment_tooling
-echo "$build_environment is also requested"
+   echo "targetNs is provided, so setting it to $3"
+   targetNs=$3
 fi
 
 echo Target Environment: $targetEnv
 
 if [ $targetEnv == "dev" ] || [ $targetEnv == "test" ] || [ $targetEnv == "int" ] || [ $targetEnv == "acc" ] || [ $targetEnv == "prod" ]; then
- bash helper_tools/helm_deploy_webimpetus.sh $targetEnv $targetEnv install $IMAGE_TAG
- echo "Helper tool helm deploy executed"
+   helm upgrade -i wsl-$targetEnv ./devops/webimpetus-chart -f devops/webimpetus-chart/values-$targetEnv-$clusterName.yaml --set-string targetImage="${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}" --set-string targetImageTag="${{ env.IMAGE_TAG }}" --namespace $targetEnv --create-namespace
+   kubectl rollout restart deployment/wsl-$targetEnv -n $targetEnv
+   kubectl rollout history deployment/wsl-$targetEnv -n $targetEnv
 else
- echo "Environment $targetEnv is not supported by this script, check the README.md and try again! (Hint: Try default value is dev)"
+echo "Target env is not supported"
 fi
+
