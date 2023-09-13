@@ -1,0 +1,50 @@
+name: Deploy Workstation CRM Instance in a given env using Docker Compose
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      TARGET_ENV:
+        type: choice
+        description: 'Please choose the Target Environment'
+        default: 'int'
+        required: true
+        options:
+            - int
+            - test
+            - acc
+            - prod
+            
+env:
+  TARGET_ENV: ${{ github.event.inputs.TARGET_ENV || 'int'}}
+    
+jobs:
+  build:
+    runs-on: [self-hosted, linux]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Compose
+        run: docker-compose --version
+
+      - name: Build and run Deploy to the target environment
+        run: chmod +x ./deploy-to-docker.sh && ./deploy-to-docker.sh"
+            
+      - name: Run Heathcheck and QA Tests
+        run: |
+          echo "Run Heathcheck and QA Tests..."
+
+      - name: Slack Notification for Workstation CRM release - Docker Compose Deploy 
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_CHANNEL: general
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_ICON: https://github.com/rtCamp.png?size=48
+          SLACK_MESSAGE: 'Post Content :rocket:'
+          SLACK_TITLE: Post Title
+          SLACK_USERNAME: rtCamp
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
