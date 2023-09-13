@@ -180,7 +180,7 @@ elif [ $targetEnv = "test" ]; then
 TARGET_CLUSTER="k3s2"
 echo -e "$GREEN TARGET_CLUSTER: $TARGET_CLUSTER"
 elif [ $targetEnv = "int" ]; then
-TARGET_CLUSTER="k3s8"
+TARGET_CLUSTER="k3s2"
 else
 echo -e "$GREEN TARGET_CLUSTER: $TARGET_CLUSTER"
 fi
