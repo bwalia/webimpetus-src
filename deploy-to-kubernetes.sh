@@ -29,10 +29,14 @@ else
    targetNs=$3
 fi
 
+IMAGE_NAME="webimpetus"
+IMAGE_TAG="latest"
+IMAGE_REPO="registry.workstation.co.uk"
+
 echo Target Environment: $targetEnv
 
 if [ $targetEnv == "dev" ] || [ $targetEnv == "test" ] || [ $targetEnv == "int" ] || [ $targetEnv == "acc" ] || [ $targetEnv == "prod" ]; then
-   helm upgrade -i wsl-$targetEnv ./devops/webimpetus-chart -f devops/webimpetus-chart/values-$targetEnv-$clusterName.yaml --set-string targetImage="${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}" --set-string targetImageTag="${{ env.IMAGE_TAG }}" --namespace $targetEnv --create-namespace
+   helm upgrade -i wsl-$targetEnv ./devops/webimpetus-chart -f devops/webimpetus-chart/values-$targetEnv-$clusterName.yaml --set-string targetImage="bwalia/$IMAGE_NAME" --set-string targetImageTag="$IMAGE_TAG" --namespace $targetEnv --create-namespace
    kubectl rollout restart deployment/wsl-$targetEnv -n $targetEnv
    kubectl rollout history deployment/wsl-$targetEnv -n $targetEnv
 else
