@@ -7,9 +7,9 @@ cp devops/docker/Dockerfile .
 
 echo "Running docker-compose up -d."
 
-docker compose down
-docker compose up -d --build
-docker compose ps
+docker-compose down
+docker-compose up -d --build
+docker-compose ps
 
 DOCKER_CONTAINER_NAME="webimpetus-dev"
 
