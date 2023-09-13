@@ -22,7 +22,7 @@ env:
     
 jobs:
   build:
-    runs-on: [self-hosted, linux]
+    runs-on: [node2]
 
     steps:
       - name: Checkout code
