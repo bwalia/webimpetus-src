@@ -157,6 +157,7 @@ if (empty(@$timeslips['slip_timer_started'])) {
                     <div class="input-group">
                         <input id="break_time_end" name="break_time_end" class="form-control timepicker" value="<?php echo @$timeslips['break_time_end']; ?>">
                     </div>
+                    <span class="form-control-feedback" id="break_end_timer_error"></span>
                 </div>
             </div>
 
@@ -236,6 +237,7 @@ if (empty(@$timeslips['slip_timer_started'])) {
 <?php require_once(APPPATH . 'Views/common/footer.php'); ?>
 <script>
     $(function() {
+        const breakTime =  $("#break_time").is(":checked");
         $("#break_time").change(function() {
             var el = $(this);
             if (el.is(':checked')) {
@@ -265,12 +267,25 @@ if (empty(@$timeslips['slip_timer_started'])) {
             const slipStartDate = document.getElementById("slip_start_date").value;
             const slipEndDate = document.getElementById("slip_end_date").value;
             slipEndDateVarify(slipStartDate, slipEndDate, e);
-            slipTimerVerify(e)
+            slipTimerVerify(e);
+            if (breakTime) {
+                const endValue = $("#break_time_end").val();
+                const startValue = $("#break_time_start").val();
+                validateBreakeEnd(startValue, endValue, e)
+            }
         });
 
         $("#slip_timer_end").focusout(function () {
             slipTimerVerify(null);
         })
+
+        if (breakTime) {
+            $("#break_time_end").focusout(function () {
+                const endValue = $(this).val();
+                const startValue = $("#break_time_start").val();
+                validateBreakeEnd(startValue, endValue, null)
+            })
+        }
     });
 
     function slipEndDateVarify (slipStartDate, slipEndDate, evt) {
@@ -328,6 +343,20 @@ if (empty(@$timeslips['slip_timer_started'])) {
         }
     }
 
+    function validateBreakeEnd (startValue, endValue, evt) {
+        const endedTime = new Date(`1970-01-01 ${endValue}`);
+        const startedTime = new Date(`1970-01-01 ${startValue}`);
+
+        // Check if the first time is greater than the second time
+        if (endedTime <= startedTime) {
+            $("#break_end_timer_error").text("Break end time should be greater than the Break start time.");
+            if (evt !== null) {
+                evt.preventDefault();
+            }
+            return false; 
+        }
+    }
+
     function setCurrentTime(el, callback) {
         const now = new Date();
         let hours = now.getHours();
@@ -350,10 +379,44 @@ if (empty(@$timeslips['slip_timer_started'])) {
         var startTime = $("#slip_timer_started").val();
         var endDate = $("#slip_end_date").val();
         var endTime = $("#slip_timer_end").val();
+        const breakTime =  $("#break_time").is(":checked");
 
-        var startDateObj = Date.parse(startDate + ' ' + startTime);
-        var endDateObj = Date.parse(endDate + ' ' + endTime);
-        var diffInHours = roundUp((endDateObj - startDateObj) / 3600000, 2);
+        const startDatetimeString = startDate + ' ' + startTime;
+        const endDatetimeString = endDate + ' ' + endTime;
+        const startDateObj = new Date(startDatetimeString);
+        const endDateObj = new Date(endDatetimeString);
+        const timeDifferenceMs = endDateObj - startDateObj;
+        const timeSeconds = Math.floor(timeDifferenceMs / 1000);
+        const timeMinutes = Math.floor(timeSeconds / 60);
+        const timeHours = Math.floor(timeMinutes / 60);
+        let diffInHours = `${timeHours}.${timeMinutes % 60}`
+
+        if (breakTime) {
+            const breakTimeStVal = $("#break_time_start").val();
+            const breakTimeEndVal = $("#break_time_end").val();
+            const breakStartTime = new Date(`2000-01-01 ${breakTimeStVal}`);
+            const breakEndTime = new Date(`2000-01-01 ${breakTimeEndVal}`);
+
+            // Calculate the time difference in milliseconds
+            const timeDifferenceMillis = breakEndTime - breakStartTime;
+
+            // Convert the time difference to hours, minutes, and seconds
+            const seconds = Math.floor(timeDifferenceMillis / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+
+            // Calculate remaining minutes and seconds
+            const remainingMinutes = minutes % 60;
+            const remainingSeconds = seconds % 60;
+            const [totalhours, totalminutes] = diffInHours.split('.').map(parseFloat);
+            let newHours = totalhours - hours;
+            let newMinutes = (totalminutes || 0) - remainingMinutes
+            if (Math.sign(newMinutes) === -1) {
+                newHours = newHours - 1;
+                newMinutes = 60 + newMinutes;
+            }
+            diffInHours = `${newHours}.${newMinutes}`;
+        }
 
         $('#slip_hours').val(diffInHours);
     }
