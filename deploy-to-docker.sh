@@ -1,5 +1,13 @@
 #!/bin/bash
 
+if [ -z "$1" ]; then
+   echo "env is empty, so setting targetEnv to development (default)"
+   targetEnv="dev"
+else
+   echo "env is NOT empty, so setting targetEnv to $1"
+   targetEnv=$1
+fi
+
 clear
 DEBUG=false
 
@@ -8,6 +16,11 @@ cp devops/docker/Dockerfile .
 echo "Running docker-compose up -d."
 
 docker-compose down
+
+if [ $targetEnv == "docker" ] || [ $targetEnv == "int2" ]; then
+    sed -i -e 's/localhost:8080/int2-my.workstation.co.uk/g' .env
+fi
+
 docker-compose up -d --build
 docker-compose ps
 
@@ -22,6 +35,11 @@ docker exec -it ${DOCKER_CONTAINER_NAME} bash /usr/local/bin/bootstrap-openresty
 rm Dockerfile
 
 HOST_ENDPOINT_UNSECURE_URL="http://localhost:8080"
+
+if [ $targetEnv == "int2" ]; then
+HOST_ENDPOINT_UNSECURE_URL="http://int2-my.workstation.co.uk"
+fi
+
 curl -IL $HOST_ENDPOINT_UNSECURE_URL
 os_type=$(uname -s)
 

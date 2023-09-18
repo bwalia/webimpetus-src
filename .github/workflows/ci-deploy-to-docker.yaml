@@ -32,7 +32,7 @@ jobs:
         run: docker-compose --version
 
       - name: Build and run Deploy to the target environment
-        run: chmod +x ./deploy-to-docker.sh && ./deploy-to-docker.sh
+        run: chmod +x ./deploy-to-docker.sh && ./deploy-to-docker.sh int2
             
       - name: Run Heathcheck and QA Tests
         run: |
