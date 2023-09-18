@@ -54,5 +54,8 @@ fi
 if [ $DEBUG==true ]; then
     docker ps -a
     echo "DEBUG is true, so running docker exec -it ${DOCKER_CONTAINER_NAME} bash"
+if [ $targetEnv == "dev" ]; then
     docker exec -it ${DOCKER_CONTAINER_NAME} bash
+fi
+
 fi
