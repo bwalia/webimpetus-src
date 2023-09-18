@@ -1,5 +1,13 @@
 #!/bin/bash
 
+if [ -z "$1" ]; then
+   echo "env is empty, so setting targetEnv to development (default)"
+   targetEnv="dev"
+else
+   echo "env is NOT empty, so setting targetEnv to $1"
+   targetEnv=$1
+fi
+
 clear
 DEBUG=false
 
@@ -8,10 +16,15 @@ cp devops/docker/Dockerfile .
 echo "Running docker-compose up -d."
 
 docker-compose down
+
+if [ $targetEnv == "docker" ] || [ $targetEnv == "int2" ]; then
+    sed -i -e 's/localhost:8080/int2-my.workstation.co.uk/g' .env
+fi
+
 docker-compose up -d --build
 docker-compose ps
 
-DOCKER_CONTAINER_NAME="webimpetus-dev"
+DOCKER_CONTAINER_NAME="webimpetus-$targetEnv"
 
 docker cp bootstrap-openresty-dev.sh ${DOCKER_CONTAINER_NAME}:/usr/local/bin/bootstrap-openresty.sh
 docker exec -it ${DOCKER_CONTAINER_NAME} chmod +x /usr/local/bin/bootstrap-openresty.sh
