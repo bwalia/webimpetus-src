@@ -35,6 +35,11 @@ docker exec -it ${DOCKER_CONTAINER_NAME} bash /usr/local/bin/bootstrap-openresty
 rm Dockerfile
 
 HOST_ENDPOINT_UNSECURE_URL="http://localhost:8080"
+
+if [ $targetEnv == "int2" ]; then
+HOST_ENDPOINT_UNSECURE_URL="http://int2-my.workstation.co.uk"
+fi
+
 curl -IL $HOST_ENDPOINT_UNSECURE_URL
 os_type=$(uname -s)
 
