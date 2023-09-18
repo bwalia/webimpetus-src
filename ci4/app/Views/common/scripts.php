@@ -18,8 +18,8 @@
 <script src="/assets/js/custom.js"></script>
 <script src="/assets/js/list.js"></script>
 <script src="/assets/js/edit.js"></script>
-<script src="vendors/chartlist/Chart.min.js"></script>
-<script src="js/chart.min.js"></script>
+<script src="/assets/vendors/chartlist/Chart.min.js"></script>
+<!-- <script src="js/chart.min.js"></script> -->
 <script src="/assets/vendors/chartjs/roundedBar.min.js"></script>
 <script src="/assets/vendors/am_chart/amcharts.js"></script>
 <!-- apex chrat  -->
