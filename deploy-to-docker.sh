@@ -24,7 +24,7 @@ fi
 docker-compose up -d --build
 docker-compose ps
 
-DOCKER_CONTAINER_NAME="webimpetus-$targetEnv"
+DOCKER_CONTAINER_NAME="webimpetus-dev"
 
 docker cp bootstrap-openresty-dev.sh ${DOCKER_CONTAINER_NAME}:/usr/local/bin/bootstrap-openresty.sh
 docker exec -it ${DOCKER_CONTAINER_NAME} chmod +x /usr/local/bin/bootstrap-openresty.sh
