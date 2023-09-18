@@ -126,7 +126,7 @@ class Tasks extends CommonController
             }
 		}
 
-        $response = $this->model->insertOrUpdate($uuid, $data);
+        $response = $this->model->insertOrUpdateByUUID($uuid, $data);
         if (!$response) {
             session()->setFlashdata('message', 'Something wrong!');
             session()->setFlashdata('alert-class', 'alert-danger');
