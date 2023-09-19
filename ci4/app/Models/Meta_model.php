@@ -75,7 +75,7 @@ class Meta_model extends Model
 
     public function getBusinessRow($id, $user_id = null)
     {
-        $data = $this->db->table("businesses")->getWhere(['id' => $id])->getRow();
+        $data = $this->db->table("businesses")->getWhere(['uuid' => $id])->getRow();
         if (empty($data)) {
 
             $user_business = $this->db->table("user_business")->getWhere(['user_id' => $user_id])->getRow();

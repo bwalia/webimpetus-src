@@ -34,7 +34,8 @@ $sprints = getResultArray("sprints");
                             <?php foreach ($customers as $row): ?>
                                 <option value="<?= $row['id']; ?>" <?php if ($row['id'] == @$task->customers_id) {
                                       echo "selected";
-                                  } ?>><?= $row['company_name']; ?></option>
+                                  } ?>><?= $row['company_name']; ?>
+                                </option>
                             <?php endforeach; ?>
                         </select>
                     </div>
@@ -45,7 +46,8 @@ $sprints = getResultArray("sprints");
                             <?php foreach ($contacts as $row): ?>
                                 <option value="<?= $row['id']; ?>" <?php if ($row['id'] == @$task->contacts_id) {
                                       echo "selected";
-                                  } ?>><?= $row['first_name']; ?></option>
+                                  } ?>><?= $row['first_name']; ?>
+                                </option>
                             <?php endforeach; ?>
                         </select>
                     </div>
@@ -67,7 +69,8 @@ $sprints = getResultArray("sprints");
                             <?php foreach ($employees as $row): ?>
                                 <option value="<?= $row['id']; ?>" <?php if ($row['id'] == @$task->reported_by) {
                                       echo "selected";
-                                  } ?>><?= $row['first_name']; ?></option>
+                                  } ?>><?= $row['first_name']; ?>
+                                </option>
                             <?php endforeach; ?>
                         </select>
                     </div>
@@ -124,7 +127,8 @@ $sprints = getResultArray("sprints");
                             <?php foreach ($users as $row): ?>
                                 <option value="<?= $row['id']; ?>" <?php if ($row['id'] == @$task->assigned_to) {
                                       echo "selected";
-                                  } ?>><?= $row['name']; ?></option>
+                                  } ?>><?= $row['name']; ?>
+                                </option>
                             <?php endforeach; ?>
                         </select>
                     </div>
@@ -260,37 +264,34 @@ $sprints = getResultArray("sprints");
                                 } ?>
                             </span>
                         </div>
+                    </div>
+                <?php } ?>
+            </div>
+            <div class="form-group col-md-12">
+                <label for="inputAddress">Upload</label>
+                <span class="all-media-image-files">
 
-
-
-                        <div class="form-group col-md-12">
-                            <label for="inputAddress">Upload</label>
-                            <span class="all-media-image-files">
-
-                            </span>
-                            <div class="uplogInrDiv" id="drop_file_doc_zone">
-                                <input type="file" name="file" class="fileUpload" id="customFile">
-                                <div class="uploadBlkInr">
-                                    <div class="uplogImg">
-                                        <img src="/assets/img/fileupload.png" />
-                                    </div>
-                                    <div class="uploadFileCnt">
-                                        <p>
-                                            <a href="#">Upload a file </a> file chosen or drag
-                                            and drop
-                                        </p>
-                                        <p>
-                                            <span>Video, PNG, JPG, GIF up to 10MB</span>
-                                        </p>
-                                        <p class="image-name"></p>
-                                    </div>
-                                </div>
-                            </div>
-
+                </span>
+                <div class="uplogInrDiv" id="drop_file_doc_zone">
+                    <input type="file" name="file" class="fileUpload" id="customFile">
+                    <div class="uploadBlkInr">
+                        <div class="uplogImg">
+                            <img src="/assets/img/fileupload.png" />
+                        </div>
+                        <div class="uploadFileCnt">
+                            <p>
+                                <a href="#">Upload a file </a> file chosen or drag
+                                and drop
+                            </p>
+                            <p>
+                                <span>Video, PNG, JPG, GIF up to 10MB</span>
+                            </p>
+                            <p class="image-name"></p>
                         </div>
                     </div>
                 </div>
-            <?php } ?>
+
+            </div>
             <br>
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
