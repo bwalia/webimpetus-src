@@ -135,7 +135,7 @@ class Email_model extends Model
 				'allow_self_signed' => true
 			)
 							);
-			$mail->setFrom(getenv('SMTP_USER'), $from_name);
+			$mail->setFrom($from_email, $from_name);
 			
 			$mail->addAddress($email);  
 			$mail->isHTML(true);      

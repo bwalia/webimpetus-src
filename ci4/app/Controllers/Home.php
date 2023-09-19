@@ -71,7 +71,7 @@ class Home extends BaseController
 				$this->session->set('profile_img', $row->profile_img);
 				$this->session->set('logo', $logo->meta_value);
 				$this->session->set('uuid_business_id', $uuid_business_id);
-				$this->session->set('uuid_business', $uuid_business);
+				$this->session->set('uuid_business', $row->uuid_business_id);
 				$this->session->set('jwt_token', $token);
 				$arr = json_decode($row->permissions);
 				$roww = $this->menu_model->getWherein($arr);
