@@ -25,7 +25,7 @@ class UpdateUserBusinessSeeder extends Seeder
             }
             $user = $userModel->getApiUsers($userBusiness['user_id']);
             if (!$user || empty($user) || !isset($user['uuid'])) {
-                $this->db->query('DELETE FROM user_business WHERE product_id='.$userBusiness['id']);
+                $this->db->query('DELETE FROM user_business WHERE id='.$userBusiness['id']);
             } else {
                 $bsData['user_uuid'] = $user['uuid'];
                 $this->db->query('UPDATE user_business SET uuid = "'. $bsData['uuid'] . '", user_uuid = "' . $bsData['user_uuid'] . '" WHERE id = '.$userBusiness['id']);
