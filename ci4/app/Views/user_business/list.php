@@ -2,11 +2,14 @@
 <div class="white_card_body ">
     <div class="QA_table ">
         <!-- table-responsive -->
+        <?php $headings = ['id', 'user_uuid', 'user_business_id', 'primary_business_uuid', 'user_name']  ?>
         <table id="example" class="table table-listing-items tableDocument table-striped table-bordered">
             <thead>
                 <tr>
-                    <?php foreach ($fields as $field) { ?>
-                        <th scope="col"><?php echo @readableFieldName($field); ?></th>
+                    <?php foreach ($headings as $field) { ?>
+                        <th scope="col">
+                            <?php echo @readableFieldName($field); ?>
+                        </th>
                     <?php } ?>
                     <th scope="col" width="50">Action</th>
                 </tr>
@@ -29,14 +32,16 @@
                                         $row[$field] = $businessName;
                                     }
                                 }
-                            } else if ($field == "user_id") {
+                            } else if ($field == "user_uuid") {
                                 $row[$field] = $userNameArray[$row[$field]];
                             } else if ($field == "primary_business_uuid") {
                                 $row[$field] = isset($businessNameArr[$row[$field]]) ? $businessNameArr[$row[$field]] : '';
                             }
                             ?>
-                            <td class="f_s_12 f_w_400"><?= $row[$field]; ?></td>
-                        <?php  } ?>
+                            <td class="f_s_12 f_w_400">
+                                <?= $row[$field]; ?>
+                            </td>
+                        <?php } ?>
                         <td width="50" class="text-right">
                             <div class="header_more_tool">
                                 <div class="dropdown">
@@ -44,11 +49,14 @@
                                         <i class="ti-more-alt"></i>
                                     </span>
                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-
-                                        <a class="dropdown-item" onclick="return confirm('Are you sure want to delete?');" href="/<?php echo $tableName; ?>/delete/<?= $row[$identifierKey]; ?>"> <i class="ti-trash"></i> Delete</a>
-                                        <a class="dropdown-item" href="/<?php echo $tableName; ?>/edit/<?= @$row[$identifierKey]; ?>"> <i class="fas fa-edit"></i> Edit</a>
-
-
+                                        <a class="dropdown-item" onclick="return confirm('Are you sure want to delete?');"
+                                            href="/<?php echo $tableName; ?>/delete/<?= $row[$identifierKey]; ?>"> <i
+                                            class="ti-trash"></i> Delete
+                                        </a>
+                                        <a class="dropdown-item"
+                                            href="/<?php echo $tableName; ?>/edit/<?= @$row[$identifierKey]; ?>"> <i
+                                            class="fas fa-edit"></i> Edit
+                                        </a>
                                     </div>
                                 </div>
                             </div>

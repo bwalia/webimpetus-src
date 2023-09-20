@@ -34,7 +34,7 @@ class Users_model extends Model
     }
 
     public function getUserByUUID($uuid = false)
-    {
+    {   
         $whereCond = $this->whereCond;
         if ($uuid === false) {
             $whereCond = array_merge(['role!=' => 1], $whereCond);
@@ -44,18 +44,28 @@ class Users_model extends Model
             return $this->getWhere(array_filter($whereCond));
         }
     }
+    public function userByUUID($uuid = false)
+    {   
+        $whereCond = $this->whereCond;
+        if ($uuid === false) {
+            $whereCond = array_merge(['role!=' => 1], $whereCond);
+            return $this->where($whereCond)->findAll();
+        } else {
+            $whereCond = array_merge(['uuid' => $uuid], $whereCond);
+            return $this->where(array_filter($whereCond))->first();
+        }
+    }
 
 
     public function getApiUsers($id = false)
-    {
+    {   
         $whereCond = $this->whereCond;
         if ($id == false) {
             $whereCond = [];
-            return $this->where($whereCond)->findAll();
         } else {
-            $whereCond = ['uuid_business_id' => $id];
-            return $this->where($whereCond)->findAll();
+            $whereCond = ['id' => $id];
         }
+        return $this->where($whereCond)->first();
     }
 
     public function getApiV2Users($id = false, $whereCond = [])
@@ -117,8 +127,8 @@ class Users_model extends Model
 
     public function saveUser($data)
     {
-        $query = $this->db->table($this->table)->insert($data);
-        return $query;
+        $this->db->table($this->table)->insert($data);
+        return $this->db->insertID();
     }
 
     public function deleteUser($id)

@@ -5,6 +5,7 @@ namespace App\Controllers;
 use CodeIgniter\Controller;
 use App\Models\Users_model;
 use App\Models\Menu_model;
+use App\Models\User_business_model;
 use App\Controllers\Core\CommonController;
 use App\Libraries\UUID;
 
@@ -12,12 +13,14 @@ class Users extends CommonController
 {
 	public $userModel;
 	public $menu_model;
+	public $userBusinessModel;
 	function __construct()
 	{
 		parent::__construct();
 		$this->session = \Config\Services::session();
 		$this->userModel = new Users_model();
 		$this->menu_model = new Menu_model();
+		$this->userBusinessModel = new User_business_model();
 	}
 
 
@@ -83,7 +86,16 @@ class Users extends CommonController
 						'permissions' => json_encode($menu_ids),
 						'role' => $this->request->getPost('role'),
 					);
-					$this->userModel->saveUser($data);
+					$saveUserId = $this->userModel->saveUser($data);
+					$userBsUuid = UUID::v5($uuidNamespace, 'user_business');
+					$userBsData = [
+						'user_id' => $saveUserId,
+						'user_business_id' => json_encode([session('uuid_business')]),
+						'primary_business_uuid' => session('uuid_business'),
+						'user_uuid' => $uuid,
+						'uuid' => $userBsUuid
+					];
+					$this->userBusinessModel->saveUserbusines($userBsData);
 					session()->setFlashdata('message', 'Data entered Successfully!');
 					session()->setFlashdata('alert-class', 'alert-success');
 				}

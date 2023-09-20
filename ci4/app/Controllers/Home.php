@@ -66,6 +66,7 @@ class Home extends BaseController
 
 				$this->session->set('uemail', $row->email);
 				$this->session->set('uuid', $row->id);
+				$this->session->set('userUuid', $row->uuid);
 				$this->session->set('uname', $row->name);
 				$this->session->set('role', $row->role);
 				$this->session->set('profile_img', $row->profile_img);
