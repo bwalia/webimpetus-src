@@ -36,7 +36,7 @@ class User_business_model extends Model
             session()->setFlashdata('alert-class', 'alert-success');
             return $user_business['id'];
         } else if (@$id) {
-            $query = $this->db->table($this->table)->update($data, array('id' => $id));
+            $query = $this->db->table($this->table)->update($data, array('uuid' => $id));
             if ($query) {
                 session()->setFlashdata('message', 'Data updated Successfully!');
                 session()->setFlashdata('alert-class', 'alert-success');
@@ -56,8 +56,8 @@ class User_business_model extends Model
 
     public function saveUserbusines($data)
     {
-        $query = $this->db->table($this->table)->insert($data);
-        return $query;
+        $this->db->table($this->table)->insert($data);
+        return $this->db->insertID();
     }
 
     public function deleteBusiness($id)
@@ -75,6 +75,11 @@ class User_business_model extends Model
     public function getResult($id = false)
     {
         $query = $this->db->table($this->table)->where('id', $id)->get()->getResultObject();
+        return $query;
+    }
+    public function getResultByUUID($uuid = false)
+    {
+        $query = $this->db->table($this->table)->where('uuid', $uuid)->get()->getResultObject();
         return $query;
     }
 

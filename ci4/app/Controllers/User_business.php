@@ -6,21 +6,25 @@ use App\Controllers\Core\CommonController;
 use App\Libraries\UUID;
 use App\Models\Meta_model;
 use App\Models\User_business_model;
+use App\Models\Users_model;
 
 class User_business extends CommonController
 {
     protected $timeSlipsModel;
+    public $meta_model;
+    public $User_business_model;
+    public $userModel;
 
     public function __construct()
     {
         parent::__construct();
         $this->meta_model = new Meta_model();
         $this->User_business_model = new User_business_model();
+		$this->userModel = new Users_model();
     }
 
     public function index()
-    {
-
+    {   
         $data['columns'] = $this->db->getFieldNames($this->table);
         $data['fields'] = array_diff($data['columns'], $this->notAllowedFields);
         $data[$this->table] = $this->model->getRows();
@@ -28,13 +32,13 @@ class User_business extends CommonController
 
         $businessNameArr = [];
         foreach ($allBusiness as $singleBusiness) {
-            $businessNameArr[$singleBusiness->uuid] =  $singleBusiness->name;
+            $businessNameArr[$singleBusiness->uuid] = $singleBusiness->name;
         }
 
         $allUsers = $this->meta_model->getAllUsers();
         $userNameArray = [];
         foreach ($allUsers as $singleUser) {
-            $userNameArray[$singleUser->id] =  $singleUser->name;
+            $userNameArray[$singleUser->uuid] = $singleUser->name;
         }
 
         $data['userNameArray'] = $userNameArray;
@@ -42,7 +46,7 @@ class User_business extends CommonController
         $data['tableName'] = $this->table;
         $data['rawTblName'] = $this->rawTblName;
         $data['is_add_permission'] = 1;
-        $data['identifierKey'] = 'id';
+        $data['identifierKey'] = 'uuid';
 
         $viewPath = "user_business/list";
 
@@ -52,11 +56,12 @@ class User_business extends CommonController
     }
 
     public function edit($id = 0)
-    {
+    {   
+        $userBsResults = $this->User_business_model->getResultByUUID($id);
         $data['tableName'] = $this->table;
         $data['rawTblName'] = $this->rawTblName;
-        $data['result'] = $this->User_business_model->getResult($id);
-
+        $data['result'] = $userBsResults;
+        $data['selectedUser'] = $this->userModel->userByUUID($userBsResults ? $userBsResults[0]->user_uuid : false);
         $data['allUsers'] = $this->meta_model->getAllUsers();
         $data['userBusiness'] = $this->meta_model->getAllBusiness();
         return view('user_business/edit', $data);
@@ -66,17 +71,22 @@ class User_business extends CommonController
     public function update()
     {
         $id = $this->request->getPost('id');
-        $user_id = $this->request->getPost('user_id');
+        $selectedUserId = $this->request->getPost('selectedUserId');
+        $user_id = $this->request->getPost('user_id') ?? $selectedUserId;
         $user_business_id = $this->request->getPost('user_business_id');
         $data["user_id"] = $user_id;
-        $data["id"] = $id;
+        $data["uuid"] = $id;
         $data["user_business_id"] = json_encode($user_business_id);
         $primary_business_uuid = $this->request->getPost('primary_business_uuid');
         $data["primary_business_uuid"] = '';
         if (!is_null($user_business_id) && in_array($primary_business_uuid, $user_business_id)) {
             $data["primary_business_uuid"] = $primary_business_uuid;
         }
-
+        if (empty($data['uuid'])) {
+            $uuidNamespace = UUID::v4();
+            $uuid = UUID::v5($uuidNamespace, 'user_business');
+            $data['uuid'] = $uuid;
+        }        
         $data['business'] = $this->User_business_model->insertOrUpdate($id, $data);
         return redirect()->to('/user_business');
     }

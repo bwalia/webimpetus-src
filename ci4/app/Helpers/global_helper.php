@@ -3,15 +3,17 @@
 function getAllBusiness()
 {
     $result = array();
-    if (isset($_SESSION["uuid"])) {
-        $uuid = $_SESSION["uuid"];
-
+    if (isset($_SESSION["userUuid"])) {
+        $userUuid = $_SESSION["userUuid"];
         $db = \Config\Database::connect();
         $builder = $db->table("user_business");
-        $userBusiness = $builder->where("user_id", $uuid)->get()->getResultArray();
+        $userBusiness = $builder->where("user_uuid", $userUuid)->get()->getResultArray();
         $builder = $db->table("businesses");
         if ($userBusiness) {
             $allBusinesssId = json_decode(@$userBusiness[0]["user_business_id"]);
+            if (!is_array($allBusinesssId)) {
+                $allBusinesssId = [$allBusinesssId];
+            }
             if ($allBusinesssId) {
                 $result = $builder->whereIn("uuid", $allBusinesssId)->get()->getResultArray();
             } else {
