@@ -160,7 +160,6 @@ def test_timeslipsCalendar(setup, request):
     time.sleep(2)
     driver.execute_script("arguments[0].scrollIntoView();",  wait_for_element(By.ID, "slip_description"))
     wait_for_element(By.ID, "slip_description").send_keys("This is a test description")
-    driver.get_screenshot_as_file("abc.png")
     driver.execute_script("arguments[0].scrollIntoView();",  wait_for_element(By.XPATH, "//button[@class='btn btn-primary btn-color margin-right-5 btn-sm']"))
     wait_for_element(By.XPATH, "//button[@class='btn btn-primary btn-color margin-right-5 btn-sm']").click()
     time.sleep(2)

@@ -50,4 +50,3 @@ jobs:
           fi
           
           docker run -e QA_LOGIN_EMAIL=$QA_LOGIN_EMAIL -e QA_LOGIN_PASSWORD=$QA_LOGIN_PASSWORD -e TARGET_HOST=$TARGET_HOST crm-selenium-tests    
-
