@@ -61,7 +61,7 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && php -r "unlink('composer-setup.php');"
 
 RUN cd /var/www/html && composer update
-# Moved to kubernetes deployment because db connection is not available here run cd /var/www/html && php spark migrate 
+# Moved to kubernetes deployment because db connection is not available here run cd /var/www/html && php spark migrate && php spark db:seed UpdateUserBusinessSeeder
 RUN mv /var/www/html/env /var/www/html/.env
 
 RUN chown www-data:root -R /var/www/html/
