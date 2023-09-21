@@ -39,7 +39,7 @@ $json = json_decode($str, true);
                         <input autocomplete="off" type="text" class="form-control " name="company_number" placeholder="" value="<?= @$businesse->company_number ?>">
                     </div>
                     <div class="form-group  col-md-12">
-                        <label for="inputEmail4">Vat Number</label>
+                        <label for="inputEmail4">VAT Number</label>
                         <input autocomplete="off" type="text" class="form-control " name="vat_number" placeholder="" value="<?= @$businesse->vat_number ?>">
                     </div>
                     <div class="form-group  col-md-12">
