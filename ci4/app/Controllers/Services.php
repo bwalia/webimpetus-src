@@ -14,6 +14,15 @@ use App\Libraries\UUID;
 
 class Services extends Api
 {	
+	public $serviceModel;
+	public $user_model;
+	public $secret_model;
+	public $template_model;
+	public $meta_model;
+	public $Amazon_s3_model;
+	public $businessUuid;
+	public $whereCond;
+
 	public function __construct()
 	{
 		parent::__construct(); 
@@ -325,9 +334,9 @@ class Services extends Api
 
 public function delete($id)
 {       
-	//echo $id; die;
+	// echo $id; die;
 	if(!empty($id)) {
-		$response = $this->serviceModel->deleteData($id);		
+		$response = $this->serviceModel->deleteDataByUUID($id);		
 		if($response){
 			session()->setFlashdata('message', 'Data deleted Successfully!');
 			session()->setFlashdata('alert-class', 'alert-success');

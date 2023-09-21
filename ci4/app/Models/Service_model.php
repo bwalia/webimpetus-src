@@ -53,6 +53,11 @@ class Service_model extends Model
         $query = $this->db->table($this->table)->delete(array('id' => $id));
         return $query;
     }
+	public function deleteDataByUUID($id)
+    {
+        $query = $this->db->table($this->table)->delete(array('uuid' => $id));
+        return $query;
+    }
 	
 	public function updateData($id = null, $data = null)
 	{
