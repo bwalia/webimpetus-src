@@ -218,7 +218,7 @@ $domains = getResultArray("domains", ["sid" => @$service->uuid]);
                                             } else {
                                                 ?>
                                                 <div class="form-group col-md-1 change">
-                                                    <button class="btn btn-info bootstrap-touchspin-up deleteaddress"
+                                                    <button class="btn btn-info bootstrap-touchspin-up deleteaddress" data-type="secret_services"
                                                         data-id="<?= $secret_services[$jak_i]['id'] ?>" id="deleteRow" type="button"
                                                         style="max-height: 35px;margin-top: 28px;margin-left: 10px;">-</button>
                                                 </div>
@@ -328,7 +328,7 @@ $domains = getResultArray("domains", ["sid" => @$service->uuid]);
 
                                             <div class="form-group col-md-1 change">
                                                 <button class="btn btn-info bootstrap-touchspin-up deleteaddress" id="deleteRow"
-                                                    type="button"
+                                                    type="button" data-type="service_step"
                                                     style="max-height: 35px;margin-top: 38px;margin-left: 10px;margin-bottom:10px;">-</button>
                                                 <br>
                                                 <a href="#" class="tooltip-class" style="margin-left: 23px;"
@@ -433,7 +433,7 @@ $domains = getResultArray("domains", ["sid" => @$service->uuid]);
                                             } else {
                                                 ?>
                                                 <div class="form-group col-md-1 change">
-                                                    <button class="btn btn-info bootstrap-touchspin-up deleteaddress"
+                                                    <button class="btn btn-info bootstrap-touchspin-up deleteaddress" data-type="domains"
                                                         data-id="<?= $domains[$jak_i]['uuid'] ?>" id="deleteRow" type="button"
                                                         style="max-height: 35px;margin-top: 28px;margin-left: 10px;">-</button>
                                                 </div>
@@ -768,7 +768,7 @@ $domains = getResultArray("domains", ["sid" => @$service->uuid]);
                     '<input autocomplete="off" type="text" class="form-control" id="key_value_' + x + '" name="key_value[]" placeholder="" value="">' +
                     '</div>' +
                     '<div class="form-group col-md-1 change">' +
-                    '<button class="btn btn-info bootstrap-touchspin-up deleteaddress" id="deleteRow" type="button" style="max-height: 35px;margin-top: 28px;margin-left: 10px;">-</button>' +
+                    '<button class="btn btn-info bootstrap-touchspin-up deleteaddress" data-type="secret_services" id="deleteRow" type="button" style="max-height: 35px;margin-top: 28px;margin-left: 10px;">-</button>' +
                     '</div></div>'
                 );
 
@@ -787,6 +787,8 @@ $domains = getResultArray("domains", ["sid" => @$service->uuid]);
 
         var current = $(this);
         var serviceId = current.attr("data-id");
+        var serviceType = current.attr("data-type");
+        console.log({serviceType}); return
         $.ajax({
             url: baseUrl + "/services/deleteRow",
             data: {
@@ -856,7 +858,7 @@ $domains = getResultArray("domains", ["sid" => @$service->uuid]);
                 '<textarea class="form-control textarea-height blocks_text" id="blocks_text' + total_blocks + '" name="blocks_text[]" placeholder="" value="" ></textarea> ' +
                 '</div> <input type="hidden" value="0" id="blocks_id" name="blocks_id[]">' +
                 '<div class="form-group col-md-1 change">' +
-                '<button class="btn btn-info bootstrap-touchspin-up deleteaddress" id="deleteRow" type="button" style="max-height: 35px;margin-top: 28px;margin-left: 10px;">-</button>' +
+                '<button class="btn btn-info bootstrap-touchspin-up deleteaddress" data-type="service_step" id="deleteRow" type="button" style="max-height: 35px;margin-top: 28px;margin-left: 10px;">-</button>' +
                 '</div></div>'
             );
 
@@ -888,7 +890,7 @@ $domains = getResultArray("domains", ["sid" => @$service->uuid]);
                     '<label for="inputSecretKey">Select Domain</label>' +
                     '<select id="domains" name="domains[]" class="form-control">                                      <option value="" selected="">--Select--</option> <?php foreach ($all_domains as $row): ?>     <option value="<?= $row['uuid']; ?>"><?= $row['name']; ?></option> <?php endforeach; ?> </select></div>' +
                     '<div class="form-group col-md-1 change">' +
-                    '<button class="btn btn-info bootstrap-touchspin-up deleteaddress" id="deleteRow" type="button" style="max-height: 35px;margin-top: 28px;margin-left: 10px;">-</button>' +
+                    '<button class="btn btn-info bootstrap-touchspin-up deleteaddress" data-type="domains" id="deleteRow" type="button" style="max-height: 35px;margin-top: 28px;margin-left: 10px;">-</button>' +
                     '</div></div>'
                 );
 

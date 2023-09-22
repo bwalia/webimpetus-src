@@ -55,7 +55,7 @@ class Projects extends CommonController
 		$data = $this->request->getPost();
 
         $data['start_date'] = strtotime($data['start_date']);
-     
+        $data['deadline_date'] = strtotime($data['deadline_date']);
         
 		$response = $this->model->insertOrUpdate($id, $data);
 		if(!$response){
