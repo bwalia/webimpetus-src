@@ -62,7 +62,7 @@ func TestCreateEmployees(t *testing.T) {
 	writer := multipart.NewWriter(payload)
 	_ = writer.WriteField("first name", "test")
 	_ = writer.WriteField("email", "test.2@testing.com")
-	_ = writer.WriteField("uuid_business_id", "a2d14181-c413-5e36-98ae-131e975c744e")
+	_ = writer.WriteField("uuid_business_id", businessId)
 	err := writer.Close()
 	if err != nil {
 		t.Log(err)
@@ -118,7 +118,7 @@ func TestUpdateEmployees(t *testing.T) {
 	data := EmployeeData{
 		Surname:          "newtest",
 		UUID:             employeeId,
-		Uuid_business_id: "a2d14181-c413-5e36-98ae-131e975c744e",
+		Uuid_business_id: businessId,
 	}
 
 	//t.Log(data)

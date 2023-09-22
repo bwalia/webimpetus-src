@@ -71,8 +71,9 @@ def test_usersActions(setup, request):
       return element
 
     # Verifying user status update
+    time.sleep(2)
     wait_for_element(By.XPATH, "//a[@href='/users']").click()
-    wait_for_element(By.XPATH, "//span[@class='slider round']").click()
+    wait_for_element(By.XPATH, "//tr[contains(., 'Selenium')]//span[@class='slider round']").click()
     time.sleep(2)
     status_alert = driver.switch_to.alert
     alertText = status_alert.text
@@ -108,7 +109,7 @@ def test_usersActions(setup, request):
 
       # Delete a User
     wait_for_element(By.XPATH, "//a[@href='/users']").click()
-    driver.execute_script("arguments[0].scrollIntoView();",  wait_for_element(By.XPATH, "//tr[contains(., 'Selenium')]"))
+    time.sleep(2)
     dropDown = driver.find_element(By.XPATH, "//tr[contains(., 'Selenium')]//span[@id='dropdownMenuButton']")
     dropDown.click()
     time.sleep(2)

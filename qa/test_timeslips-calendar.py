@@ -24,6 +24,7 @@ def test_timeslipsCalendar(setup, request):
 
     # Verifying user lands on the current month when opens the calendar
     wait_for_element(By.XPATH, "//a[@href='/fullcalendar']").click()
+    time.sleep(2)
     title = wait_for_element(By.ID, "fc-dom-1").text
     print(title)
     expected_title = current_time.strftime("%B %Y")
@@ -139,7 +140,7 @@ def test_timeslipsCalendar(setup, request):
     wait_for_element(By.XPATH, "//li[contains(text(),'Selenium Test')]").click()
 
     wait_for_element(By.ID, "select2-employee_name-container").click()
-    wait_for_element(By.XPATH, "//li[contains(text(),'Dixa Jangid')]").click()
+    wait_for_element(By.XPATH, "//li[contains(text(),'Tester')]").click()
     Slip_time_start = wait_for_element(By.NAME, "slip_timer_started")
     Slip_time_start.click()
     Slip_time_start.send_keys(Keys.END)
@@ -160,6 +161,7 @@ def test_timeslipsCalendar(setup, request):
     time.sleep(2)
     driver.execute_script("arguments[0].scrollIntoView();",  wait_for_element(By.ID, "slip_description"))
     wait_for_element(By.ID, "slip_description").send_keys("This is a test description")
+    time.sleep(2)
     driver.execute_script("arguments[0].scrollIntoView();",  wait_for_element(By.XPATH, "//button[@class='btn btn-primary btn-color margin-right-5 btn-sm']"))
     wait_for_element(By.XPATH, "//button[@class='btn btn-primary btn-color margin-right-5 btn-sm']").click()
     time.sleep(2)

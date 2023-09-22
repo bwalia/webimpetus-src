@@ -11,8 +11,6 @@ from selenium.webdriver import Keys
 from selenium.webdriver import ActionChains
 
 
-
-
 def test_login():
     chrome_driver_path = chromedriver_autoinstaller.install()
     chrome_service: Service = Service(executable_path=chrome_driver_path)
@@ -29,6 +27,7 @@ def test_login():
         chrome_options.add_argument(option)
     
     driver = webdriver.Chrome(options = chrome_options)
+    driver.maximize_window()
 
     targetHost = os.environ.get('TARGET_HOST')
     EMAIL = os.environ.get('QA_LOGIN_EMAIL')

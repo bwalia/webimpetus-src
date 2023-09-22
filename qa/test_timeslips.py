@@ -5,8 +5,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver import Keys
 from selenium.webdriver.support.select import Select
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
-from datetime import date
-
+from datetime import date, datetime
 
 
 def test_timeslipsAdd(setup, request):
@@ -26,12 +25,22 @@ def test_timeslipsAdd(setup, request):
     wait_for_element(By.XPATH, "//li[contains(text(),'Selenium Test')]").click()
 
     wait_for_element(By.ID, "select2-employee_name-container").click()
-    wait_for_element(By.XPATH, "//li[contains(text(),'Dixa Jangid')]").click()
-    wait_for_element(By.ID, "slip_start_date").send_keys("09/11/2023")
+    wait_for_element(By.XPATH, "//li[contains(text(),'Tester')]").click()
+    start_date = wait_for_element(By.ID, "slip_start_date")
+    start_date.click()
+    start_date.send_keys(Keys.END)
+    length = len(start_date.get_attribute("value"))
+    start_date.send_keys(Keys.BACKSPACE * length)
+    start_date.send_keys("01/15/2020")
     wait_for_element(By.XPATH, "//div[@class='form-group col-md-3']").click()
     wait_for_element(By.XPATH, "//button[@class='btn btn-info set-current-time']").click()
 
-    wait_for_element(By.ID, "slip_end_date").send_keys("08/11/2023")
+    end_date = wait_for_element(By.ID, "slip_end_date")
+    end_date.click()
+    end_date.send_keys(Keys.END)
+    length = len(end_date.get_attribute("value"))
+    end_date.send_keys(Keys.BACKSPACE * length)
+    end_date.send_keys("08/11/2019")
     wait_for_element(By.XPATH, "//div[@class='form-group col-md-3']").click()
     wait_for_element(By.XPATH, "//button[@class='btn btn-info set-current-time']").click()
     time.sleep(4)
@@ -178,20 +187,6 @@ def test_timeslipsFilter(setup, request):
        # Verifying the results
     week3_result= wait_for_element(By.XPATH, "//td[contains(text(),'3')]").text
     print (week3_result)
-      # Verifying the results by change the filter input
-    week_Dropdown = Select(wait_for_element(By.NAME, "list_week"))
-    week_Dropdown.select_by_value("13")
-    try:
-        time.sleep(2)
-        week13_result = wait_for_element(By.XPATH, "//td[contains(text(),'3')]").text
-    except (NoSuchElementException,TimeoutException):
-        week13_result = None
-
-    if week13_result:
-        print("Week search included irrelevant result:", week13_result)
-    else:
-        print("No irrelevant week data found in the search results.")
-
     
  # Verifying the reset button
 
@@ -201,7 +196,9 @@ def test_timeslipsFilter(setup, request):
     current_year = str(todays_date.year)
     print(current_month)
     print(current_year)
-
+    
+    wait_for_element(By.XPATH, "//a[@href='/timeslips?reset=1']").click()
+    time.sleep(2)
     wait_for_element(By.XPATH, "//a[@href='/timeslips?reset=1']").click()
     time.sleep(4)
     year_Picker_value= wait_for_element(By.NAME, "list_yearpicker").get_attribute("value")
@@ -227,6 +224,8 @@ def test_timeslipsActions(setup, request):
     wait_for_element(By.XPATH, "//a[@href='/timeslips']").click()
     Select(wait_for_element(By.NAME, "list_monthpicker")).select_by_value("none")
     Select(wait_for_element(By.NAME, "list_yearpicker")).select_by_value("none")
+    Select(wait_for_element(By.NAME, "list_week")).select_by_value("none")
+
     time.sleep(2)
 
 
@@ -305,6 +304,20 @@ def test_timeslipsActions(setup, request):
     delete_success_alert = wait_for_element(By.CSS_SELECTOR, ".alert").text
     assert "deleted Successfully!" in delete_success_alert
 
+    # Delete timeslips created by timeslips calendar
+    driver.execute_script("arguments[0].scrollIntoView();",  wait_for_element(By.XPATH, "//tr[contains(., 'Selenium Test')]"))
+    dropDown = driver.find_element(By.XPATH, "//tr[contains(., 'Selenium Test')]//span[@id='dropdownMenuButton']")
+    dropDown.click()
+    time.sleep(2)
+    delete_button = wait_for_element(By.LINK_TEXT, "Delete")
+    delete_button.click()
+
+    time.sleep(4)
+    alert = driver.switch_to.alert
+    alert.accept()
+    time.sleep(2)
+    delete_success_alert = wait_for_element(By.CSS_SELECTOR, ".alert").text
+    assert "deleted Successfully!" in delete_success_alert
 
     
    

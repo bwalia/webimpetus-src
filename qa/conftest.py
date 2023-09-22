@@ -47,7 +47,7 @@ def setup(request):
     driver.find_element(By.XPATH, "//div[@class='business-uuid-selector mr-3']").click()
     dropdown = Select(driver.find_element(By.XPATH, "//select[@id='uuidBusinessIdSwitcher']"))
     time.sleep(2)
-    dropdown.select_by_visible_text("Balinder Walia's company")
+    dropdown.select_by_visible_text("QA Test Workspace")
     time.sleep(2)
     request.module.driver = driver 
     yield driver
