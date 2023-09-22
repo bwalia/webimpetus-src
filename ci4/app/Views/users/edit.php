@@ -12,6 +12,7 @@ $json = json_decode($str, true);
                     <label for="inputName">Name</label>
                     <input type="text" class="form-control required" id="inputName" name="name" placeholder=""
                         value="<?= @$user->name ?>" />
+                        <span class="form-control-feedback" id="nameError"></span>
                 </div>
                 <input type="hidden" class="form-control " name="id" placeholder="" value="<?= @$user->id ?>" />
                 <div class="form-group required col-md-4">
@@ -146,10 +147,19 @@ $json = json_decode($str, true);
         validatePassword(password, evt, "passwordError");
         const inputEmail = $("#inputEmail").val();
         const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+        const nameRegex = /^[A-Za-z\s'\-\.]+$/;
         if (emailRegex.test(inputEmail)) {
             $("#emailError").text("");
         } else {
             $("#emailError").text("The email should be valid.");
+            evt.preventDefault();
+            return false;
+        }
+        const inputName = $("#inputName").val(); 
+        if (inputName.length > 1 && inputName.trim() !== '' && nameRegex.test(inputName)) {
+            $("#nameError").text("");
+        } else {
+            $("#nameError").text("Please enter a valid name.");
             evt.preventDefault();
             return false;
         }
