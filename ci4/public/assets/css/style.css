@@ -4983,7 +4983,7 @@ body::-webkit-scrollbar {
 
 /* line 247, /scss/_main_content.scss */
 .page_title_box {
-    padding-bottom: 25px;
+    padding-bottom: 15px;
 }
 
 /* line 251, /scss/_main_content.scss */
@@ -14238,6 +14238,8 @@ p.dashTitle {
     border: 0;
     overflow: hidden;
     border-bottom: 6px solid;
+    border-left: 2px solid;
+    border-right: 2px solid;
 }
 
 .social_media_card .col-md-4:nth-child(1) .bg-light h6 {
@@ -14291,23 +14293,24 @@ p.dashTitle {
     font-weight: 700;
 }
 
+.social_media_card .col-md-4 .bg-light {
+  background: #eeeeee !important;
+  /* box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.4); */
+}
+
 .social_media_card .col-md-4:nth-child(1) .bg-light {
-    background: #fef7f6 !important;
     border-color: #ff004e;
 }
 
 .social_media_card .col-md-4:nth-child(2) .bg-light {
-    background: #e7f3fe !important;
     border-color: #42a5f5;
 }
 
 .social_media_card .col-md-4:nth-child(3) .bg-light {
-    background: #fdfcf3 !important;
     border-color: #ffb300;
 }
 
 .social_media_card .col-md-4:nth-child(4) .bg-light {
-    background: #edf7ee !important;
     border-color: #4caf50;
 }
 
@@ -14316,16 +14319,19 @@ p.dashTitle {
 }
 
 .social_media_card .col-md-4 .card-body.card-body-custom .items.add-dropzone .card.draggable {
+    background-color: #eeeeee !important;
     margin: 0;
     box-shadow: none !important;
 }
 
 .social_media_card .col-md-4 .card-body.card-body-custom  .card.draggable .card-body.card-body-custom {
     padding: 12px !important;
+    border-radius: 15px;
+    box-shadow: 3px 4px 6px rgba(0,0,0,0.4);
 }
 
 .social_media_card {
-    background: #fff;
+    background: #eeeeee;
     box-shadow: 0 1px 1px rgb(0 0 0 / 20%);
     border: 1px solid #ededed;
     padding: 26px !important;
@@ -14401,7 +14407,7 @@ p.dashTitle {
     font-size: 14px!important;
 }
 
-.all-media-image-files {
+.all-media-image-files, .media-files {
     margin-bottom: 20px;
     display: inline-block;
 }

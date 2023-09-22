@@ -116,6 +116,7 @@ data:
         echo "Restart apache2"
         apachectl graceful
         php spark migrate
+        php spark db:seed UpdateUserBusinessSeeder
         #apachectl restart
         # a2ensite 000-default
         # service apache2 reload
@@ -280,6 +281,7 @@ data:
         echo "Restart openresty nginx"
         openresty -s reload
         php spark migrate
+        php spark db:seed UpdateUserBusinessSeeder
         echo "==========================="
         echo "Workstation Nginx Bootstrap Script Completed"      
     workstation.conf: |

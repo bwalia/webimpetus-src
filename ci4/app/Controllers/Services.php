@@ -1,5 +1,7 @@
-<?php namespace App\Controllers;
- 
+<?php
+
+namespace App\Controllers;
+
 use CodeIgniter\Controller;
 use App\Models\Service_model;
 use App\Models\Users_model;
@@ -13,10 +15,19 @@ use App\Models\Core\Common_model;
 use App\Libraries\UUID;
 
 class Services extends Api
-{	
+{
+	public $serviceModel;
+	public $user_model;
+	public $secret_model;
+	public $template_model;
+	public $meta_model;
+	public $Amazon_s3_model;
+	public $businessUuid;
+	public $whereCond;
+
 	public function __construct()
 	{
-		parent::__construct(); 
+		parent::__construct();
 		$this->session = \Config\Services::session();
 		$this->serviceModel = new Service_model();
 		$this->user_model = new Users_model();
@@ -30,82 +41,79 @@ class Services extends Api
 		helper(["global"]);
 
 		$this->common_model = new Common_model();
-	  	$this->common_model->getMenuCode("/services");
+		$this->common_model->getMenuCode("/services");
 		$this->businessUuid = session('uuid_business');
 		$this->whereCond['uuid_business_id'] = $this->businessUuid;
 		$menucode = $this->getMenuCode("/services");
 		$this->session->set("menucode", $menucode);
-
 	}
 
-    public function index()
-    {        
-        $data['services'] = $this->serviceModel->getRows();
+	public function index()
+	{
+		$data['services'] = $this->serviceModel->getRows();
 		$data['tableName'] = "services";
-        $data['rawTblName'] = "service";
+		$data['rawTblName'] = "service";
 		$data['is_add_permission'] = 1;
-		echo view('services/list',$data);
-    }
-	 
-	public function edit($id=0)
-    {        
+		echo view('services/list', $data);
+	}
+
+	public function edit($id = 0)
+	{
 		$data['tableName'] = "services";
-        $data['rawTblName'] = "service";
-        $data['service'] = !empty($id)?$this->serviceModel->getRows($id)->getRow():[];
+		$data['rawTblName'] = "service";
+		$data['service'] = !empty($id) ? $this->serviceModel->getRows($id)->getRow() : [];
 		$data['tenants'] = $this->tmodel->getRows();
 		$data['category'] = $this->cmodel->getRows();
 		$data['users'] = $this->user_model->getUser();
 		$data['secret_services'] = $this->secret_model->getSecrets($id);
-		$data['all_domains'] = $this->common_model->getCommonData('domains',['uuid_business_id' => $this->businessUuid]);
-      
-		//print_r($data['all_domains']); die;
-        echo view('services/edit', $data);
-    }
-	
+		$data['all_domains'] = $this->common_model->getCommonData('domains', ['uuid_business_id' => $this->businessUuid]);
 
-    public function update()
-    {
+		//print_r($data['all_domains']); die;
+		echo view('services/edit', $data);
+	}
+
+
+	public function update()
+	{
 		//$post = $this->request->getPost();
 		//print_r($post); die;
-        $id = $this->request->getPost('id');
-
-	
-        $data = array(
+		$id = $this->request->getPost('id');
+		$data = array(
 			'name'  => $this->request->getPost('name'),
-			'code' => $this->request->getPost('code'),				
-			'notes' => $this->request->getPost('notes'),	
+			'code' => $this->request->getPost('code'),
+			'notes' => $this->request->getPost('notes'),
 			'user_uuid' => $this->request->getPost('uuid'),
 			//'nginx_config' => $this->request->getPost('nginx_config'),
 			//'varnish_config' => $this->request->getPost('varnish_config'),
 			'cid' => $this->request->getPost('cid'),
 			'tid' => $this->request->getPost('tid'),
 			'link' => $this->request->getPost('link'),
-			
+
 			'uuid_business_id' => $this->businessUuid,
 		);
-		if(empty($id)){
+		if (empty($id)) {
 			$data['uuid'] = UUID::v5(UUID::v4(), 'services');
 		}
-		
+
 		$image_logo = $this->request->getPost('image_logo');
 		$brand_logo = $this->request->getPost('brand_logo');
-		if(!empty($image_logo) && strlen($image_logo) > 0){
+		if (!empty($image_logo) && strlen($image_logo) > 0) {
 
 			$data['image_logo'] = $this->request->getPost('image_logo');
 		}
-		if(!empty($brand_logo) && strlen($brand_logo) > 0){
+		if (!empty($brand_logo) && strlen($brand_logo) > 0) {
 
 			$data['image_brand'] = $this->request->getPost('brand_logo');
 		}
 
-		 
-        $id = $this->serviceModel->insertOrUpdate("services", $id,$data); //die;
-		
+
+		$id = $this->serviceModel->insertOrUpdate("services", $id, $data); //die;
+
 		$this->secret_model->deleteServiceFromServiceID($id);
-		
+
 		$key_name = $this->request->getPost('key_name');
 		$key_value = $this->request->getPost('key_value');
-		
+
 		foreach ($key_name as $key => $value) {
 			//$address_data['service_id'] = $id;
 			$address_data['key_name'] = $key_name[$key];
@@ -113,308 +121,301 @@ class Services extends Api
 			$address_data['status'] = 1;
 			$address_data['uuid_business_id'] = $this->businessUuid;
 
-		
-			$secret_id = $this->secret_model->saveOrUpdateData($id , $address_data);
 
-			if($secret_id > 0){
+			$secret_id = $this->secret_model->saveOrUpdateData($id, $address_data);
+
+			if ($secret_id > 0) {
 				$dataRelated['secret_id'] = $secret_id;
 				$dataRelated['service_id'] = $id;
 				$dataRelated['uuid_business_id'] = $this->businessUuid;
 				$this->secret_model->saveSecretRelatedData($dataRelated);
 			}
-	
 		}
 
-			$i = 0;
-			$post = $this->request->getPost();
-			//print_r($post); die;
-			if (count($post["blocks_code"])>0) {
-				foreach ($post["blocks_code"] as $code) {
+		$i = 0;
+		$post = $this->request->getPost();
+		//print_r($post); die;
+		if (count($post["blocks_code"]) > 0) {
+			foreach ($post["blocks_code"] as $code) {
 
-					$blocks = [];
-					$blocks["code"] = $code;
-					//$blocks["webpages_id"] = '';
-					$blocks["text"] = $post["blocks_text"][$i];
-					$blocks["title"] = $post["blocks_title"][$i];
-					$blocks["sort"] = $post["sort"][$i];
-					$blocks["type"] = $post["type"][$i];
-					$blocks["uuid_linked_table"] = $id;
-					$blocks["uuid_business_id"] = session('uuid_business');
-					$blocks_id =  @$post["blocks_id"][$i];
-					//print_r($blocks); die;
-					if (empty($blocks["sort"])) {
-						$blocks["sort"] = $blocks_id;
-					}
-					$blocks_id = $this->serviceModel->insertOrUpdate("blocks_list", $blocks_id, $blocks);
-					if (empty($blocks["sort"])) {
-						$this->serviceModel->insertOrUpdate("blocks_list", $blocks_id, ["sort" => $blocks_id]);
-					}
-
-					$i++;
+				$blocks = [];
+				$blocks["code"] = $code;
+				//$blocks["webpages_id"] = '';
+				$blocks["text"] = $post["blocks_text"][$i];
+				$blocks["title"] = $post["blocks_title"][$i];
+				$blocks["sort"] = $post["sort"][$i];
+				$blocks["type"] = $post["type"][$i];
+				$blocks["uuid_linked_table"] = $id;
+				$blocks["uuid_business_id"] = session('uuid_business');
+				$blocks_id =  @$post["blocks_id"][$i];
+				//print_r($blocks); die;
+				if (empty($blocks["sort"])) {
+					$blocks["sort"] = $blocks_id;
 				}
-			} else {
-				$this->model->deleteTableData("blocks_list", $uuid, "uuid_linked_table");
-			}
-			//print_r($post["domains"]); die;
-			if (count($post["domains"])>0) {
-				foreach ($post["domains"] as $domain) {
-					$this->serviceModel->insertOrUpdate("domains", $domain, ['sid'=>$id]);
+				$blocks_id = $this->serviceModel->insertOrUpdate("blocks_list", $blocks_id, $blocks);
+				if (empty($blocks["sort"])) {
+					$this->serviceModel->insertOrUpdate("blocks_list", $blocks_id, ["sort" => $blocks_id]);
 				}
-			}else{
 
+				$i++;
 			}
+		} else {
+			$this->model->deleteTableData("blocks_list", $uuid, "uuid_linked_table");
+		}
+		//print_r($post["domains"]); die;
+		if (count($post["domains"]) > 0) {
+			foreach ($post["domains"] as $domain) {
+				$this->serviceModel->insertOrUpdate("domains", $domain, ['sid' => $id]);
+			}
+		} else {
+		}
 
-		
-        return redirect()->to('/services');
-    }
-	
 
-	
-	
-	public function deploy_service($uuid=0)
-    {
-		if(!empty($uuid)) {
+		return redirect()->to('/services');
+	}
+
+
+
+
+	public function deploy_service($uuid = 0)
+	{
+		if (!empty($uuid)) {
 
 			$this->export_service_json($uuid);
 			$this->gen_service_env_file($uuid);
 			$this->push_service_env_vars($uuid);
 			$this->gen_service_yaml_file($uuid);
-						
+
 			//exec('/bin/sh /var/www/html/writable/tizohub_deploy_service.sh', $output, $return);
 			$output = shell_exec('/bin/sh /var/www/html/writable/tizohub_deploy_service.sh');
 			//echo $output;
 			echo "Service deployment process started OK. Verify the deployment using kubectl get pods command";
-			
-		} else { echo "Uuid is empty!!"; }
-		
-    }
+		} else {
+			echo "Uuid is empty!!";
+		}
+	}
 
-	public function delete_service($uuid=0)
-    {
-		if(!empty($uuid)) {
+	public function delete_service($uuid = 0)
+	{
+		if (!empty($uuid)) {
 
 			$this->export_service_json($uuid);
 			$this->gen_service_env_file($uuid);
 			$this->push_service_env_vars($uuid);
 			$this->gen_service_yaml_file($uuid);
-						
+
 			//exec('/bin/bash /var/www/html/writable/tizohub_deploy_service.sh', $output, $return);
 			$output = shell_exec('/bin/sh /var/www/html/writable/tizohub_delete_service.sh');
 			//echo $output;
 			echo "Service deletion process started OK. Note: This process does not delete the tenant database.";
-			
-		} else { echo "Uuid is empty!!"; }
-		
-    }
+		} else {
+			echo "Uuid is empty!!";
+		}
+	}
 
-	
-	public function export_service_json($uuid) 
+
+	public function export_service_json($uuid)
 	{
 		//export service json same format as provided by the api
 		// url/api/service/uuid.json -> json
 		// write json to to file	
-		
-		$myfile = fopen(WRITEPATH . "tizohub_deployments/service-".$uuid.".json", "w") or die("Unable to open file!");
-		
-		fwrite($myfile, $this->services($uuid,true));
+
+		$myfile = fopen(WRITEPATH . "tizohub_deployments/service-" . $uuid . ".json", "w") or die("Unable to open file!");
+
+		fwrite($myfile, $this->services($uuid, true));
 		fclose($myfile);
 	}
 
-	
-	public function push_service_env_vars($uuid) 
+
+	public function push_service_env_vars($uuid)
 	{
 		// Get the contents of the JSON file for service and add as env variables to pass to the deployment
-		$svcJsonFileContents = file_get_contents(WRITEPATH . "tizohub_deployments/service-".$uuid.".json");
+		$svcJsonFileContents = file_get_contents(WRITEPATH . "tizohub_deployments/service-" . $uuid . ".json");
 		// Convert to array
 		$svcJsonFileObj = json_decode($svcJsonFileContents);
-		putenv("SERVICE_ID=".$uuid);
-		putenv("SERVICE_NAME=".$svcJsonFileObj->name);
+		putenv("SERVICE_ID=" . $uuid);
+		putenv("SERVICE_NAME=" . $svcJsonFileObj->name);
 		// loop through all global secrets required for kubernetes deployment 
 		$secrets = $this->secret_model->getRows();
-		if(!empty($secrets)){
-				foreach($secrets as $key=>$val){
-					if ($val['key_name'] == 'KUBECONFIG') {
-						$myfile = fopen(WRITEPATH . "kube_config_auth", "w") or die("Unable to open file!");
-						fwrite($myfile, $val['key_value']);
-						fclose($myfile);
-					}
-					
-					if ($val['key_name'] == 'TIZOHUB_DOCKER_IMAGE' || $val['key_name'] == 'TIZOHUB_DOCKER_IMAGE_TAG' || $val['key_name'] == 'KUBENETES_CLUSTER_NAME' || $val['key_name'] == 'AWS_ACCESS_KEY_ID' || $val['key_name'] == 'AWS_SECRET_ACCESS_KEY' || $val['key_name'] == 'AWS_DEFAULT_REGION') {
-					putenv($val['key_name']."=".$val['key_value']);
-					}
+		if (!empty($secrets)) {
+			foreach ($secrets as $key => $val) {
+				if ($val['key_name'] == 'KUBECONFIG') {
+					$myfile = fopen(WRITEPATH . "kube_config_auth", "w") or die("Unable to open file!");
+					fwrite($myfile, $val['key_value']);
+					fclose($myfile);
+				}
+
+				if ($val['key_name'] == 'TIZOHUB_DOCKER_IMAGE' || $val['key_name'] == 'TIZOHUB_DOCKER_IMAGE_TAG' || $val['key_name'] == 'KUBENETES_CLUSTER_NAME' || $val['key_name'] == 'AWS_ACCESS_KEY_ID' || $val['key_name'] == 'AWS_SECRET_ACCESS_KEY' || $val['key_name'] == 'AWS_DEFAULT_REGION') {
+					putenv($val['key_name'] . "=" . $val['key_value']);
+				}
 			}
 		}
 
 		// loop through all secrets of this service 
 		$secrets = $this->secret_model->getSecrets($uuid);
-		if(!empty($secrets)){
-			foreach($secrets as $key=>$val){
-				putenv($val['key_name']."=".$val['key_value']);
+		if (!empty($secrets)) {
+			foreach ($secrets as $key => $val) {
+				putenv($val['key_name'] . "=" . $val['key_value']);
 			}
 		}
-		
 	}
 
 
 	public function gen_service_env_file($uuid)
 	{
-	
-		$service_data = file_get_contents(WRITEPATH. 'tizohub.values.template');
+
+		$service_data = file_get_contents(WRITEPATH . 'tizohub.values.template');
 		$secrets = $this->secret_model->getSecrets($uuid);
-		if(!empty($secrets)){
-			foreach($secrets as $key=>$val){
-				$pattern = "/{{".$val['key_name']."}}/i";
+		if (!empty($secrets)) {
+			foreach ($secrets as $key => $val) {
+				$pattern = "/{{" . $val['key_name'] . "}}/i";
 				$service_data = preg_replace($pattern, $val['key_value'], $service_data);
-		
 			}
 		}
-	
+
 		// loop through all global secrets required for kubernetes deployment 
 		$secrets = $this->secret_model->getRows();
-		if(!empty($secrets)){
-				foreach($secrets as $key=>$val){					
-					if ($val['key_name'] == 'TIZOHUB_DOCKER_IMAGE' || $val['key_name'] == 'TIZOHUB_DOCKER_IMAGE_TAG' || $val['key_name'] == 'KUBENETES_CLUSTER_NAME' || $val['key_name'] == 'AWS_ACCESS_KEY_ID' || $val['key_name'] == 'AWS_SECRET_ACCESS_KEY' || $val['key_name'] == 'AWS_DEFAULT_REGION') {
-						$pattern = "/{{".$val['key_name']."}}/i";
-						$service_data = preg_replace($pattern, $val['key_value'], $service_data);
-					}
+		if (!empty($secrets)) {
+			foreach ($secrets as $key => $val) {
+				if ($val['key_name'] == 'TIZOHUB_DOCKER_IMAGE' || $val['key_name'] == 'TIZOHUB_DOCKER_IMAGE_TAG' || $val['key_name'] == 'KUBENETES_CLUSTER_NAME' || $val['key_name'] == 'AWS_ACCESS_KEY_ID' || $val['key_name'] == 'AWS_SECRET_ACCESS_KEY' || $val['key_name'] == 'AWS_DEFAULT_REGION') {
+					$pattern = "/{{" . $val['key_name'] . "}}/i";
+					$service_data = preg_replace($pattern, $val['key_value'], $service_data);
+				}
 			}
 		}
-		
-		$myfile = fopen(WRITEPATH . "tizohub_deployments/values-".$uuid.".yaml", "w") or die("Unable to open file!");
+
+		$myfile = fopen(WRITEPATH . "tizohub_deployments/values-" . $uuid . ".yaml", "w") or die("Unable to open file!");
 		fwrite($myfile, $service_data);
 		fclose($myfile);
-	
+
 		//create php seed
 		// $myfile = fopen(WRITEPATH . "tizohub_deployments/service-".$uuid.".php", "w") or die("Unable to open file!");
 		// fwrite($myfile, $service_data);
 		// fclose($myfile);
-	
+
 	}
-	
+
 
 	public function gen_service_yaml_file($uuid)
 	{
-		$service_data = file_get_contents(WRITEPATH. 'tizohub.yaml.template');
-	
-			//then go through service secrets vars and may override any global var values
-			$secrets = $this->secret_model->getSecrets($uuid);
-			if(!empty($secrets)){
-				foreach($secrets as $key=>$val){
-					$pattern = "/{{".$val['key_name']."}}/i";
+		$service_data = file_get_contents(WRITEPATH . 'tizohub.yaml.template');
+
+		//then go through service secrets vars and may override any global var values
+		$secrets = $this->secret_model->getSecrets($uuid);
+		if (!empty($secrets)) {
+			foreach ($secrets as $key => $val) {
+				$pattern = "/{{" . $val['key_name'] . "}}/i";
+				$service_data = preg_replace($pattern, $val['key_value'], $service_data);
+			}
+		}
+		// loop through all global secrets required for kubernetes deployment 
+		$secrets = $this->secret_model->getRows();
+		if (!empty($secrets)) {
+			foreach ($secrets as $key => $val) {
+				if ($val['key_name'] == 'TIZOHUB_DOCKER_IMAGE' || $val['key_name'] == 'TIZOHUB_DOCKER_IMAGE_TAG' || $val['key_name'] == 'KUBENETES_CLUSTER_NAME' || $val['key_name'] == 'AWS_ACCESS_KEY_ID' || $val['key_name'] == 'AWS_SECRET_ACCESS_KEY' || $val['key_name'] == 'AWS_DEFAULT_REGION') {
+					$pattern = "/{{" . $val['key_name'] . "}}/i";
 					$service_data = preg_replace($pattern, $val['key_value'], $service_data);
-			
 				}
 			}
-				// loop through all global secrets required for kubernetes deployment 
-				$secrets = $this->secret_model->getRows();
-				if(!empty($secrets)){
-						foreach($secrets as $key=>$val){					
-							if ($val['key_name'] == 'TIZOHUB_DOCKER_IMAGE' || $val['key_name'] == 'TIZOHUB_DOCKER_IMAGE_TAG' || $val['key_name'] == 'KUBENETES_CLUSTER_NAME' || $val['key_name'] == 'AWS_ACCESS_KEY_ID' || $val['key_name'] == 'AWS_SECRET_ACCESS_KEY' || $val['key_name'] == 'AWS_DEFAULT_REGION') {
-								$pattern = "/{{".$val['key_name']."}}/i";
-								$service_data = preg_replace($pattern, $val['key_value'], $service_data);			
-							}
-					}
-				}
-	
-		$myfile = fopen(WRITEPATH."tizohub_deployments/service-".$uuid.".yaml", "w") or die("Unable to open file!");
-		fwrite($myfile, $service_data);
-		fclose($myfile);
-	
-	}
-	
-
-public function delete($id)
-{       
-	//echo $id; die;
-	if(!empty($id)) {
-		$response = $this->serviceModel->deleteData($id);		
-		if($response){
-			session()->setFlashdata('message', 'Data deleted Successfully!');
-			session()->setFlashdata('alert-class', 'alert-success');
-		}else{
-			session()->setFlashdata('message', 'Something wrong delete failed!');
-			session()->setFlashdata('alert-class', 'alert-danger');		
 		}
 
+		$myfile = fopen(WRITEPATH . "tizohub_deployments/service-" . $uuid . ".yaml", "w") or die("Unable to open file!");
+		fwrite($myfile, $service_data);
+		fclose($myfile);
 	}
-	
-	return redirect()->to('/services');
-}
 
 
-public function getMenuCode($value)
-{
-	$result = $this->db->table("menu")->getWhere([
-		"link" => $value
-	])->getRowArray();
+	public function delete($id)
+	{
+		// echo $id; die;
+		if (!empty($id)) {
+			$response = $this->serviceModel->deleteDataByUUID($id);
+			if ($response) {
+				session()->setFlashdata('message', 'Data deleted Successfully!');
+				session()->setFlashdata('alert-class', 'alert-success');
+			} else {
+				session()->setFlashdata('message', 'Something wrong delete failed!');
+				session()->setFlashdata('alert-class', 'alert-danger');
+			}
+		}
 
-	return @$result['id'];
-}
-
-
-public function uploadMediaFiles(){
-
-	$response = $this->Amazon_s3_model->doUpload("file", "service-logo");													
-			
-	if ($response["status"]) {
-
-		$id = 0;
-		$file_path = $response['filePath'];
-		$status = 1;
-		$file_views = view("services/uploadedFileView", array("file_path" => $file_path, "id" => $id));
-		$msg = "success";
-
-	} else {
-		$status = 0;
-		$file_views = '';
-		$msg = "error";
+		return redirect()->to('/services');
 	}
-	
-	echo json_encode(array("status" => $status, "file_path" => $file_views, "msg" => $msg));
-}
 
-public function deleteRow(){
 
-	$id = $this->request->getPost("id");
+	public function getMenuCode($value)
+	{
+		$result = $this->db->table("menu")->getWhere([
+			"link" => $value
+		])->getRowArray();
 
-	$res = $this->common_model->deleteTableData("secrets", $id);
-	echo $this->db->getlastQuery();
-	echo json_encode($res);
-}
+		return @$result['id'];
+	}
 
-public function uploadMediaFiles2(){
 
-	$folder = $this->request->getPost("mainTable");
+	public function uploadMediaFiles()
+	{
 
-	$response = $this->Amazon_s3_model->doUpload("file", $folder);													
-			
-	if ($response["status"]) {
+		$response = $this->Amazon_s3_model->doUpload("file", "service-logo");
 
-		$file_path = $response['filePath'];
-		$status = 1;
-		$file_views = '<input type="hidden" value="'.$file_path.'" name="brand_logo">
-		<img class="img-rounded" src="'.$file_path.'" width="100px">
+		if ($response["status"]) {
+
+			$id = 0;
+			$file_path = $response['filePath'];
+			$status = 1;
+			$file_views = view("services/uploadedFileView", array("file_path" => $file_path, "id" => $id));
+			$msg = "success";
+		} else {
+			$status = 0;
+			$file_views = '';
+			$msg = "error";
+		}
+
+		echo json_encode(array("status" => $status, "file_path" => $file_views, "msg" => $msg));
+	}
+
+	public function deleteRow()
+	{
+
+		$id = $this->request->getPost("id");
+
+		$res = $this->common_model->deleteTableData("secrets", $id);
+		echo $this->db->getlastQuery();
+		echo json_encode($res);
+	}
+
+	public function uploadMediaFiles2()
+	{
+
+		$folder = $this->request->getPost("mainTable");
+
+		$response = $this->Amazon_s3_model->doUpload("file", $folder);
+
+		if ($response["status"]) {
+
+			$file_path = $response['filePath'];
+			$status = 1;
+			$file_views = '<input type="hidden" value="' . $file_path . '" name="brand_logo">
+		<img class="img-rounded" src="' . $file_path . '" width="100px">
 		<a href="" id="delete_image_logo2" class="btn btn-danger"><i class="fa fa-trash"></i></a>';
-		$msg = "success";
+			$msg = "success";
+		} else {
+			$status = 0;
+			$file_views = '';
+			$msg = "error";
+		}
 
-	} else {
-		$status = 0;
-		$file_views = '';
-		$msg = "error";
+		echo json_encode(array("status" => $status, "file_path" => $file_views, "msg" => $msg));
 	}
-	
-	echo json_encode(array("status" => $status, "file_path" => $file_views, "msg" => $msg));
-}
 
-public function status()
-{  
-	if(!empty($id = $this->request->getPost('id'))){
-		$data = array(            
-			'status' => $this->request->getPost('status')
-        );
-        $this->common_model->updateTableData( $id, $data, "services");
+	public function status()
+	{
+		if (!empty($id = $this->request->getPost('id'))) {
+			$data = array(
+				'status' => $this->request->getPost('status')
+			);
+			$this->common_model->updateTableData($id, $data, "services");
+		}
+		echo '1';
 	}
-	echo '1';
-}
-
 }
