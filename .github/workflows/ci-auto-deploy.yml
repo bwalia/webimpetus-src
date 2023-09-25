@@ -1,8 +1,8 @@
-name: CI - 1-Click Helm Auto Deploy - Workstation CRM to the Test ENV into a default K3S Kubernetes cluster
+name: CI - 1-Click Helm Auto Deploy to AWS - Workstation CRM to the Test ENV into a default K3S Kubernetes cluster
 
 on:
   push:
-    branches: [ main ]
+    branches: [ aws ]
   workflow_dispatch:
 
 env:
