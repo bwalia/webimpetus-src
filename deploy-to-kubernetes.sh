@@ -36,6 +36,11 @@ IMAGE_REPO="registry.workstation.co.uk"
 echo Target Environment: $targetEnv
 
 if [ $targetEnv == "dev" ] || [ $targetEnv == "test" ] || [ $targetEnv == "int" ] || [ $targetEnv == "acc" ] || [ $targetEnv == "prod" ]; then
+if [ $clusterName == "k3s2" ] || [ $clusterName == "k3s6" ] || [ $clusterName == "k3s10" ]; then
+export KUBECONFIG=~/.kube/vpn-$clusterName.yaml
+else
+echo "Target cluster is not supported"
+fi
    helm upgrade -i wsl-$targetEnv ./devops/webimpetus-chart -f devops/webimpetus-chart/values-$targetEnv-$clusterName.yaml --set-string targetImage="bwalia/$IMAGE_NAME" --set-string targetImageTag="$IMAGE_TAG" --namespace $targetNs --create-namespace
    kubectl rollout restart deployment/wsl-$targetEnv -n $targetNs
    kubectl rollout history deployment/wsl-$targetEnv -n $targetNs
