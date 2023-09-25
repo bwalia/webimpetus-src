@@ -6,7 +6,9 @@ metadata:
   annotations:
     #kubernetes.io/ingress.class: nginx
 spec:
-  ingressClassName: nginx
+  {{- if .Values.ingressClassName }}
+  ingressClassName: {{ .Values.ingressClassName }}
+  {{- end }}
   rules:
     {{- range .Values.ingress.hosts }}
     - host: {{ .host | quote }}
@@ -39,7 +41,9 @@ metadata:
   annotations:
     #kubernetes.io/ingress.class: nginx
 spec:
-  ingressClassName: nginx
+  {{- if .Values.ingressClassName }}
+  ingressClassName: {{ .Values.ingressClassName }}
+  {{- end }}
   rules:
     {{- range .Values.ingressAdminer.hosts }}
     - host: {{ .host | quote }}
