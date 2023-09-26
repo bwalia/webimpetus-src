@@ -328,7 +328,7 @@ $domains = getResultArray("domains", ["sid" => @$service->uuid]);
 
                                             <div class="form-group col-md-1 change">
                                                 <button class="btn btn-info bootstrap-touchspin-up deleteaddress" id="deleteRow"
-                                                    type="button" data-type="service_step"
+                                                    type="button" data-type="service_step" data-id="<?= $blocks_list[$jak_i]['id'] ?>"
                                                     style="max-height: 35px;margin-top: 38px;margin-left: 10px;margin-bottom:10px;">-</button>
                                                 <br>
                                                 <a href="#" class="tooltip-class" style="margin-left: 23px;"
@@ -788,11 +788,11 @@ $domains = getResultArray("domains", ["sid" => @$service->uuid]);
         var current = $(this);
         var serviceId = current.attr("data-id");
         var serviceType = current.attr("data-type");
-        console.log({serviceType}); return
         $.ajax({
             url: baseUrl + "/services/deleteRow",
             data: {
-                id: serviceId
+                id: serviceId,
+                type: serviceType
             },
             method: 'post',
             success: function (res) {

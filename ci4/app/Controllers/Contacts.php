@@ -24,14 +24,6 @@ class Contacts extends CommonController
 
     public function edit($id = 0)
     {
-        if(empty($id)){
-            $data['uuid'] = UUID::v5(UUID::v4(), 'contacts_saving');
-            $data['uuid_business_id'] = $this->session->get('uuid_business');
-
-            $id = $this->model->insertOrUpdate($id, $data);
-
-            return redirect()->to('/'.$this->table.'/edit/'.$id);die;
-        }
 		$data['tableName'] = $this->table;
         $data['rawTblName'] = $this->rawTblName;
 		$data["users"] = $this->model->getUser();

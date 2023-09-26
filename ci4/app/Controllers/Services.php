@@ -378,8 +378,33 @@ class Services extends Api
 	{
 
 		$id = $this->request->getPost("id");
+		$serviceType = $this->request->getPost("type");
+		switch ($serviceType) {
+			case 'domains':
+				$nameTable = 'domains';
+				$fieldName = 'sid';
+				$selector = 'uuid';
+				break;
+			case 'secret_services':
+				$nameTable = 'secrets_services';
+				$fieldName = 'service_id';
+				$selector = 'secret_id';
+				break;
+			case 'service_step' :
+				$nameTable = 'blocks_list';
+				$fieldName = 'uuid_linked_table';
+				$selector = 'id';
+				break;
+			default:
+				$nameTable = "secrets";
+				$fieldName = 'id';
+				$selector = 'id';
+				break;
+		}
 
-		$res = $this->common_model->deleteTableData("secrets", $id);
+		$data[$fieldName] = null;
+
+		$res = $this->common_model->unlinkData($nameTable, $id, $selector, $data);
 		echo $this->db->getlastQuery();
 		echo json_encode($res);
 	}
