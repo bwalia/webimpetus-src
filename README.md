@@ -43,6 +43,15 @@ Use the helm package manager [helm](https://webimpetus.io/en/stable/) to install
 `sudo sh ./deploy-to-kubernetes.sh` or `sudo bash ./deploy-to-kubernetes.sh`
 `this shell script assumes you have a working kubernetes cluster and connection to kubernetes configured and working`
 ```
+## List of the environments:-
+
+| Environment | Link     | Credentials                |
+| :-------- | :------- | :------------------------- |
+| `dev` | `http://localhost:8080/` | `Ask administrator` |
+| `int` | `https://int-my.workstation.co.uk/` | `Ask administrator` |
+| `test` | `https://test-my.workstation.co.uk/` | `Ask administrator` |
+| `acc` | `https://acc-my.workstation.co.uk/` | `Ask administrator` |
+
 
 ## USAGE
 
