@@ -225,7 +225,7 @@ class Common_model extends Model
     }
     
     public function unlinkData($tableName, $id, $field, $data) {
-        if ($tableName === "secrets_services") {
+        if ($tableName === "secrets_services" || $tableName === "service__domains") {
             $query = $this->db->table($tableName)->delete(array($field => $id));
             return $query;
         }

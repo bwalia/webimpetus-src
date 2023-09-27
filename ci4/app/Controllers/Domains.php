@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Models\ServiceDomainsModel;
 use CodeIgniter\Controller;
 use App\Models\Domain_model;
 use App\Models\Users_model;
@@ -16,6 +17,7 @@ class Domains extends CommonController
 	public $domainModel;
 	public $user_model;
 	public $service_model;
+	public $serviceDomainModel;
 
 	function __construct()
 	{
@@ -23,6 +25,7 @@ class Domains extends CommonController
 		$this->domainModel = new Domain_model();
 		$this->user_model = new Users_model();
 		$this->service_model = new Service_model();
+		$this->serviceDomainModel = new ServiceDomainsModel();
 	}
 
 	public function index()
@@ -40,7 +43,7 @@ class Domains extends CommonController
 		$data['tableName'] = $this->table;
 		$data['rawTblName'] = $this->rawTblName;
 		$data['domain'] = !empty($id) ? $this->domainModel->getRows($id)->getRow() : [];
-		//$data['users'] = $this->user_model->getUser('',true);
+		$data['serviceDomains'] = $this->serviceDomainModel->getRows($id);
 		$data['customers'] = $this->model->getCommonData('customers', array('uuid_business_id' => session('uuid_business'), 'email!=' => ''));
 		//echo '<pre>';print_r($data['customers']); die;
 		$data['services'] = $this->service_model->getRows();
@@ -56,25 +59,38 @@ class Domains extends CommonController
 			'name'  => $this->request->getPost('name'),
 			'notes' => $this->request->getPost('notes'),
 			'customer_uuid' => $this->request->getPost('uuid'),
-			'sid' => $this->request->getPost('sid'),
+			'sid' => json_encode($this->request->getPost('sid')),
 			'uuid_business_id' => session('uuid_business'),
 		);
 		if (empty($id)) {
 			$data['uuid'] = UUID::v5(UUID::v4(), 'domains');
 		}
-		$file = $this->request->getPost('file');
-		if ($file && !empty($file) && strlen($file) > 0) {
-			$data['image_logo'] = $file;
+		$file = $this->request->getFile('file');
+		if ($file && !$file->hasMoved()) {
+			$data['image_logo'] = $file->getName();
 		}
-
-		echo '<pre>'; print_r($data); echo '</pre>'; die;
 		
 		$response = $this->model->insertOrUpdate($id, $data);
+		$sids = $this->request->getPost('sid');
+		foreach ($sids as $key => $sid) {
+			$isDomainExists = $this->serviceDomainModel->checkRecordExists($data['uuid'], $sid);
+			if (empty($isDomainExists)) {
+				$serviceDomainData = [
+					'uuid' =>  UUID::v5(UUID::v4(), 'service__domains'),
+					'service_uuid' => $sid,
+					'domain_uuid' => $data['uuid']
+				];
+				$updateServiceRl = $this->serviceDomainModel->saveData($serviceDomainData);
+				if (!$updateServiceRl) {
+					session()->setFlashdata('message', 'Something wrong!');
+					session()->setFlashdata('alert-class', 'alert-danger');
+				}
+			}
+		}
 		if (!$response) {
 			session()->setFlashdata('message', 'Something wrong!');
 			session()->setFlashdata('alert-class', 'alert-danger');
 		}
-
 
 		return redirect()->to('/' . $this->table);
 	}

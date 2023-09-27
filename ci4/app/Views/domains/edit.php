@@ -11,18 +11,24 @@
                     <select id="uuid" name="uuid" class="form-control required select2">
                         <option value="" selected="">--Select--</option>
                         <?php foreach ($customers as $row): ?>
-                            <option value="<?= $row['uuid']; ?>" <?= ($row['uuid'] == @$domain->customer_uuid) ? 'selected' : '' ?>>
+                            <option value="<?= $row['uuid']; ?>" <?= (is_object($domain) && property_exists($domain, 'customer_uuid') && $row['uuid'] == $domain->customer_uuid) ? 'selected' : '' ?>>
                                 <?= $row['email'] . '-' . $row['contact_firstname'] . ' ' . $row['contact_lastname']; ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
                 </div>
+                <?php 
+                    $serviceUuids = [];
+                    foreach ($serviceDomains as $key => $serviceDomain) {
+                        array_push($serviceUuids, $serviceDomain['service_uuid']);
+                    }
+                ?>
                 <div class="form-group col-md-12">
                     <label for="inputState">Choose Service</label>
-                    <select id="sid" name="sid" class="form-control select2">
-                        <option value="" selected="">--Select--</option>
+                    <select id="sid" name="sid[]" multiple class="form-control select2">
+                        <option value="">--Select--</option>
                         <?php foreach ($services as $row): ?>
-                            <option value="<?= $row['uuid']; ?>" <?= ($row['uuid'] == @$domain->sid) ? 'selected' : '' ?>>
+                            <option value="<?= $row['uuid']; ?>" <?= (in_array($row['uuid'], $serviceUuids)) ? 'selected' : '' ?>>
                                 <?= $row['name']; ?>
                             </option>
                         <?php endforeach; ?>

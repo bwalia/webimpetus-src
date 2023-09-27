@@ -1,6 +1,8 @@
 <?php require_once(APPPATH . 'Views/common/edit-title.php');
 $blocks_list = getResultArray("blocks_list", ["uuid_linked_table" => @$service->uuid]);
 $domains = getResultArray("domains", ["sid" => @$service->uuid]);
+$uri = service('uri');
+$uriSegment = $uri->getSegment(3);
 //print_r($blocks_list); die;
 ?>
 <div class="white_card_body">
@@ -394,13 +396,12 @@ $domains = getResultArray("domains", ["sid" => @$service->uuid]);
 
                         <div class="tab-pane fade" id="nav-domains" role="tabpanel" aria-labelledby="nav-domains-tab">
 
-
                             <?php
-                            if (count($domains) > 0) {
+                            if (count($serviceDomains) > 0) {
                                 ?>
                                 <div class="form-row domains_container">
                                     <?php
-                                    for ($jak_i = 0; $jak_i < count($domains); $jak_i++) {
+                                    for ($jak_i = 0; $jak_i < count($serviceDomains); $jak_i++) {
                                         $new_id = $jak_i + 1;
                                         ?>
                                         <div class="form-row col-md-12" id="domains_<?php echo $new_id; ?>">
@@ -414,7 +415,7 @@ $domains = getResultArray("domains", ["sid" => @$service->uuid]);
                                                     <option value="" selected="">--Select--</option>
                                                     <?php foreach ($all_domains as $row): ?>
                                                         <option value="<?= $row['uuid']; ?>"
-                                                            <?= ($row['uuid'] == @$domains[$jak_i]['uuid']) ? 'selected' : '' ?>>
+                                                            <?= ($row['uuid'] == @$serviceDomains[$jak_i]['domain_uuid']) ? 'selected' : '' ?>>
                                                             <?= $row['name']; ?>
                                                         </option>
                                                     <?php endforeach; ?>
@@ -434,7 +435,7 @@ $domains = getResultArray("domains", ["sid" => @$service->uuid]);
                                                 ?>
                                                 <div class="form-group col-md-1 change">
                                                     <button class="btn btn-info bootstrap-touchspin-up deleteaddress" data-type="domains"
-                                                        data-id="<?= $domains[$jak_i]['uuid'] ?>" id="deleteRow" type="button"
+                                                        data-id="<?= $serviceDomains[$jak_i]['uuid'] ?>" id="deleteRow" type="button"
                                                         style="max-height: 35px;margin-top: 28px;margin-left: 10px;">-</button>
                                                 </div>
                                                 <?php
@@ -446,7 +447,7 @@ $domains = getResultArray("domains", ["sid" => @$service->uuid]);
                                     ?>
                                 </div>
 
-                                <input type="hidden" value="<?php echo count($domains); ?>" id="total_domains"
+                                <input type="hidden" value="<?php echo count($serviceDomains); ?>" id="total_domains"
                                     name="total_domains">
 
                                 <?php
@@ -477,6 +478,7 @@ $domains = getResultArray("domains", ["sid" => @$service->uuid]);
 
                                 </div>
                                 <input type="hidden" value="1" id="total_domains" name="total_domains">
+                                <input type="hidden" value="<?php echo $uriSegment; ?>" id="serviceId" name="serviceId">
                                 <?php
                             }
                             ?>
@@ -788,11 +790,13 @@ $domains = getResultArray("domains", ["sid" => @$service->uuid]);
         var current = $(this);
         var serviceId = current.attr("data-id");
         var serviceType = current.attr("data-type");
+        var pageId = $("#serviceId").val();
         $.ajax({
             url: baseUrl + "/services/deleteRow",
             data: {
                 id: serviceId,
-                type: serviceType
+                type: serviceType,
+                sId: pageId
             },
             method: 'post',
             success: function (res) {
