@@ -60,7 +60,7 @@ jobs:
               run: chmod +x ./deploy-to-kubernetes.sh && ./deploy-to-kubernetes.sh "int" "k3s2" "int"
 
             - name: Deploy WebImpetus to k3s2 VPN TEST Environment
-              run: chmod +x ./deploy-to-kubernetes.sh && ./deploy-to-kubernetes.sh "int" "k3s2" "test"
+              run: chmod +x ./deploy-to-kubernetes.sh && ./deploy-to-kubernetes.sh "test" "k3s2" "test"
               
             - name: Slack Notification for Workstation CRM release 
               uses: rtCamp/action-slack-notify@v2
