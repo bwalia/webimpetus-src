@@ -29,13 +29,14 @@ func TestHealthCheck(t *testing.T) {
 	if err != nil {
 		t.Errorf("Failed to decode JSON: %v", err)
 	}
-
+	// Verify the response
 	expectedResp := "pong"
 	if data["response"] != expectedResp {
 		t.Errorf("Returned unexpected response")
 	} else {
 		t.Log("Received response pong")
 	}
+	// Verify the status code
 	if res.StatusCode != http.StatusOK {
 		t.Errorf("Returned wrong status code: got %v want %v", res.StatusCode, http.StatusOK)
 	}

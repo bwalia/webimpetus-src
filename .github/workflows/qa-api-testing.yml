@@ -1,12 +1,14 @@
-# This workflow will build a golang project
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
-
 name: Webimpetus Test Suite
 on:
   schedule:
-    - cron: '0 */12 * * *'
+    - cron: '0 0 * * *'
   workflow_dispatch:  
-    
+
+env: 
+  QA_LOGIN_EMAIL: ${{ secrets.QA_LOGIN_EMAIL }}
+  QA_LOGIN_PASSWORD: ${{ secrets.QA_LOGIN_PASSWORD }}
+  TARGET_HOST: ${{ secrets.TARGET_HOST }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -18,13 +20,11 @@ jobs:
       with:
         go-version: 1.19    
 
-    - name: Test
+    - name: Test Execution
       working-directory: ./qa
       run: | 
         go mod init myapp
         go test -v 
-      env: 
-        QA_LOGIN_EMAIL: ${{ secrets.QA_LOGIN_EMAIL }}
-        QA_LOGIN_PASSWORD: ${{ secrets.QA_LOGIN_PASSWORD }}
-        QA_BUSINESS_ID: ${{ secrets.QA_BUSINESS_ID }} 
+
+        
       

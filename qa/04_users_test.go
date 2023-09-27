@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
@@ -10,12 +11,12 @@ import (
 	"testing"
 )
 
-var purchaseOrdersUUId string
+var userId string
 
-func TestGetAllPurchaseOrders(t *testing.T) {
-	//t.Log(tokenValue)
+// Calling the Users API for GET method to get all users data
+func TestGetAllUsers(t *testing.T) {
 
-	req, err := http.NewRequest("GET", targetHost+"/api/v2/purchase_orders", nil)
+	req, err := http.NewRequest("GET", targetHost+"/api/v2/users", nil)
 	if err != nil {
 		t.Log(err)
 		return
@@ -31,43 +32,50 @@ func TestGetAllPurchaseOrders(t *testing.T) {
 	//t.Log(resp)
 
 	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		t.Log(err)
+	}
 	if false {
 		t.Log(string(body))
 	}
+	// Verifying the status code
 	if resp.StatusCode != http.StatusOK {
 		t.Error("Unexpected response status code", resp.StatusCode)
 		return
 	} else {
-		t.Log("Successfully get all purchase orders data")
+		t.Log("Successfully get the users data")
 
 	}
 }
 
-func TestCreatePurchaseOrder(t *testing.T) {
+// Calling the Users API for POST method to create a new user
+func TestCreateUser(t *testing.T) {
 
-	url := targetHost + "/api/v2/purchase_orders"
-	method := "POST"
-
-	type Purchase_orders struct {
+	type User struct {
 		Data struct {
 			UUID string `json:"uuid"`
 		} `json:"data"`
 	}
 
+	url := targetHost + "/api/v2/users/"
+	method := "POST"
+
 	payload := &bytes.Buffer{}
 	writer := multipart.NewWriter(payload)
-	_ = writer.WriteField("client_id", "14")
+	_ = writer.WriteField("name", "test")
+	_ = writer.WriteField("email", "test.6@testing.com")
+	_ = writer.WriteField("password", "test123")
 	_ = writer.WriteField("uuid_business_id", businessId)
 	err := writer.Close()
 	if err != nil {
-		t.Log(err)
+		fmt.Println(err)
 		return
 	}
 
 	client := &http.Client{}
 	req, err := http.NewRequest(method, url, payload)
 	if err != nil {
-		t.Log(err)
+		fmt.Println(err)
 		return
 	}
 
@@ -75,44 +83,45 @@ func TestCreatePurchaseOrder(t *testing.T) {
 	req.Header.Set("Content-Type", writer.FormDataContentType())
 	res, err := client.Do(req)
 	if err != nil {
-		t.Log(err)
+		fmt.Println(err)
 		return
 	}
 	body, err := ioutil.ReadAll(res.Body)
 	if false {
 		t.Log(string(body))
 	}
-
+	buf := bytes.NewBuffer(body)
 	defer res.Body.Close()
 
-	buffer := bytes.NewBuffer(body)
-
-	var jsonData Purchase_orders
-	err = json.NewDecoder(buffer).Decode(&jsonData)
+	var jsonData User
+	err = json.NewDecoder(buf).Decode(&jsonData)
 	if err != nil {
-		t.Log("failed to decode json", err)
+		t.Error("failed to decode json", err)
 	} else {
-		purchaseOrdersUUId = jsonData.Data.UUID
-		//t.Log(workOrdersUUId)
-		t.Log("Successfully created a new purchase order")
+		// Getting the uuid of the user created by the API call
+		userId = jsonData.Data.UUID
+		//t.Log(userId)
+		t.Log("Successfully created a new user")
 
 	}
 
 }
 
-func TestUpdatePurchaseOrders(t *testing.T) {
+// Calling the Users API for PUT method to update the single user data with the uuid
+func TestUpdateUsers(t *testing.T) {
 
-	url := targetHost + "/api/v2/purchase_orders/"
+	url := targetHost + "/api/v2/users/" + userId
+	//t.Log(userId)
 
-	type PurchaseOrdersData struct {
-		UUID         string `json:"uuid"`
-		ClientId     string `json:"client_id"`
-		BusinessUuid string `json:"uuid_business_id"`
+	type UserData struct {
+		UUID  string `json:"uuid"`
+		Email string `json:"email"`
+		Name  string `json:"name"`
 	}
-	data := PurchaseOrdersData{
-		UUID:         purchaseOrdersUUId,
-		ClientId:     "16",
-		BusinessUuid: businessId,
+	data := UserData{
+		UUID:  userId,
+		Email: "test.5@testing.com",
+		Name:  "dixanew",
 	}
 	//t.Log(data)
 	jsonData, err := json.Marshal(data)
@@ -122,7 +131,7 @@ func TestUpdatePurchaseOrders(t *testing.T) {
 	//t.Log(jsonData)
 	client := &http.Client{}
 
-	req, err := http.NewRequest("PUT", url+purchaseOrdersUUId, bytes.NewBuffer(jsonData))
+	req, err := http.NewRequest("PUT", url, bytes.NewBuffer(jsonData))
 	if err != nil {
 		t.Log(err)
 		return
@@ -140,24 +149,30 @@ func TestUpdatePurchaseOrders(t *testing.T) {
 	if err != nil {
 		t.Log(err)
 	}
+	if false {
+		t.Log(string(body))
+	}
 
 	if resp.StatusCode != http.StatusOK {
 		t.Error("Unexpected response status code", resp.StatusCode)
 		return
 	}
-	if !strings.Contains(string(body), "16") {
+	// Verify the updated body
+	if !strings.Contains(string(body), "dixanew") {
 		t.Error("Returned unexpected body")
 	} else {
-		t.Log("Successfully updated the purchase order")
+		t.Log("Successfully updated the user")
 
 	}
 
 }
-func TestDeletePurchaseOrder(t *testing.T) {
-	url := targetHost + "/api/v2/purchase_orders/"
+
+// Calling the Users API for DELETE method to delete the single user data with uuid
+func TestDeleteUsers(t *testing.T) {
+	url := targetHost + "/api/v2/users/" + userId
 	client := &http.Client{}
 
-	req, err := http.NewRequest("DELETE", url+purchaseOrdersUUId, nil)
+	req, err := http.NewRequest("DELETE", url, nil)
 	if err != nil {
 		t.Log(err)
 		return
@@ -174,16 +189,18 @@ func TestDeletePurchaseOrder(t *testing.T) {
 		t.Error("Unexpected response status code", resp.StatusCode)
 		return
 	} else {
-		t.Log("Successfully deleted the purchase order")
+		t.Log("Successfully deleted the user")
 
 	}
 
 }
-func TestGetSinglePurchaseOrder(t *testing.T) {
-	url := targetHost + "/api/v2/purchase_orders/"
+
+// Calling the Users API for GET method to get single user data with UUID
+func TestGetSingleUser(t *testing.T) {
+	url := targetHost + "/api/v2/users/" + userId
 	//t.Log(tokenValue)
 
-	req, err := http.NewRequest("GET", url+purchaseOrdersUUId, nil)
+	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		t.Log(err)
 		return
@@ -204,10 +221,10 @@ func TestGetSinglePurchaseOrder(t *testing.T) {
 	if false {
 		t.Log(string(body))
 	}
+	// With the 'null' in response body, it will verify the users data is deleted successfully
 	if !strings.Contains(string(body), "null") {
 		t.Error("Returned unexpected body")
 	} else {
-		t.Log("The delete action for the purchase order is verified")
-
+		t.Log("The delete action for the user is verified")
 	}
 }

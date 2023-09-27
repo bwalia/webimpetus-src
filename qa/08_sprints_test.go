@@ -13,6 +13,7 @@ import (
 
 var sprintId string
 
+// Calling the Sprints API for GET method to get all sprints data
 func TestGetAllSprints(t *testing.T) {
 	//t.Log(tokenValue)
 
@@ -40,10 +41,10 @@ func TestGetAllSprints(t *testing.T) {
 		return
 	} else {
 		t.Log("Successfully get all sprints data")
-
 	}
 }
 
+// Calling the Sprints API for POST method to create a new Sprint
 func TestCreateSprint(t *testing.T) {
 
 	url := targetHost + "/api/v2/sprints/"
@@ -94,6 +95,7 @@ func TestCreateSprint(t *testing.T) {
 	if err != nil {
 		t.Error("failed to decode json", err)
 	} else {
+		// Getting the uuid of the sprint created
 		sprintId = strconv.Itoa(jsonData.Data.ID)
 		//t.Log(sprintId)
 	}
@@ -106,11 +108,12 @@ func TestCreateSprint(t *testing.T) {
 	} else {
 		t.Log("Successfully created a new sprint")
 	}
-
 }
+
+// Calling the Sprint API for PUT method to update the single sprint data with the uuid
 func TestUpdateSprint(t *testing.T) {
 
-	url := targetHost + "/api/v2/sprints/"
+	url := targetHost + "/api/v2/sprints/" + sprintId
 
 	type SprintData struct {
 		ID           string `json:"id"`
@@ -134,7 +137,7 @@ func TestUpdateSprint(t *testing.T) {
 	//t.Log(jsonData)
 	client := &http.Client{}
 
-	req, err := http.NewRequest("PUT", url+sprintId, bytes.NewBuffer(jsonData))
+	req, err := http.NewRequest("PUT", url, bytes.NewBuffer(jsonData))
 	if err != nil {
 		t.Log(err)
 		return
@@ -157,18 +160,20 @@ func TestUpdateSprint(t *testing.T) {
 		t.Error("Unexpected response status code", resp.StatusCode)
 		return
 	}
+	// Verify the updated body
 	if !strings.Contains(string(body), "new sprint") {
 		t.Error("Returned unexpected body")
 	} else {
 		t.Log("Successfully updated the sprint")
 	}
-
 }
+
+// Calling the sprint API for DELETE method to delete the single sprint data with uuid
 func TestDeleteSprint(t *testing.T) {
-	url := targetHost + "/api/v2/sprints/"
+	url := targetHost + "/api/v2/sprints/" + sprintId
 	client := &http.Client{}
 
-	req, err := http.NewRequest("DELETE", url+sprintId, nil)
+	req, err := http.NewRequest("DELETE", url, nil)
 	if err != nil {
 		t.Log(err)
 		return
@@ -186,15 +191,15 @@ func TestDeleteSprint(t *testing.T) {
 		return
 	} else {
 		t.Log("Successfully deleted the sprint")
-
 	}
-
 }
+
+// Calling the Sprints API for GET method to get single sprint data with UUID
 func TestGetSingleSprint(t *testing.T) {
-	url := targetHost + "/api/v2/sprints/"
+	url := targetHost + "/api/v2/sprints/" + sprintId
 	//t.Log(tokenValue)
 
-	req, err := http.NewRequest("GET", url+sprintId, nil)
+	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		t.Log(err)
 		return
@@ -212,10 +217,10 @@ func TestGetSingleSprint(t *testing.T) {
 	if false {
 		t.Log(string(body))
 	}
+	// With the 'null' in response body, it will verify the sprint data is deleted successfully
 	if !strings.Contains(string(body), "null") {
 		t.Error("Returned unexpected body")
 	} else {
 		t.Log("The delete action for the sprints is verified")
-
 	}
 }

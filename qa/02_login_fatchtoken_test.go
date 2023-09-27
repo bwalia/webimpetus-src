@@ -17,8 +17,7 @@ var businessId string
 
 var email = os.Getenv("QA_LOGIN_EMAIL")
 var password = os.Getenv("QA_LOGIN_PASSWORD")
-
-const targetHost = "https://test-my.workstation.co.uk"
+var targetHost = os.Getenv("TARGET_HOST")
 
 func TestLoginAuth(t *testing.T) {
 	url := targetHost + "/auth/user_login"
@@ -73,7 +72,7 @@ func TestFetchToken(t *testing.T) {
 		} `json:"user"`
 	}
 
-	url := "https://test-my.workstation.co.uk/auth/user_login"
+	url := targetHost + "/auth/user_login"
 
 	payload := &bytes.Buffer{}
 	writer := multipart.NewWriter(payload)
@@ -106,6 +105,7 @@ func TestFetchToken(t *testing.T) {
 	if err != nil {
 		t.Log(err)
 	}
+	// Getting the access token and business uuid from auth API
 	tokenValue = decodeValue.AccessToken
 	businessId = decodeValue.User.UUID_Business
 
