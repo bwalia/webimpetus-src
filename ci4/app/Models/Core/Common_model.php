@@ -223,6 +223,15 @@ class Common_model extends Model
         $query = $this->db->table($tableName)->delete(array($field => $id));
         return $query;
     }
+    
+    public function unlinkData($tableName, $id, $field, $data) {
+        if ($tableName === "secrets_services" || $tableName === "service__domains") {
+            $query = $this->db->table($tableName)->delete(array($field => $id));
+            return $query;
+        }
+        $query = $this->db->table($tableName)->update($data, array($field => $id));
+        return $query;
+    }
 
     public function getMenuCode($value)
     {

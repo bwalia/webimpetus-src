@@ -135,9 +135,9 @@ $categories = getResultArray("categories");
 
                             </div>
 
-                            <div class="form-group ">
-                                <label for="inputEmail4">Email</label>
-                                <input autocomplete="off" type="text" class="form-control email" id="email" name="email" placeholder="" value="<?= @$customer->email ?>">
+                            <div class="form-group required col-md-12 px-0">
+                                <label for="email">Email</label>
+                                <input autocomplete="off" type="text" class="form-control email required" id="email" name="email" placeholder="" value="<?= @$customer->email ?>">
                             </div>
                             <input type="hidden" name="uuid" value="<?= @$customer->uuid ?>" />
 
