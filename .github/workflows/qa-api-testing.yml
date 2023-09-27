@@ -2,12 +2,23 @@ name: Webimpetus Test Suite
 on:
   schedule:
     - cron: '0 0 * * *'
-  workflow_dispatch:  
-
+  workflow_dispatch:
+    inputs:
+      TARGET_ENV:
+        type: choice
+        description: 'Please choose the Target Environment'
+        default: 'test'
+        required: true
+        options:
+        - int
+        - test
+        - acc
+        - prod  
+     
 env: 
+  TARGET_ENV: ${{ inputs.TARGET_ENV }}
   QA_LOGIN_EMAIL: ${{ secrets.QA_LOGIN_EMAIL }}
   QA_LOGIN_PASSWORD: ${{ secrets.QA_LOGIN_PASSWORD }}
-  TARGET_HOST: ${{ secrets.TARGET_HOST }}
 
 jobs:
   build:
@@ -20,11 +31,21 @@ jobs:
       with:
         go-version: 1.19    
 
-    - name: Test Execution
+    - name: Test execution
       working-directory: ./qa
       run: | 
+        if [[ "${{ inputs.TARGET_ENV }}" == 'int' ]]; then
+          export TARGET_HOST="https://int-my.workstation.co.uk"
+        elif [[ "${{ inputs.TARGET_ENV }}" == 'test' ]]; then
+          export TARGET_HOST="https://test-my.workstation.co.uk"
+        elif [[ "${{ inputs.TARGET_ENV }}" == 'acc' ]]; then
+          export TARGET_HOST="https://acc-my.workstation.co.uk"
+        elif [[ "${{ inputs.TARGET_ENV }}" == '' ]]; then
+          export TARGET_HOST="https://test-my.workstation.co.uk"  
+        else
+          echo "Unsupported TARGET_ENV:${{ inputs.TARGET_ENV }}"
+          exit 1
+        
         go mod init myapp
         go test -v 
 
-        
-      
