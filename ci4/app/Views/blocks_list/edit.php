@@ -9,10 +9,11 @@
                     <label for="inputEmail4">Code</label>
                     <input type="text" class="form-control" id="title" name="code" placeholder="" value="<?= @$blocks->code ?>">
                     <input type="hidden" class="form-control" name="id" placeholder="" value="<?= @$blocks->id ?>" />
+                    <input type="hidden" class="form-control" name="uuid" placeholder="" value="<?= @$blocks->uuid ?>" />
                 </div>
                 <div class="form-group col-md-12">
                     <label for="inputEmail4">Title</label>
-                    <input type="text" class="form-control" id="title" name="title" placeholder="" value="<?= @$blocks->ctitlede ?>">
+                    <input type="text" class="form-control" id="title" name="title" placeholder="" value="<?= @$blocks->title ?>">
                 </div>
 
                 <div class="form-group col-md-12">

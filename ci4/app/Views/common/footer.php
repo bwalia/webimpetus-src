@@ -37,4 +37,38 @@ $('#sidebar_menu li a').click(function(){
 $('#sidebar_menu li').click(function(){
     $(this).addClass("active").siblings().removeClass("active");
 });
+
+$("input[type=email]").focusout(function(event) {
+    $("<span class='form-control-feedback' id='emailError'></span>").insertAfter($(this));
+    validateEmail($(this).val(), "emailError", event);
+})
+$("input[name=telephone_no]").focusout(function(event) {
+    validatePhoneNo($(this).val(), event);
+})
+
+function validatePhoneNo (phoneNo, event) {
+    var phonePattern = /^\d{10}$/;
+    if (phonePattern.test(phoneNo)) {
+        console.log("jih");
+        $('#phoneError').text('');
+        $('#phoneError').remove();
+    } else {
+        if ($("#phoneError").length === 0) {
+            $("<span class='form-control-feedback' id='phoneError'>The Tele/Phone Number should be valid</span>").insertAfter($("input[name=telephone_no]"));
+        }
+        event.preventDefault();
+        return false;
+    }
+}
+
+function validateEmail (email, errorEle, event) {
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    if (emailRegex.test(email)) {
+            $("#" + errorEle).text("");
+        } else {
+            $("#" + errorEle).text("The email should be valid.");
+            event.preventDefault();
+            return false;
+        }
+}
 </script>

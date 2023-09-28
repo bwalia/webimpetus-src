@@ -20,7 +20,7 @@
             </thead>
             <tbody>
                 <?php foreach ($enquiries as $row) : ?>
-                    <tr data-link=<?= "/".$tableName."/edit/".$row['id'];?>>
+                    <tr data-link=<?= "/".$tableName."/edit/".$row['uuid'];?>>
                         <td class="f_s_12 f_w_200"><?= $row['id']; ?></td>
                         <td class="f_s_12 f_w_200"><?= substr($row['name'],0,20).(strlen($row['name'])>20?'...':''); ?></td>
                         <td class="f_s_12 f_w_400"><?= substr($row['email'],0,20).(strlen($row['email'])>20?'...':''); ?></td>
@@ -39,7 +39,7 @@
                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
 
                                         <a class="dropdown-item" onclick="return confirm('Are you sure want to delete?');" href="/enquiries/delete/<?= $row['id']; ?>"> <i class="ti-trash"></i> Delete</a>
-                                        <a class="dropdown-item" href="/enquiries/edit/<?= $row['id']; ?>"> <i class="fas fa-edit"></i> Edit</a </div>
+                                        <a class="dropdown-item" href="/enquiries/edit/<?= $row['uuid']; ?>"> <i class="fas fa-edit"></i> Edit</a </div>
                                     </div>
                                 </div>
                         </td>
@@ -86,13 +86,13 @@
         window.paginationData = function(data) {
             $('#myTable tbody').empty();
             for(emp in data){
-                var empRow = "<tr data-link='/<?=$tableName."/edit/"?>"+data[emp].id+"'>";
+                var empRow = "<tr data-link='/<?=$tableName."/edit/"?>"+data[emp].uuid+"'>";
                 empRow += "<td>"+ data[emp].id +"</td>";
                 empRow += "<td>"+ data[emp].name.substr(0, 20)+(data[emp].name.length>20?'...':'') +"</td>";
                 empRow += "<td>"+ data[emp].email.substr(0, 20)+(data[emp].email.length>20?'...':'') +"</td>"
                 empRow += "<td>"+ data[emp].message.substr(0, 20)+(data[emp].message.length>20?'...':'')+"</td>"
                 empRow += "<td>"+ data[emp].created +"</td>"
-                empRow += '<td class="f_s_12 f_w_400 text-right"><div class="header_more_tool"> <div class="dropdown"> <span class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown">  <i class="ti-more-alt"></i></span> <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton"><a class="dropdown-item" onclick="return confirm(\'Are you sure want to delete?\');" href="/enquiries/delete/'+data[emp].id+'"> <i class="ti-trash"></i> Delete</a><a class="dropdown-item" href="/enquiries/edit/'+data[emp].id+'"> <i class="fas fa-edit"></i> Edit</a </div> </div></div></td>'
+                empRow += '<td class="f_s_12 f_w_400 text-right"><div class="header_more_tool"> <div class="dropdown"> <span class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown">  <i class="ti-more-alt"></i></span> <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton"><a class="dropdown-item" onclick="return confirm(\'Are you sure want to delete?\');" href="/enquiries/delete/'+data[emp].id+'"> <i class="ti-trash"></i> Delete</a><a class="dropdown-item" href="/enquiries/edit/'+data[emp].uuid+'"> <i class="fas fa-edit"></i> Edit</a </div> </div></div></td>'
                 //empRow += "<td>"+ data[emp].designation +"</td>"
                 //empRow += "<td>"+ data[emp].address +"</td>";
                 empRow += "</tr>";
