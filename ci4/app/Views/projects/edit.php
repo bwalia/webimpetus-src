@@ -65,6 +65,7 @@
                     </div>
                 </div>
                 <input type="hidden" class="form-control" name="id" placeholder="" value="<?= @$project->id ?>" />
+                <input type="hidden" class="form-control" name="uuid" placeholder="" value="<?= @$project->uuid ?>" />
 
             <div class="form-row">
 

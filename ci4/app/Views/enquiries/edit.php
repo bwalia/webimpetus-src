@@ -6,6 +6,7 @@
 		<form id="enqform" method="post" action="/enquiries/update" enctype="multipart/form-data">
 
 			<input type="hidden" class="form-control" name="id" placeholder="" value="<?= @$enquiries->id ?>" />
+			<input type="hidden" class="form-control" name="uuid" placeholder="" value="<?= @$enquiries->uuid ?>" />
 
 			<input type="hidden" class="form-control" name="type" placeholder="" value="4" />
 

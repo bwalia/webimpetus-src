@@ -33,6 +33,7 @@
             </div>
 
             <input type="hidden" class="form-control" name="id" placeholder="" value="<?= @$taxe->id ?>" />
+            <input type="hidden" class="form-control" name="uuid" placeholder="" value="<?= @$taxe->uuid ?>" />
 
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>

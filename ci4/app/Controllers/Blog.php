@@ -6,9 +6,13 @@ use App\Models\Content_model;
 use App\Models\Users_model;
 use App\Models\Cat_model;
 use App\Controllers\Core\CommonController; 
+use App\Libraries\UUID;
 ini_set('display_errors', 1);
 class Blog extends CommonController
 {	
+	protected $content_model;
+	protected $user_model;
+	protected $cat_model;
 	public function __construct()
 	{
 		parent::__construct();
@@ -25,12 +29,14 @@ class Blog extends CommonController
 		echo view($this->table."/list", $data);
 	}
 	
-	public function edit($id = 0)
+	public function edit($uuid = 0)
 	{
+		$contentData = $this->content_model->getRowsByUUID($uuid)->getRow();
+		$id = $contentData->id ?? '';
 		$data['menucode'] = 8;
 		$data['tableName'] = $this->table;
 		$data['rawTblName'] = $this->rawTblName;
-		$data['content'] = $this->content_model->getRows($id)->getRow();
+		$data['content'] = $contentData;
 		$data['users'] = $this->user_model->getUser();
 		$data['cats'] = $this->cat_model->getRows();
 
@@ -67,6 +73,7 @@ class Blog extends CommonController
 	{     
 		
 		$id = $this->request->getPost('id');
+		$uuid = $this->request->getPost('uuid');
 
 		$data = array(
 			'title'  => $this->request->getPost('title'),				
@@ -83,6 +90,8 @@ class Blog extends CommonController
 		);
 		if(!empty($this->request->getPost('uuid'))){
 			$data['uuid'] = $this->request->getPost('uuid');
+		} else {
+			$data['uuid'] = UUID::v5(UUID::v4(), 'content_list');
 		}
 		
 		$files = $this->request->getPost("file");
@@ -105,7 +114,7 @@ class Blog extends CommonController
 			}
 			
 
-			$this->content_model->updateData($id, $data);
+			$this->content_model->updateDataByUUID($uuid, $data);
 			
 			if(!empty($id) && !empty($this->request->getPost('catid'))){
 				$this->cat_model->deleteCatData($id);		

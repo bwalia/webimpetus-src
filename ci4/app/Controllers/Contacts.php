@@ -22,29 +22,29 @@ class Contacts extends CommonController
 
     }
 
-    public function edit($id = 0)
+    public function edit($uuid = 0)
     {
 		$data['tableName'] = $this->table;
         $data['rawTblName'] = $this->rawTblName;
 		$data["users"] = $this->model->getUser();
         $data["categories"] = $this->model->getCategories();
-		$data[$this->rawTblName] = $this->model->getRows($id)->getRow();
+		$data[$this->rawTblName] = $this->model->getRowsByUUID($uuid)->getRow();
 		// if there any special cause we can overried this function and pass data to add or edit view
-		$data['additional_data'] = $this->getAdditionalData($id);
+		$data['additional_data'] = $this->getAdditionalData($uuid);
 
         echo view($this->table."/edit",$data);
     }
     public function update()
     {        
        
-        $id = $this->request->getPost('id');
+        $uuid = $this->request->getPost('uuid');
 
 		$data = $this->request->getPost();
 
         if(!isset($data['allow_web_access'])){
             $data['allow_web_access'] = 0;
         }
-        if(empty($id)){
+        if(empty($uuid)){
             $data['uuid'] = UUID::v5(UUID::v4(), 'contacts_saving');
             $data['uuid_business_id'] = $this->session->get('uuid_business');
         }
@@ -52,7 +52,7 @@ class Contacts extends CommonController
             $data['password'] = md5($data['password']);
         }
         
-		$response = $this->model->insertOrUpdate($id, $data);
+		$response = $this->model->insertOrUpdateByUUID($uuid, $data);
 		if(!$response){
 			session()->setFlashdata('message', 'Something wrong!');
 			session()->setFlashdata('alert-class', 'alert-danger');	

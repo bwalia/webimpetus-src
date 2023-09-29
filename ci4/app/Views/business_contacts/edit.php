@@ -46,6 +46,7 @@
                     </div>
                 </div>
                 <input type="hidden" class="form-control" name="id" placeholder="" value="<?= @$business_contact->id ?>" />
+                <input type="hidden" class="form-control" name="uuid" placeholder="" value="<?= @$business_contact->uuid ?>" />
 
                 <div class="form-row">
                     <div class="form-group required col-md-6">

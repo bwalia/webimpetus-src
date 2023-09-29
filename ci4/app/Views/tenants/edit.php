@@ -7,7 +7,7 @@
 
                 <div class="form-group  col-md-4">
                     <label for="inputState">Choose User</label>
-                    <select id="uuid" name="uuid" class="form-control  dashboard-dropdown">
+                    <select id="user_uuid" name="user_uuid" class="form-control  dashboard-dropdown">
                         <option value="" selected="">--Select--</option>
                       <?php foreach($users as $row):?>
                         <option value="<?= $row['uuid'];?>" <?=($row['uuid']== @$tenant->uuid)?'selected':'' ?>><?= $row['name'];?></option>
@@ -31,6 +31,7 @@
                     <input type="text" class="form-control " id="name" name="name" placeholder="" value="<?=@$tenant->name ?>">
                   </div>
                   <input type="hidden" class="form-control" name="id" placeholder="" value="<?=@$tenant->id ?>" />
+                  <input type="hidden" class="form-control" name="uuid" placeholder="" value="<?=@$tenant->uuid ?>" />
              
                 
             </div>

@@ -16,7 +16,7 @@
                     </tr>
                 </thead>
                 <tbody>                                        
-                
+
                 <?php foreach($documents as $row):
                     $html = "";
                     $url = base_url()."/document/view/".$row['uuid'];
@@ -27,8 +27,8 @@
                     <td class="f_s_12 f_w_400 open-file" data-id="<?= $row['id']?>"><?= !empty($row['file'])?basename($row['file']):'';?></td>
                     <td class="f_s_12 f_w_400 open-file" data-id="<?= $row['id']?>"><?= $row['company_name'];?></td>
 
-                    <td class="f_s_12 f_w_400 open-file" data-id="<?= $row['id']?>"><?php if (isset($row['created_at']) && (!empty($row['created_at']))) { render_date(strtotime($row['created_at'])); } ?></td>
-                    <td class="f_s_12 f_w_400 open-file" data-id="<?= $row['id']?>"><?php if (isset($row['modified_at']) && (!empty($row['modified_at']))) { render_date(strtotime($row['modified_at'])); } ?></td>
+                    <td class="f_s_12 f_w_400 open-file" data-id="<?= $row['id']?>"><?php if (isset($row['created_at']) && (!empty($row['created_at']))) { echo render_date(strtotime($row['created_at'])); } ?></td>
+                    <td class="f_s_12 f_w_400 open-file" data-id="<?= $row['id']?>"><?php if (isset($row['modified_at']) && (!empty($row['modified_at']))) { echo render_date(strtotime($row['modified_at'])); } ?></td>
 
                     <td class="f_s_12 f_w_400 text-right">
                         <div class="header_more_tool">

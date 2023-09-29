@@ -12,6 +12,10 @@ use App\Controllers\Core\CommonController;
 class Enquiries extends CommonController
 {	
 	protected $whereCond = array();
+	protected $content_model;
+	protected $enquries_model;
+	protected $user_model;
+	protected $cat_model;
 	function __construct()
     {
         parent::__construct();
@@ -62,14 +66,15 @@ class Enquiries extends CommonController
 
 	
 	
-	public function edit($id = 0)
+	public function edit($uuid = 0)
 	{
+		$enquiriesData = $this->enquries_model->getRowsByUUID($uuid)->getRow();
 		$data['tableName'] = $this->table;
 		$data['rawTblName'] = $this->rawTblName;
-		$data['enquiries'] = $this->enquries_model->getRows($id)->getRow();
+		$data['enquiries'] = $enquiriesData;
 		$data['users'] = $this->user_model->getUser();
 		$data['cats'] = $this->cat_model->getRows();
-		$array1 = $this->cat_model->getCatIds($id);
+		$array1 = $this->cat_model->getCatIds($enquiriesData->id);
 		
 		$arr = array_map (function($value){
 			return $value['categoryid'];

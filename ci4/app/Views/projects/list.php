@@ -22,7 +22,7 @@
             <tbody>
 
                 <?php foreach ($projects as $row) : ?>
-                    <tr data-link=<?= "/" . $tableName . "/edit/" . $row['id']; ?>>
+                    <tr data-link=<?= "/" . $tableName . "/edit/" . $row['uuid']; ?>>
 
                         <td class="f_s_12 f_w_400"><?= $row['id']; ?>
                         </td>
@@ -57,7 +57,7 @@
 
                                         <a class="dropdown-item" onclick="return confirm('Are you sure want to delete?');" href=<?= "/" . $tableName . "/delete/" . $row['id']; ?>>
                                             <i class="ti-trash"></i> Delete</a>
-                                        <a class="dropdown-item" href="<?= "/" . $tableName . "/edit/" . $row['id']; ?>"> <i class="fas fa-edit"></i> Edit</a>
+                                        <a class="dropdown-item" href="<?= "/" . $tableName . "/edit/" . $row['uuid']; ?>"> <i class="fas fa-edit"></i> Edit</a>
 
 
                                     </div>

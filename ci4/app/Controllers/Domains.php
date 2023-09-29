@@ -55,6 +55,7 @@ class Domains extends CommonController
 	public function update()
 	{
 		$id = $this->request->getPost('id');
+		$domainUUID = $id;
 		$data = array(
 			'name'  => $this->request->getPost('name'),
 			'notes' => $this->request->getPost('notes'),
@@ -64,6 +65,7 @@ class Domains extends CommonController
 		);
 		if (empty($id)) {
 			$data['uuid'] = UUID::v5(UUID::v4(), 'domains');
+			$domainUUID = $data['uuid'];
 		}
 		$file = $this->request->getFile('file');
 		if ($file && !$file->hasMoved()) {
@@ -71,14 +73,15 @@ class Domains extends CommonController
 		}
 		
 		$response = $this->model->insertOrUpdate($id, $data);
+		
 		$sids = $this->request->getPost('sid');
 		foreach ($sids as $key => $sid) {
-			$isDomainExists = $this->serviceDomainModel->checkRecordExists($data['uuid'], $sid);
+			$isDomainExists = $this->serviceDomainModel->checkRecordExists($domainUUID, $sid);
 			if (empty($isDomainExists)) {
 				$serviceDomainData = [
 					'uuid' =>  UUID::v5(UUID::v4(), 'service__domains'),
 					'service_uuid' => $sid,
-					'domain_uuid' => $data['uuid']
+					'domain_uuid' => $domainUUID
 				];
 				$updateServiceRl = $this->serviceDomainModel->saveData($serviceDomainData);
 				if (!$updateServiceRl) {

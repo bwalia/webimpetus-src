@@ -28,6 +28,11 @@ class Menu_model extends Model
 		$query = $this->db->table($this->table)->update($data, array('id' => $id));
 		return $query;
 	}
+    public function updateDataByUUID($uuid = null, $data = null)
+	{
+		$query = $this->db->table($this->table)->update($data, array('uuid' => $uuid));
+		return $query;
+	}
 
     public function saveData($data)
     {
