@@ -6,17 +6,16 @@ import (
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
-	"strconv"
 	"strings"
 	"testing"
 )
 
-var projectId string
+var businessesId string
 
-func TestGetAllProjects(t *testing.T) {
-	//t.Log(tokenValue)
+// Calling the Business API for GET method to get all businesses data
+func TestGetAllBusinesses(t *testing.T) {
 
-	req, err := http.NewRequest("GET", targetHost+"/api/v2/projects", nil)
+	req, err := http.NewRequest("GET", targetHost+"/api/v2/businesses", nil)
 	if err != nil {
 		t.Log(err)
 		return
@@ -38,28 +37,26 @@ func TestGetAllProjects(t *testing.T) {
 	if resp.StatusCode != http.StatusOK {
 		t.Error("Unexpected response status code", resp.StatusCode)
 		return
-	} else {
-		t.Log("Successfully get the projects data")
-
 	}
 }
 
-func TestCreateProject(t *testing.T) {
+// Calling the Business API for POST method to create a new business
+func TestAddBusiness(t *testing.T) {
 
-	url := targetHost + "/api/v2/projects/"
-	method := "POST"
-
-	type Project struct {
+	type Business struct {
 		Data struct {
-			ID int `json:"id"`
+			UUID string `json:"uuid"`
 		} `json:"data"`
 	}
 
+	url := targetHost + "/api/v2/businesses"
+	method := "POST"
+
 	payload := &bytes.Buffer{}
 	writer := multipart.NewWriter(payload)
-	_ = writer.WriteField("name", "test project")
-	_ = writer.WriteField("customers_id", "fe416e2d-0afb-5c82-a077-66da33137e26")
-	_ = writer.WriteField("uuid_business_id", businessId)
+	_ = writer.WriteField("business_code", "NB")
+	_ = writer.WriteField("name", "New business")
+
 	err := writer.Close()
 	if err != nil {
 		t.Log(err)
@@ -81,49 +78,40 @@ func TestCreateProject(t *testing.T) {
 		return
 	}
 	body, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		t.Log(err)
+	if false {
+		t.Log(string(body))
 	}
-
-	buf := bytes.NewBuffer(body)
+	buff := bytes.NewBuffer(body)
 	defer res.Body.Close()
 
-	var jsonData Project
-	err = json.NewDecoder(buf).Decode(&jsonData)
+	var jsonData Business
+	err = json.NewDecoder(buff).Decode(&jsonData)
 	if err != nil {
 		t.Error("failed to decode json", err)
 	} else {
-		projectId = strconv.Itoa(jsonData.Data.ID)
-		t.Log(projectId)
+		// Getting the uuid of the business created
+		businessesId = jsonData.Data.UUID
+		//t.Log(businessesId)
+		t.Log("Successfully created new business")
 	}
-	if res.StatusCode != http.StatusOK {
-		t.Error("Unexpected response status code", res.StatusCode)
-		return
-	}
-	if !strings.Contains(string(body), "test project") {
-		t.Error("Returned unexpected body")
-	} else {
-		t.Log("Successfully created a new project")
-
-	}
-
 }
-func TestUpdateProjects(t *testing.T) {
 
-	url := targetHost + "/api/v2/projects/"
+// Calling the Business API for PUT method to update the single business data with the uuid
+func TestUpdateBusiness(t *testing.T) {
 
-	type projectData struct {
-		ID           string `json:"id"`
-		CustomersId  string `json:"customers_id"`
-		Name         string `json:"name"`
-		BusinessUuid string `json:"uuid_business_id"`
+	url := targetHost + "/api/v2/businesses/" + businessesId
+
+	type BusinessData struct {
+		Name             string `json:"name"`
+		Uuid_business_id string `json:"uuid_business_id"`
+		UUID             string `json:"uuid"`
 	}
-	data := projectData{
-		ID:           projectId,
-		CustomersId:  "fe416e2d-0afb-5c82-a077-66da33137e26",
-		Name:         "new project",
-		BusinessUuid: businessId,
+	data := BusinessData{
+		Name:             "business renew",
+		UUID:             businessesId,
+		Uuid_business_id: businessId,
 	}
+
 	//t.Log(data)
 	jsonData, err := json.Marshal(data)
 	if err != nil {
@@ -132,7 +120,7 @@ func TestUpdateProjects(t *testing.T) {
 	//t.Log(jsonData)
 	client := &http.Client{}
 
-	req, err := http.NewRequest("PUT", url+projectId, bytes.NewBuffer(jsonData))
+	req, err := http.NewRequest("PUT", url, bytes.NewBuffer(jsonData))
 	if err != nil {
 		t.Log(err)
 		return
@@ -147,26 +135,28 @@ func TestUpdateProjects(t *testing.T) {
 	//t.Log(resp)
 
 	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		t.Log(err)
+	if false {
+		t.Log(string(body))
 	}
 
 	if resp.StatusCode != http.StatusOK {
 		t.Error("Unexpected response status code", resp.StatusCode)
 		return
 	}
-	if !strings.Contains(string(body), "new project") {
+	// Verify the updated body
+	if !strings.Contains(string(body), "business renew") {
 		t.Error("Returned unexpected body")
 	} else {
-		t.Log("Successfully updated the project")
+		t.Log("Successfully updated business")
 	}
-
 }
-func TestDeleteProjects(t *testing.T) {
-	url := targetHost + "/api/v2/projects/"
+
+// Calling the Business API for DELETE method to delete the single business data with uuid
+func TestDeleteBusiness(t *testing.T) {
+	url := targetHost + "/api/v2/businesses/" + businessesId
 	client := &http.Client{}
 
-	req, err := http.NewRequest("DELETE", url+projectId, nil)
+	req, err := http.NewRequest("DELETE", url, nil)
 	if err != nil {
 		t.Log(err)
 		return
@@ -183,16 +173,15 @@ func TestDeleteProjects(t *testing.T) {
 		t.Error("Unexpected response status code", resp.StatusCode)
 		return
 	} else {
-		t.Log("Successfully deleted the project")
-
+		t.Log("Successfully deleted business")
 	}
-
 }
-func TestGetSingleProject(t *testing.T) {
-	url := targetHost + "/api/v2/projects/"
-	//t.Log(tokenValue)
 
-	req, err := http.NewRequest("GET", url+projectId, nil)
+// Calling the Business API for GET method to get single business data with UUID
+func TestGetSingleBusiness(t *testing.T) {
+	url := targetHost + "/api/v2/businesses/" + businessesId
+
+	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		t.Log(err)
 		return
@@ -210,10 +199,10 @@ func TestGetSingleProject(t *testing.T) {
 	if false {
 		t.Log(string(body))
 	}
+	// With the 'null' in response body, it will verify the Business data is deleted successfully
 	if !strings.Contains(string(body), "null") {
 		t.Error("Returned unexpected body")
 	} else {
-		t.Log("The delete action for the project is verified")
-
+		t.Log("The delete action for the Business is verified")
 	}
 }

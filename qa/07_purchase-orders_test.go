@@ -10,12 +10,13 @@ import (
 	"testing"
 )
 
-var salesInvoicesUUId string
+var purchaseOrdersUUId string
 
-func TestGetAllSalesInvoices(t *testing.T) {
+// Calling the Purchase_orders API for GET method to get all Purchase order data
+func TestGetAllPurchaseOrders(t *testing.T) {
 	//t.Log(tokenValue)
 
-	req, err := http.NewRequest("GET", targetHost+"/api/v2/sales_invoices/", nil)
+	req, err := http.NewRequest("GET", targetHost+"/api/v2/purchase_orders", nil)
 	if err != nil {
 		t.Log(err)
 		return
@@ -38,17 +39,17 @@ func TestGetAllSalesInvoices(t *testing.T) {
 		t.Error("Unexpected response status code", resp.StatusCode)
 		return
 	} else {
-		t.Log("Successfully get all sales invoices data")
-
+		t.Log("Successfully get all purchase orders data")
 	}
 }
 
-func TestCreateSalesInvoice(t *testing.T) {
+// Calling the Purchase_orders API for POST method to create a new Purchase order
+func TestCreatePurchaseOrder(t *testing.T) {
 
-	url := targetHost + "/api/v2/sales_invoices/"
+	url := targetHost + "/api/v2/purchase_orders"
 	method := "POST"
 
-	type Sales_invoice struct {
+	type Purchase_orders struct {
 		Data struct {
 			UUID string `json:"uuid"`
 		} `json:"data"`
@@ -56,12 +57,8 @@ func TestCreateSalesInvoice(t *testing.T) {
 
 	payload := &bytes.Buffer{}
 	writer := multipart.NewWriter(payload)
-	_ = writer.WriteField("terms", "net 20")
+	_ = writer.WriteField("client_id", "14")
 	_ = writer.WriteField("uuid_business_id", businessId)
-	_ = writer.WriteField("date", "12/02/2023")
-	_ = writer.WriteField("due_date", "12/04/2023")
-	_ = writer.WriteField("supplier", "e5faf426-b9d8-54a9-9208-a44a97aa4b8a")
-	_ = writer.WriteField("project_code", "4D")
 	err := writer.Close()
 	if err != nil {
 		t.Log(err)
@@ -91,31 +88,31 @@ func TestCreateSalesInvoice(t *testing.T) {
 
 	buffer := bytes.NewBuffer(body)
 
-	var jsonData Sales_invoice
+	var jsonData Purchase_orders
 	err = json.NewDecoder(buffer).Decode(&jsonData)
 	if err != nil {
 		t.Log("failed to decode json", err)
 	} else {
-		salesInvoicesUUId = jsonData.Data.UUID
-		//t.Log(salesInvoicesUUId)
-		t.Log("Successfully created a new sales invoice")
-
+		// Getting the uuid of the Purchase order created
+		purchaseOrdersUUId = jsonData.Data.UUID
+		//t.Log(workOrdersUUId)
+		t.Log("Successfully created a new purchase order")
 	}
-
 }
 
-func TestUpdateSalesInvoice(t *testing.T) {
+// Calling the Purchase_orders API for PUT method to update the single Purchase order data with the uuid
+func TestUpdatePurchaseOrders(t *testing.T) {
 
-	url := targetHost + "/api/v2/sales_invoices/"
+	url := targetHost + "/api/v2/purchase_orders/" + purchaseOrdersUUId
 
-	type SalesInvoiceData struct {
+	type PurchaseOrdersData struct {
 		UUID         string `json:"uuid"`
-		Terms        string `json:"terms"`
+		ClientId     string `json:"client_id"`
 		BusinessUuid string `json:"uuid_business_id"`
 	}
-	data := SalesInvoiceData{
-		UUID:         salesInvoicesUUId,
-		Terms:        "net 15",
+	data := PurchaseOrdersData{
+		UUID:         purchaseOrdersUUId,
+		ClientId:     "16",
 		BusinessUuid: businessId,
 	}
 	//t.Log(data)
@@ -126,7 +123,7 @@ func TestUpdateSalesInvoice(t *testing.T) {
 	//t.Log(jsonData)
 	client := &http.Client{}
 
-	req, err := http.NewRequest("PUT", url+salesInvoicesUUId, bytes.NewBuffer(jsonData))
+	req, err := http.NewRequest("PUT", url, bytes.NewBuffer(jsonData))
 	if err != nil {
 		t.Log(err)
 		return
@@ -149,19 +146,19 @@ func TestUpdateSalesInvoice(t *testing.T) {
 		t.Error("Unexpected response status code", resp.StatusCode)
 		return
 	}
-	if !strings.Contains(string(body), "net 15") {
+	if !strings.Contains(string(body), "16") {
 		t.Error("Returned unexpected body")
 	} else {
-		t.Log("Successfully updated the sales invoice")
-
+		t.Log("Successfully updated the purchase order")
 	}
-
 }
-func TestDeleteSalesInvoice(t *testing.T) {
-	url := targetHost + "/api/v2/sales_invoices/"
+
+// Calling the Purchase_orders API for DELETE method to delete the single Purchase order data with uuid
+func TestDeletePurchaseOrder(t *testing.T) {
+	url := targetHost + "/api/v2/purchase_orders/" + purchaseOrdersUUId
 	client := &http.Client{}
 
-	req, err := http.NewRequest("DELETE", url+salesInvoicesUUId, nil)
+	req, err := http.NewRequest("DELETE", url, nil)
 	if err != nil {
 		t.Log(err)
 		return
@@ -178,16 +175,16 @@ func TestDeleteSalesInvoice(t *testing.T) {
 		t.Error("Unexpected response status code", resp.StatusCode)
 		return
 	} else {
-		t.Log("Successfully deleted the sales invoice")
-
+		t.Log("Successfully deleted the purchase order")
 	}
-
 }
-func TestGetSingleSalesInvoice(t *testing.T) {
-	url := targetHost + "/api/v2/sales_invoices/"
+
+// Calling the purchase_orders API for GET method to get single purchase order data with UUID
+func TestGetSinglePurchaseOrder(t *testing.T) {
+	url := targetHost + "/api/v2/purchase_orders/" + purchaseOrdersUUId
 	//t.Log(tokenValue)
 
-	req, err := http.NewRequest("GET", url+salesInvoicesUUId, nil)
+	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		t.Log(err)
 		return
@@ -202,13 +199,16 @@ func TestGetSingleSalesInvoice(t *testing.T) {
 	//t.Log(resp)
 
 	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		t.Log(err)
+	}
 	if false {
 		t.Log(string(body))
 	}
+	// With the 'null' in response body, it will verify the purchase_orders data is deleted successfully
 	if !strings.Contains(string(body), "null") {
 		t.Error("Returned unexpected body")
 	} else {
-		t.Log("The delete action for the sales onvoice is verified")
-
+		t.Log("The delete action for the purchase order is verified")
 	}
 }
