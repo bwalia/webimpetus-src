@@ -70,6 +70,15 @@ class Common_model extends Model
             return $this->getWhere($whereCond);
         }
     }
+    public function getExistsRowsByUUID($uuid = false)
+    {
+        $whereCond = $this->whereCond;
+
+        if ($uuid) {
+            $whereCond = array('uuid' => $uuid);
+            return $this->getWhere($whereCond);
+        }
+    }
 
     public function getCats($id = false)
     {
@@ -170,6 +179,11 @@ class Common_model extends Model
     public function updateData($id = null, $data = null)
     {
         $query = $this->db->table($this->table)->update($data, array('id' => $id));
+        return $query;
+    }
+    public function updateDataByUUID($uuid = null, $data = null)
+    {
+        $query = $this->db->table($this->table)->update($data, array('uuid' => $uuid));
         return $query;
     }
     public function updateTableData($id = null, $data = null, $tableName = "")

@@ -25,6 +25,15 @@ class Content_model extends Model
             return $this->getWhere($whereCond);
         }   
     }
+    public function getRowsByUUID($uuid = false)
+    {
+        if($uuid === false){
+            return $this->where($this->whereCond)->findAll();
+        }else{
+			$whereCond = array_merge(['uuid' => $uuid], $this->whereCond);
+            return $this->getWhere($whereCond);
+        }   
+    }
 	
 	public function jobsbycat($cat = false, $limit=false, $offset=false)
     {
@@ -79,6 +88,11 @@ class Content_model extends Model
 	public function updateData($id = null, $data = null)
 	{
 		$query = $this->db->table($this->table)->update($data, array('id' => $id));
+		return $query;
+	}
+	public function updateDataByUUID($uuid = null, $data = null)
+	{
+		$query = $this->db->table($this->table)->update($data, array('uuid' => $uuid));
 		return $query;
 	}
 	

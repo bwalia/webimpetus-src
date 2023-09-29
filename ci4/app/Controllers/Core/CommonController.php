@@ -11,6 +11,8 @@ use App\Models\Users_model;
 use PHPUnit\Framework\Constraint\FileExists;
 use Config\Services;
 use \Firebase\JWT\JWT;
+use App\Libraries\UUID;
+
 class CommonController extends BaseController
 {
 	protected $table;
@@ -115,14 +117,16 @@ class CommonController extends BaseController
 	}
 
 
-	public function edit($id = 0)
+	public function edit($uuid = 0)
 	{
+		$tableData =  $uuid ? $this->model->getExistsRowsByUUID($uuid)->getRow() : '';
+		
 		$data['tableName'] = $this->table;
 		$data['rawTblName'] = $this->rawTblName;
 		$data["users"] = $this->model->getUser();
-		$data[$this->rawTblName] = $this->model->getRows($id)->getRow();
+		$data[$this->rawTblName] = $tableData;
 		// if there any special cause we can overried this function and pass data to add or edit view
-		$data['additional_data'] = $this->getAdditionalData($id);
+		$data['additional_data'] = $this->getAdditionalData($uuid ? $tableData->id : '');
 		echo view($this->table . "/edit", $data);
 	}
 
@@ -145,9 +149,13 @@ class CommonController extends BaseController
 	public function update()
 	{
 		$id = $this->request->getPost('id');
+		$uuid = $this->request->getPost('uuid');
 
 		$data = $this->request->getPost();
-		$response = $this->model->insertOrUpdate($id, $data);
+		if (!$data['uuid'] || empty($data['uuid']) || !isset($data['uuid'])) {
+			$data['uuid'] = UUID::v5(UUID::v4(), $this->table);
+		}
+		$response = $this->model->insertOrUpdateByUUID($uuid, $data);
 		if (!$response) {
 			session()->setFlashdata('message', 'Something wrong!');
 			session()->setFlashdata('alert-class', 'alert-danger');

@@ -3,6 +3,7 @@
    <div class="card-body">
       <form id="addcat" method="post" action="/blog/update" enctype="multipart/form-data">
          <input type="hidden" class="form-control" name="id" placeholder="" value="<?=@$content->id ?>" />
+         <input type="hidden" class="form-control" name="uuid" placeholder="" value="<?=@$content->uuid ?>" />
          <input type="hidden" class="form-control" name="type" placeholder="" value="2" />
          <div class="row">
             <div class="col-xs-12 col-md-12">
@@ -106,7 +107,7 @@
                      <div class="form-row">
                         <div class="form-group col-md-12">
                            <label for="inputState">Choose User</label>
-                           <select id="uuid" name="uuid" class="form-control">
+                           <select id="user_uuid" name="user_uuid" class="form-control">
                               <option value="0" selected="">--Select--</option>
                               <?php foreach($users as $row):?>
                               <option value="<?= $row['uuid'];?>"  <?=($row['uuid']==@$content->uuid)?'selected':''?>><?= $row['name'];?></option>

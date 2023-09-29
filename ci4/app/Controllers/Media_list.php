@@ -21,7 +21,8 @@ class Media_list extends CommonController
     public function update()
     {        
         $id = $this->request->getPost('id');
-		if(!empty($id)){
+        $uuid = $this->request->getPost('uuid');
+		if(!empty($uuid)){
 			$data = array(
                 'code' => $this->request->getPost('code'),
                 'status' => $this->request->getPost('status'),
@@ -38,7 +39,7 @@ class Media_list extends CommonController
             // 	$response = $this->Amazon_s3_model->doUpload("file", "category-file");							
             // 	$data['name'] = $response["filePath"];
             // }
-			$this->model->updateData($id, $data);
+			$this->model->updateDataByUUID($uuid, $data);
 			
 			session()->setFlashdata('message', 'Data updated Successfully!');
 			session()->setFlashdata('alert-class', 'alert-success');

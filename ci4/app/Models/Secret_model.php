@@ -21,6 +21,14 @@ class Secret_model extends Model
             return $this->getWhere(['id' => $id, 'uuid_business_id' => $this->businessUuid]);
         }   
     }
+    public function getRowsByUUID($uuid = false)
+    {
+        if($uuid === false){
+            return $this->where('uuid_business_id', $this->businessUuid)->findAll();
+        }else{
+            return $this->getWhere(['uuid' => $uuid, 'uuid_business_id' => $this->businessUuid]);
+        }   
+    }
 	
 	public function saveData($data)
     {

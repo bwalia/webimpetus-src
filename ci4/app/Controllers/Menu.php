@@ -4,11 +4,12 @@ use App\Controllers\Core\CommonController;
 use App\Models\Cat_model;
 use App\Models\Menu_model;
 use App\Models\Core\Common_model;
-
+use App\Libraries\UUID;
  
 class Menu extends CommonController
 {	
-	
+	protected $catModel;
+	protected $menuModel;
     function __construct()
     {
         parent::__construct();
@@ -36,26 +37,29 @@ class Menu extends CommonController
 
         return view($viewPath, $data);
     }
-    public function edit($id = 0)
+    public function edit($uuid = 0)
     { 
+        $menuData =getRowArray($this->table, ['uuid' => $uuid]);
 		$data['tableName'] = $this->table;
         $data['rawTblName'] = $this->table;
 		$data["users"] = $this->model->getUser();
 		$data["categories"] = $this->catModel->getRows();
-		$data["selected_cat"] = array_column($this->menuModel->CatByMenuId($id),'ID');
-		$data["data"] = getRowArray($this->table, ['id' => $id]);
+		$data["selected_cat"] = array_column($this->menuModel->CatByMenuId($menuData->id),'ID');
+		$data["data"] =$menuData;
         //echo $this->db->last_query();
         //echo '<pre>';print_r($data["selected_cat"]); die;
 
         
 		// if there any spe+cial cause we can overried this function and pass data to add or edit view
-		$data['additional_data'] = $this->getAdditionalData($id);
+		$data['additional_data'] = $this->getAdditionalData($menuData->id);
 
         echo view($this->table."/edit",$data);
     }
 
     public function update(){
         //print_r($this->request->getPost('id')); die;
+        $id = $this->request->getPost('id');
+        $uuid = $this->request->getPost('uuid');
         $cat_data = [];
         $cat_data['name'] = $this->request->getPost('name');
         $cat_data['link'] = $this->request->getPost('link');
@@ -63,10 +67,11 @@ class Menu extends CommonController
         $cat_data['language_code'] = $this->request->getPost('language_code');
         $cat_data['menu_fts'] = implode(',',$this->request->getPost('tags'));
         $cat_data['uuid_business_id'] = session('uuid_business');
-        if(!empty($this->request->getPost('id'))){
-            $this->menuModel->updateData($this->request->getPost('id'),$cat_data);
+        if(!empty($uuid)){
+            $this->menuModel->updateDataByUUID($uuid,$cat_data);
             $this->menuModel->saveMenuCat($this->request->getPost('id'),$this->request->getPost('categories'));
         }else{
+            $cat_data['uuid'] =  UUID::v5(UUID::v4(), 'menu');
             $in_id = $this->menuModel->saveData($cat_data);
             $this->menuModel->saveMenuCat($in_id,$this->request->getPost('categories'));
         }
