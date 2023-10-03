@@ -12,6 +12,8 @@ ini_set('display_errors', 1);
 
 class Jobapps extends CommonController
 {	
+	protected $user_model;
+	protected $cat_model;
 	public function __construct()
 	{
 		parent::__construct();
@@ -29,6 +31,7 @@ class Jobapps extends CommonController
     }
 	public function edit($id = "")
     {
+		
 		$data['tableName'] = $this->table;
 		$data['rawTblName'] = $this->rawTblName;
 		$data['content'] = $this->model->getRows($id)->getRow();

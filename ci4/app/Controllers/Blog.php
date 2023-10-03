@@ -31,7 +31,7 @@ class Blog extends CommonController
 	
 	public function edit($uuid = 0)
 	{
-		$contentData = $this->content_model->getRowsByUUID($uuid)->getRow();
+		$contentData = $uuid ? $this->content_model->getRowsByUUID($uuid)->getRow() : [];
 		$id = $contentData->id ?? '';
 		$data['menucode'] = 8;
 		$data['tableName'] = $this->table;
