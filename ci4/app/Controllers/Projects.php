@@ -32,13 +32,13 @@ class Projects extends CommonController
     }
     public function edit($uuid = 0)
     {
-        $projectData = $this->model->getRowsByUUID($uuid)->getRow();
+        $projectData = $uuid ? $this->model->getRowsByUUID($uuid)->getRow() : "";
 		$data['tableName'] = $this->table;
         $data['rawTblName'] = $this->rawTblName;
 		$data["users"] = $this->model->getUser();
 		$data[$this->rawTblName] = $projectData;
 		// if there any special cause we can overried this function and pass data to add or edit view
-		$data['additional_data'] = $projectData->id;
+		$data['additional_data'] = $projectData ? $projectData->id : $uuid;
 
         echo view($this->table."/edit",$data);
     }

@@ -47,7 +47,7 @@ class Gallery extends CommonController
 	{
 		$data['rawTblName'] = "Galary";
 		$data['tableName'] = $this->gallery;
-		$data[$this->table] = $this->gallery_model->getRowsByUUID($uuid)->getRow();
+		$data[$this->table] = $uuid ? $this->gallery_model->getRowsByUUID($uuid)->getRow() : "";
 		$data['users'] = $this->user_model->getUser();
 		echo view($this->table.'/edit',$data);
 	}

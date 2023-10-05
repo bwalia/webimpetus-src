@@ -180,8 +180,11 @@ class Projects extends ResourceController
 
     public function projectsByBId ($bid) {
         $api =  new Api_v2();
-        $data['data'] = $api->projects_model->getBusinessProjectList($bid);
+        $records = $api->projects_model->getBusinessProjectList($bid, $_GET);
+        
+        $data['data'] = $records['data'];
         $data['status'] = 200;
+        $data['total'] = $records['total'];
         return $this->respond($data);    
     }
 }

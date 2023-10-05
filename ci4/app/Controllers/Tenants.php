@@ -79,13 +79,13 @@ class Tenants extends CommonController
 
 	public function edit($uuid = 0)
 	{
-		$tenantData = $this->tenantModel->getRowsByUUId($uuid)->getRow();
+		$tenantData = $uuid ? $this->tenantModel->getRowsByUUId($uuid)->getRow() : "";
 		$data['tableName'] = $this->table;
 		$data['rawTblName'] = $this->rawTblName;
 		$data['tenant'] = $tenantData;
 		$data['users'] = $this->user_model->getUser();
 		$data['services'] = $this->service_model->getRows();
-		$data['tservices'] = array_column($this->tservice_model->getRows($tenantData->id, 1), 'sid');
+		$data['tservices'] = array_column($this->tservice_model->getRows($tenantData ? $tenantData->id : $uuid, 1), 'sid');
 		$data['actionUrl'] = (empty($uuid)) ? '/tenants/save' : '/tenants/update';
 		echo view($this->table . "/edit", $data);
 	}
