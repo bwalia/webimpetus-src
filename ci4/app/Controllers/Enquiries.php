@@ -68,13 +68,13 @@ class Enquiries extends CommonController
 	
 	public function edit($uuid = 0)
 	{
-		$enquiriesData = $this->enquries_model->getRowsByUUID($uuid)->getRow();
+		$enquiriesData = $uuid ? $this->enquries_model->getRowsByUUID($uuid)->getRow() : "";
 		$data['tableName'] = $this->table;
 		$data['rawTblName'] = $this->rawTblName;
 		$data['enquiries'] = $enquiriesData;
 		$data['users'] = $this->user_model->getUser();
 		$data['cats'] = $this->cat_model->getRows();
-		$array1 = $this->cat_model->getCatIds($enquiriesData->id);
+		$array1 = $this->cat_model->getCatIds($enquiriesData ? $enquiriesData->id : $uuid);
 		
 		$arr = array_map (function($value){
 			return $value['categoryid'];

@@ -36,12 +36,12 @@ class Secrets extends CommonController
 
 	public function edit($uuid = 0)
 	{
-		$secretsData = $this->secretModel->getRowsByUUID($uuid)->getRow();
+		$secretsData = $uuid ? $this->secretModel->getRowsByUUID($uuid)->getRow() : "";
 		$data['tableName'] = $this->table;
 		$data['rawTblName'] = $this->rawTblName;
 		$data['secret'] = $secretsData;
 		$data['services'] = $this->service_model->getRows();
-		$data['sservices'] = array_column($this->secretModel->getServices($secretsData->id), 'service_id');
+		$data['sservices'] = array_column($this->secretModel->getServices($secretsData ? $secretsData->id : $uuid), 'service_id');
 
 		return view('secrets/edit', $data);
 	}

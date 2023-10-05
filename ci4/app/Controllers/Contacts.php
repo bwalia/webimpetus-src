@@ -28,7 +28,7 @@ class Contacts extends CommonController
         $data['rawTblName'] = $this->rawTblName;
 		$data["users"] = $this->model->getUser();
         $data["categories"] = $this->model->getCategories();
-		$data[$this->rawTblName] = $this->model->getRowsByUUID($uuid)->getRow();
+		$data[$this->rawTblName] = $uuid ? $this->model->getRowsByUUID($uuid)->getRow() : "";
 		// if there any special cause we can overried this function and pass data to add or edit view
 		$data['additional_data'] = $this->getAdditionalData($uuid);
 
