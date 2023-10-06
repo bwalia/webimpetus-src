@@ -17,11 +17,11 @@
                                 <div class="card draggable shadow-sm add-dropzone" data-id="<?= $row['id'] ?>" id="cd<?= $row['id'] ?>" draggable="true" ondragstart="drag(event)">
                                     <div class="card-body card-body-custom p-2">
                                         <div class="card-title">
-                                            <a href="<?= "/" . $tableName . "/edit/" . $row['id']; ?>" class="lead font-weight-light">TSK-<?= $row['task_id'] ?></a>
+                                            <a href="<?= "/" . $tableName . "/edit/" . $row['uuid']; ?>" class="lead font-weight-light">TSK-<?= $row['task_id'] ?></a>
                                         </div>
                                         <p><?= $row['name'] ?></p>
                                         <div class="mt-3 pl-2 text-white <?= $row['priority'] == 'high' ? 'bg-danger' : ($row['priority'] == 'medium' ? 'bg-warning' : 'bg-info') ?>"><?= ucfirst($row['priority']) ?></div>
-                                        <a href="<?= "/" . $tableName . "/edit/" . $row['id']; ?>" class="btn btn-success btn-sm mt-3">View</a>
+                                        <a href="<?= "/" . $tableName . "/edit/" . $row['uuid']; ?>" class="btn btn-success btn-sm mt-3">View</a>
                                     </div>
                                 </div>
                                 <div class="dropzone rounded" ondrop="drop(event)" ondragover="allowDrop(event)" ondragleave="clearDrop(event)"> &nbsp; </div>
