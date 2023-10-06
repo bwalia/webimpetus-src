@@ -1,5 +1,4 @@
 name: Webimpetus Test Suite
-
 on:
   schedule:
     - cron: '0 0 * * *'
@@ -8,14 +7,14 @@ on:
       TARGET_ENV:
         type: choice
         description: 'Please choose the Target Environment'
-        default: 'int'
+        default: 'test'
         required: true
         options:
           - int
           - test
           - acc
           - prod 
-     
+          
 env: 
   TARGET_ENV: ${{ inputs.TARGET_ENV }}
   QA_LOGIN_EMAIL: ${{ secrets.QA_LOGIN_EMAIL }}
