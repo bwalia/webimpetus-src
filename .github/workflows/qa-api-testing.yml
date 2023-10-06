@@ -10,10 +10,10 @@ on:
         default: 'test'
         required: true
         options:
-        - int
-        - test
-        - acc
-        - prod  
+          - int
+          - test
+          - acc
+          - prod  
      
 env: 
   TARGET_ENV: ${{ inputs.TARGET_ENV }}
