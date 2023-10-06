@@ -53,7 +53,12 @@ class Projects_model extends Model
         list($column, $order) = $sort;
         
         $builder = $this->db->table($this->table);
-        $builder->orderBy("$column", "$order");
+        $builder->select([
+            '*',             // Select all columns
+            'id AS uuid',    // Rename 'id' to 'uuid'
+            'uuid AS id',    // Rename 'uuid' to 'id'
+        ]);
+        $builder->orderBy($this->table .".$column", "$order");
         $builder->limit($limit);
         $builder->where("uuid_business_id", $bid);
         

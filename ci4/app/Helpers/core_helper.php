@@ -29,10 +29,7 @@ function render_date($time="", $type="input", $format=""){
 }
 
 function getCurrency($key){
-
-    $key = $key-1;
-    $list=["GBP", "USD", "EUR"];
-
+    $list=["gbp" => "GBP", "usd" => "USD", "eur" => "EUR"];
     return $list[$key];
 }
 function getStatus($key){

@@ -120,7 +120,7 @@ return $this
                         [
                             'error' => 'Password Not match',
                         ],
-                        $responseCode
+                        ResponseInterface::HTTP_FORBIDDEN
                     );
             }
             if ($loginType == "contact") {
@@ -130,7 +130,7 @@ return $this
                             [
                                 'error' => 'User do do have access to webpage!',
                             ],
-                            $responseCode
+                            ResponseInterface::HTTP_FORBIDDEN
                         );
                 }
             }
@@ -145,7 +145,8 @@ return $this
                         'message' => 'User authenticated successfully',
                         'user' => $user,
                         'access_token' => getSignedJWTForUser($emailAddress)
-                    ]
+                    ],
+                    $responseCode
                 );
         } catch (Exception $exception) {
             return $this
@@ -153,7 +154,7 @@ return $this
                     [
                         'error' => $exception->getMessage(),
                     ],
-                    $responseCode
+                    ResponseInterface::HTTP_FORBIDDEN
                 );
         }
     }

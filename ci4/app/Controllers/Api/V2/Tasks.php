@@ -187,8 +187,10 @@ class Tasks extends ResourceController
     public function tasksByPId($bId, $pId)
     {
         $model = new Tasks_model();
-        $data['data'] = $model->tasksByPId($bId, $pId);
+        $records = $model->tasksByPId($bId, $pId, $_GET);
+        $data['data'] = $records['data'];
         $data['status'] = 200;
+        $data['total'] = $records['total'];
         return $this->respond($data);
     }
 }
