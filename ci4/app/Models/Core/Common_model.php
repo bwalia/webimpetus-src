@@ -221,7 +221,7 @@ class Common_model extends Model
         $fields = $this->getFieldNames($tableName);
         //print_r($fields);die;
         if(in_array('uuid',$fields)){
-            $arr = "*,uuid as id";
+            $arr = "*,uuid as id, id as uuid";
         }else{
             $arr = "*";
         }

@@ -124,12 +124,31 @@ class Tasks_model extends Model
         return $this->getWhere(['uuid' => $id])->getRow();
     }
 
-    public function tasksByPId($bId, $pId) {
+    public function tasksByPId($bId, $pId, $params) {
+        $where = [
+            "uuid_business_id" => $bId,
+            "projects_id" => $pId
+        ];
+        $range = json_decode($params['range']);
+        $sort = json_decode($params['sort']);
+        $limit = (int) implode(', ', $range);
+        list($column, $order) = $sort;
+        
         $builder = $this->db->table($this->table);
-        $builder->where($this->table.".uuid_business_id",  $bId);
-        $builder->where($this->table.".projects_id",  $pId);
-
-        return $builder->get()->getResultArray();
+        $builder->select([
+            '*',             // Select all columns
+            'id AS uuid',    // Rename 'id' to 'uuid'
+            'uuid AS id',    // Rename 'uuid' to 'id'
+        ]);
+        $builder->orderBy($this->table .".$column", "$order");
+        $builder->limit($limit);
+        $builder->where($where);
+        
+        $total =  $this->db->table($this->table)->where($where)->countAllResults();
+        return [
+            'data' => $builder->get()->getResultArray(),
+            'total' => $total
+        ];
     }
 
 }
