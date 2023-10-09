@@ -18,7 +18,7 @@
 
                 <div class="form-group col-md-4">
                     <label for="inputState">Choose Service</label>
-                    <select id="sid" name="sid[]" multiple class="form-control js-example-basic-multiple">                                            
+                    <select id="sid" name="sid[]" multiple class="form-control js-example-basic-multiple select2">                                            
                 <?php foreach($services as $row):?>
                         <option value="<?= $row['id'];?>" <?=(in_array($row['id'],$tservices))?'selected':'' ?>><?= $row['name'];?></option>
                         <?php endforeach;?>

@@ -12,7 +12,7 @@
                         <option value="" selected="">--Select--</option>
                         <?php foreach ($customers as $row): ?>
                             <option value="<?= $row['uuid']; ?>" <?= (is_object($domain) && property_exists($domain, 'customer_uuid') && $row['uuid'] == $domain->customer_uuid) ? 'selected' : '' ?>>
-                                <?= $row['email'] . '-' . $row['contact_firstname'] . ' ' . $row['contact_lastname']; ?>
+                                <?= $row['company_name']; ?>
                             </option>
                         <?php endforeach; ?>
                     </select>

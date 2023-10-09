@@ -39,8 +39,7 @@ $('#sidebar_menu li').click(function(){
 });
 
 $("input[type=email]").focusout(function(event) {
-    $("<span class='form-control-feedback' id='emailError'></span>").insertAfter($(this));
-    validateEmail($(this).val(), "emailError", event);
+    validateEmail($(this).val(), $(this), event);
 })
 $("input[name=telephone_no]").focusout(function(event) {
     validatePhoneNo($(this).val(), event);
@@ -49,7 +48,6 @@ $("input[name=telephone_no]").focusout(function(event) {
 function validatePhoneNo (phoneNo, event) {
     var phonePattern = /^\d{10}$/;
     if (phonePattern.test(phoneNo)) {
-        console.log("jih");
         $('#phoneError').text('');
         $('#phoneError').remove();
     } else {
@@ -64,9 +62,12 @@ function validatePhoneNo (phoneNo, event) {
 function validateEmail (email, errorEle, event) {
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
     if (emailRegex.test(email)) {
-            $("#" + errorEle).text("");
+            $("#emailError").text("");
+            $("#emailError").remove();
         } else {
-            $("#" + errorEle).text("The email should be valid.");
+            if ($("#emailError").length === 0) {
+                $("<span class='form-control-feedback' id='emailError'>The email should be valid.</span>").insertAfter($(errorEle));
+            }
             event.preventDefault();
             return false;
         }
