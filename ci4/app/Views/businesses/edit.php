@@ -132,8 +132,8 @@ $json = json_decode($str, true);
     });
 
     $("#adddomain").submit(function(event) {
-        $("<span class='form-control-feedback' id='emailError'></span>").insertAfter($("#inputEmail"));
-        validateEmail($("#inputEmail").val(), "emailError", event);
+        // $("<span class='form-control-feedback' id='emailError'></span>").insertAfter($("#inputEmail"));
+        validateEmail($("#inputEmail").val(), "#inputEmail", event);
         validatePhoneNo($("#telephone_no").val(), event);
     })
 </script>

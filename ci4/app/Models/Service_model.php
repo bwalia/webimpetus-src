@@ -12,7 +12,7 @@ class Service_model extends Model
         $this->businessUuid = session('uuid_business');
     }
 
-    public function getRows($id = false)
+    public function getRowsWithService($id = false)
     {
         if($id === false){
 			$this->join('categories', 'services.cid = categories.id', 'LEFT');
@@ -20,6 +20,15 @@ class Service_model extends Model
 			$this->select('categories.name as category');			
 			$this->select('tenants.name as tenant');
 			$this->select('services.*');
+			$this->where([$this->table . '.uuid_business_id' => $this->businessUuid]);
+            return $this->findAll();
+        }else{
+            return $this->getWhere(['uuid' => $id, 'uuid_business_id' => $this->businessUuid]);
+        }   
+    }
+    public function getRows($id = false)
+    {
+        if($id === false){
 			$this->where([$this->table . '.uuid_business_id' => $this->businessUuid]);
             return $this->findAll();
         }else{

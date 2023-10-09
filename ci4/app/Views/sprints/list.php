@@ -15,7 +15,7 @@
             </thead>
             <tbody>
                 <?php foreach ($sprints as $row) : ?>
-                    <tr data-link=<?= "/" . $tableName . "/edit/" . $row['id']; ?>>
+                    <tr data-link=<?= "/" . $tableName . "/edit/" . $row['uuid']; ?>>
                         <td class="f_s_12 f_w_400"><?= $row['id']; ?></td>
                         <td class="f_s_12 f_w_400"><?= $row['sprint_name']; ?></td>
                         <td class="f_s_12 f_w_400  "><?= render_date(strtotime($row['start_date'])); ?></td>

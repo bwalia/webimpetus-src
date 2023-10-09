@@ -195,7 +195,7 @@ $sprints = getResultArray("sprints");
 
                 <div class="col-md-12">
                     <div class="form-group   required col-md-12">
-                        <label for="description">Product Description</label>
+                        <label for="description">Task Description</label>
 
                         <textarea class="form-control" required name="description"
                             id="content"><?= @$task->description ?></textarea>

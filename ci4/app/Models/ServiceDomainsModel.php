@@ -78,6 +78,11 @@ class ServiceDomainsModel extends Model
         $query = $this->db->table($this->table)->delete(array('uuid' => $id));
         return $query;
     }
+    public function deleteDataByDomain($id)
+    {
+        $query = $this->db->table($this->table)->delete(array('domain_uuid' => $id));
+        return $query;
+    }
 
     public function updateData($id = null, $data = null)
     {
@@ -110,5 +115,13 @@ class ServiceDomainsModel extends Model
         }
 
         return $id;
+    }
+
+    public function getRowsWithServiceName()
+    {
+        $this->select('service__domains.*');
+        $this->select('services.name as sname');
+        $this->join('services', 'service__domains.service_uuid = services.uuid', 'LEFT');
+        return $this->findAll();
     }
 }

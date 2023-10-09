@@ -33,6 +33,8 @@ class Domains extends CommonController
 		$data['tableName'] = $this->table;
 		$data['rawTblName'] = $this->rawTblName;
 		$data['domains'] = $this->domainModel->getRows();
+		$data['serviceDomains'] = $this->serviceDomainModel->getRowsWithServiceName();
+		
 		$data['query'] = $this->db->getlastQuery();
 		echo view('domains/list', $data);
 	}
@@ -46,7 +48,7 @@ class Domains extends CommonController
 		$data['serviceDomains'] = $this->serviceDomainModel->getRows($id);
 		$data['customers'] = $this->model->getCommonData('customers', array('uuid_business_id' => session('uuid_business'), 'email!=' => ''));
 		//echo '<pre>';print_r($data['customers']); die;
-		$data['services'] = $this->service_model->getRows();
+		$data['services'] = $this->service_model->getRowsWithService();
 
 		echo view($this->table . "/edit", $data);
 	}
@@ -75,6 +77,7 @@ class Domains extends CommonController
 		$response = $this->model->insertOrUpdate($id, $data);
 		
 		$sids = $this->request->getPost('sid');
+		$this->serviceDomainModel->deleteDataByDomain($domainUUID);
 		foreach ($sids as $key => $sid) {
 			$isDomainExists = $this->serviceDomainModel->checkRecordExists($domainUUID, $sid);
 			if (empty($isDomainExists)) {
