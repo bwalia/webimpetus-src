@@ -17,3 +17,7 @@ RUN apk update && apk upgrade \
 
 WORKDIR /opt/dr
 COPY ./backup_database.sh /backup_database.sh
+
+RUN chmod +x /backup_database.sh
+
+CMD ["./backup_database.sh"]
