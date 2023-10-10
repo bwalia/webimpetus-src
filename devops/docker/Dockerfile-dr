@@ -1,15 +1,15 @@
 # Dockerfile - alpine
 # https://github.com/openresty/docker-openresty
 
-ARG DR_IMAGE_BASE="alpine"
-ARG DR_IMAGE_TAG="3.18.4"
+ARG DR_IMAGE_BASE=alpine
+ARG DR_IMAGE_TAG=3.18.4
 
 FROM ${DR_IMAGE_BASE}:${DR_IMAGE_TAG}
 
 LABEL maintainer="Balinder Walia <bwalia@workstation.co.uk>"
 
 RUN apk update && apk upgrade \
-    jq wget && \
+    bash jq wget && \
     apk add mysql-client && \
     wget https://dl.min.io/client/mc/release/linux-amd64/mc -O /usr/local/bin/mc \
     --tries=3 --timeout=30 && \
@@ -20,4 +20,5 @@ COPY ./backup_database.sh /backup_database.sh
 
 RUN chmod +x /backup_database.sh
 
-CMD ["./backup_database.sh"]
+ENTRYPOINT ["bash -c /backup_database.sh" ]
+#CMD ["./backup_database.sh"]
