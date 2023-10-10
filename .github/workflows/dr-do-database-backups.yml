@@ -2,7 +2,7 @@ name: Webimpetus Disaster Recovery Management Docker Image
 
 on:
   push:
-    branches: [ aws ]
+    branches: [ main ]
   workflow_dispatch:
 
 env:

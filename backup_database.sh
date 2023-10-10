@@ -20,6 +20,7 @@ TIMESTAMP=$(date +%Y%m%d%H%M%S)
 
 # MySQL Dump File Name
 DUMP_FILE="$TMP_DIR/db_dump_$TIMESTAMP.sql"
+DUMP_FILE_TAR="$TMP_DIR/db_dump_$TIMESTAMP.tar.gz"
 
 # Create MySQL Dump
 mysqldump -h$DB_HOST -u$DB_USER -p$DB_PASSWORD $DB_NAME > $DUMP_FILE
@@ -36,7 +37,8 @@ mc config host add myminio $MINIO_HOST $MINIO_ACCESS_KEY $MINIO_SECRET_KEY
 ls -alh $DUMP_FILE
 file $DUMP_FILE
 stat $DUMP_FILE
-mc cp $DUMP_FILE myminio/$MINIO_BUCKET/
+tar -czvf $DUMP_FILE_TAR $TMP_DIR
+mc cp $DUMP_FILE_TAR myminio/$MINIO_BUCKET/
 
 if [ $? -eq 0 ]; then
     echo "Dump file uploaded to Minio bucket: $MINIO_BUCKET"
