@@ -9,6 +9,8 @@ use App\Models\Sprints_model;
 class Kanban_board extends CommonController
 {
     protected $timeSlipsModel;
+    protected $taskModel;
+    protected $sprintModel;
 
     public function __construct()
     {

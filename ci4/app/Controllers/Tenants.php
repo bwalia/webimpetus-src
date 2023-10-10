@@ -52,11 +52,11 @@ class Tenants extends CommonController
 					'contact_name' => $this->request->getPost('contact_name'),
 					'address' => $this->request->getPost('address'),
 					'notes' => $this->request->getPost('notes'),
-					'uuid' => $this->request->getPost('uuid'),
+					'user_uuid' => $this->request->getPost('user_uuid'),
 					'uuid_business_id' => session('uuid_business'),
 					//'status' => 0,
 				);
-				if (!$data['uuid'] || empty($data['uuid']) || !isset($data['uuid'])) {
+				if (!isset($data['uuid']) || empty($data['uuid'])) {
 					$data['uuid'] = UUID::v5(UUID::v4(), 'tenants');
 				}
 				$this->tenantModel->saveData($data);
@@ -107,7 +107,7 @@ class Tenants extends CommonController
 				'contact_name' => $this->request->getPost('contact_name'),
 				'address' => $this->request->getPost('address'),
 				'notes' => $this->request->getPost('notes'),
-				'uuid' => $this->request->getPost('uuid'),
+				'user_uuid' => $this->request->getPost('user_uuid'),
 				//'status' => 0,
 			);
 			
