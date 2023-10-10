@@ -212,9 +212,12 @@ $uriSegment = $uri->getSegment(3);
                                             <?php
                                             if ($jak_i == 0) {
                                                 ?>
-                                                <div class="form-group col-md-1 change">
+                                                <div class="form-group col-md-1 change d-flex">
                                                     <button class="btn btn-primary bootstrap-touchspin-up add " type="button"
                                                         style="max-height: 35px;margin-top: 28px;margin-left: 10px;">+</button>
+                                                    <button class="btn btn-info bootstrap-touchspin-up deleteaddress" data-type="secret_services"
+                                                        data-id="<?= $secret_services[$jak_i]['id'] ?>" id="deleteRow" type="button"
+                                                        style="max-height: 35px;margin-top: 28px;margin-left: 10px;">-</button>
                                                 </div>
                                                 <?php
                                             } else {

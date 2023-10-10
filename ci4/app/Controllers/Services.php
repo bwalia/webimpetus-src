@@ -118,29 +118,30 @@ class Services extends Api
 
 		$key_name = $this->request->getPost('key_name');
 		$key_value = $this->request->getPost('key_value');
-
-		foreach ($key_name as $key => $value) {
-			//$address_data['service_id'] = $id;
-			$address_data['key_name'] = $key_name[$key];
-			$address_data['key_value'] = $key_value[$key];
-			$address_data['status'] = 1;
-			$address_data['uuid_business_id'] = $this->businessUuid;
-
-
-			$secret_id = $this->secret_model->saveOrUpdateData($id, $address_data);
-
-			if ($secret_id > 0) {
-				$dataRelated['secret_id'] = $secret_id;
-				$dataRelated['service_id'] = $id;
-				$dataRelated['uuid_business_id'] = $this->businessUuid;
-				$this->secret_model->saveSecretRelatedData($dataRelated);
+		if (isset($key_name) && isset($key_value)) {
+			foreach ($key_name as $key => $value) {
+				//$address_data['service_id'] = $id;
+				$address_data['key_name'] = $key_name[$key];
+				$address_data['key_value'] = $key_value[$key];
+				$address_data['status'] = 1;
+				$address_data['uuid_business_id'] = $this->businessUuid;
+	
+	
+				$secret_id = $this->secret_model->saveOrUpdateData($id, $address_data);
+	
+				if ($secret_id > 0) {
+					$dataRelated['secret_id'] = $secret_id;
+					$dataRelated['service_id'] = $id;
+					$dataRelated['uuid_business_id'] = $this->businessUuid;
+					$this->secret_model->saveSecretRelatedData($dataRelated);
+				}
 			}
 		}
 
 		$i = 0;
 		$post = $this->request->getPost();
 		//print_r($post); die;
-		if (count($post["blocks_code"]) > 0) {
+		if (isset($post["blocks_code"]) && !empty($post["blocks_code"]) && count($post["blocks_code"]) > 0) {
 			foreach ($post["blocks_code"] as $code) {
 
 				$blocks = [];
@@ -165,7 +166,7 @@ class Services extends Api
 				$i++;
 			}
 		} else {
-			$this->model->deleteTableData("blocks_list", $uuid, "uuid_linked_table");
+			$this->common_model->deleteTableData("blocks_list", $id, "uuid_linked_table");
 		}
 		//print_r($post["domains"]); die;
 		$this->serviceDomainModel->deleteDataByService($this->request->getPost('id'));
