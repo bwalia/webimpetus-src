@@ -10,7 +10,7 @@
                     <select id="user_uuid" name="user_uuid" class="form-control  dashboard-dropdown">
                         <option value="" selected="">--Select--</option>
                       <?php foreach($users as $row):?>
-                        <option value="<?= $row['uuid'];?>" <?=($row['uuid']== @$tenant->uuid)?'selected':'' ?>><?= $row['name'];?></option>
+                        <option value="<?= $row['uuid'];?>" <?=($row['uuid'] == @$tenant->user_uuid)?'selected':'' ?>><?= $row['name'];?></option>
                         <?php endforeach;?>
                     </select>
                 </div>

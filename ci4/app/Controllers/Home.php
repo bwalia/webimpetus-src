@@ -296,6 +296,17 @@ class Home extends BaseController
 		header('Access-Control-Allow-Origin: *');
 		header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 		header('Access-Control-Allow-Headers: Accept,Authorization,Content-Type');
+
+		$db = \Config\Database::connect();
+		$dbConnection = "";
+		
+        // Check if the database connection is successful
+        if (!empty($db->listTables()) && sizeof($db->listTables()) > 0) {
+            $dbConnection = 'Database connection is successful.';
+        } else {
+            $dbConnection = 'Database connection failed.';
+        }
+
 		$str = file_get_contents(ROOTPATH . 'webimpetus.json');
 		$json = json_decode($str, true);
 
@@ -303,6 +314,7 @@ class Home extends BaseController
 		$json['php_version'] = phpversion();
 		$json['deployment_time'] = getenv('APP_DEPLOYED_AT');
 		$json['uptime'] = $this->get_uptime();
+		$json['database'] = $dbConnection;
 
 		echo json_encode($json);
 		die;
