@@ -168,7 +168,8 @@ class Services extends Api
 			$this->model->deleteTableData("blocks_list", $uuid, "uuid_linked_table");
 		}
 		//print_r($post["domains"]); die;
-		if (count($post["domains"]) > 0) {
+		$this->serviceDomainModel->deleteDataByService($this->request->getPost('id'));
+		if (isset($post["domains"]) && !empty($post["domains"]) && count($post["domains"]) > 0) {
 			foreach ($post["domains"] as $domain) {
 				$isDomainExists = $this->serviceDomainModel->checkRecordExists($domain, $id);
 				if (empty($isDomainExists)) {
