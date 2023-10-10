@@ -7,9 +7,9 @@ DB_PASSWORD="CHANGE_ME"
 DB_NAME="myworkstation_dev"
 
 # Minio Information
-MINIO_HOST="https://s3-cli.workstation.co.uk"
-MINIO_ACCESS_KEY="iwL4MdcmMChRL6r3ptVa"
-MINIO_SECRET_KEY="2HNdx7toyaQJoGCDuS4AKPfCf9F4nsNEkjSQQM20"
+MINIO_HOST="<HOST>"
+MINIO_ACCESS_KEY="<ACCESS KEY>"
+MINIO_SECRET_KEY="<SECRET_KEY"
 MINIO_BUCKET="mysql-backup"
 
 # Temporary Directory
