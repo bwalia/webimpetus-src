@@ -78,18 +78,20 @@ class Domains extends CommonController
 		
 		$sids = $this->request->getPost('sid');
 		$this->serviceDomainModel->deleteDataByDomain($domainUUID);
-		foreach ($sids as $key => $sid) {
-			$isDomainExists = $this->serviceDomainModel->checkRecordExists($domainUUID, $sid);
-			if (empty($isDomainExists)) {
-				$serviceDomainData = [
-					'uuid' =>  UUID::v5(UUID::v4(), 'service__domains'),
-					'service_uuid' => $sid,
-					'domain_uuid' => $domainUUID
-				];
-				$updateServiceRl = $this->serviceDomainModel->saveData($serviceDomainData);
-				if (!$updateServiceRl) {
-					session()->setFlashdata('message', 'Something wrong!');
-					session()->setFlashdata('alert-class', 'alert-danger');
+		if ($sids && !empty($sids)) {
+			foreach ($sids as $key => $sid) {
+				$isDomainExists = $this->serviceDomainModel->checkRecordExists($domainUUID, $sid);
+				if (empty($isDomainExists)) {
+					$serviceDomainData = [
+						'uuid' =>  UUID::v5(UUID::v4(), 'service__domains'),
+						'service_uuid' => $sid,
+						'domain_uuid' => $domainUUID
+					];
+					$updateServiceRl = $this->serviceDomainModel->saveData($serviceDomainData);
+					if (!$updateServiceRl) {
+						session()->setFlashdata('message', 'Something wrong!');
+						session()->setFlashdata('alert-class', 'alert-danger');
+					}
 				}
 			}
 		}

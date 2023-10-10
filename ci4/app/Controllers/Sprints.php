@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Controllers\Core\CommonController;
 use App\Models\Sprints_model;
+use App\Libraries\UUID;
 
 class Sprints extends CommonController
 {
@@ -18,13 +19,16 @@ class Sprints extends CommonController
     public function update()
     {
         $id = $this->request->getPost('id');
+        $uuid = $this->request->getPost('uuid');
 
         $data = $this->request->getPost();
 
         $data['start_date'] = date('Y-m-d', strtotime($data['start_date']));
         $data['end_date'] = date('Y-m-d', strtotime($data['end_date']));
-
-        $response = $this->model->insertOrUpdate($id, $data);
+        if (!$uuid || empty($uuid) || !isset($uuid)) {
+            $data['uuid'] = UUID::v5(UUID::v4(), 'sprints');
+        }
+        $response = $this->model->insertOrUpdateByUUID($uuid, $data);
         if (!$response) {
             session()->setFlashdata('message', 'Something wrong!');
             session()->setFlashdata('alert-class', 'alert-danger');
