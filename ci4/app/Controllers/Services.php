@@ -54,7 +54,7 @@ class Services extends Api
 
 	public function index()
 	{
-		$data['services'] = $this->serviceModel->getRows();
+		$data['services'] = $this->serviceModel->getRowsWithService();
 		$data['tableName'] = "services";
 		$data['rawTblName'] = "service";
 		$data['is_add_permission'] = 1;
@@ -65,7 +65,7 @@ class Services extends Api
 	{
 		$data['tableName'] = "services";
 		$data['rawTblName'] = "service";
-		$data['service'] = !empty($id) ? $this->serviceModel->getRows($id)->getRow() : [];
+		$data['service'] = !empty($id) ? $this->serviceModel->getRowsWithService($id)->getRow() : [];
 		$data['tenants'] = $this->tmodel->getRows();
 		$data['category'] = $this->cmodel->getRows();
 		$data['users'] = $this->user_model->getUser();
