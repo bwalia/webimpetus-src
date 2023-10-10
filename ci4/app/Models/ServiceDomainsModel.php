@@ -83,6 +83,11 @@ class ServiceDomainsModel extends Model
         $query = $this->db->table($this->table)->delete(array('domain_uuid' => $id));
         return $query;
     }
+    public function deleteDataByService($id)
+    {
+        $query = $this->db->table($this->table)->delete(array('service_uuid' => $id));
+        return $query;
+    }
 
     public function updateData($id = null, $data = null)
     {
