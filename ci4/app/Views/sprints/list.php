@@ -11,6 +11,7 @@
                     <th scope="col">End Date</th>
                     <th scope="col">Note</th>
                     <th scope="col">Created At</th>
+                    <th scope="col">Actiont</th>
                 </tr>
             </thead>
             <tbody>
@@ -22,6 +23,21 @@
                         <td class="f_s_12 f_w_400  "><?= render_date(strtotime($row['end_date'])); ?></td>
                         <td class="f_s_12 f_w_400"><?= $row['note']; ?></td>
                         <td class="f_s_12 f_w_400  "><?= render_date(strtotime($row['created_at'])); ?></td>
+                        <td class="f_s_12 f_w_400 text-right">
+                            <div class="header_more_tool">
+                                <div class="dropdown">
+                                    <span class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown">
+                                        <i class="ti-more-alt"></i>
+                                    </span>
+                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+
+                                        <a class="dropdown-item" onclick="return confirm('Are you sure want to delete?');" href="/sprints/deleterow/<?= $row['uuid']; ?>"> <i class="ti-trash"></i> Delete</a>
+                                        <a class="dropdown-item" href="/sprints/edit/<?= $row['uuid']; ?>"> <i class="fas fa-edit"></i> Edit</a>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
