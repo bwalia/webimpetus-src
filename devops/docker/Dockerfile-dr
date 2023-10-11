@@ -16,9 +16,9 @@ RUN apk update && apk upgrade \
     chmod +x /usr/local/bin/mc
 
 WORKDIR /opt/dr
-COPY ./backup_database.sh /backup_database.sh
 
-RUN chmod +x /backup_database.sh
+COPY backup_database.sh /opt/dr/backup_database.sh
+RUN chmod +x /opt/dr/backup_database.sh
 
-ENTRYPOINT ["bash -c /backup_database.sh" ]
+ENTRYPOINT ["/opt/dr/backup_database.sh" ]
 #CMD ["./backup_database.sh"]
