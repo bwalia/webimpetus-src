@@ -75,15 +75,13 @@ $json = json_decode($str, true);
                     <label for="inputState">Set User Roles and Permissions</label>
                     <select id="sid" name="sid[]" multiple class="form-control select2">
                         <?php
-                        if (isset($user) && (!empty($user->permissions))) {
-                            $arr = json_decode(@$user->permissions);
+                            $arr = (isset($user) && (!empty($user->permissions))) ? json_decode(@$user->permissions) : false;
                             foreach ($menu as $row): ?>
                                 <option value="<?= $row['id']; ?>" <?php if ($arr)
                                       echo
                                           in_array($row['id'], $arr) ? 'selected="selected"' : '' ?>><?= $row['name']; ?>
                                 </option>
                             <?php endforeach; ?>
-                        <?php } ?>
                     </select>
                 </div>
             </div>

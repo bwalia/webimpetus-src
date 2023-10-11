@@ -57,7 +57,8 @@ class User_business extends CommonController
 
     public function edit($id = 0)
     {   
-        $userBsResults = $this->User_business_model->getResultByUUID($id);
+        $userBsResults = $this->User_business_model->getResultByUUID((string) $id);
+        
         $data['tableName'] = $this->table;
         $data['rawTblName'] = $this->rawTblName;
         $data['result'] = $userBsResults;

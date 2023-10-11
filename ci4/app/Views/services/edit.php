@@ -509,17 +509,19 @@ $uriSegment = $uri->getSegment(3);
             </div>                                    
             --->
 
-            <div class="form-row">
-                <div class="form-group col-md-1">
+            <div class="form-row justify-content-end">
+                <div class="form-group mr-3">
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </div>
-                <div class="form-group col-md-2">
-                    <button type="button" id="DeployService" class="btn btn-primary page_title_right">Deploy
-                        Service</button>
+                <div class="form-group mr-3">
+                    <button type="button" id="DeployService" class="btn btn-primary page_title_right">
+                        Deploy
+                    </button>
                 </div>
-                <div class="form-group col-md-2">
-                    <button type="button" id="DeleteService" class="btn btn-primary page_title_right">Delete
-                        Service</button>
+                <div class="form-group mr-3">
+                    <button type="button" id="DeleteService" class="btn btn-primary page_title_right">
+                        Delete
+                    </button>
                 </div>
             </div>
         </form>

@@ -7166,6 +7166,7 @@ canvas#highlights {
 }
 .dataTables_scrollBody {
     min-height: 90px;
+    overflow: visible !important;
 }
 .dataTables_scrollBody .header_more_tool .dropdown .dropdown-menu {
     top: -3px !important;

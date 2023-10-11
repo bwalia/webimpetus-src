@@ -66,10 +66,10 @@ $sprints = getResultArray("sprints");
                         <label for="inputEmail4">Reported By </label>
                         <select id="reported_by" name="reported_by" class="form-control required dashboard-dropdown">
                             <option value="" selected="">--Select--</option>
-                            <?php foreach ($employees as $row): ?>
+                            <?php foreach ($users as $row): ?>
                                 <option value="<?= $row['id']; ?>" <?php if ($row['id'] == @$task->reported_by) {
                                       echo "selected";
-                                  } ?>><?= $row['first_name']; ?>
+                                  } ?>><?= $row['name']; ?>
                                 </option>
                             <?php endforeach; ?>
                         </select>
@@ -124,10 +124,10 @@ $sprints = getResultArray("sprints");
                         <label for="inputEmail4">Assigned To </label>
                         <select id="assigned_to" name="assigned_to" class="form-control dashboard-dropdown">
                             <option value="" selected="">--Select--</option>
-                            <?php foreach ($users as $row): ?>
+                            <?php foreach ($employees as $row): ?>
                                 <option value="<?= $row['id']; ?>" <?php if ($row['id'] == @$task->assigned_to) {
                                       echo "selected";
-                                  } ?>><?= $row['name']; ?>
+                                  } ?>><?= $row['first_name']; ?>
                                 </option>
                             <?php endforeach; ?>
                         </select>
