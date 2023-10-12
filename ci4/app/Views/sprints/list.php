@@ -11,7 +11,7 @@
                     <th scope="col">End Date</th>
                     <th scope="col">Note</th>
                     <th scope="col">Created At</th>
-                    <th scope="col">Actiont</th>
+                    <th scope="col">Action</th>
                 </tr>
             </thead>
             <tbody>
