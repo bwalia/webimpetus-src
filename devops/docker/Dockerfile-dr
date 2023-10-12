@@ -15,10 +15,10 @@ RUN apk update && apk upgrade \
     --tries=3 --timeout=30 && \
     chmod +x /usr/local/bin/mc
 
-WORKDIR /opt/dr
+WORKDIR /app
 
-COPY backup_database.sh /opt/dr/backup_database.sh
-RUN chmod +x /opt/dr/backup_database.sh
+COPY ./backup_database.sh /app/backup_database.sh
+RUN chmod +x /app/backup_database.sh
 
-ENTRYPOINT ["/opt/dr/backup_database.sh" ]
-#CMD ["./backup_database.sh"]
+#ENTRYPOINT ["/opt/dr/backup_database.sh" ]
+CMD ["sh", "backup_database.sh"]
