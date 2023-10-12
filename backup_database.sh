@@ -1,17 +1,5 @@
 #!/bin/bash
 
-# MySQL Database Information
-DB_HOST="webimpetus-db"
-DB_USER="wsl_dev"
-DB_PASSWORD="CHANGE_ME"
-DB_NAME="myworkstation_dev"
-
-# Minio Information
-MINIO_HOST="<HOST>"
-MINIO_ACCESS_KEY="<ACCESS KEY>"
-MINIO_SECRET_KEY="<SECRET_KEY"
-MINIO_BUCKET="mysql-backup"
-
 # Temporary Directory
 TMP_DIR="/tmp"
 
