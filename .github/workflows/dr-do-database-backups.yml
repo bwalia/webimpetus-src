@@ -18,7 +18,7 @@ env:
   IMAGE_TAG: "test"
   TARGET_IMAGE_TAG: "test"
   TARGET_STACK: openresty_php
-  IMAGE_NAME: webimpetus-dr
+  IMAGE_NAME: bwalia/webimpetus-dr
   TARGET_ENV: test
   IMAGE_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
   DR_DB_HOST: ${{ secrets.DR_DB_HOST }}
