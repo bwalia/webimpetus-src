@@ -51,7 +51,7 @@ jobs:
         -e MINIO_ACCESS_KEY=${{ env.DR_MINIO_ACCESS_KEY }} \
         -e MINIO_SECRET_KEY=${{ env.DR_MINIO_SECRET_KEY }} \
         -e MINIO_BUCKET=${{ env.DR_MINIO_BUCKET }} \
-        wsl-${{ env.TARGET_STACK }}
+        ${{ env.IMAGE_NAME }}
       shell: bash
 
     - name: Slack Notification for Run Workstation Disaster Recovery 

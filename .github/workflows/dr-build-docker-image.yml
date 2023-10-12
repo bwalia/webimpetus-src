@@ -65,8 +65,8 @@ jobs:
         --build-arg DR_MINIO_ACCESS_KEY=${{ env.DR_MINIO_ACCESS_KEY }} \
         --build-arg DR_MINIO_SECRET_KEY=${{ env.DR_MINIO_SECRET_KEY }} \
         --build-arg DR_MINIO_BUCKET=${{ env.DR_MINIO_BUCKET }} \
-        -t wsl-${{ env.TARGET_STACK }} . --no-cache
-        docker tag wsl-${{ env.TARGET_STACK }} ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TARGET_IMAGE_TAG }}
+        -t ${{ env.IMAGE_NAME }} . --no-cache
+        docker tag ${{ env.IMAGE_NAME }} ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TARGET_IMAGE_TAG }}
         docker push ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TARGET_IMAGE_TAG }}
       shell: bash
 
