@@ -57,7 +57,7 @@ func TestCreatePurchaseOrder(t *testing.T) {
 
 	payload := &bytes.Buffer{}
 	writer := multipart.NewWriter(payload)
-	_ = writer.WriteField("client_id", "14")
+	_ = writer.WriteField("client_id", customerId)
 	_ = writer.WriteField("uuid_business_id", businessId)
 	err := writer.Close()
 	if err != nil {
@@ -96,7 +96,15 @@ func TestCreatePurchaseOrder(t *testing.T) {
 		// Getting the uuid of the Purchase order created
 		purchaseOrdersUUId = jsonData.Data.UUID
 		//t.Log(workOrdersUUId)
+	}
+	if !strings.Contains(string(body), customerId) {
+		t.Error("Returned unexpected body")
+	} else {
 		t.Log("Successfully created a new purchase order")
+	}
+	if res.StatusCode != http.StatusOK {
+		t.Error("Unexpected response status code", res.StatusCode)
+		return
 	}
 }
 
@@ -109,11 +117,13 @@ func TestUpdatePurchaseOrders(t *testing.T) {
 		UUID         string `json:"uuid"`
 		ClientId     string `json:"client_id"`
 		BusinessUuid string `json:"uuid_business_id"`
+		Bill_to      string `json:"bill_to"`
 	}
 	data := PurchaseOrdersData{
 		UUID:         purchaseOrdersUUId,
-		ClientId:     "16",
+		ClientId:     customerId,
 		BusinessUuid: businessId,
+		Bill_to:      "Tester",
 	}
 	//t.Log(data)
 	jsonData, err := json.Marshal(data)
@@ -146,7 +156,7 @@ func TestUpdatePurchaseOrders(t *testing.T) {
 		t.Error("Unexpected response status code", resp.StatusCode)
 		return
 	}
-	if !strings.Contains(string(body), "16") {
+	if !strings.Contains(string(body), "Tester") {
 		t.Error("Returned unexpected body")
 	} else {
 		t.Log("Successfully updated the purchase order")

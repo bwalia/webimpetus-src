@@ -60,7 +60,7 @@ func TestCreateWorkOrder(t *testing.T) {
 
 	payload := &bytes.Buffer{}
 	writer := multipart.NewWriter(payload)
-	_ = writer.WriteField("client_id", "14")
+	_ = writer.WriteField("client_id", customerId)
 	_ = writer.WriteField("uuid_business_id", businessId)
 	err := writer.Close()
 	if err != nil {
@@ -102,7 +102,17 @@ func TestCreateWorkOrder(t *testing.T) {
 		// Getting the uuid of the work order created
 		workOrdersUUId = jsonData.Data.UUID
 		//t.Log(workOrdersUUId)
+	}
+
+	if !strings.Contains(string(body), customerId) {
+		t.Error("Returned unexpected body")
+	} else {
 		t.Log("Successfully created a new work order")
+	}
+
+	if res.StatusCode != http.StatusOK {
+		t.Error("Unexpected response status code", res.StatusCode)
+		return
 	}
 }
 
@@ -115,11 +125,13 @@ func TestUpdateWorkOrders(t *testing.T) {
 		UUID         string `json:"uuid"`
 		ClientId     string `json:"client_id"`
 		BusinessUuid string `json:"uuid_business_id"`
+		Bill_to      string `json:"bill_to"`
 	}
 	data := WorkordersData{
 		UUID:         workOrdersUUId,
-		ClientId:     "16",
+		ClientId:     customerId,
 		BusinessUuid: businessId,
+		Bill_to:      "Tester",
 	}
 	//t.Log(data)
 	jsonData, err := json.Marshal(data)
@@ -147,12 +159,13 @@ func TestUpdateWorkOrders(t *testing.T) {
 	if err != nil {
 		t.Log(err)
 	}
+	//t.Log(string(body))
 
 	if resp.StatusCode != http.StatusOK {
 		t.Error("Unexpected response status code", resp.StatusCode)
 		return
 	}
-	if !strings.Contains(string(body), "16") {
+	if !strings.Contains(string(body), "Tester") {
 		t.Error("Returned unexpected body")
 	} else {
 		t.Log("Successfully updated the work order")

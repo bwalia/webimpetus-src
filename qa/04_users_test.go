@@ -101,10 +101,16 @@ func TestCreateUser(t *testing.T) {
 		// Getting the uuid of the user created by the API call
 		userId = jsonData.Data.UUID
 		//t.Log(userId)
-		t.Log("Successfully created a new user")
-
 	}
-
+	if !strings.Contains(string(body), "test") {
+		t.Error("Returned unexpected body")
+	} else {
+		t.Log("Successfully created a new user")
+	}
+	if res.StatusCode != http.StatusOK {
+		t.Error("Unexpected response status code", res.StatusCode)
+		return
+	}
 }
 
 // Calling the Users API for PUT method to update the single user data with the uuid
@@ -121,7 +127,7 @@ func TestUpdateUsers(t *testing.T) {
 	data := UserData{
 		UUID:  userId,
 		Email: "test.5@testing.com",
-		Name:  "dixanew",
+		Name:  "newuser",
 	}
 	//t.Log(data)
 	jsonData, err := json.Marshal(data)
@@ -158,13 +164,11 @@ func TestUpdateUsers(t *testing.T) {
 		return
 	}
 	// Verify the updated body
-	if !strings.Contains(string(body), "dixanew") {
+	if !strings.Contains(string(body), "newuser") {
 		t.Error("Returned unexpected body")
 	} else {
 		t.Log("Successfully updated the user")
-
 	}
-
 }
 
 // Calling the Users API for DELETE method to delete the single user data with uuid
@@ -190,9 +194,7 @@ func TestDeleteUsers(t *testing.T) {
 		return
 	} else {
 		t.Log("Successfully deleted the user")
-
 	}
-
 }
 
 // Calling the Users API for GET method to get single user data with UUID

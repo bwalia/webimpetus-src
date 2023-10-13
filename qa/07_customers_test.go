@@ -10,12 +10,13 @@ import (
 	"testing"
 )
 
-var employeeId string
+var customerId string
 
-// Calling the Employees API for GET method to get all employees data
-func TestGetAllEmployees(t *testing.T) {
+// Calling the Customers API for GET method to get all customers data
+func TestGetAllCustomers(t *testing.T) {
 	//t.Log(tokenValue)
-	url := targetHost + "/api/v2/employees"
+	url := targetHost + "/api/v2/customers"
+
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		t.Log(err)
@@ -43,28 +44,36 @@ func TestGetAllEmployees(t *testing.T) {
 		t.Error("Unexpected response status code", resp.StatusCode)
 		return
 	} else {
-		t.Log("Successfully Get all employees data")
+		t.Log("Successfully Get all customers data")
 
 	}
 }
 
 // Calling the Employees API for POST method to create a new employee
-func TestCreateEmployees(t *testing.T) {
+func TestCreateCustomer(t *testing.T) {
 
-	type Employee struct {
+	type Customer struct {
 		Data struct {
 			UUID string `json:"uuid"`
 		} `json:"data"`
 	}
 
-	url := targetHost + "/api/v2/employees/"
+	url := targetHost + "/api/v2/customers"
 	method := "POST"
 
 	payload := &bytes.Buffer{}
 	writer := multipart.NewWriter(payload)
-	_ = writer.WriteField("first name", "test")
-	_ = writer.WriteField("email", "test.2@testing.com")
-	_ = writer.WriteField("uuid_business_id", businessId)
+	_ = writer.WriteField("company_name", "Testing")
+	_ = writer.WriteField("acc_no", "123456789012345")
+	_ = writer.WriteField("uuid_business", businessId)
+	_ = writer.WriteField("email", "test@gmail.com")
+	_ = writer.WriteField("phone", "1234567890")
+	_ = writer.WriteField("contact_firstname", "API Test")
+	_ = writer.WriteField("status", "1")
+	_ = writer.WriteField("supplier", "1")
+	_ = writer.WriteField("first_name[0]", "Tester")
+	_ = writer.WriteField("contact_email[0]", "test@test.com")
+
 	err := writer.Close()
 	if err != nil {
 		t.Log(err)
@@ -95,19 +104,20 @@ func TestCreateEmployees(t *testing.T) {
 	buff := bytes.NewBuffer(body)
 	defer res.Body.Close()
 
-	var jsonData Employee
+	var jsonData Customer
 	err = json.NewDecoder(buff).Decode(&jsonData)
 	if err != nil {
 		t.Error("failed to decode json", err)
 	} else {
-		// Getting the uuid of the employee created
-		employeeId = jsonData.Data.UUID
-		//t.Log(employeeId)
+		// Getting the uuid of the customer created
+		customerId = jsonData.Data.UUID
+		//t.Log(customerId)
 	}
-	if !strings.Contains(string(body), "test") {
+
+	if !strings.Contains(string(body), "Testing") {
 		t.Error("Returned unexpected body")
 	} else {
-		t.Log("Successfully created a new employee")
+		t.Log("Successfully created a new customer")
 	}
 
 	if res.StatusCode != http.StatusOK {
@@ -116,21 +126,33 @@ func TestCreateEmployees(t *testing.T) {
 	}
 }
 
-// Calling the Employees API for PUT method to update the single employee data with the uuid
-func TestUpdateEmployees(t *testing.T) {
+// Calling the Customer API for PUT method to update the single Customers data with the uuid
+func TestUpdateCustomers(t *testing.T) {
 
-	url := targetHost + "/api/v2/employees/" + employeeId
+	url := targetHost + "/api/v2/customers/" + customerId
 	//t.Log(url)
 
-	type EmployeeData struct {
-		Surname          string `json:"surname"`
-		Uuid_business_id string `json:"uuid_business_id"`
-		UUID             string `json:"uuid"`
+	type CustomersData struct {
+		Company_name      string `json:"company_name"`
+		Acc_no            string `json:"acc_no"`
+		Contact_firstname string `json:"contact_firstname"`
+		Email             string `json:"email"`
+		Phone             string `json:"phone"`
+		Supplier          string `json:"supplier"`
+		Status            string `json:"status"`
+		Uuid_business_id  string `json:"uuid_business"`
+		UUID              string `json:"uuid"`
 	}
-	data := EmployeeData{
-		Surname:          "newtest",
-		UUID:             employeeId,
-		Uuid_business_id: businessId,
+	data := CustomersData{
+		Company_name:      "Changed name",
+		Acc_no:            "55343435545454",
+		Contact_firstname: "API Test",
+		Email:             "test@gmail.com",
+		Phone:             "0123456789",
+		Supplier:          "1",
+		Status:            "1",
+		UUID:              customerId,
+		Uuid_business_id:  businessId,
 	}
 
 	//t.Log(data)
@@ -168,16 +190,16 @@ func TestUpdateEmployees(t *testing.T) {
 		return
 	}
 	// Verify the updated body
-	if !strings.Contains(string(body), "newtest") {
+	if !strings.Contains(string(body), "Changed name") {
 		t.Error("Returned unexpected body")
 	} else {
-		t.Log("Successfully updated employees data")
+		t.Log("Successfully updated customers data")
 	}
 }
 
-// Calling the Employees API for DELETE method to delete the single employee data with uuid
-func TestDeleteEmployees(t *testing.T) {
-	url := targetHost + "/api/v2/employees/" + employeeId
+// Calling the Customers API for DELETE method to delete the single customer data with uuid
+func TestDeleteCustomers(t *testing.T) {
+	url := targetHost + "/api/v2/customers/" + customerId
 	client := &http.Client{}
 
 	req, err := http.NewRequest("DELETE", url, nil)
@@ -197,13 +219,13 @@ func TestDeleteEmployees(t *testing.T) {
 		t.Error("Unexpected response status code", resp.StatusCode)
 		return
 	} else {
-		t.Log("Successfully deleted the employee")
+		t.Log("Successfully deleted the customer")
 	}
 }
 
-// Calling the Employees API for GET method to get single employees data with UUID
-func TestGetSingleEmployee(t *testing.T) {
-	url := targetHost + "/api/v2/employees/" + employeeId
+// Calling the Customers API for GET method to get single customer data with UUID
+func TestGetSingleCustomer(t *testing.T) {
+	url := targetHost + "/api/v2/customers/" + customerId
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -226,11 +248,11 @@ func TestGetSingleEmployee(t *testing.T) {
 	if false {
 		t.Log(string(body))
 	}
-	// With the 'null' in response body, it will verify the employee data is deleted successfully
+	// With the 'null' in response body, it will verify the customers data is deleted successfully
 	if !strings.Contains(string(body), "null") {
 		t.Error("Returned unexpected body")
 	} else {
-		t.Log("The delete action for the employee is verified")
+		t.Log("The delete action for the customers is verified")
 
 	}
 }
