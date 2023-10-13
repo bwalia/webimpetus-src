@@ -92,7 +92,15 @@ func TestAddBusiness(t *testing.T) {
 		// Getting the uuid of the business created
 		businessesId = jsonData.Data.UUID
 		//t.Log(businessesId)
-		t.Log("Successfully created new business")
+	}
+	if !strings.Contains(string(body), "New business") {
+		t.Error("Returned unexpected body")
+	} else {
+		t.Log("Successfully created a new business")
+	}
+	if res.StatusCode != http.StatusOK {
+		t.Error("Unexpected response status code", res.StatusCode)
+		return
 	}
 }
 
