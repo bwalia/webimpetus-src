@@ -65,6 +65,7 @@ jobs:
         --build-arg DR_MINIO_ACCESS_KEY=${{ env.DR_MINIO_ACCESS_KEY }} \
         --build-arg DR_MINIO_SECRET_KEY=${{ env.DR_MINIO_SECRET_KEY }} \
         --build-arg DR_MINIO_BUCKET=${{ env.DR_MINIO_BUCKET }} \
+        --platform linux/amd64,linux/arm64 \
         -t ${{ env.IMAGE_NAME }} . --no-cache
         docker tag ${{ env.IMAGE_NAME }} ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TARGET_IMAGE_TAG }}
         docker push ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TARGET_IMAGE_TAG }}
