@@ -50,6 +50,21 @@ class Customers_model extends Model
         }	
 		//return $query;
 	}
+	public function insertOrUpdateByUUID($uuid = null, $data = null)
+	{
+
+        unset($data["id"]);
+
+        if(@$uuid){
+            $query = $this->db->table($this->table)->update($data, array('uuid' => $uuid));
+            return $uuid;
+           
+        }else{
+            $query = $this->db->table($this->table)->insert($data);
+            return $this->db->insertID();
+        }	
+		//return $query;
+	}
 
     
 }
