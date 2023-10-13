@@ -562,28 +562,30 @@ class Api_v2 extends BaseController
     }
 
     public function updateCustomer()
-    {  
-            if(!empty($this->request->getPost('company_name')) && !empty($this->request->getPost('acc_no')) && !empty($this->request->getPost('uuid')) && !empty($this->request->getPost('uuid_business'))){	     
-                $post = $this->request->getPost(); 
-                $data["company_name"] = @$post["company_name"];
-                $data["acc_no"] = @$post["acc_no"];
-                $data["uuid_business_id"] = @$post['uuid_business'];
-                if(!empty($post["contact_firstname"])) $data["contact_firstname"] = @$post["contact_firstname"];
-                if(!empty($post["contact_lastname"])) $data["contact_lastname"] = @$post["contact_lastname"];
-                if(!empty($post["email"])) $data["email"] = @$post["email"];
-                if(!empty($post["address1"])) $data["address1"] = @$post["address1"];
-                if(!empty($post["address2"])) $data["address2"] = @$post["address2"];
-                if(!empty($post["city"])) $data["city"] = @$post["city"];
-                if(!empty($post["country"])) $data["country"] = @$post["country"];
-                if(!empty($post["postal_code"])) $data["postal_code"] = @$post["postal_code"];
-                if(!empty($post["phone"])) $data["phone"] = @$post["phone"];
-                if(!empty($post["notes"])) $data["notes"] = @$post["notes"];
-                if(!empty($post["supplier"])) $data["supplier"] = @$post["supplier"];
-                if(!empty($post["website"])) $data["website"] = @$post["website"];
-                if(!empty($post["categories"])) $data["categories"] = !empty($post["categories"])?json_encode(@$post["categories"]):json_encode([]);
+    {
+        $post = $this->request->getBody();
+        $post = json_decode($post);
+        if(!empty($post->company_name) && !empty($post->acc_no) && !empty($post->uuid) && !empty($post->uuid_business)){	     
+                // $post = $this->request->getBody(); 
+                $data["company_name"] = @$post->company_name;
+                $data["acc_no"] = @$post->acc_no;
+                $data["uuid_business_id"] = @$post->uuid_business;
+                if(!empty($post->contact_firstname)) $data["contact_firstname"] = @$post->contact_firstname;
+                if(!empty($post->contact_lastname)) $data["contact_lastname"] = @$post->contact_lastname;
+                if(!empty($post->email)) $data["email"] = @$post->email;
+                if(!empty($post->address1)) $data["address1"] = @$post->address1;
+                if(!empty($post->address2)) $data["address2"] = @$post->address2;
+                if(!empty($post->city)) $data["city"] = @$post->city;
+                if(!empty($post->country)) $data["country"] = @$post->country;
+                if(!empty($post->postal_code)) $data["postal_code"] = @$post->postal_code;
+                if(!empty($post->phone)) $data["phone"] = @$post->phone;
+                if(!empty($post->notes)) $data["notes"] = @$post->notes;
+                if(!empty($post->supplier)) $data["supplier"] = @$post->supplier;
+                if(!empty($post->website)) $data["website"] = @$post->website;
+                if(!empty($post->categories)) $data["categories"] = !empty($post->categories)?json_encode(@$post->categories):json_encode([]);
 
-                $id= $post["uuid"];
-                $response = $this->customer_model->insertOrUpdate($id, $data);
+                $id= $post->uuid;
+                $response = $this->customer_model->insertOrUpdateByUUID($id, $data);
                 if(!$response){
                     $response_data['status'] = 400;
                     $response_data['message']    = 'something wrong!!';
@@ -591,15 +593,15 @@ class Api_v2 extends BaseController
                 }else{            
                     $i = 0;
 
-                    if(!empty($post["first_name"])){
-                        foreach($post["first_name"] as $firstName){
+                    if(!empty($post->first_name)){
+                        foreach($post->first_name as $firstName){
 
                             $contact["first_name"] = $firstName;
                             $contact["client_id"] = $id;
-                            $contact["surname"] = $post["surname"][$i];
-                            $contact["email"] = $post["contact_email"][$i];
-                            $contact["uuid_business_id"] = $post['uuid_business'];
-                            $contactId =  @$post["contact_id"][$i];
+                            $contact["surname"] = $post->surname[$i];
+                            $contact["email"] = $post->contact_email[$i];
+                            $contact["uuid_business_id"] = $post->uuid_business;
+                            $contactId =  @$post->contact_id[$i];
                             if(strlen(trim($firstName)) > 0 || strlen(trim($contact["surname"])>0) || strlen(trim($contact["email"])>0)){
                                 $this->common_model->CommonInsertOrUpdate("contacts",$contactId, $contact);
                             }
@@ -610,9 +612,9 @@ class Api_v2 extends BaseController
 
                     }
 
-                    if(!empty($post["categories"])){
+                    if(!empty($post->categories)){
                         $this->common_model->deleteTableData("customer_categories", $id, "customer_id");
-                        foreach( $post["categories"] as $key => $categories_id){
+                        foreach( $post->categories as $key => $categories_id){
 
                             $c_data = [];
 
