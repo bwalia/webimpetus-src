@@ -171,7 +171,9 @@ class Customers extends ResourceController
     public function update($id = null)
     {
         $api =  new Api_v2();
-        return $this->respond($api->updateCustomer());
+        $data = $api->updateCustomer();
+        $statusCode = $data['status'];
+        return $this->respond($data, $statusCode);
     }
 
     /**
@@ -184,6 +186,6 @@ class Customers extends ResourceController
         $api =  new Api_v2();
         $data['data'] = $api->common_model->deleteTableData('customers',$id,'uuid');
         $data['status'] = 200;
-        return $this->respond($data);    
+        return $this->respond($data, 200);    
     }
 }
