@@ -4,15 +4,20 @@ namespace App\Controllers;
 
 use App\Controllers\Core\CommonController;
 use App\Models\Core\Common_model;
+use App\Models\Contact;
 use App\Libraries\UUID;
+use App\Models\CustomerContactModel;
 
 class Customers extends CommonController
 {
-
+    protected $contactModel;
+    protected $customerContactModel;
     function __construct()
     {
         parent::__construct();
         $this->db = \Config\Database::connect();
+        $this->contactModel = new Contact();
+        $this->customerContactModel = new CustomerContactModel();
     }
 
     public function getAdditionalData($id)
@@ -28,6 +33,20 @@ class Customers extends CommonController
         //print_r($data["contacts"]);die;
         return  $data;
     }
+
+    public function edit($uuid = 0)
+	{
+		$tableData =  $uuid ? $this->model->getExistsRowsByUUID($uuid)->getRow() : '';
+		
+		$data['tableName'] = $this->table;
+		$data['rawTblName'] = $this->rawTblName;
+		$data["users"] = $this->model->getUser();
+		$data[$this->rawTblName] = $tableData;
+		// if there any special cause we can overried this function and pass data to add or edit view
+		$data['contacts'] = $this->contactModel->getRowsByUUID();
+        $data['selectedContacts'] = $this->customerContactModel->getRowsByCustomerUUID();
+		echo view($this->table . "/edit", $data);
+	}
 
     public function update()
     {
@@ -59,23 +78,16 @@ class Customers extends CommonController
             session()->setFlashdata('message', 'Something wrong!');
             session()->setFlashdata('alert-class', 'alert-danger');
         } else {
-
-            // $row_data = $this->model->getRowsByUUID($data["uuid"])->getRow();
-            // $id = $row_data->uuid;
-
-            $i = 0;
-            foreach ($post["first_name"] as $firstName) {
-                $contact["first_name"] = $firstName;
-                $contact["client_id"] = $uuid;
-                $contact["surname"] = $post["surname"][$i];
-                $contact["email"] = $post["contact_email"][$i];
-                $contact["uuid_business_id"] = session('uuid_business');
-                $contactId =  @$post["contact_id"][$i];
-                if(empty($contactId))$contact["uuid"] = UUID::v5(UUID::v4(), 'contacts');
-                if (strlen(trim($firstName)) > 0 || strlen(trim($contact["surname"]) > 0) || strlen(trim($contact["email"]) > 0)) {
-                    $this->insertOrUpdate("contacts", $contactId, $contact);
+            $this->customerContactModel->deleteDataByCustomer($uuid);
+            if (!empty($post["cnId"]) && $post["cnId"] && isset($post["cnId"])) {
+                foreach ($post["cnId"] as $contactId) {
+                    $cscnData = [
+                        'uuid' => UUID::v5(UUID::v4(), 'customer__contact'),
+                        'customer_uuid' => $uuid,
+                        'contact_uuid' => $contactId
+                    ];
+                    $this->customerContactModel->saveData($cscnData);
                 }
-                $i++;
             }
 
             $this->model->deleteTableData("customer_categories", $uuid, "customer_id");
