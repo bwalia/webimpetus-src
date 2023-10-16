@@ -22,7 +22,6 @@ class Domain_model extends Model
 			$this->select('services.name as sname');
 			$this->join('services', 'service__domains.service_uuid = services.uuid', 'LEFT');
             $this->where($whereCond);
-            $this->groupBy('domains.uuid');
             return $this->findAll();
         }else{
             $whereCond = array_merge(['uuid' => $id], $whereCond);
