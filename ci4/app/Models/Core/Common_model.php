@@ -374,7 +374,7 @@ class Common_model extends Model
         $fields = $this->getFieldNames($tableName);
         //print_r($fields);die;
         if(in_array('uuid',$fields) && $tableName!=='categories'){
-            $arr = "*,uuid as id,";
+            $arr = "*,uuid as id, id as internal_id";
         }else{
             $arr = "*,";
         }
