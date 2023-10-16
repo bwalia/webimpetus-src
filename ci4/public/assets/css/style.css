@@ -12915,6 +12915,10 @@ a.pswp__share--download:hover {
     font-weight: 600;
 }
 
+.white_card_body #addcustomer .tab-content .tab-pane .select2-container {
+  width: 100% !important;
+}
+
 .select2-container--default .select2-selection--multiple {
     display: block;
     width: 100%;
