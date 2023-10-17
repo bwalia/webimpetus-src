@@ -159,6 +159,7 @@ class TimeslipsModel extends Model
             $table . '.modified_at',
             $table . '.task_name as task_id',
             $table . '.employee_name as employee_id',
+            $table . '.*',
         );
         $this->select($selectFields);
         $this->join('tasks', 'tasks.id = ' . $table . '.task_name');
