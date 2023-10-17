@@ -226,7 +226,7 @@ class Api_v2 extends BaseController
             }
         }
         if (count($webPagesId)) {
-            $webpages = $this->cmodel->where("status", 1)->whereIn('id', $webPagesId)->get()->getResult();
+            $webpages = $this->cmodel->where(["status" => 1, "uuid_business_id" => $_GET['uuid_business_id']])->whereIn('id', $webPagesId)->get()->getResult();
             if ($webpages) {
                 $webPageList = [];
                 foreach ($webpages as $key => $eachPage) {
