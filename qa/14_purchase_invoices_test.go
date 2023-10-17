@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
@@ -11,12 +10,12 @@ import (
 	"testing"
 )
 
-var userId string
+var purchaseInvoicesUUId string
 
-// Calling the Users API for GET method to get all users data
-func TestGetAllUsers(t *testing.T) {
-
-	req, err := http.NewRequest("GET", targetHost+"/api/v2/users", nil)
+// Calling the purchase_invoices API for GET method to get all purchase_invoices data
+func TestGetAllPurchaseInvoices(t *testing.T) {
+	url := targetHost + "/api/v2/purchase_invoices"
+	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		t.Log(err)
 		return
@@ -38,44 +37,47 @@ func TestGetAllUsers(t *testing.T) {
 	if false {
 		t.Log(string(body))
 	}
-	// Verifying the status code
+	defer resp.Body.Close()
+
 	if resp.StatusCode != http.StatusOK {
 		t.Error("Unexpected response status code", resp.StatusCode)
 		return
 	} else {
-		t.Log("Successfully get the users data")
+		t.Log("Successfully get the purchase invoices data")
 
 	}
 }
 
-// Calling the Users API for POST method to create a new user
-func TestCreateUser(t *testing.T) {
+//Calling the purchase_invoices API for POST method to create a new purchase invoice
+func TestCreatePurchaseInvoice(t *testing.T) {
 
-	type User struct {
+	url := targetHost + "/api/v2/purchase_invoices/"
+	method := "POST"
+
+	type Purchase_invoice struct {
 		Data struct {
 			UUID string `json:"uuid"`
 		} `json:"data"`
 	}
 
-	url := targetHost + "/api/v2/users/"
-	method := "POST"
-
 	payload := &bytes.Buffer{}
 	writer := multipart.NewWriter(payload)
-	_ = writer.WriteField("name", "test")
-	_ = writer.WriteField("email", "test.6@testing.com")
-	_ = writer.WriteField("password", "test123")
+	_ = writer.WriteField("terms", "net 20")
 	_ = writer.WriteField("uuid_business_id", businessId)
+	_ = writer.WriteField("date", "12/02/2023")
+	_ = writer.WriteField("due_date", "12/04/2023")
+	_ = writer.WriteField("supplier", clientInternalId)
+	_ = writer.WriteField("project_code", "4D")
 	err := writer.Close()
 	if err != nil {
-		fmt.Println(err)
+		t.Log(err)
 		return
 	}
 
 	client := &http.Client{}
 	req, err := http.NewRequest(method, url, payload)
 	if err != nil {
-		fmt.Println(err)
+		t.Log(err)
 		return
 	}
 
@@ -83,53 +85,53 @@ func TestCreateUser(t *testing.T) {
 	req.Header.Set("Content-Type", writer.FormDataContentType())
 	res, err := client.Do(req)
 	if err != nil {
-		fmt.Println(err)
+		t.Log(err)
 		return
 	}
 	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		t.Log(err)
+	}
 	if false {
 		t.Log(string(body))
 	}
-	buf := bytes.NewBuffer(body)
+
 	defer res.Body.Close()
 
-	var jsonData User
-	err = json.NewDecoder(buf).Decode(&jsonData)
+	// Getting the uuid of the Purchase_invoice created
+	buffer := bytes.NewBuffer(body)
+
+	var jsonData Purchase_invoice
+
+	err = json.NewDecoder(buffer).Decode(&jsonData)
 	if err != nil {
-		t.Error("failed to decode json", err)
+		t.Log("failed to decode json", err)
 	} else {
-		// Getting the uuid of the user created by the API call
-		userId = jsonData.Data.UUID
-		//t.Log(userId)
+		purchaseInvoicesUUId = jsonData.Data.UUID
+		//t.Log(purchaseInvoicesUUId)
 	}
-	if !strings.Contains(string(body), "test") {
+	if !strings.Contains(string(body), clientInternalId) {
 		t.Error("Returned unexpected body")
 	} else {
-		t.Log("Successfully created a new user")
+		t.Log("Successfully created a new purchase invoice")
 	}
-	if res.StatusCode != http.StatusOK {
-		t.Error("Unexpected response status code", res.StatusCode)
-		return
-	}
+
 }
 
-// Calling the Users API for PUT method to update the single user data with the uuid
-func TestUpdateUsers(t *testing.T) {
+// Calling the purchase_invoices API for PUT method to update the single purchase_invoice data with the uuid
+func TestUpdatePurchaseInvoice(t *testing.T) {
 
-	url := targetHost + "/api/v2/users/" + userId
-	//t.Log(userId)
+	url := targetHost + "/api/v2/purchase_invoices/" + purchaseInvoicesUUId
 
-	type UserData struct {
-		UUID             string `json:"uuid"`
-		Email            string `json:"email"`
-		Name             string `json:"name"`
-		Uuid_business_id string `json:"uuid_business_id"`
+	type PurchaseInvoiceData struct {
+		UUID         string `json:"uuid"`
+		Terms        string `json:"terms"`
+		BusinessUuid string `json:"uuid_business_id"`
 	}
-	data := UserData{
-		UUID:             userId,
-		Email:            "test.5@testing.com",
-		Name:             "newuser",
-		Uuid_business_id: businessId,
+	data := PurchaseInvoiceData{
+		UUID:         purchaseInvoicesUUId,
+		Terms:        "net 15",
+		BusinessUuid: businessId,
 	}
 	//t.Log(data)
 	jsonData, err := json.Marshal(data)
@@ -157,25 +159,25 @@ func TestUpdateUsers(t *testing.T) {
 	if err != nil {
 		t.Log(err)
 	}
-	if false {
-		t.Log(string(body))
-	}
+
+	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
 		t.Error("Unexpected response status code", resp.StatusCode)
 		return
 	}
-	// Verify the updated body
-	if !strings.Contains(string(body), "newuser") {
+	if !strings.Contains(string(body), "net 15") {
 		t.Error("Returned unexpected body")
 	} else {
-		t.Log("Successfully updated the user")
+		t.Log("Successfully updated the purchase invoice")
+
 	}
+
 }
 
-// Calling the Users API for DELETE method to delete the single user data with uuid
-func TestDeleteUsers(t *testing.T) {
-	url := targetHost + "/api/v2/users/" + userId
+// Calling the purchase_invoices API for DELETE method to delete the single purchase_invoice data with uuid
+func TestDeletePurchaseInvoice(t *testing.T) {
+	url := targetHost + "/api/v2/purchase_invoices/" + purchaseInvoicesUUId
 	client := &http.Client{}
 
 	req, err := http.NewRequest("DELETE", url, nil)
@@ -189,20 +191,26 @@ func TestDeleteUsers(t *testing.T) {
 		t.Log(err)
 		return
 	}
-	//t.Log(resp)
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		t.Log(err)
+	}
+	defer resp.Body.Close()
 
+	if !strings.Contains(string(body), "true") {
+		t.Error("Returned unexpected body")
+	}
 	if resp.StatusCode != http.StatusOK {
 		t.Error("Unexpected response status code", resp.StatusCode)
 		return
 	} else {
-		t.Log("Successfully deleted the user")
+		t.Log("Successfully deleted the purchase invoice")
 	}
 }
 
-// Calling the Users API for GET method to get single user data with UUID
-func TestGetSingleUser(t *testing.T) {
-	url := targetHost + "/api/v2/users/" + userId
-	//t.Log(tokenValue)
+// Calling the purchase_invoices API for GET method to get single purchase_invoice data with UUID
+func TestGetSinglePurchaseInvoice(t *testing.T) {
+	url := targetHost + "/api/v2/purchase_invoices/" + purchaseInvoicesUUId
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -225,10 +233,10 @@ func TestGetSingleUser(t *testing.T) {
 	if false {
 		t.Log(string(body))
 	}
-	// With the 'null' in response body, it will verify the users data is deleted successfully
+	defer resp.Body.Close()
 	if !strings.Contains(string(body), "null") {
 		t.Error("Returned unexpected body")
 	} else {
-		t.Log("The delete action for the user is verified")
+		t.Log("The delete action for the purchase invoice is verified")
 	}
 }

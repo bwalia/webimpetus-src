@@ -6,11 +6,13 @@ import (
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
+	"strconv"
 	"strings"
 	"testing"
 )
 
 var customerId string
+var clientInternalId string
 
 // Calling the Customers API for GET method to get all customers data
 func TestGetAllCustomers(t *testing.T) {
@@ -54,7 +56,8 @@ func TestCreateCustomer(t *testing.T) {
 
 	type Customer struct {
 		Data struct {
-			UUID string `json:"uuid"`
+			Client_id   int    `json:"internal_id"`
+			Client_uuid string `json:"uuid"`
 		} `json:"data"`
 	}
 
@@ -110,8 +113,9 @@ func TestCreateCustomer(t *testing.T) {
 		t.Error("failed to decode json", err)
 	} else {
 		// Getting the uuid of the customer created
-		customerId = jsonData.Data.UUID
-		//t.Log(customerId)
+		clientInternalId = strconv.Itoa(jsonData.Data.Client_id)
+		t.Log(customerId)
+		customerId = jsonData.Data.Client_uuid
 	}
 
 	if !strings.Contains(string(body), "Testing") {
