@@ -60,7 +60,7 @@ func TestCreateProject(t *testing.T) {
 	payload := &bytes.Buffer{}
 	writer := multipart.NewWriter(payload)
 	_ = writer.WriteField("name", "test project")
-	_ = writer.WriteField("customers_id", customerId)
+	_ = writer.WriteField("customers_id", clientInternalId)
 	_ = writer.WriteField("uuid_business_id", businessId)
 	err := writer.Close()
 	if err != nil {
@@ -96,7 +96,7 @@ func TestCreateProject(t *testing.T) {
 		t.Error("failed to decode json", err)
 	} else {
 		projectId = strconv.Itoa(jsonData.Data.ID)
-		t.Log(projectId)
+		//t.Log(projectId)
 	}
 
 	if res.StatusCode != http.StatusOK {
