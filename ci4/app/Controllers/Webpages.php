@@ -196,6 +196,7 @@ class Webpages extends CommonController
 
 					$c_data['webpage_id'] = $id;
 					$c_data['categories_id'] = $categories_id;
+					$c_data['uuid'] = UUID::v5(UUID::v4(), 'webpage_categories');
 
 					$this->model->insertTableData($c_data, "webpage_categories");
 				}
