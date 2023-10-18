@@ -1,10 +1,12 @@
 <?php
 
 namespace App\Controllers\Api\V2;
+
 use App\Controllers\Api_v2;
 use App\Models\Tasks_model;
 
 use CodeIgniter\RESTful\ResourceController;
+
 /**
  * @OA\Get(
  *     path="/api/v2/tasks",
@@ -108,8 +110,11 @@ class Tasks extends ResourceController
         //filter by business uuid
         $_GET['q'] = !empty($params['filter']) && !empty($params['filter']['q']) ? $params['filter']['q'] : '';
 
-        $_GET['uuid_business_id'] = !empty($params['filter']) && !empty($params['filter']['uuid_business_id']) ? $params['filter']['uuid_business_id'] : false;
-
+        $_GET['uuid_business_id'] = !empty($params['filter']) && !empty($params['filter']['uuid_business_id']) ? $params['filter']['uuid_business_id'] : $_GET['uuid_business_id'] ?? false;
+        if(empty($_GET['uuid_business_id']) || !isset($_GET['uuid_business_id']) || !$_GET['uuid_business_id']){
+            $data['data'] = 'You must need to specify the User Business ID';
+            return $this->respond($data, 403);
+        }
         $data['data'] = $api->tasksModel->getApiTaskList($_GET['uuid_business_id']);
         $data['total'] = $api->tasksModel->getTasksCount($_GET['uuid_business_id']);
         $data['message'] = 200;

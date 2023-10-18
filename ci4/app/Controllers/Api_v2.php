@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Models\CustomerContactModel;
 use App\Models\Service_model;
 use App\Models\Tenant_model;
 use App\Models\Domain_model;
@@ -58,6 +59,7 @@ class Api_v2 extends BaseController
     public $purchase_orders_model;
     public $meta_model;
     public $projects_model;
+    public $customerContactModel;
     public function __construct()
     {
         $this->smodel = new Service_model();
@@ -86,6 +88,7 @@ class Api_v2 extends BaseController
         $this->purchase_orders_model = new Purchase_orders_model();
         $this->meta_model = new Meta_model();
         $this->projects_model = new Projects_model();
+        $this->customerContactModel = new CustomerContactModel();
         $this->request = \Config\Services::request();
         header('Content-Type: application/json; charset=utf-8');
         if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
@@ -212,12 +215,12 @@ class Api_v2 extends BaseController
     public function webpages($customer_id = false)
     {
         $categories = $this->cusCategory_model->where('customer_id', $customer_id)->get()->getResult();
-        
+
         $categoriesId = [];
         foreach ($categories as $row) {
             $categoriesId[$row->categories_id] = $row->categories_id;
         }
-        
+
         $webPagesId = [];
         if (count($categoriesId)) {
             $webPages = $this->webCategory_model->whereIn('categories_id', $categoriesId)->get()->getResult();
@@ -544,22 +547,15 @@ class Api_v2 extends BaseController
             } else {
                 $data['internal_id'] = $response;
                 $id = $response;
-                $i = 0;
-                if (count($post["first_name"]) > 0) {
-                    foreach ($post["first_name"] as $firstName) {
-
-                        $contact["first_name"] = $firstName;
-                        $contact["client_id"] = $data["uuid"];
-                        $contact["surname"] = @$post["surname"][$i];
-                        $contact["email"] = @$post["contact_email"][$i];
-                        $contact["uuid_business_id"] = @$post['uuid_business'];
-                        $contactId =  '';
-                        if (strlen(trim($firstName)) > 0 || strlen(trim($contact["surname"]) > 0) || strlen(trim($contact["email"]) > 0)) {
-                            $this->common_model->CommonInsertOrUpdate("contacts", $contactId, $contact);
-                            //print_r($contact); die;
-                        }
-
-                        $i++;
+                $this->customerContactModel->deleteDataByCustomer($data["uuid"]);
+                if (!empty($post["cnId"]) && $post["cnId"] && isset($post["cnId"])) {
+                    foreach ($post["cnId"] as $contactId) {
+                        $cscnData = [
+                            'uuid' => UUID::v5(UUID::v4(), 'customer__contact'),
+                            'customer_uuid' => $data["uuid"],
+                            'contact_uuid' => $contactId
+                        ];
+                        $this->customerContactModel->saveData($cscnData);
                     }
                 }
 
@@ -736,7 +732,7 @@ class Api_v2 extends BaseController
             $data["uuid"] = @$uuidVal;
             if (!empty($post["week_no"])) $data["week_no"] = @$post["week_no"];
             if (!empty($post["slip_timer_started"])) $data["slip_timer_started"] = @$post["slip_timer_started"];
-            if (!empty($post["slip_end_date"])) $data["slip_end_date"] = @$post["slip_end_date"];
+            if (!empty($post["slip_end_date"])) $data["slip_end_date"] = strtotime(@$post["slip_end_date"]);
             if (!empty($post["slip_timer_end"])) $data["slip_timer_end"] = @$post["slip_timer_end"];
             if (!empty($post["break_time"])) $data["break_time"] = @$post["break_time"];
             if (!empty($post["break_time_start"])) $data["break_time_start"] = @$post["break_time_start"];
@@ -1677,7 +1673,8 @@ class Api_v2 extends BaseController
             $data_array = array(
                 'name'  => $this->request->getPost('name'),
                 'uuid_business_id'  => $this->request->getPost('uuid_business_id'),
-                'customers_id'  => $this->request->getPost('customers_id')
+                'customers_id'  => $this->request->getPost('customers_id'),
+                'uuid' => UUID::v5(UUID::v4(), 'projects')
             );
             if (!empty($post["start_date"])) $data_array["start_date"] = @$post["start_date"];
             if (!empty($post["deadline_date"])) $data_array["deadline_date"] = @$post["deadline_date"];
@@ -1760,7 +1757,7 @@ class Api_v2 extends BaseController
             } else {
                 $id = $response;
                 $i = 0;
-                if (count($post["address_line_1"]) > 0) {
+                if (array_key_exists('address_line_1', $post) && count($post["address_line_1"]) > 0) {
                     foreach ($post["address_line_1"] as $firstName) {
 
                         $contact["address_line_1"] = $firstName;
