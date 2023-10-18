@@ -57,7 +57,11 @@ class Webpages extends ResourceController
         //filter by business uuid
         $_GET['q'] = !empty($params['filter']) && !empty($params['filter']['q']) ? $params['filter']['q'] : '';
         $_GET['customer_id'] = !empty($params['filter']) && !empty($params['filter']['customer_id']) ? $params['filter']['customer_id'] : $catId;
-        $_GET['uuid_business_id'] = !empty($params['filter']) && !empty($params['filter']['uuid_business_id']) ? $params['filter']['uuid_business_id'] : $_GET['uuid_business_id'];
+        $_GET['uuid_business_id'] = !empty($params['filter']) && !empty($params['filter']['uuid_business_id']) ? $params['filter']['uuid_business_id'] : $_GET['uuid_business_id'] ?? false;
+        if (empty($_GET['uuid_business_id']) || !isset($_GET['uuid_business_id']) || !$_GET['uuid_business_id']) {
+            $data['data'] = 'You must need to specify the User Business ID';
+            return $this->respond($data, 403);
+        }
         // $data['data'] = $api->webpages($customer_id);
         // $data['total'] = $api->userModel->getApiV2UsersCount();
         // $data['message'] = 200;
