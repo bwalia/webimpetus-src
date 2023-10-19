@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
@@ -14,7 +15,7 @@ var contactId string
 
 // Calling the Contacts API for GET method to get all contacts data
 func TestGetAllContacts(t *testing.T) {
-	url := targetHost + "/api/v2/contacts"
+	url := targetHost + fmt.Sprintf("/api/v2/contacts?_format=json&params={\"pagination\":{\"page\":1,\"perPage\":12},\"sort\":{\"field\":\"id\",\"order\":\"ASC\"},\"filter\":{\"uuid_business_id\":\"%s\"}}", businessId)
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {

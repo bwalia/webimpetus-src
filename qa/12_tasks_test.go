@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
@@ -14,7 +15,7 @@ var taskId string
 
 // Calling the Tasks API for GET method to get all tasks data
 func TestGetAllTasks(t *testing.T) {
-	url := targetHost + "/api/v2/tasks"
+	url := targetHost + fmt.Sprintf("/api/v2/tasks?_format=json&params={\"pagination\":{\"page\":1,\"perPage\":12},\"sort\":{\"field\":\"id\",\"order\":\"ASC\"},\"filter\":{\"uuid_business_id\":\"%s\"}}", businessId)
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {

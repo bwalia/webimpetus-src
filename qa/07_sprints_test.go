@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
@@ -16,8 +17,9 @@ var sprintId string
 // Calling the Sprints API for GET method to get all sprints data
 func TestGetAllSprints(t *testing.T) {
 	//t.Log(tokenValue)
+	url := targetHost + fmt.Sprintf("/api/v2/sprints?_format=json&params={\"pagination\":{\"page\":1,\"perPage\":12},\"sort\":{\"field\":\"id\",\"order\":\"ASC\"},\"filter\":{\"uuid_business_id\":\"%s\"}}", businessId)
 
-	req, err := http.NewRequest("GET", targetHost+"/api/v2/sprints", nil)
+	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		t.Log(err)
 		return

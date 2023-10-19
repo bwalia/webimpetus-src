@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
@@ -15,8 +16,9 @@ var purchaseOrdersUUId string
 // Calling the Purchase_orders API for GET method to get all Purchase order data
 func TestGetAllPurchaseOrders(t *testing.T) {
 	//t.Log(tokenValue)
+	url := targetHost + fmt.Sprintf("/api/v2/purchase_orders?_format=json&params={\"pagination\":{\"page\":1,\"perPage\":12},\"sort\":{\"field\":\"id\",\"order\":\"ASC\"},\"filter\":{\"uuid_business_id\":\"%s\"}}", businessId)
 
-	req, err := http.NewRequest("GET", targetHost+"/api/v2/purchase_orders", nil)
+	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		t.Log(err)
 		return
