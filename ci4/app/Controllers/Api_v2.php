@@ -212,7 +212,7 @@ class Api_v2 extends BaseController
         echo json_encode($data);
         die;
     }
-    public function webpages($customer_id = false)
+    public function webpages($customer_id = false, $query = false)
     {
         $categories = $this->cusCategory_model->where('customer_id', $customer_id)->get()->getResult();
 
@@ -229,7 +229,12 @@ class Api_v2 extends BaseController
             }
         }
         if (count($webPagesId)) {
-            $webpages = $this->cmodel->where(["status" => 1, "uuid_business_id" => $_GET['uuid_business_id']])->whereIn('id', $webPagesId)->get()->getResult();
+            $webpages = $this->cmodel
+                ->like('title', $query)
+                ->where(["status" => 1, "uuid_business_id" => $_GET['uuid_business_id']])
+                ->whereIn('id', $webPagesId)
+                ->get()
+                ->getResult();
             if ($webpages) {
                 $webPageList = [];
                 foreach ($webpages as $key => $eachPage) {
