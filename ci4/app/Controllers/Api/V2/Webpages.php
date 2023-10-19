@@ -45,7 +45,7 @@ class Webpages extends ResourceController
     {
         $api =  new Api_v2();
         $params = !empty($_GET['params']) ? json_decode($_GET['params'], true) : [];
-        $catId = $_GET['customer_id'];
+        $catId = $_GET['category_id'];
         //Pagination Params
         $_GET['page'] = !empty($params['pagination']) && !empty($params['pagination']['page']) ? $params['pagination']['page'] : 1;
         $_GET['perPage'] = !empty($params['pagination']) && !empty($params['pagination']['perPage']) ? $params['pagination']['perPage'] : 10;
@@ -55,17 +55,17 @@ class Webpages extends ResourceController
         $_GET['order'] = !empty($params['sort']) && !empty($params['sort']['order']) ? $params['sort']['order'] : '';
 
         //filter by business uuid
-        $_GET['q'] = !empty($params['filter']) && !empty($params['filter']['q']) ? $params['filter']['q'] : '';
-        $_GET['customer_id'] = !empty($params['filter']) && !empty($params['filter']['customer_id']) ? $params['filter']['customer_id'] : $catId;
+        $_GET['q'] = !empty($params['filter']) && !empty($params['filter']['q']) ? $params['filter']['q'] : $_GET['q'] ?? '';
+        $_GET['category_id'] = !empty($params['filter']) && !empty($params['filter']['category_id']) ? $params['filter']['category_id'] : $catId;
         $_GET['uuid_business_id'] = !empty($params['filter']) && !empty($params['filter']['uuid_business_id']) ? $params['filter']['uuid_business_id'] : $_GET['uuid_business_id'] ?? false;
         if (empty($_GET['uuid_business_id']) || !isset($_GET['uuid_business_id']) || !$_GET['uuid_business_id']) {
             $data['data'] = 'You must need to specify the User Business ID';
             return $this->respond($data, 403);
         }
-        // $data['data'] = $api->webpages($customer_id);
+        // $data['data'] = $api->webpages($category_id);
         // $data['total'] = $api->userModel->getApiV2UsersCount();
         // $data['message'] = 200;
-        return $this->respond($api->webpages($_GET['customer_id'] ?? $catId));
+        return $this->respond($api->webpages($_GET['category_id'] ?? $catId, $_GET['q']));
     }
 
     /**
