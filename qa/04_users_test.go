@@ -15,8 +15,9 @@ var userId string
 
 // Calling the Users API for GET method to get all users data
 func TestGetAllUsers(t *testing.T) {
+	url := targetHost + fmt.Sprintf("/api/v2/users?_format=json&params={\"pagination\":{\"page\":1,\"perPage\":12},\"sort\":{\"field\":\"id\",\"order\":\"ASC\"},\"filter\":{\"uuid_business_id\":\"%s\"}}", businessId)
 
-	req, err := http.NewRequest("GET", targetHost+"/api/v2/users", nil)
+	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		t.Log(err)
 		return

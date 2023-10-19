@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
@@ -17,7 +18,8 @@ var projectId string
 
 func TestGetAllProjects(t *testing.T) {
 	//t.Log(tokenValue)
-	url := targetHost + "/api/v2/projects"
+	url := targetHost + fmt.Sprintf("/api/v2/projects?_format=json&params={\"pagination\":{\"page\":1,\"perPage\":12},\"sort\":{\"field\":\"id\",\"order\":\"ASC\"},\"filter\":{\"uuid_business_id\":\"%s\"}}", businessId)
+
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		t.Log(err)
