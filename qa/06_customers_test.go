@@ -27,7 +27,7 @@ func TestGetAllCustomers(t *testing.T) {
 	}
 
 	client := &http.Client{}
-	req.Header.Set("Authorization", "Bearer "+tokenValue)
+	req.Header.Add("Authorization", "Bearer "+tokenValue)
 	resp, err := client.Do(req)
 	if err != nil {
 		t.Log(err)
@@ -75,8 +75,6 @@ func TestCreateCustomer(t *testing.T) {
 	_ = writer.WriteField("contact_firstname", "API Test")
 	_ = writer.WriteField("status", "1")
 	_ = writer.WriteField("supplier", "1")
-	_ = writer.WriteField("first_name[0]", "Tester")
-	_ = writer.WriteField("contact_email[0]", "test@test.com")
 
 	err := writer.Close()
 	if err != nil {
@@ -238,7 +236,7 @@ func TestGetSingleCustomer(t *testing.T) {
 		return
 	}
 	client := &http.Client{}
-	req.Header.Set("Authorization", "Bearer "+tokenValue)
+	req.Header.Add("Authorization", "Bearer "+tokenValue)
 	resp, err := client.Do(req)
 	if err != nil {
 		t.Log(err)
