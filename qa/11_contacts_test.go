@@ -24,7 +24,7 @@ func TestGetAllContacts(t *testing.T) {
 	}
 
 	client := &http.Client{}
-	req.Header.Set("Authorization", "Bearer "+tokenValue)
+	req.Header.Add("Authorization", "Bearer "+tokenValue)
 	res, err := client.Do(req)
 	if err != nil {
 		t.Log(err)
@@ -80,7 +80,7 @@ func TestCreateContact(t *testing.T) {
 		t.Log(err)
 	}
 
-	req.Header.Set("Authorization", "Bearer "+tokenValue)
+	req.Header.Add("Authorization", "Bearer "+tokenValue)
 	req.Header.Set("Content-Type", writer.FormDataContentType())
 
 	res, err := client.Do(req)
@@ -134,7 +134,7 @@ func TestDeleteContacts(t *testing.T) {
 
 	client := &http.Client{}
 
-	req.Header.Set("Authorization", "Bearer "+tokenValue)
+	req.Header.Add("Authorization", "Bearer "+tokenValue)
 	res, err := client.Do(req)
 	if err != nil {
 		t.Error(err)
@@ -166,7 +166,7 @@ func TestGetSingleContact(t *testing.T) {
 		return
 	}
 	client := &http.Client{}
-	req.Header.Set("Authorization", "Bearer "+tokenValue)
+	req.Header.Add("Authorization", "Bearer "+tokenValue)
 	resp, err := client.Do(req)
 	if err != nil {
 		t.Log(err)

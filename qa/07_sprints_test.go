@@ -26,7 +26,7 @@ func TestGetAllSprints(t *testing.T) {
 	}
 
 	client := &http.Client{}
-	req.Header.Set("Authorization", "Bearer "+tokenValue)
+	req.Header.Add("Authorization", "Bearer "+tokenValue)
 	resp, err := client.Do(req)
 	if err != nil {
 		t.Log(err)
@@ -207,7 +207,7 @@ func TestGetSingleSprint(t *testing.T) {
 		return
 	}
 	client := &http.Client{}
-	req.Header.Set("Authorization", "Bearer "+tokenValue)
+	req.Header.Add("Authorization", "Bearer "+tokenValue)
 	resp, err := client.Do(req)
 	if err != nil {
 		t.Log(err)
