@@ -38,6 +38,14 @@ class Menu_model extends Model
             return [];
         }   
     }
+	public function getWhereinByUUID($uuid = [])
+    {
+        if(!empty($uuid)){
+            return $this->whereIn('uuid', $uuid)->findAll();
+        }else{
+            return [];
+        }   
+    }
 
     public function updateData($id = null, $data = null)
 	{

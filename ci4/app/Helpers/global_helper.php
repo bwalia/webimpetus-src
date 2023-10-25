@@ -51,6 +51,43 @@ function getResultArray($tableName, $where = array(), $returnArr = true)
 
     return $result;
 }
+function getResultWithoutBusiness($tableName, $where = array(), $returnArr = true)
+{
+
+    $db = \Config\Database::connect();
+    $builder = $db->table($tableName);
+
+    $query = $builder;
+    if ($where) {
+
+        $query = $builder->getWhere($where);
+    } else {
+
+        $query = $builder->get();
+    }
+
+    if ($returnArr) {
+        $result = $query->getResultArray();
+    } else {
+        $result = $query->getResult();
+    }
+
+    return $result;
+}
+
+function getRecordsByMultipleUUIDs($tableName, $idArray = [], $returnArr = true) {
+    $db = \Config\Database::connect();
+    $query = $db->table($tableName);
+    $query->whereIn('uuid', $idArray);
+    $query = $query->get();
+    if ($returnArr) {
+        $result = $query->getResultArray();
+    } else {
+        $result = $query->getResult();
+    }
+    return $result;
+}
+
 function getRowArray($tableName, $where = array(), $returnArr = false)
 {
 
@@ -146,6 +183,16 @@ function totalRows($tableName, $where = array(), $returnArr = true)
     // echo $db->getLastQuery();
 
     return count($res);
+}
+
+function isUUID($value) {
+    $pattern = '/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i';
+    return preg_match($pattern, $value) === 1;
+}
+
+function getRoleNameByUUID($roleUUID = "") {
+    $db = \Config\Database::connect();
+    return $db->query("SELECT role_name from roles WHERE uuid = '$roleUUID'")->getRow();
 }
 
 function MenuByCategory($mid = "")

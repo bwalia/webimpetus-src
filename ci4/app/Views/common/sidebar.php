@@ -12,7 +12,8 @@
     </div>
 
     <div class="sidebar-search-wrapper">
-        <input type="text" class="form-control sidebar-search search-placeholder" id="myInput" onkeyup="search_menu()" placeholder="Search by name" />
+        <input type="text" class="form-control sidebar-search search-placeholder" id="myInput" onkeyup="search_menu()"
+            placeholder="Search by name" />
         <span class="sidebar-search-label sidebar-search-front-label">Search</span>
         <span class="sidebar-search-label sidebar-search-back-label">Navigation</span>
     </div>
@@ -20,38 +21,6 @@
 
 
     <ul id="sidebar_menu">
-        <!--<li class="active"><a href="#">Dashboard</a></li>
-            <li>
-               <a href="#" id="1">Pages
-               <span class="fas fa-caret-down"></span>
-               </a>
-               <ul class="item-show-1">
-                  <li><a href="#">Contact us</a></li>
-                  <li><a href="#">Our Team</a></li>
-               </ul>
-            </li>
-            <li>
-               <a href="#" id="2">Services
-               <span class="fas fa-caret-down"></span>
-               </a>
-               <ul class="item-show-2">
-                  <li><a href="#">App Design</a></li>
-                  <li><a href="#">Web Design</a></li>
-               </ul>
-            </li>
-            <li><a href="#">Users</a></li>
-            <li><a href="#">Message</a></li>
-            <li><a href="#">Bookmark</a></li>
-            <li><a href="#">Files</a></li>
-          </ul>
-
-
-
-        <ul id="sidebar_menu"> -->
-
-
-
-
         <?php if (empty($_SESSION['permissions'])) { ?>
             <li class="mm-active">
                 <a class="has-arrow" href="/dashboard" aria-expanded="true">
@@ -64,21 +33,13 @@
                 </a>
 
             </li>
-        <?php } else {
-
-            ?>
-
-
+        <?php } else { ?>
             <?php
-
             $menu = MenuByCategory(); //getWithOutUuidResultArray("menu", [], true, "sort_order");
-            //print_r($menu); die;
-            $rowArray = getRowArray("users", ["id" => $_SESSION['uuid']]);
-            $userMenus = $rowArray->permissions;
-            $role = $rowArray->role;
-            if ($userMenus) {
-                $userMenus = json_decode($userMenus);
-            }
+            $permissions = $_SESSION['permissions'];
+            $userMenus = array_map(function ($menu, $mKey) {
+                return $menu['id'];
+            }, $permissions, array_keys($permissions));
 
             if (isset($_SESSION["menucode"])) {
 
@@ -91,7 +52,7 @@
             $inc = 1;
             foreach ($menu as $val) {
 
-                if ($role == 1 || in_array($val['id'], $userMenus)) {
+                if (in_array($val['id'], $userMenus)) {
                     $activeIcon = $val['icon'];
                     //echo $catname.$val['catname'];
         
@@ -107,20 +68,19 @@
                         ?>
 
                         <li class="cat-listing">
-                            <a href="#" id="<?= $inc ?>" class="cat-caret-wrapper"><?php echo $val['catname']; ?>
+                            <a href="#" id="<?= $inc ?>" class="cat-caret-wrapper">
+                                <?php echo $val['catname']; ?>
                                 <span class="fas fa-caret-down"></span>
                             </a>
                             <ul class="item-show-1">
                                 <li><a href="<?php echo $val['link']; ?>" class="<?php if (@$menucode == $val['id'])
-                                       echo "active"; ?>"><i
-                                            class="<?php echo $val['icon']; ?>"></i> <span>
+                                       echo "active"; ?>"><i class="<?php echo $val['icon']; ?>"></i> <span>
                                             <?php echo $val['name']; ?>
                                         </span></a></li>
 
                             <?php } else { ?>
                                 <li><a href="<?php echo $val['link']; ?>" class="<?php if (@$menucode == $val['id'])
-                                       echo "active"; ?>"><i
-                                            class="<?php echo $val['icon']; ?>"></i> <span>
+                                       echo "active"; ?>"><i class="<?php echo $val['icon']; ?>"></i> <span>
                                             <?php echo $val['name']; ?>
                                         </span></a></li>
                             <?php } ?>
@@ -131,7 +91,6 @@
                             <?php $inc++;
                 }
             }
-
         }
         $_SESSION["menucode"] = 0;
         $menu = getWithOutUuidResultArray("menu", [], true, "sort_order");
@@ -205,5 +164,4 @@
             document.getElementById('myInput').focus();
         }
     }
-
 </script>

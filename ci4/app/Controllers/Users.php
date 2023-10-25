@@ -8,12 +8,14 @@ use App\Models\Menu_model;
 use App\Models\User_business_model;
 use App\Controllers\Core\CommonController;
 use App\Libraries\UUID;
+use App\Models\RolesModel;
 
 class Users extends CommonController
 {
 	public $userModel;
 	public $menu_model;
 	public $userBusinessModel;
+	public $rolesModel;
 	function __construct()
 	{
 		parent::__construct();
@@ -21,6 +23,7 @@ class Users extends CommonController
 		$this->userModel = new Users_model();
 		$this->menu_model = new Menu_model();
 		$this->userBusinessModel = new User_business_model();
+		$this->rolesModel = new RolesModel();
 	}
 
 
@@ -30,6 +33,7 @@ class Users extends CommonController
 		$data['rawTblName'] = $this->rawTblName;
 		$data['user'] = !empty($id) ? $this->userModel->getUserByUUID($id)->getRow() : [];
 		$data['menu'] = $this->menu_model->getRows();
+		$data['roles'] = $this->rolesModel->getRows();
 		return view('users/edit', $data);
 	}
 
@@ -72,7 +76,7 @@ class Users extends CommonController
 
 					$uuidNamespace = UUID::v4();
 					$uuid = UUID::v5($uuidNamespace, 'users');
-					$data = array(
+					$data = [
 						'name'  => $this->request->getPost('name'),
 						'email' => $this->request->getPost('email'),
 						//'password' => md5($this->request->getPost('password')),
@@ -85,7 +89,7 @@ class Users extends CommonController
 						'status' => 0,
 						'permissions' => json_encode($menu_ids),
 						'role' => $this->request->getPost('role'),
-					);
+					];
 					$saveUserId = $this->userModel->saveUser($data);
 					$userBsUuid = UUID::v5($uuidNamespace, 'user_business');
 					$userBsData = [
