@@ -1,4 +1,4 @@
-name: CI Helm Auto Deploy Env of Workstation CRM
+name: CI Helm Auto Deploy INT defaults INT but a Env of Workstation CRM
 
 on:
   push:
