@@ -1,5 +1,5 @@
-name: Stable Docker images matrix
-run-name: Create Docker image, push it & tag it - ${{ github.event.inputs.IMAGE_NAME }} tag ${{ github.event.inputs.IMAGE_TAG }} from ${{ github.event.inputs.BRANCH_REF }} branch to ECR and Private Repo and Docker Public Repo
+name: Build Docker images matrix
+run-name: Create Docker images, push it & tag it
 
 on:
   push:
