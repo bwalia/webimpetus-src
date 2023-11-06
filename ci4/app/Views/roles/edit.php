@@ -21,19 +21,21 @@
                         }
                     ?>
                     <div class="form-row">
-                        <div class="form-group col-md-12">
-                            <label for="inputState">Permissions</label>
-                            <select id="user_permissions" name="user_permissions[]" multiple
-                                class="form-control select2">
-                                <?php
-                                foreach ($permissions as $row): ?>
-                                    <option value="<?= $row['uuid']; ?>" <?php
-                                      if (is_array($permissionsUUID) && in_array($row['uuid'], $permissionsUUID)) {
-                                          echo "selected";
-                                      } ?>><?= $row['name']; ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
+                        <div class="col-md-12">
+                            <div class="form-group d-flex">
+                                <label for="inputState" class="mr-5">Permissions</label>
+                                <select id="user_permissions" name="user_permissions[]" multiple
+                                    class="form-control select2">
+                                    <?php
+                                    foreach ($permissions as $row): ?>
+                                        <option value="<?= $row['uuid']; ?>" <?php
+                                          if (is_array($permissionsUUID) && in_array($row['uuid'], $permissionsUUID)) {
+                                              echo "selected";
+                                          } ?>><?= $row['name']; ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -74,16 +74,21 @@ class Home extends BaseController
 				$this->session->set('uuid_business_id', $uuid_business_id);
 				$this->session->set('uuid_business', $row->uuid_business_id);
 				$this->session->set('jwt_token', $token);
-				if (isUUID($row->role)) {
-					$menuArray = getResultWithoutBusiness('roles__permissions', ['role_id' => $row->role]);
-					$menuIds = array_map(function($val, $key) {
-						return $val['permission_id'];
-					}, $menuArray, array_keys($menuArray));
-					$userMenus = $this->menu_model->getWhereinByUUID($menuIds);
+				if (!$row->uuid_business_id && !isset($row->uuid_business_id)) {
+					$userMenus = $this->menu_model->getRows();
 				} else {
-					$arr = json_decode($row->permissions);
-					$userMenus = $this->menu_model->getWherein($arr);
+					if (isUUID($row->role)) {
+						$menuArray = getResultWithoutBusiness('roles__permissions', ['role_id' => $row->role]);
+						$menuIds = array_map(function($val, $key) {
+							return $val['permission_id'];
+						}, $menuArray, array_keys($menuArray));
+						$userMenus = $this->menu_model->getWhereinByUUID($menuIds);
+					} else {
+						$arr = json_decode($row->permissions);
+						$userMenus = $this->menu_model->getWherein($arr);
+					}
 				}
+				
 				$this->session->set('permissions', $userMenus);
 
 

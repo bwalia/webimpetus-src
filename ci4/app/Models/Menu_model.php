@@ -17,7 +17,7 @@ class Menu_model extends Model
      
     public function getRows($id = false)
     {
-        $whereCond = $this->whereCond;
+        $whereCond = [];
         if ($id === false) {
             if (empty($whereCond)) {
                 return $this->findAll();
