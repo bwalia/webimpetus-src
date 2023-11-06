@@ -3,7 +3,7 @@ run-name: Create Docker images, push it & tag it
 
 on:
   push:
-    branches: [ main ]
+    branches: [ dummy ]
 
   workflow_dispatch:
     inputs:
