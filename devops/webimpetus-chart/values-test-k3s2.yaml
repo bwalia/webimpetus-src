@@ -42,7 +42,7 @@ serviceAdminer:
 
 ingress:
   enabled: true
-  className: "nginx"
+  className: "traefik"
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
