@@ -36,8 +36,8 @@ IMAGE_REPO="docker.workstation.co.uk"
 echo Target Environment: $targetEnv
 
 if [ $targetEnv == "dev" ] || [ $targetEnv == "test" ] || [ $targetEnv == "int" ] || [ $targetEnv == "acc" ] || [ $targetEnv == "prod" ]; then
-if [ $clusterName == "k3s2" ] || $clusterName == "k3s3" ] || [ $clusterName == "k3s6" ] || [ $clusterName == "k3s10" ]; then
-export KUBECONFIG=~/.kube/vpn-$clusterName.yaml
+if [ $clusterName == "k3s2" ] || [ $clusterName == "k3s3" ] || [ $clusterName == "k3s6" ] || [ $clusterName == "k3s10" ]; then
+   export KUBECONFIG=~/.kube/vpn-$clusterName.yaml
    helm upgrade -i wsl-$targetEnv ./devops/webimpetus-chart -f devops/webimpetus-chart/values-$targetEnv-$clusterName.yaml --set-string targetImage="bwalia/$IMAGE_NAME" --set-string targetImageTag="$IMAGE_TAG" --namespace $targetNs --create-namespace
    kubectl rollout restart deployment/wsl-$targetEnv -n $targetNs
    kubectl rollout history deployment/wsl-$targetEnv -n $targetNs
