@@ -48,8 +48,8 @@ jobs:
             docker push ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TARGET_IMAGE_TAG }}
           shell: bash
     
-    deployment2:
-        runs-on: 'ams01'
+    deployment3:
+        runs-on: 'label-ams01'
         needs: build
 
         steps:
@@ -62,9 +62,9 @@ jobs:
             - name: Deploy WebImpetus to k3s2 VPN TEST Environment
               run: chmod +x ./deploy-to-kubernetes.sh && ./deploy-to-kubernetes.sh "test" "k3s3" "test"
 
-    deployment3:
+    deployment2:
       runs-on: 'node2'
-      needs: deployment2
+      needs: deployment3
 
       steps:
           - name: Checkout this repo
