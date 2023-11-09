@@ -56,10 +56,10 @@ jobs:
             - name: Checkout this repo
               uses: actions/checkout@v3
         
-            - name: Deploy WebImpetus to k3s2 VPN INT Environment
+            - name: Deploy WebImpetus to k3s3 VPN INT Environment
               run: chmod +x ./deploy-to-kubernetes.sh && ./deploy-to-kubernetes.sh "int" "k3s3" "int"
 
-            - name: Deploy WebImpetus to k3s2 VPN TEST Environment
+            - name: Deploy WebImpetus to k3s3 VPN TEST Environment
               run: chmod +x ./deploy-to-kubernetes.sh && ./deploy-to-kubernetes.sh "test" "k3s3" "test"
 
     deployment2:
