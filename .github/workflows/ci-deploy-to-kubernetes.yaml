@@ -75,7 +75,36 @@ jobs:
 
           - name: Deploy WebImpetus to k3s2 VPN TEST Environment
             run: chmod +x ./deploy-to-kubernetes.sh && ./deploy-to-kubernetes.sh "test" "k3s2" "test"
-                      
+
+    deployment6:
+      runs-on: 'node6'
+      needs: deployment2
+
+      steps:
+          - name: Checkout this repo
+            uses: actions/checkout@v3
+      
+          - name: Deploy WebImpetus to k3s6 VPN INT Environment
+            run: chmod +x ./deploy-to-kubernetes.sh && ./deploy-to-kubernetes.sh "int" "k3s6" "int"
+
+          - name: Deploy WebImpetus to k3s6 VPN TEST Environment
+            run: chmod +x ./deploy-to-kubernetes.sh && ./deploy-to-kubernetes.sh "test" "k3s6" "test"
+
+    deployment10:
+      runs-on: 'node10'
+      needs: deployment6
+
+      steps:
+          - name: Checkout this repo
+            uses: actions/checkout@v3
+      
+          - name: Deploy WebImpetus to k3s10 VPN INT Environment
+            run: chmod +x ./deploy-to-kubernetes.sh && ./deploy-to-kubernetes.sh "int" "k3s10" "int"
+
+          - name: Deploy WebImpetus to k3s10 VPN TEST Environment
+            run: chmod +x ./deploy-to-kubernetes.sh && ./deploy-to-kubernetes.sh "test" "k3s10" "test"
+        
+
           - name: Slack Notification for Workstation CRM INT & TEST release 
             uses: rtCamp/action-slack-notify@v2
             env:
