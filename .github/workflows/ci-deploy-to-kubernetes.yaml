@@ -48,28 +48,71 @@ jobs:
             docker push ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TARGET_IMAGE_TAG }}
           shell: bash
     
-    deployment:
-        runs-on: 'node2'
+    deployment3:
+        runs-on: 'label-ams01'
         needs: build
 
         steps:
             - name: Checkout this repo
               uses: actions/checkout@v3
         
-            - name: Deploy WebImpetus to k3s2 VPN INT Environment
-              run: chmod +x ./deploy-to-kubernetes.sh && ./deploy-to-kubernetes.sh "int" "k3s2" "int"
+            - name: Deploy WebImpetus to k3s3 VPN INT Environment
+              run: chmod +x ./deploy-to-kubernetes.sh && ./deploy-to-kubernetes.sh "int" "k3s3" "int"
 
-            - name: Deploy WebImpetus to k3s2 VPN TEST Environment
-              run: chmod +x ./deploy-to-kubernetes.sh && ./deploy-to-kubernetes.sh "test" "k3s2" "test"
-              
-            - name: Slack Notification for Workstation CRM release 
-              uses: rtCamp/action-slack-notify@v2
-              env:
-                SLACK_CHANNEL: general
-                SLACK_COLOR: ${{ job.status }}
-                SLACK_ICON: https://github.com/rtCamp.png?size=48
-                SLACK_MESSAGE: 'Post Content :rocket:'
-                SLACK_TITLE: Post Title
-                SLACK_USERNAME: rtCamp
-                SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+            - name: Deploy WebImpetus to k3s3 VPN TEST Environment
+              run: chmod +x ./deploy-to-kubernetes.sh && ./deploy-to-kubernetes.sh "test" "k3s3" "test"
+
+    deployment2:
+      runs-on: 'node2'
+      needs: deployment3
+
+      steps:
+          - name: Checkout this repo
+            uses: actions/checkout@v3
+      
+          - name: Deploy WebImpetus to k3s2 VPN INT Environment
+            run: chmod +x ./deploy-to-kubernetes.sh && ./deploy-to-kubernetes.sh "int" "k3s2" "int"
+
+          - name: Deploy WebImpetus to k3s2 VPN TEST Environment
+            run: chmod +x ./deploy-to-kubernetes.sh && ./deploy-to-kubernetes.sh "test" "k3s2" "test"
+
+    deployment6:
+      runs-on: 'node6'
+      needs: deployment2
+
+      steps:
+          - name: Checkout this repo
+            uses: actions/checkout@v3
+      
+          - name: Deploy WebImpetus to k3s6 VPN INT Environment
+            run: chmod +x ./deploy-to-kubernetes.sh && ./deploy-to-kubernetes.sh "int" "k3s6" "int"
+
+          - name: Deploy WebImpetus to k3s6 VPN TEST Environment
+            run: chmod +x ./deploy-to-kubernetes.sh && ./deploy-to-kubernetes.sh "test" "k3s6" "test"
+
+    deployment10:
+      runs-on: 'node10'
+      needs: deployment6
+
+      steps:
+          - name: Checkout this repo
+            uses: actions/checkout@v3
+      
+          - name: Deploy WebImpetus to k3s10 VPN INT Environment
+            run: chmod +x ./deploy-to-kubernetes.sh && ./deploy-to-kubernetes.sh "int" "k3s10" "int"
+
+          - name: Deploy WebImpetus to k3s10 VPN TEST Environment
+            run: chmod +x ./deploy-to-kubernetes.sh && ./deploy-to-kubernetes.sh "test" "k3s10" "test"
+        
+
+          - name: Slack Notification for Workstation CRM INT & TEST release 
+            uses: rtCamp/action-slack-notify@v2
+            env:
+              SLACK_CHANNEL: general
+              SLACK_COLOR: ${{ job.status }}
+              SLACK_ICON: https://github.com/rtCamp.png?size=48
+              SLACK_MESSAGE: 'Post Content :rocket:'
+              SLACK_TITLE: Post Title
+              SLACK_USERNAME: rtCamp
+              SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
 
