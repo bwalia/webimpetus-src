@@ -97,7 +97,7 @@ class Customers extends CommonController
 
                     $c_data = [];
 
-                    $c_data['customer_id'] = $uuid;
+                    $c_data['customer_id'] = $post['id'];
                     $c_data['categories_id'] = $categories_id;
                     $c_data['uuid'] = UUID::v5(UUID::v4(), 'customer_categories');
 

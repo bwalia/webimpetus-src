@@ -212,18 +212,11 @@ class Api_v2 extends BaseController
         echo json_encode($data);
         die;
     }
-    public function webpages($customer_id = false, $query = false)
+    public function webpages($categoriesId = false, $query = false)
     {
-        $categories = $this->cusCategory_model->where('customer_id', $customer_id)->get()->getResult();
-
-        $categoriesId = [];
-        foreach ($categories as $row) {
-            $categoriesId[$row->categories_id] = $row->categories_id;
-        }
-
         $webPagesId = [];
-        if (count($categoriesId)) {
-            $webPages = $this->webCategory_model->whereIn('categories_id', $categoriesId)->get()->getResult();
+        if ($categoriesId) {
+            $webPages = $this->webCategory_model->where('categories_id', $categoriesId)->get()->getResult();
             foreach ($webPages as $row) {
                 $webPagesId[$row->webpage_id] = $row->webpage_id;
             }
