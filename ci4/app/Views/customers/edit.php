@@ -161,6 +161,7 @@ $categories = getResultArray("categories");
                                     name="email" placeholder="" value="<?= @$customer->email ?>">
                             </div>
                             <input type="hidden" name="uuid" value="<?= @$customer->uuid ?>" />
+                            <input type="hidden" name="id" value="<?= @$customer->id ?>" />
 
                             <div class="form-row">
                                 <div class="form-group col-md-12">

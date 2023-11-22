@@ -39,19 +39,19 @@ class Menu extends CommonController
     }
     public function edit($uuid = 0)
     { 
-        $menuData =getRowArray($this->table, ['uuid' => $uuid]);
+        $menuData = $uuid ? getRowArray($this->table, ['uuid' => $uuid]) : [];
 		$data['tableName'] = $this->table;
         $data['rawTblName'] = $this->table;
 		$data["users"] = $this->model->getUser();
 		$data["categories"] = $this->catModel->getRows();
-		$data["selected_cat"] = array_column($this->menuModel->CatByMenuId($menuData->id),'ID');
+		$data["selected_cat"] = array_column($this->menuModel->CatByMenuId(!empty($menuData) ? $menuData->id : ""),'ID');
 		$data["data"] =$menuData;
         //echo $this->db->last_query();
         //echo '<pre>';print_r($data["selected_cat"]); die;
 
         
 		// if there any spe+cial cause we can overried this function and pass data to add or edit view
-		$data['additional_data'] = $this->getAdditionalData($menuData->id);
+		$data['additional_data'] = $this->getAdditionalData(!empty($menuData) ? $menuData->id : "");
 
         echo view($this->table."/edit",$data);
     }

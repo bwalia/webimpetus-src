@@ -49,11 +49,13 @@ class CommonController extends BaseController
 		$this->notAllowedFields = array('uuid_business_id', "uuid");
 
 		$permissions = $this->session->get('permissions');
+		$uri = current_url(true);
+		$currentPath = $uri->getPath();
 		if (!empty($permissions)) {
 			$user_permissions = array_map(function ($perm) {
 				return strtolower(str_replace("/", "", $perm['link']));
 			}, $permissions);
-			if (!in_array($this->table, $user_permissions)) {
+			if (!in_array($this->table, $user_permissions) && $currentPath !== "/dashboard") {
 				echo view("errors/html/error_403");
 				die;
 			}
@@ -73,7 +75,7 @@ class CommonController extends BaseController
 
 	public function changeLanguage()
 	{
-		$language = \Config\Services::language();
+		$language = Services::language();
 		$user_id = $this->session->get('uuid');
 		$udata = $this->db->table('users')->select('language_code')->where("id", $user_id)->get()->getRowArray();
 		//print_r($udata); die;

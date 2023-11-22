@@ -7,6 +7,7 @@
             <thead>
                 <tr>
 
+                    <th scope="col">Select</th>
                     <th scope="col">Id</th>
                     <th scope="col">Title</th>
                     <th scope="col">Sub title</th>
@@ -29,7 +30,9 @@
                     }
                     ?>
                     <tr data-link=<?=$link?>>
-
+                        <td>
+                            <input type="checkbox" class="row-select">
+                        </td>
                         <td class="f_s_12 f_w_400" ><?= $row['id'];?></td>
                         <td class="f_s_12 f_w_400"><?= $row['title'];?></td>
                         <td class="f_s_12 f_w_400"><?= $row['sub_title'];?>      </td>

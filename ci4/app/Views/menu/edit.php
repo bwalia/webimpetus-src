@@ -10,8 +10,6 @@ $json = json_decode($str, true);
         <form id="addcustomer" method="post" action=<?php echo "/" . $tableName . "/update"; ?>
             enctype="multipart/form-data">
             <div class="form-row">
-
-
                 <div class="form-group required col-md-6">
                     <label for="inputEmail4">Name</label>
                     <input type="input" class="form-control required" id="name" name="name" placeholder=""
@@ -25,15 +23,11 @@ $json = json_decode($str, true);
 
             </div>
             <div class="form-row">
-
-
                 <div class="form-group required col-md-6">
                     <label for="inputEmail4">Icon</label>
                     <input type="input" class="form-control required" id="icon" name="icon" placeholder=""
                         value="<?= @$data->icon ?>">
                 </div>
-
-
                 <div class="form-group col-md-6">
                     <label for="inputEmail4">Categories</label>
                     <select id="categories" name="categories[]" multiple class="form-control select2">
@@ -49,14 +43,8 @@ $json = json_decode($str, true);
                         <?php } ?>
                     </select>
                 </div>
-
-
             </div>
-
-
             <div class="form-row">
-
-
                 <div class="form-group required col-md-6">
                     <label for="inputEmail4">FTS Tags</label>
 
@@ -85,21 +73,13 @@ $json = json_decode($str, true);
 
                     </select>
                 </div>
-
-
             </div>
-
 
             <input type="hidden" class="form-control" name="id" placeholder="" value="<?= @$data->id ?>" />
             <input type="hidden" class="form-control" name="uuid" placeholder="" value="<?= @$data->uuid ?>" />
-
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
     </div>
-
-
-
-    <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
-</div>
 </div>
 
 <?php require_once(APPPATH . 'Views/common/footer.php'); ?>

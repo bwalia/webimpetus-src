@@ -60,12 +60,12 @@ $json = json_decode($str, true);
                 <div class="form-group col-md-12">
                     <label for="userRole">Set User Role</label>
                     <select name="role" id="userRole" class="form-control">
-                        <option value="0" <?= (isset($user->role) && ($user->role == 0)) ? 'selected' : '' ?>>Default Role
-                        </option>
-                        <option value="1" <?= (isset($user->role) && ($user->role == 1)) ? 'selected' : '' ?>>Admin
-                        </option>
-                        <option value="2" <?= (isset($user->role) && ($user->role == 2)) ? 'selected' : '' ?>>Admin with
-                            PHP Block</option>
+                    <option value="">--Select--</option>
+                        <?php foreach ($roles as $row): ?>
+                            <option value="<?= $row['uuid']; ?>" <?= @$user->role == $row['uuid'] ? 'selected="selected"' : ''; ?>>
+                                <?= $row['role_name']; ?>
+                            </option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
             </div>
