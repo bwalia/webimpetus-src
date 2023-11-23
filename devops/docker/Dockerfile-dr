@@ -1,19 +1,6 @@
 # Dockerfile - alpine
-# https://github.com/openresty/docker-openresty
-
 ARG DR_IMAGE_BASE=alpine
 ARG DR_IMAGE_TAG=3.18.4
-
-ARG DR_DB_HOST=""
-ARG DR_DB_USER=""
-ARG DR_DB_PASSWORD=""
-ARG DR_DB_NAME=""
-ARG DR_DB_PORT="3306"
-
-ARG DR_MINIO_HOST=""
-ARG DR_MINIO_ACCESS_KEY=""
-ARG DR_MINIO_SECRET_KEY=""
-ARG DR_MINIO_BUCKET=""
 
 FROM ${DR_IMAGE_BASE}:${DR_IMAGE_TAG}
 
@@ -26,21 +13,29 @@ RUN apk update && apk upgrade \
     --tries=3 --timeout=30 && \
     chmod +x /usr/local/bin/mc
 
+RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
+RUN chmod +x kubectl \
+    mkdir -p ~/.local/bin \
+    mv ./kubectl ~/.local/bin/kubectl
+
+RUN kubectl version --client
+
 WORKDIR /app
 
 COPY ./backup_database.sh /app/backup_database.sh
 RUN chmod +x /app/backup_database.sh
 
-ENV DB_HOST=$DR_DB_HOST
-ENV DB_USER=$DR_DB_USER
-ENV DB_PASSWORD=$DR_DB_PASSWORD
-ENV DB_NAME=$DR_DB_NAME
-ENV DB_PORT=$DR_DB_PORT
+ENV DB_HOST=""
+ENV DB_USER=""
+ENV DB_PASSWORD=""
+ENV DB_NAME=""
+ENV DB_PORT=""
 
-ENV MINIO_HOST=$DR_MINIO_HOST
-ENV MINIO_ACCESS_KEY=$DR_MINIO_ACCESS_KEY
-ENV MINIO_SECRET_KEY=$DR_MINIO_SECRET_KEY
-ENV MINIO_BUCKET=$DR_MINIO_BUCKET
+ENV MINIO_HOST=""
+ENV MINIO_ACCESS_KEY=""
+ENV MINIO_SECRET_KEY=""
+ENV MINIO_BUCKET=""
 
 #ENTRYPOINT ["/opt/dr/backup_database.sh" ]
 CMD ["sh", "backup_database.sh"]

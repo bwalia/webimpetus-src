@@ -1,0 +1,86 @@
+name: minio-mysql-dr
+
+on:
+  push:
+    branches: [ dummy ]
+  schedule:
+    - cron: "0 0 * * FRI"
+  workflow_dispatch:
+    inputs:
+      TARGET_ENV:
+        type: choice
+        description: 'Please choose the environment'
+        default: 'test'
+        required: true
+        options:
+          - int
+          - test
+          - acc
+          - prod
+
+env:
+    IMAGE_TAG: "test"
+    TARGET_IMAGE_TAG: "test"
+    TARGET_STACK: alpine
+    IMAGE_NAME: webimpetus-dr
+    TARGET_ENV: test
+    IMAGE_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
+    
+jobs:
+    deployment:
+      runs-on: 'ubuntu-latest'
+      steps:
+  
+      - name: Checkout this repo
+        uses: actions/checkout@v3
+  
+      - name: Build Webimpetus Disaster Recovery Management Docker Image based on the TARGET PLATFORM Image and push to Docker Hub
+        run: |
+          echo "Webimpetus Disaster Recovery Management Docker Image builder!"
+          echo "Build, tag, and push image to the given Docker Registry."
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWD }}
+          docker build -f $(pwd)/devops/docker/Dockerfile-dr \
+          -t ${{ env.IMAGE_NAME }} . --no-cache
+          docker tag ${{ env.IMAGE_NAME }} ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TARGET_IMAGE_TAG }}
+          docker push ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TARGET_IMAGE_TAG }}
+        shell: bash
+  
+      - name: Slack Notification for Workstation Disaster Recovery 
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_CHANNEL: general
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_ICON: https://github.com/rtCamp.png?size=48
+          SLACK_MESSAGE: 'The Docker Image has been pushed :rocket:'
+          SLACK_TITLE: Workstation Disaster Recovery
+          SLACK_USERNAME: rtCamp
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+
+    backup:
+        runs-on: 'ubuntu-latest'
+        steps:
+        - name: Checkout this repo
+          uses: actions/checkout@v3
+        - name: Run Webimpetus Disaster Recovery Management Docker Image based on the TARGET PLATFORM Image and push to Docker Hub
+          run: |
+            echo "Webimpetus Disaster Recovery Management Docker Image builder!"
+            docker run -e MINIO_HOST=${{ secrets.DR_MINIO_HOST }} \
+            -e MINIO_ACCESS_KEY=${{ secrets.DR_MINIO_ACCESS_KEY }} \
+            -e MINIO_SECRET_KEY=${{ secrets.DR_MINIO_SECRET_KEY }} \
+            -e MINIO_BUCKET=${{ secrets.DR_MINIO_BUCKET }} \
+            -e TARGET_ENV=${{ env.TARGET_ENV }} \
+            ${{ env.IMAGE_NAME }}
+          shell: bash
+
+        - name: Slack Notification for Run Workstation Disaster Recovery 
+          uses: rtCamp/action-slack-notify@v2
+          env:
+            SLACK_CHANNEL: general
+            SLACK_COLOR: ${{ job.status }}
+            SLACK_ICON: https://github.com/rtCamp.png?size=48
+            SLACK_MESSAGE: 'The Backup has been made :rocket:'
+            SLACK_TITLE: Workstation Disaster Recovery
+            SLACK_USERNAME: rtCamp
+            SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+
+      

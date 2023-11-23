@@ -10,8 +10,13 @@ TIMESTAMP=$(date +%Y%m%d%H%M%S)
 DUMP_FILE="$TMP_DIR/db_dump_$TIMESTAMP.sql"
 DUMP_FILE_TAR="$TMP_DIR/db_dump_$TIMESTAMP.tar.gz"
 
+DB_HOST=kubectl get secrets mariadb-secret-$TARGET_ENV -n $TARGET_ENV -o jsonpath={".data.hostname"} | base64 -d
+DB_USER=kubectl get secrets mariadb-secret-$TARGET_ENV -n $TARGET_ENV -o jsonpath={".data.username"} | base64 -d
+DB_PASSWORD=kubectl get secrets mariadb-secret-$TARGET_ENV -n $TARGET_ENV -o jsonpath={".data.password"} | base64 -d
+DB_PORT=kubectl get secrets mariadb-secret-$TARGET_ENV -n $TARGET_ENV -o jsonpath={".data.port"} | base64 -d
+
 # Create MySQL Dump
-mysqldump -h$DB_HOST -u$DB_USER -p$DB_PASSWORD $DB_NAME > $DUMP_FILE
+mysqldump -h$DB_HOST --port $DB_PORT -u$DB_USER -p$DB_PASSWORD $DB_NAME > $DUMP_FILE
 
 if [ $? -eq 0 ]; then
     echo "MySQL dump created successfully: $DUMP_FILE"
