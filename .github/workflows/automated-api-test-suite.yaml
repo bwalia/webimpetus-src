@@ -15,7 +15,7 @@ on:
           - acc
           
 env: 
-  TARGET_ENV: ${{ inputs.TARGET_ENV || test }}
+  TARGET_ENV: ${{ inputs.TARGET_ENV || 'test' }}
   QA_LOGIN_EMAIL: ${{ secrets.QA_LOGIN_EMAIL }}
   QA_LOGIN_PASSWORD: ${{ secrets.QA_LOGIN_PASSWORD }}
 
