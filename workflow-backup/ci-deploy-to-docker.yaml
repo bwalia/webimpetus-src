@@ -3,7 +3,7 @@ name: Deploy Workstation CRM Instance in a given env using Docker Compose
 on:
   push:
     branches:
-      - main
+      - dummy
   workflow_dispatch:
     inputs:
       TARGET_ENV:

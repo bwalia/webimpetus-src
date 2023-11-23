@@ -2,7 +2,7 @@ name: CI Helm Auto Deploy INT defaults INT but a Env of Workstation CRM
 
 on:
   push:
-    branches: [ main ]
+    branches: [ dummy ]
   workflow_dispatch:
 
 env:
