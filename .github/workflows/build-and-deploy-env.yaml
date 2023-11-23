@@ -1,4 +1,4 @@
-name: "Build and Deploy Workstation CRM ENV to K3S"
+name: "Build Workstation CRM Docker Image and Deploy to K3S"
 
 on:
   push:
@@ -22,7 +22,7 @@ env:
   TARGET_IMAGE_TAG: "int"
   TARGET_STACK: openresty_php
   IMAGE_NAME: webimpetus
-  TARGET_ENV: int
+  TARGET_ENV: ${{ github.event.inputs.TARGET_ENV || 'int' }}
   minReplicas: ${{ secrets.minReplicas_test }}
   IMAGE_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
   TARGET_CLUSTER: "k3s2"
