@@ -113,7 +113,7 @@ jobs:
           env:
             KUBE_CONFIG: ${{ env.KUBE_CONFIG_K3S }}
           with:
-            args: get pods -n ${{ env.TARGET_ENV }} | grep wsl-${{ env.TARGET_ENV }} | awk '{print $1}' | xargs kubectl describe pod -n ${{ env.TARGET_ENV }}      
+            args: get pods -n ${{ env.TARGET_ENV }} | grep wsl-${{ env.TARGET_ENV }}     
         
         - name: Slack Notification for Workstation CRM release 
           uses: rtCamp/action-slack-notify@v2
