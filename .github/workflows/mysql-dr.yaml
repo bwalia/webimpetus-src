@@ -73,15 +73,15 @@ jobs:
             ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}
           shell: bash
 
-        - name: Slack Notification for Run Workstation DR 
-          uses: rtCamp/action-slack-notify@v2
-          env:
-            SLACK_CHANNEL: general
-            SLACK_COLOR: ${{ job.status }}
-            SLACK_ICON: https://github.com/rtCamp.png?size=48
-            SLACK_MESSAGE: 'Workstation ${{ env.TARGET_ENV }} DB scheduled automated Backup has been successfully run :rocket:'
-            SLACK_TITLE: Workstation ${{ env.TARGET_ENV }} DB Backup 
-            SLACK_USERNAME: rtCamp
-            SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        # - name: Slack Notification for Run Workstation DR 
+        #   uses: rtCamp/action-slack-notify@v2
+        #   env:
+        #     SLACK_CHANNEL: general
+        #     SLACK_COLOR: ${{ job.status }}
+        #     SLACK_ICON: https://github.com/rtCamp.png?size=48
+        #     SLACK_MESSAGE: 'Workstation ${{ env.TARGET_ENV }} DB scheduled automated Backup has been successfully run :rocket:'
+        #     SLACK_TITLE: Workstation ${{ env.TARGET_ENV }} DB Backup 
+        #     SLACK_USERNAME: rtCamp
+        #     SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
 
       

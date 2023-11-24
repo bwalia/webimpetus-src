@@ -36,5 +36,5 @@ ENV MINIO_ACCESS_KEY=""
 ENV MINIO_SECRET_KEY=""
 ENV MINIO_BUCKET=""
 
-#ENTRYPOINT ["/opt/dr/backup_database.sh" ]
-CMD ["sh", "backup_database.sh"]
+ENTRYPOINT ["/app/backup_database.sh" ]
+#CMD ["sh", "/app/backup_database.sh"]
