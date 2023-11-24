@@ -9,6 +9,8 @@ TIMESTAMP=$(date +%Y%m%d%H%M%S)
 # MySQL Dump File Name
 DUMP_FILE="$TMP_DIR/db_dump_$TIMESTAMP.sql"
 DUMP_FILE_TAR="$TMP_DIR/db_dump_$TIMESTAMP.tar.gz"
+echo "$KUBE_CONFIG" | base64 -d > .kube/config/k3s2.yaml
+export KUBECONFIG=.kube/config/k3s2.yaml
 
 DB_HOST=`kubectl get secrets mariadb-secret-$TARGET_ENV -n $TARGET_ENV -o "jsonpath={.data.hostname}" | base64 -d`
 DB_USER=`kubectl get secrets mariadb-secret-$TARGET_ENV -n $TARGET_ENV -o "jsonpath={.data.username}" | base64 -d`
