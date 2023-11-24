@@ -45,16 +45,16 @@ jobs:
           docker push ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TARGET_IMAGE_TAG }}
         shell: bash
   
-      - name: Slack Notification for Workstation DR 
-        uses: rtCamp/action-slack-notify@v2
-        env:
-          SLACK_CHANNEL: general
-          SLACK_COLOR: ${{ job.status }}
-          SLACK_ICON: https://github.com/rtCamp.png?size=48
-          SLACK_MESSAGE: 'The Docker Image has been pushed :rocket:'
-          SLACK_TITLE: Workstation DR
-          SLACK_USERNAME: rtCamp
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+      # - name: Slack Notification for Workstation DR 
+      #   uses: rtCamp/action-slack-notify@v2
+      #   env:
+      #     SLACK_CHANNEL: general
+      #     SLACK_COLOR: ${{ job.status }}
+      #     SLACK_ICON: https://github.com/rtCamp.png?size=48
+      #     SLACK_MESSAGE: 'The Docker Image has been pushed :rocket:'
+      #     SLACK_TITLE: Workstation DR
+      #     SLACK_USERNAME: rtCamp
+      #     SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
 
     dr-backup:
         runs-on: 'ubuntu-latest'
