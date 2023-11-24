@@ -65,6 +65,7 @@ jobs:
         - name: Run Webimpetus DR Management Docker Image based on the TARGET PLATFORM Image and push to Docker Hub
           run: |
             echo "Webimpetus DR Management Docker Image builder!"
+            docker pull ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TARGET_IMAGE_TAG }}
             docker run -e MINIO_HOST=${{ secrets.DR_MINIO_HOST }} \
             -e MINIO_ACCESS_KEY=${{ secrets.DR_MINIO_ACCESS_KEY }} \
             -e MINIO_SECRET_KEY=${{ secrets.DR_MINIO_SECRET_KEY }} \
