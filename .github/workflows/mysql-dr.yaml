@@ -70,7 +70,7 @@ jobs:
             -e MINIO_SECRET_KEY=${{ secrets.DR_MINIO_SECRET_KEY }} \
             -e MINIO_BUCKET=${{ secrets.DR_MINIO_BUCKET }} \
             -e TARGET_ENV=${{ env.TARGET_ENV }} \
-            ${{ env.IMAGE_NAME }}
+            ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TARGET_IMAGE_TAG }}
           shell: bash
 
         - name: Slack Notification for Run Workstation DR 

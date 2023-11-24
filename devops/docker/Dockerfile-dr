@@ -7,17 +7,16 @@ FROM ${DR_IMAGE_BASE}:${DR_IMAGE_TAG}
 LABEL maintainer="Balinder Walia <bwalia@workstation.co.uk>"
 
 RUN apk update && apk upgrade \
-    bash jq wget curl && \
-    apk add mysql-client && \
+    bash jq wget && \
+    apk add mysql-client curl && \
     wget https://dl.min.io/client/mc/release/linux-amd64/mc -O /usr/local/bin/mc \
     --tries=3 --timeout=30 && \
     chmod +x /usr/local/bin/mc
-
 RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
-RUN chmod +x kubectl \
-    mkdir -p ~/.local/bin \
-    mv ./kubectl ~/.local/bin/kubectl
+
+RUN mv ./kubectl /usr/bin/kubectl && \
+    chmod 777 /usr/bin/kubectl 
 
 RUN kubectl version --client
 
@@ -37,5 +36,5 @@ ENV MINIO_ACCESS_KEY=""
 ENV MINIO_SECRET_KEY=""
 ENV MINIO_BUCKET=""
 
-#ENTRYPOINT ["/opt/dr/backup_database.sh" ]
-CMD ["sh", "backup_database.sh"]
+#ENTRYPOINT ["/app/backup_database.sh" ]
+CMD ["sh", "/app/backup_database.sh"]
