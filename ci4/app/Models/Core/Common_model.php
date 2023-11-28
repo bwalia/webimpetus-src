@@ -3,7 +3,7 @@
 namespace App\Models\Core;
 
 use CodeIgniter\Model;
-
+use Exception;
 class Common_model extends Model
 {
     protected $table = '';
@@ -403,5 +403,17 @@ class Common_model extends Model
             ->limit(1)
             ->get()
             ->getRowArray();
+    }
+
+    public function findByEmailAddress(string $tableName, string $emailAddress)
+    {
+        $user = $this->db->table($tableName)
+            ->where(['email' => $emailAddress])
+            ->get()
+            ->getRowArray();
+        if (!$user)
+            throw new Exception('User does not exist for specified email address');
+
+        return $user;
     }
 }
