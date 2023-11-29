@@ -107,9 +107,9 @@ spec:
               # execute in the poststrat lifecycle hook
             - name: {{ .Values.service_name }}-bootstrap-cm-{{ .Values.architecture.http_server_type }}-vol
               mountPath: /tmp/configmap
-      nodeSelector:
-        apptype: datadriven
-        appcode: wslcrm
+      # nodeSelector:
+      #   apptype: datadriven
+      #   appcode: wslcrm
         
 #if kubernetes 1.24+ use the following
 #    updateStrategy:
