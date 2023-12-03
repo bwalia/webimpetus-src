@@ -133,7 +133,9 @@
         echo DYNAMIC_SCRIPTS_PATH=/tmp >> $FILE
         echo "==========================="
         echo "Copy openresty config file for Workstation"
+        if [ -f "/tmp/configmap/workstation.conf" ];then
         cp /tmp/configmap/workstation.conf /etc/nginx/sites-enabled/workstation.conf
+        fi
         echo "==========================="
         echo "Restart openresty nginx"
         openresty -s reload
