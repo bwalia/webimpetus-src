@@ -1,0 +1,35 @@
+name: Webimpetus Login Test
+on:
+  schedule:
+    - cron: '0 0 * * *'
+    
+  workflow_dispatch:
+    inputs:
+      TARGET_ENV:
+        type: choice
+        description: 'Please choose the Target Environment'
+        default: 'int'
+        required: true
+        options:
+          - int
+          - test
+          - acc
+          
+env: 
+  TARGET_ENV: ${{ inputs.TARGET_ENV || 'int' }}
+  
+jobs:
+  build:
+    name: Login Test using Cypress Test framework
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Docker Compose to run Cypress Test framework specs
+        run: docker-compose --version
+
+      - name: Start UI Login Test using Cypress Test framework
+        run: |
+            echo "CYPRESS_login_username='${{ secrets.QA_LOGIN_EMAIL }}'" >> .env.cypress
+            echo "CYPRESS_login_passwd='${{ secrets.QA_LOGIN_PASSWORD }}'" >> .env.cypress
+            docker-compose -f docker-compose-cypress.yml up -d
