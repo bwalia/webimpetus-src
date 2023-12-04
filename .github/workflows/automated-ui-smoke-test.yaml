@@ -26,7 +26,11 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Set up Docker Compose to run Cypress Test framework specs
-        run: docker-compose --version
+        uses: ndeloof/install-compose-action@v0.0.1
+        with:
+          version: v2.1.0 # defaults to 'latest'
+          legacy: true    # will also install in PATH as `docker-compose`
+      - run: docker-compose --version
 
       - name: Start UI Login Test using Cypress Test framework
         run: |
