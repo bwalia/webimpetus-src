@@ -30,6 +30,7 @@ jobs:
 
       - name: Start UI Login Test using Cypress Test framework
         run: |
+            touch .env.cypress
             echo "CYPRESS_login_username='${{ secrets.QA_LOGIN_EMAIL }}'" >> .env.cypress
             echo "CYPRESS_login_passwd='${{ secrets.QA_LOGIN_PASSWORD }}'" >> .env.cypress
             docker-compose -f docker-compose-cypress.yml up -d
