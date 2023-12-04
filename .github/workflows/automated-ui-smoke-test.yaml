@@ -34,9 +34,10 @@ jobs:
 
       - name: Smoke test Login Test using Cypress Test framework
         run: |
-            touch .env.cypress
+            echo "" > .env.cypress
             echo "CYPRESS_login_username='${{ secrets.QA_LOGIN_EMAIL }}'" >> .env.cypress
             echo "CYPRESS_login_passwd='${{ secrets.QA_LOGIN_PASSWORD }}'" >> .env.cypress
+            echo "" > .env.cypress
             docker-compose -f docker-compose-cypress.yml up -d
 
       - name: Slack Notification for Workstation CRM Smoke Login Test 
