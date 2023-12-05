@@ -7,7 +7,8 @@ services:
     working_dir: /cypress
     volumes:
       - ./:/cypress
-    env_file: .env_cypress
+    env_file: 
+      - ./.env_cypress
 
   cypress-firefox:
     image: cypress/included:12.8.1
@@ -15,11 +16,13 @@ services:
     working_dir: /cypress
     volumes:
       - ./:/cypress
-    env_file: .env_cypress
+    env_file: 
+      - ./.env_cypress
 
   cypress-electron:
     image: cypress/included:12.8.1
     working_dir: /cypress
     volumes:
       - ./:/cypress
-    env_file: .env_cypress
+    env_file: 
+      - ./.env_cypress
