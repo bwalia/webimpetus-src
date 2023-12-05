@@ -8,7 +8,7 @@ services:
     volumes:
       - ./:/cypress
     env_file: 
-      - ./.env_cypress
+      - ./.env
 
   cypress-firefox:
     image: cypress/included:12.8.1
@@ -17,7 +17,7 @@ services:
     volumes:
       - ./:/cypress
     env_file: 
-      - ./.env_cypress
+      - ./.env
 
   cypress-electron:
     image: cypress/included:12.8.1
@@ -25,4 +25,4 @@ services:
     volumes:
       - ./:/cypress
     env_file: 
-      - ./.env_cypress
+      - ./.env
