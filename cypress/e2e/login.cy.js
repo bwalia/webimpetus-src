@@ -1,25 +1,10 @@
-// module.exports = (on, config) => {
-//   on('before:browser:launch', (browser = {}, launchOptions) => {
-//     console.log(launchOptions.args)
+describe(`Workstation login test ${Cypress.env("TARGET_ENV")} environment`, () => {
 
-//     if (browser.name == 'chrome') {
-//       launchOptions.args.push('--disable-gpu')
-//     }
-
-//     if (browser.name == 'electron') {
-//       launchOptions.args.push('--disable-gpu')
-//     }
-
-//     return launchOptions
-//   }),
-// }
-
-describe('Workstation login test Int environment', () => {
-
-  var urlStr = 'https://int-my.workstation.co.uk/#/login'
-  urlStr = 'http://localhost:8080/#/login'
-  urlStr = 'http://172.178.0.8:80/#/login'
-  urlStr = 'http://int-my.workstation.co.uk/#/login'
+  let urlStr = 'https://int-my.workstation.co.uk/#/login'
+  const targetEnv = Cypress.env("TARGET_ENV");
+  if (targetEnv) {
+    urlStr = `https://${targetEnv}-my.workstation.co.uk/#/login`
+  }
 
   it('passes', () => {
     cy.visit(urlStr).debug()
