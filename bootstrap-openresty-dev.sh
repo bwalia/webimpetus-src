@@ -142,5 +142,6 @@
         php spark migrate
         php spark db:seed UpdateUserBusinessSeeder
         php spark db:seed UpdateUuidSeeder
+        php spark db:seed AddAdministratorRole
         echo "==========================="
         echo "Workstation Nginx Bootstrap Script Completed"
