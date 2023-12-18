@@ -716,13 +716,15 @@ class Api_v2 extends BaseController
 
     public function addTimeslip()
     {
-        // $post = $this->request->getPost(); 
-        // echo '<pre>';print_r($post); die;
-        if (!empty($this->request->getPost('task_id')) && !empty($this->request->getPost('slip_start_date')) && !empty($this->request->getPost('uuid_business_id')) && !empty($this->request->getPost('employee_id'))) {
+        $post = $this->request->getPost();
+        if (!$post) {
+            $post = $this->request->getJSON();
+            $post = (array) $post;
+        }
+
+        if (!empty($post['task_id']) && !empty($post['slip_start_date']) && !empty($post['uuid_business_id']) && !empty($post['employee_id'])) {
 
             $uuidVal = UUID::v5(UUID::v4(), 'timeslips_saving');
-
-            $post = $this->request->getPost();
             $data["task_name"] = @$post["task_id"];
             $data["slip_start_date"] = strtotime(@$post["slip_start_date"]);
             $data["employee_name"] = @$post["employee_id"];

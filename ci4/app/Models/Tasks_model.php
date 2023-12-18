@@ -86,7 +86,7 @@ class Tasks_model extends Model
         $_GET['perPage'] = !empty($_GET['perPage'])?$_GET['perPage']:0;
         $offset = !empty($_GET['perPage']) && !empty($_GET['page'])?($_GET['page']-1)*$_GET['perPage']:0;
         $builder = $this->db->table($this->table);
-        $builder->select($this->table . ".*,".$this->table.".uuid as id, customers.company_name, projects.name as project_name");
+        $builder->select($this->table . ".*,".$this->table.".uuid as id, ".$this->table.".id as internal_id, customers.company_name, projects.name as project_name");
         $builder->join('customers', 'customers.id = ' . $this->table . '.reported_by', 'left');
         $builder->join('projects', 'projects.id = ' . $this->table . '.projects_id', 'left');
         if($businessUuid !==false) $builder->where($this->table . ".uuid_business_id",  $businessUuid);
@@ -120,7 +120,7 @@ class Tasks_model extends Model
 
     public function getTaskByUUID($id = false)
     {
-        $this->select($this->table . ".*,".$this->table.".uuid as id");
+        $this->select($this->table . ".*,".$this->table.".uuid as id, ".$this->table.".id as internal_id");
         return $this->getWhere(['uuid' => $id])->getRow();
     }
 
