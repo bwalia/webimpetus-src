@@ -745,6 +745,7 @@ class Api_v2 extends BaseController
 
             //$data['id']= @$post["id"];
             $response = $this->timeSlipsModel->saveByUuid('', $data);
+            $data['id'] = $response;
             $response_data['data'] = $data;
             $response_data['status'] = 200;
             echo json_encode($response_data);
