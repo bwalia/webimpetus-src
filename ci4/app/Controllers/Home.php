@@ -37,7 +37,24 @@ class Home extends BaseController
 			echo view('register', $data);
 		} else {
 			if ($this->session->get('uuid')) {
-				return redirect()->to('/dashboard');
+				$reqHeaders = $this->request->headers();
+				$lastPathURL = '';
+				if (isset($reqHeaders['X-Cdn-Scheme'])) {
+					$forwardedScheme = $reqHeaders['X-Cdn-Scheme']->getValue();
+				} else {
+					$forwardedScheme = "https";
+				}
+
+				if (isset($reqHeaders['X-Cdn-Host'])) {
+					$lastPathURL = $reqHeaders['X-Cdn-Host']->getValue();
+				}
+				if ($lastPathURL != '') {
+					$updatedLastPathURL = $forwardedScheme . '://' .$lastPathURL . '/dashboard';
+				} else {
+					$updatedLastPathURL = '/dashboard';
+				}
+				
+				return redirect()->to($updatedLastPathURL);
 			}
 			$data['logo'] = $this->meta_model->getWhere(['meta_key' => 'site_logo'])->getRow();
 			$data['uuid'] = $this->meta_model->getAllBusiness();
@@ -48,6 +65,18 @@ class Home extends BaseController
 
 	public function login()
 	{
+		$reqHeaders = $this->request->headers();
+		$lastPathURL = '';
+		if (isset($reqHeaders['X-Cdn-Scheme'])) {
+			$forwardedScheme = $reqHeaders['X-Cdn-Scheme']->getValue();
+		} else {
+			$forwardedScheme = "https";
+		}
+
+		if (isset($reqHeaders['X-Cdn-Host'])) {
+			$lastPathURL = $reqHeaders['X-Cdn-Host']->getValue();
+		}
+		
 		if (!empty($this->request->getPost('email')) && !empty($this->request->getPost('password'))) {
 
 			$count = $this->model->getWhere(['status' => 1, 'email' => $this->request->getPost('email'), 'password' => md5($this->request->getPost('password'))])->getNumRows();
@@ -91,9 +120,15 @@ class Home extends BaseController
 				
 				$this->session->set('permissions', $userMenus);
 
-
-				// return redirect()->to('/dashboard');
-				return redirect()->to($this->request->getPost('redirectAfterLogin'));
+				$redirectAfterLogin = $this->request->getPost('redirectAfterLogin');
+				if ($lastPathURL != '') {
+					$updatedLastPathURL = $forwardedScheme . '://' .$lastPathURL . '/' . $redirectAfterLogin;
+				} else {
+					$updatedLastPathURL = $redirectAfterLogin;
+				}
+				// echo '<pre>'; print_r($updatedLastPathURL); echo '</pre>'; die;
+				
+				return redirect()->to($updatedLastPathURL);
 			} else {
 				session()->setFlashdata('message', 'Wrong email or password!');
 				session()->setFlashdata('alert-class', 'alert-danger');
@@ -102,7 +137,12 @@ class Home extends BaseController
 			session()->setFlashdata('message', 'Wrong email or password!');
 			session()->setFlashdata('alert-class', 'alert-danger');
 		}
-		return redirect()->to('/');
+		if ($lastPathURL != '') {
+			$updatedLastPathURL = $forwardedScheme . '://' .$lastPathURL;
+		} else {
+			$updatedLastPathURL = '/';
+		}
+		return redirect()->to($updatedLastPathURL);
 	}
 
 	/* private function curlcmd($email,$password){
