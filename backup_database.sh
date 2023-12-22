@@ -11,7 +11,7 @@ DUMP_FILE="$TMP_DIR/db_dump_$TIMESTAMP.sql"
 DUMP_FILE_TAR="$TMP_DIR/db_dump_$TIMESTAMP.tar.gz"
 echo "$KUBE_CONFIG" | base64 -d > k3s2.yaml
 ls -al
-cat k3s2.yaml
+
 export KUBECONFIG=k3s2.yaml
 
 DB_HOST=`kubectl get secrets mariadb-secret-$TARGET_ENV -n $TARGET_ENV -o "jsonpath={.data.hostname}" | base64 -d`
