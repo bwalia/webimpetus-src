@@ -120,6 +120,7 @@ class TimeslipsModel extends Model
         } else {
             $db->table($this->table)->insert($data);
         }
+        return $db->insertID();
     }
 
     public function deleteData($uuid)
