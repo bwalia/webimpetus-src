@@ -151,4 +151,11 @@ class Tasks_model extends Model
         ];
     }
 
+    public function updateStatusByUUID($uuid = null, $status = null)
+    {
+        $sql = "UPDATE tasks SET status = '$status' WHERE uuid = '$uuid'";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
 }

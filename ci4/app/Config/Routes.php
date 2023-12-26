@@ -71,6 +71,7 @@ $routes->resource('api/v2/services');
 $routes->get('api/v2/business/(:segment)/projects', 'Api\V2\Projects::projectsByBId/$1');
 // List Task by business Id
 $routes->get('api/v2/business/(:segment)/projects/(:segment)/tasks', 'Api\V2\Tasks::tasksByPId/$1/$2');
+$routes->put('api/v2/business/(:segment)/projects/(:segment)/tasks/update-status', 'Api\V2\Tasks::updateStatusByUuid');
 
 
 /*

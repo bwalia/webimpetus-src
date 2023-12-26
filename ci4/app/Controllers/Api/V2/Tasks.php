@@ -198,4 +198,14 @@ class Tasks extends ResourceController
         $data['total'] = $records['total'];
         return $this->respond($data);
     }
+
+    public function updateStatusByUuid()
+    {
+        $request = $this->request->getJSON();
+        $status = $request->status;
+        $uuid = $request->id;
+        $model = new Tasks_model();
+        $records = $model->updateStatusByUUID($uuid, $status);
+        return $this->respond($records);
+    }
 }
