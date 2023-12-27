@@ -124,10 +124,11 @@ class Tasks_model extends Model
         return $this->getWhere(['uuid' => $id])->getRow();
     }
 
-    public function tasksByPId($bId, $pId, $params) {
+    public function tasksByPId($bId, $pId, $eId, $params) {
         $where = [
             "uuid_business_id" => $bId,
-            "projects_id" => $pId
+            "projects_id" => $pId,
+            "assigned_to" => $eId
         ];
         $range = json_decode($params['range']);
         $sort = json_decode($params['sort']);

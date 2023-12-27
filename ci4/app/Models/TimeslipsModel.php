@@ -104,6 +104,11 @@ class TimeslipsModel extends Model
         $db = \Config\Database::connect();
         return $db->table("tasks")->getWhere(array('uuid_business_id' => $this->businessUuid))->getResultArray();
     }
+    public function getTaskDataByUUID($uuid)
+    {
+        $db = \Config\Database::connect();
+        return $db->table("tasks")->getWhere(array('uuid' => $uuid))->getRowArray();
+    }
 
     public function getEmployeesData()
     {
@@ -256,5 +261,16 @@ class TimeslipsModel extends Model
 
             return $this->countAllResults();
         }
+    }
+
+    public function timeslipByTaskId($bId, $eId, $taskId)
+    {
+        $taskData = $this->getTaskDataByUUID($taskId);
+        $taskInternalId = $taskData['id'];
+        return $this->where([
+            "uuid_business_id" => $bId,
+            "employee_name" => $eId,
+            "task_name" => $taskInternalId
+        ])->get()->getResultArray();
     }
 }
