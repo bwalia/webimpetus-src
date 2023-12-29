@@ -152,6 +152,15 @@ class Tasks_model extends Model
         ];
     }
 
+    public function tasksStatusByEId($bId, $eId, $params)
+    {
+        $where = [
+            "uuid_business_id" => $bId,
+            "assigned_to" => $eId
+        ];
+        return $this->select('status')->where($where)->get()->getResultArray();
+    }
+
     public function updateStatusByUUID($uuid = null, $status = null)
     {
         $sql = "UPDATE tasks SET status = '$status' WHERE uuid = '$uuid'";
