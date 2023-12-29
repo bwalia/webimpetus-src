@@ -184,4 +184,11 @@ class Timeslips extends ResourceController
         $data['message'] = 200;
         return $this->respond($data);
     }
+
+    public function timeslipByTaskId($bId, $eId, $taskId)
+    {
+        $api = new Api_v2();
+        $data['data'] = $api->timeSlipsModel->timeslipByTaskId($bId, $eId, $taskId);
+        return $this->respond($data);
+    }
 }

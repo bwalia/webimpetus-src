@@ -111,6 +111,9 @@ $sprints = getResultArray("sprints");
                             <option value="open" <?= ("open" == @$task->status ? 'selected' : '') ?>>
                                 Open
                             </option>
+                            <option value="inReview" <?= ("inReview" == @$task->status ? 'selected' : '') ?>>
+                                In Review
+                            </option>
                             <option value="completed" <?= ("completed" == @$task->status ? 'selected' : '') ?>>
                                 Completed
                             </option>

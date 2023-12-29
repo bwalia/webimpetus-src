@@ -189,13 +189,23 @@ class Tasks extends ResourceController
         return $this->respond($data);
     }
 
-    public function tasksByPId($bId, $pId)
+    public function tasksByPId($bId, $pId, $eId)
     {
         $model = new Tasks_model();
-        $records = $model->tasksByPId($bId, $pId, $_GET);
+        $records = $model->tasksByPId($bId, $pId, $eId, $_GET);
         $data['data'] = $records['data'];
         $data['status'] = 200;
         $data['total'] = $records['total'];
         return $this->respond($data);
+    }
+
+    public function updateStatusByUuid()
+    {
+        $request = $this->request->getJSON();
+        $status = $request->status;
+        $uuid = $request->id;
+        $model = new Tasks_model();
+        $records = $model->updateStatusByUUID($uuid, $status);
+        return $this->respond($records);
     }
 }
