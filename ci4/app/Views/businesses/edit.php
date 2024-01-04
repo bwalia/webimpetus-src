@@ -28,7 +28,7 @@ $json = json_decode($str, true);
                     </div>
                     <div class="form-group  col-md-12">
                         <label for="inputEmail4">Email</label>
-                        <input autocomplete="off" type="text" class="form-control " name="email" placeholder="" value="<?= @$businesse->email ?>">
+                        <input autocomplete="off" type="email" class="form-control" name="email" placeholder="" id="inputEmail" value="<?= @$businesse->email ?>">
                     </div>
                     <div class="form-group  col-md-12">
                         <label for="inputEmail4">Company Address</label>
@@ -129,5 +129,11 @@ $json = json_decode($str, true);
                 $('#key_value').val("*************")
             }
         <?php } ?>
+    });
+
+    $("#adddomain").submit(function(event) {
+        // $("<span class='form-control-feedback' id='emailError'></span>").insertAfter($("#inputEmail"));
+        validateEmail($("#inputEmail").val(), "#inputEmail", event);
+        validatePhoneNo($("#telephone_no").val(), event);
     })
 </script>

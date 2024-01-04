@@ -4,10 +4,14 @@ namespace App\Controllers;
 use App\Models\Gallery_model;
 use App\Models\Users_model;
 use App\Controllers\Core\CommonController; 
+use App\Libraries\UUID;
 ini_set('display_errors', 1);
 
 class Gallery extends CommonController
 {	
+	protected $gallery_model;
+	protected $user_model;
+	protected $gallery;
 	public function __construct()
 	{
 		parent::__construct();
@@ -39,11 +43,11 @@ class Gallery extends CommonController
 	return @$result['id'];
 }
 
-	public function edit($id = 0)
+	public function edit($uuid = 0)
 	{
 		$data['rawTblName'] = "Galary";
 		$data['tableName'] = $this->gallery;
-		$data[$this->table] = $this->gallery_model->getRows($id)->getRow();
+		$data[$this->table] = $uuid ? $this->gallery_model->getRowsByUUID($uuid)->getRow() : "";
 		$data['users'] = $this->user_model->getUser();
 		echo view($this->table.'/edit',$data);
 	}
@@ -58,13 +62,14 @@ class Gallery extends CommonController
 		);
 
 		$id = $this->request->getPost('id');
+		$uuid = $this->request->getPost('uuid');
 		$file = $this->request->getPost('file');
 		if($file && !empty($file) && strlen($file) > 0){
 			$data['name'] = $file;
 		}
-		if( $id > 0 ){
+		if( $uuid > 0 ){
 			
-			$this->gallery_model->updateData($id, $data);
+			$this->gallery_model->updateDataByUUID($uuid, $data);
 			
 			session()->setFlashdata('message', 'Data updated Successfully!');
 			session()->setFlashdata('alert-class', 'alert-success');
@@ -73,7 +78,7 @@ class Gallery extends CommonController
 
 
 			if(!empty($file) && strlen($file) > 0) {
-				
+				$data['uuid'] =  UUID::v5(UUID::v4(), 'gallery');
 				session()->setFlashdata('message', 'Data entered Successfully!');
 				session()->setFlashdata('alert-class', 'alert-success');
 

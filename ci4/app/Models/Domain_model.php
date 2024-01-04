@@ -17,9 +17,10 @@ class Domain_model extends Model
     {
         $whereCond = $this->whereCond;
         if($id === false){
-			$this->join('services', 'domains.sid = services.id', 'LEFT');
-			$this->select('services.name as sname');
 			$this->select('domains.*');
+            $this->join('service__domains', 'domains.uuid = service__domains.domain_uuid', 'LEFT');
+			$this->select('services.name as sname');
+			$this->join('services', 'service__domains.service_uuid = services.uuid', 'LEFT');
             $this->where($whereCond);
             return $this->findAll();
         }else{

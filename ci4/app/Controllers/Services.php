@@ -13,6 +13,7 @@ use App\Models\Meta_model;
 use App\Models\Amazon_s3_model;
 use App\Models\Core\Common_model;
 use App\Libraries\UUID;
+use App\Models\ServiceDomainsModel;
 
 class Services extends Api
 {
@@ -24,6 +25,8 @@ class Services extends Api
 	public $Amazon_s3_model;
 	public $businessUuid;
 	public $whereCond;
+
+	public $serviceDomainModel;
 
 	public function __construct()
 	{
@@ -46,11 +49,12 @@ class Services extends Api
 		$this->whereCond['uuid_business_id'] = $this->businessUuid;
 		$menucode = $this->getMenuCode("/services");
 		$this->session->set("menucode", $menucode);
+		$this->serviceDomainModel = new ServiceDomainsModel();
 	}
 
 	public function index()
 	{
-		$data['services'] = $this->serviceModel->getRows();
+		$data['services'] = $this->serviceModel->getRowsWithService();
 		$data['tableName'] = "services";
 		$data['rawTblName'] = "service";
 		$data['is_add_permission'] = 1;
@@ -61,11 +65,12 @@ class Services extends Api
 	{
 		$data['tableName'] = "services";
 		$data['rawTblName'] = "service";
-		$data['service'] = !empty($id) ? $this->serviceModel->getRows($id)->getRow() : [];
+		$data['service'] = !empty($id) ? $this->serviceModel->getRowsWithService($id)->getRow() : [];
 		$data['tenants'] = $this->tmodel->getRows();
 		$data['category'] = $this->cmodel->getRows();
 		$data['users'] = $this->user_model->getUser();
 		$data['secret_services'] = $this->secret_model->getSecrets($id);
+		$data['serviceDomains'] = $this->serviceDomainModel->getRowsByService($id);
 		$data['all_domains'] = $this->common_model->getCommonData('domains', ['uuid_business_id' => $this->businessUuid]);
 
 		//print_r($data['all_domains']); die;
@@ -113,29 +118,30 @@ class Services extends Api
 
 		$key_name = $this->request->getPost('key_name');
 		$key_value = $this->request->getPost('key_value');
-
-		foreach ($key_name as $key => $value) {
-			//$address_data['service_id'] = $id;
-			$address_data['key_name'] = $key_name[$key];
-			$address_data['key_value'] = $key_value[$key];
-			$address_data['status'] = 1;
-			$address_data['uuid_business_id'] = $this->businessUuid;
-
-
-			$secret_id = $this->secret_model->saveOrUpdateData($id, $address_data);
-
-			if ($secret_id > 0) {
-				$dataRelated['secret_id'] = $secret_id;
-				$dataRelated['service_id'] = $id;
-				$dataRelated['uuid_business_id'] = $this->businessUuid;
-				$this->secret_model->saveSecretRelatedData($dataRelated);
+		if (isset($key_name) && isset($key_value)) {
+			foreach ($key_name as $key => $value) {
+				//$address_data['service_id'] = $id;
+				$address_data['key_name'] = $key_name[$key];
+				$address_data['key_value'] = $key_value[$key];
+				$address_data['status'] = 1;
+				$address_data['uuid_business_id'] = $this->businessUuid;
+	
+	
+				$secret_id = $this->secret_model->saveOrUpdateData($id, $address_data);
+	
+				if ($secret_id > 0) {
+					$dataRelated['secret_id'] = $secret_id;
+					$dataRelated['service_id'] = $id;
+					$dataRelated['uuid_business_id'] = $this->businessUuid;
+					$this->secret_model->saveSecretRelatedData($dataRelated);
+				}
 			}
 		}
 
 		$i = 0;
 		$post = $this->request->getPost();
 		//print_r($post); die;
-		if (count($post["blocks_code"]) > 0) {
+		if (isset($post["blocks_code"]) && !empty($post["blocks_code"]) && count($post["blocks_code"]) > 0) {
 			foreach ($post["blocks_code"] as $code) {
 
 				$blocks = [];
@@ -160,12 +166,21 @@ class Services extends Api
 				$i++;
 			}
 		} else {
-			$this->model->deleteTableData("blocks_list", $uuid, "uuid_linked_table");
+			$this->common_model->deleteTableData("blocks_list", $id, "uuid_linked_table");
 		}
 		//print_r($post["domains"]); die;
-		if (count($post["domains"]) > 0) {
+		$this->serviceDomainModel->deleteDataByService($this->request->getPost('id'));
+		if (isset($post["domains"]) && !empty($post["domains"]) && count($post["domains"]) > 0) {
 			foreach ($post["domains"] as $domain) {
-				$this->serviceModel->insertOrUpdate("domains", $domain, ['sid' => $id]);
+				$isDomainExists = $this->serviceDomainModel->checkRecordExists($domain, $id);
+				if (empty($isDomainExists)) {
+					$serviceDomainData = [
+						'uuid' =>  UUID::v5(UUID::v4(), 'service__domains'),
+						'service_uuid' => $id,
+						'domain_uuid' => $domain
+					];
+					$this->serviceDomainModel->saveData($serviceDomainData);
+				}
 			}
 		} else {
 		}
@@ -378,8 +393,34 @@ class Services extends Api
 	{
 
 		$id = $this->request->getPost("id");
+		$serviceType = $this->request->getPost("type");
+		$serviceId = $this->request->getPost("sId");
+		switch ($serviceType) {
+			case 'domains':
+				$nameTable = 'service__domains';
+				$fieldName = 'service_uuid';
+				$selector = 'uuid';
+				break;
+			case 'secret_services':
+				$nameTable = 'secrets_services';
+				$fieldName = 'service_id';
+				$selector = 'secret_id';
+				break;
+			case 'service_step':
+				$nameTable = 'blocks_list';
+				$fieldName = 'uuid_linked_table';
+				$selector = 'id';
+				break;
+			default:
+				$nameTable = "secrets";
+				$fieldName = 'id';
+				$selector = 'id';
+				break;
+		}
 
-		$res = $this->common_model->deleteTableData("secrets", $id);
+		$data[$fieldName] = null;
+
+		$res = $this->common_model->unlinkData($nameTable, $id, $selector, $data);
 		echo $this->db->getlastQuery();
 		echo json_encode($res);
 	}

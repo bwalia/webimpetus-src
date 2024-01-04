@@ -7,10 +7,10 @@
 
                 <div class="form-group  col-md-4">
                     <label for="inputState">Choose User</label>
-                    <select id="uuid" name="uuid" class="form-control  dashboard-dropdown">
+                    <select id="user_uuid" name="user_uuid" class="form-control  dashboard-dropdown">
                         <option value="" selected="">--Select--</option>
                       <?php foreach($users as $row):?>
-                        <option value="<?= $row['uuid'];?>" <?=($row['uuid']== @$tenant->uuid)?'selected':'' ?>><?= $row['name'];?></option>
+                        <option value="<?= $row['uuid'];?>" <?=($row['uuid'] == @$tenant->user_uuid)?'selected':'' ?>><?= $row['name'];?></option>
                         <?php endforeach;?>
                     </select>
                 </div>
@@ -18,7 +18,7 @@
 
                 <div class="form-group col-md-4">
                     <label for="inputState">Choose Service</label>
-                    <select id="sid" name="sid[]" multiple class="form-control js-example-basic-multiple">                                            
+                    <select id="sid" name="sid[]" multiple class="form-control js-example-basic-multiple select2">                                            
                 <?php foreach($services as $row):?>
                         <option value="<?= $row['id'];?>" <?=(in_array($row['id'],$tservices))?'selected':'' ?>><?= $row['name'];?></option>
                         <?php endforeach;?>
@@ -31,6 +31,7 @@
                     <input type="text" class="form-control " id="name" name="name" placeholder="" value="<?=@$tenant->name ?>">
                   </div>
                   <input type="hidden" class="form-control" name="id" placeholder="" value="<?=@$tenant->id ?>" />
+                  <input type="hidden" class="form-control" name="uuid" placeholder="" value="<?=@$tenant->uuid ?>" />
              
                 
             </div>

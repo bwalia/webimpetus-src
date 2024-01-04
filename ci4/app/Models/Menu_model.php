@@ -4,14 +4,30 @@ use CodeIgniter\Model;
 class Menu_model extends Model
 {
     protected $table = 'menu';
+    protected $whereCond;
+
+    public function __construct()
+    {
+        parent::__construct();
+        if ($this->db->fieldExists('uuid_business_id', $this->table)) {
+
+            $this->whereCond['uuid_business_id'] = session('uuid_business');
+        }
+    }
      
     public function getRows($id = false)
     {
-        if($id === false){
-            return $this->findAll();
-        }else{
-            return $this->getWhere(['id' => $id]);
-        }   
+        $whereCond = [];
+        if ($id === false) {
+            if (empty($whereCond)) {
+                return $this->findAll();
+            } else {
+                return $this->getWhere($whereCond)->getResultArray();
+            }
+        } else {
+            $whereCond = array_merge(array('id' => $id), $whereCond);
+            return $this->getWhere($whereCond);
+        } 
     }
 	
 	public function getWherein($id = [])
@@ -22,10 +38,23 @@ class Menu_model extends Model
             return [];
         }   
     }
+	public function getWhereinByUUID($uuid = [])
+    {
+        if(!empty($uuid)){
+            return $this->whereIn('uuid', $uuid)->findAll();
+        }else{
+            return [];
+        }   
+    }
 
     public function updateData($id = null, $data = null)
 	{
 		$query = $this->db->table($this->table)->update($data, array('id' => $id));
+		return $query;
+	}
+    public function updateDataByUUID($uuid = null, $data = null)
+	{
+		$query = $this->db->table($this->table)->update($data, array('uuid' => $uuid));
 		return $query;
 	}
 

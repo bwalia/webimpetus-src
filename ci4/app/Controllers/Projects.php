@@ -4,10 +4,12 @@ use App\Controllers\Core\CommonController;
 use App\Models\Projects_model;
 use App\Models\Tasks_model;
 use App\Models\Core\Common_model;
+use App\Libraries\UUID;
  
 class Projects extends CommonController
 {	
-	
+	protected $projects_model;
+	protected $tasks_model;
     function __construct()
     {
         parent::__construct();
@@ -28,14 +30,15 @@ class Projects extends CommonController
         
         echo view($this->table."/list",$data);
     }
-    public function edit($id = 0)
+    public function edit($uuid = 0)
     {
+        $projectData = $uuid ? $this->model->getRowsByUUID($uuid)->getRow() : "";
 		$data['tableName'] = $this->table;
         $data['rawTblName'] = $this->rawTblName;
 		$data["users"] = $this->model->getUser();
-		$data[$this->rawTblName] = $this->model->getRows($id)->getRow();
+		$data[$this->rawTblName] = $projectData;
 		// if there any special cause we can overried this function and pass data to add or edit view
-		$data['additional_data'] = $this->getAdditionalData($id);
+		$data['additional_data'] = $projectData ? $projectData->id : $uuid;
 
         echo view($this->table."/edit",$data);
     }
@@ -50,14 +53,16 @@ class Projects extends CommonController
 
     public function update()
     {        
-        $id = $this->request->getPost('id');
+        $uuid = $this->request->getPost('uuid');
 
 		$data = $this->request->getPost();
 
         $data['start_date'] = strtotime($data['start_date']);
         $data['deadline_date'] = strtotime($data['deadline_date']);
-        
-		$response = $this->model->insertOrUpdate($id, $data);
+        if (!$uuid || empty($uuid) || !isset($uuid)) {
+            $data['uuid'] = UUID::v5(UUID::v4(), 'projects');
+        }
+		$response = $this->model->insertOrUpdateByUUID($uuid, $data);
 		if(!$response){
 			session()->setFlashdata('message', 'Something wrong!');
 			session()->setFlashdata('alert-class', 'alert-danger');	

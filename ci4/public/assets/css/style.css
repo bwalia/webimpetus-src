@@ -7166,6 +7166,7 @@ canvas#highlights {
 }
 .dataTables_scrollBody {
     min-height: 90px;
+    overflow: visible !important;
 }
 .dataTables_scrollBody .header_more_tool .dropdown .dropdown-menu {
     top: -3px !important;
@@ -12914,6 +12915,10 @@ a.pswp__share--download:hover {
     font-weight: 600;
 }
 
+.white_card_body #addcustomer .tab-content .tab-pane .select2-container {
+  width: 100% !important;
+}
+
 .select2-container--default .select2-selection--multiple {
     display: block;
     width: 100%;
@@ -14484,4 +14489,4 @@ p.dashTitle {
   width: 100%;
 }
 
-.profile_info:after { content: ' \f06e'; font-family: 'Font Awesome 5 Free'; } 
+/* .profile_info:after { content: ' \f06e'; font-family: 'Font Awesome 5 Free'; }  */

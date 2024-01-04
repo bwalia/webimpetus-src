@@ -8,6 +8,7 @@
                     <label for="inputEmail4">Code</label>
                     <input type="text" class="form-control" id="title" name="code" value="<?=@$content->code?>" placeholder="">
                     <input type="hidden" class="form-control" name="id" placeholder="" value="<?=@$content->id ?>" />
+                    <input type="hidden" class="form-control" name="uuid" placeholder="" value="<?=@$content->uuid ?>" />
                 </div>
 
                 <div class="form-group col-md-12">

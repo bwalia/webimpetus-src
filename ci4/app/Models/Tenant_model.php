@@ -34,6 +34,25 @@ class Tenant_model extends Model
             return $this->getWhere($whereCond);
         }   
     }
+    public function getRowsByUUId($uuid = false)
+    {
+        $whereCond = $this->whereCond;
+
+        if ($uuid === false) {
+
+            if (empty($whereCond)) {
+
+                return $this->findAll();
+            } else {
+
+                return $this->getWhere($whereCond)->getResultArray();
+            }
+        } else {
+
+            $whereCond = array_merge(array('uuid' => $uuid), $whereCond);
+            return $this->getWhere($whereCond);
+        }   
+    }
 	
 	public function getJoins()
     {
@@ -66,6 +85,11 @@ class Tenant_model extends Model
 	public function updateData($data = null, $id = null)
 	{
 		$query = $this->db->table($this->table)->update($data, array('id' => $id));
+		return $query;
+	}
+	public function updateDataByUUID($data = null, $uuid = null)
+	{
+		$query = $this->db->table($this->table)->update($data, array('uuid' => $uuid));
 		return $query;
 	}
 	

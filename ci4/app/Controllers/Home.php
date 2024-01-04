@@ -37,7 +37,24 @@ class Home extends BaseController
 			echo view('register', $data);
 		} else {
 			if ($this->session->get('uuid')) {
-				return redirect()->to('/dashboard');
+				$reqHeaders = $this->request->headers();
+				$lastPathURL = '';
+				if (isset($reqHeaders['X-Cdn-Scheme'])) {
+					$forwardedScheme = $reqHeaders['X-Cdn-Scheme']->getValue();
+				} else {
+					$forwardedScheme = "https";
+				}
+
+				if (isset($reqHeaders['X-Cdn-Host'])) {
+					$lastPathURL = $reqHeaders['X-Cdn-Host']->getValue();
+				}
+				if ($lastPathURL != '') {
+					$updatedLastPathURL = $forwardedScheme . '://' .$lastPathURL . '/dashboard';
+				} else {
+					$updatedLastPathURL = '/dashboard';
+				}
+				
+				return redirect()->to($updatedLastPathURL);
 			}
 			$data['logo'] = $this->meta_model->getWhere(['meta_key' => 'site_logo'])->getRow();
 			$data['uuid'] = $this->meta_model->getAllBusiness();
@@ -48,6 +65,18 @@ class Home extends BaseController
 
 	public function login()
 	{
+		$reqHeaders = $this->request->headers();
+		$lastPathURL = '';
+		if (isset($reqHeaders['X-Cdn-Scheme'])) {
+			$forwardedScheme = $reqHeaders['X-Cdn-Scheme']->getValue();
+		} else {
+			$forwardedScheme = "https";
+		}
+
+		if (isset($reqHeaders['X-Cdn-Host'])) {
+			$lastPathURL = $reqHeaders['X-Cdn-Host']->getValue();
+		}
+		
 		if (!empty($this->request->getPost('email')) && !empty($this->request->getPost('password'))) {
 
 			$count = $this->model->getWhere(['status' => 1, 'email' => $this->request->getPost('email'), 'password' => md5($this->request->getPost('password'))])->getNumRows();
@@ -74,14 +103,32 @@ class Home extends BaseController
 				$this->session->set('uuid_business_id', $uuid_business_id);
 				$this->session->set('uuid_business', $row->uuid_business_id);
 				$this->session->set('jwt_token', $token);
-				$arr = json_decode($row->permissions);
-				$roww = $this->menu_model->getWherein($arr);
-				// echo '<pre>';print_r($roww); die;
-				$this->session->set('permissions', $roww);
+				if (!$row->uuid_business_id && !isset($row->uuid_business_id)) {
+					$userMenus = $this->menu_model->getRows();
+				} else {
+					if (isUUID($row->role)) {
+						$menuArray = getResultWithoutBusiness('roles__permissions', ['role_id' => $row->role]);
+						$menuIds = array_map(function($val, $key) {
+							return $val['permission_id'];
+						}, $menuArray, array_keys($menuArray));
+						$userMenus = $this->menu_model->getWhereinByUUID($menuIds);
+					} else {
+						$arr = json_decode($row->permissions);
+						$userMenus = $this->menu_model->getWherein($arr);
+					}
+				}
+				
+				$this->session->set('permissions', $userMenus);
 
-
-				// return redirect()->to('/dashboard');
-				return redirect()->to($this->request->getPost('redirectAfterLogin'));
+				$redirectAfterLogin = $this->request->getPost('redirectAfterLogin');
+				if ($lastPathURL != '') {
+					$updatedLastPathURL = $forwardedScheme . '://' .$lastPathURL . '/' . $redirectAfterLogin;
+				} else {
+					$updatedLastPathURL = $redirectAfterLogin;
+				}
+				// echo '<pre>'; print_r($updatedLastPathURL); echo '</pre>'; die;
+				
+				return redirect()->to($updatedLastPathURL);
 			} else {
 				session()->setFlashdata('message', 'Wrong email or password!');
 				session()->setFlashdata('alert-class', 'alert-danger');
@@ -90,7 +137,12 @@ class Home extends BaseController
 			session()->setFlashdata('message', 'Wrong email or password!');
 			session()->setFlashdata('alert-class', 'alert-danger');
 		}
-		return redirect()->to('/');
+		if ($lastPathURL != '') {
+			$updatedLastPathURL = $forwardedScheme . '://' .$lastPathURL;
+		} else {
+			$updatedLastPathURL = '/';
+		}
+		return redirect()->to($updatedLastPathURL);
 	}
 
 	/* private function curlcmd($email,$password){
@@ -296,6 +348,17 @@ class Home extends BaseController
 		header('Access-Control-Allow-Origin: *');
 		header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 		header('Access-Control-Allow-Headers: Accept,Authorization,Content-Type');
+
+		$db = \Config\Database::connect();
+		$dbConnection = "";
+		
+        // Check if the database connection is successful
+        if (!empty($db->listTables()) && sizeof($db->listTables()) > 0) {
+            $dbConnection = 'Database connection is successful.';
+        } else {
+            $dbConnection = 'Database connection failed.';
+        }
+
 		$str = file_get_contents(ROOTPATH . 'webimpetus.json');
 		$json = json_decode($str, true);
 
@@ -303,6 +366,7 @@ class Home extends BaseController
 		$json['php_version'] = phpversion();
 		$json['deployment_time'] = getenv('APP_DEPLOYED_AT');
 		$json['uptime'] = $this->get_uptime();
+		$json['database'] = $dbConnection;
 
 		echo json_encode($json);
 		die;

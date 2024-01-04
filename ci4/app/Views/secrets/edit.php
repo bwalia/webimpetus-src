@@ -11,6 +11,7 @@
                     <input type="text" class="form-control required" id="title" name="key_name" placeholder=""  value="<?=@$secret->key_name?>">
                 </div>
                 <input type="hidden" class="form-control" name="id" placeholder="" value="<?=@$secret->id ?>" />
+                <input type="hidden" class="form-control" name="uuid" placeholder="" value="<?=@$secret->uuid ?>" />
 
                     
                     <div class="form-group col-md-12">

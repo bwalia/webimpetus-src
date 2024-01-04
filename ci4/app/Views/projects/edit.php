@@ -54,17 +54,18 @@
                     <label for="inputEmail4">Currency</label>
 
                     <select name="currency" id="currency" class="form-control select2">
-                        <option value="1" <?php if (@$project->currency == 1)
+                        <option value="gbp" <?php if (@$project->currency == "gbp")
                             echo "selected" ?>>GBP</option>
-                            <option value="2" <?php if (@$project->currency == 2)
+                            <option value="usd" <?php if (@$project->currency == "usd")
                             echo "selected" ?>>USD</option>
-                            <option value="3" <?php if (@$project->currency == 3)
+                            <option value="eur" <?php if (@$project->currency == "eur")
                             echo "selected" ?>>EUR</option>
 
                         </select>
                     </div>
                 </div>
                 <input type="hidden" class="form-control" name="id" placeholder="" value="<?= @$project->id ?>" />
+                <input type="hidden" class="form-control" name="uuid" placeholder="" value="<?= @$project->uuid ?>" />
 
             <div class="form-row">
 

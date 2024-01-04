@@ -1,5 +1,7 @@
 version: '3.3'
+
 services:
+  #1 - Run the mariadb database
   webimpetus-db:
     container_name: "webimpetus-db"
     image: mariadb:latest
@@ -18,6 +20,7 @@ services:
     networks: 
     - webimpetus-network
 
+  #2 - Run the mariadb database adminer access
   adminer:
     container_name: "webimpetus-admin"
     image: adminer:latest
@@ -25,11 +28,12 @@ services:
       ADMINER_DEFAULT_SERVER: webimpetus-db
     restart: always
     ports:
-      - 8082:8082
+      - 8082:8080
     networks:
       - webimpetus-network
 
-  webimpetus-php8-openresty:
+  #3 - Run the webimpetus app
+  webimpetus:
       container_name: "webimpetus-dev"
       build:
         context: .
@@ -39,8 +43,10 @@ services:
       volumes:
       - ./ci4:/var/www/html
       - .env:/var/www/html/.env
-      networks: 
-      - webimpetus-network
+      networks:
+        webimpetus-network:
+          ipv4_address: 172.178.0.8
+
       depends_on: 
       - webimpetus-db # This service depends on mysql. Start that first.
       ports:
@@ -49,8 +55,45 @@ services:
         CI_ENVIRONMENT: 'development'
         app.baseURL: 'http://localhost:8080/'
 
+  #4 - Run the cypress e2e smoke tests
+  # e2e:
+  #   # image: cypress/included:12.8.1
+  #   build:
+  #     context: .
+  #     dockerfile: ./cypress/Dockerfile-cypress
+  #   container_name: webimpetus-cypress
+  #   depends_on:
+  #    - webimpetus
+  #   links:
+  #       - "webimpetus"
+  #   # note: inside e2e container, the network allows accessing
+  #   # "webapp" host under name "webapp"
+  #   # so "curl http://webapp" would return whatever the webserver
+  #   # in the "webapp" container is cooking
+  #   # see https://docs.docker.com/compose/networking/
+  #   environment:
+  #     - CYPRESS_baseUrl=http://webimpetus:80
+  #   command: pwd && ls -la && npm install && npx cypress run && sleep 60
+  #   # npx cypress run
+  #   # mount the host directory e2e/cypress and the file e2e/cypress.config.js as
+  #   # volumes within the container
+  #   # this means that:
+  #   #  1. anything that Cypress writes to these folders (e.g., screenshots,
+  #   #     videos) appears also on the Docker host's filesystem
+  #   #  2. any change that the developer applies to Cypress files on the host
+  #   #     machine immediately takes effect within the e2e container (no docker
+  #   #     rebuild required).
+  #   networks:
+  #     - webimpetus-network
+  #   volumes:
+  #     - ./cypress:/cypress
+
+
 networks:
   webimpetus-network:
+    ipam:
+      config:
+        - subnet: 172.178.0.0/16
                         # Names our volume
 volumes:
   webimpetus-db-vol:

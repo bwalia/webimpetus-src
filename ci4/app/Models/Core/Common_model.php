@@ -3,7 +3,7 @@
 namespace App\Models\Core;
 
 use CodeIgniter\Model;
-
+use Exception;
 class Common_model extends Model
 {
     protected $table = '';
@@ -67,6 +67,15 @@ class Common_model extends Model
             }
         } else {
             $whereCond = array_merge(array('uuid' => $uuid), $whereCond);
+            return $this->getWhere($whereCond);
+        }
+    }
+    public function getExistsRowsByUUID($uuid = false)
+    {
+        $whereCond = $this->whereCond;
+
+        if ($uuid) {
+            $whereCond = array('uuid' => $uuid);
             return $this->getWhere($whereCond);
         }
     }
@@ -172,6 +181,11 @@ class Common_model extends Model
         $query = $this->db->table($this->table)->update($data, array('id' => $id));
         return $query;
     }
+    public function updateDataByUUID($uuid = null, $data = null)
+    {
+        $query = $this->db->table($this->table)->update($data, array('uuid' => $uuid));
+        return $query;
+    }
     public function updateTableData($id = null, $data = null, $tableName = "")
     {
         $query = $this->db->table($tableName)->update($data, array('id' => $id));
@@ -207,7 +221,7 @@ class Common_model extends Model
         $fields = $this->getFieldNames($tableName);
         //print_r($fields);die;
         if(in_array('uuid',$fields)){
-            $arr = "*,uuid as id";
+            $arr = "*,uuid as id, id as uuid";
         }else{
             $arr = "*";
         }
@@ -221,6 +235,15 @@ class Common_model extends Model
     public function deleteTableData($tableName, $id, $field = "id")
     {
         $query = $this->db->table($tableName)->delete(array($field => $id));
+        return $query;
+    }
+    
+    public function unlinkData($tableName, $id, $field, $data) {
+        if ($tableName === "secrets_services" || $tableName === "service__domains") {
+            $query = $this->db->table($tableName)->delete(array($field => $id));
+            return $query;
+        }
+        $query = $this->db->table($tableName)->update($data, array($field => $id));
         return $query;
     }
 
@@ -351,7 +374,7 @@ class Common_model extends Model
         $fields = $this->getFieldNames($tableName);
         //print_r($fields);die;
         if(in_array('uuid',$fields) && $tableName!=='categories'){
-            $arr = "*,uuid as id,";
+            $arr = "*,uuid as id,id as internal_id,";
         }else{
             $arr = "*,";
         }
@@ -380,5 +403,17 @@ class Common_model extends Model
             ->limit(1)
             ->get()
             ->getRowArray();
+    }
+
+    public function findByEmailAddress(string $tableName, string $emailAddress)
+    {
+        $user = $this->db->table($tableName)
+            ->where(['email' => $emailAddress])
+            ->get()
+            ->getRowArray();
+        if (!$user)
+            throw new Exception('User does not exist for specified email address');
+
+        return $user;
     }
 }

@@ -45,6 +45,7 @@
             </div>
 
             <input type="hidden" class="form-control" name="id" placeholder="" value="<?= @$sprint->id ?>" />
+            <input type="hidden" class="form-control" name="uuid" placeholder="" value="<?= @$sprint->uuid ?>" />
 
             <button type="submit" id="sprintsSubmit" class="btn btn-primary">Submit</button>
         </form>

@@ -2,6 +2,7 @@
 //https://www.twilio.com/blog/create-secured-restful-api-codeigniter-php
 namespace App\Controllers;
 
+use App\Models\Core\Common_model;
 use App\Models\Users_model;
 use App\Models\Contact;
 use CodeIgniter\HTTP\Response;
@@ -74,10 +75,11 @@ return $this
                     ResponseInterface::HTTP_BAD_REQUEST
                 );
         }
-        return $this->getJWTForUser($input['email'], $input['password'], "contact");
+        return $this->getJWTForUser($input['email'], $input['password'], "contacts");
     }
 
-    public function user_login() {
+    public function user_login()
+    {
         $rules = [
             'email' => 'required|min_length[6]|max_length[50]|valid_email',
             'password' => 'required|min_length[3]'
@@ -99,7 +101,31 @@ return $this
                     ResponseInterface::HTTP_BAD_REQUEST
                 );
         }
-        return $this->getJWTForUser($input['email'], $input['password'], "user");
+        return $this->getJWTForUser($input['email'], $input['password'], "users");
+    }
+    public function employee_login()
+    {
+        $rules = [
+            'email' => 'required|min_length[6]|max_length[50]|valid_email',
+            'password' => 'required|min_length[3]'
+        ];
+
+        $errors = [
+            'password' => [
+                'validateUser' => 'Invalid login credentials provided'
+            ]
+        ];
+
+        $input = $this->getRequestInput($this->request);
+
+        if (!$this->validateRequest($input, $rules, $errors)) {
+            return $this
+                ->getResponse(
+                    $this->validator->getErrors(),
+                    ResponseInterface::HTTP_BAD_REQUEST
+                );
+        }
+        return $this->getJWTForUser($input['email'], $input['password'], "employees");
     }
 
     private function getJWTForUser(
@@ -109,28 +135,25 @@ return $this
         int $responseCode = ResponseInterface::HTTP_OK
     ) {
         try {
-            $model = new Contact(); // using customer contact
-            if ($loginType == "user") {
-                $model = new Users_model();
-            }
-            $user = $model->findUserByEmailAddress($emailAddress);
+            $model = new Common_model();
+            $user = $model->findByEmailAddress($loginType, $emailAddress);
             if ($user['password'] != md5($password)) {
                 return $this
                     ->getResponse(
                         [
                             'error' => 'Password Not match',
                         ],
-                        $responseCode
+                        ResponseInterface::HTTP_FORBIDDEN
                     );
             }
-            if ($loginType == "contact") {
+            if ($loginType == "contacts") {
                 if ($user['allow_web_access'] != '1') {
                     return $this
                         ->getResponse(
                             [
                                 'error' => 'User do do have access to webpage!',
                             ],
-                            $responseCode
+                            ResponseInterface::HTTP_FORBIDDEN
                         );
                 }
             }
@@ -145,7 +168,8 @@ return $this
                         'message' => 'User authenticated successfully',
                         'user' => $user,
                         'access_token' => getSignedJWTForUser($emailAddress)
-                    ]
+                    ],
+                    $responseCode
                 );
         } catch (Exception $exception) {
             return $this
@@ -153,7 +177,7 @@ return $this
                     [
                         'error' => $exception->getMessage(),
                     ],
-                    $responseCode
+                    ResponseInterface::HTTP_FORBIDDEN
                 );
         }
     }

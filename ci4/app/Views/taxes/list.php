@@ -13,7 +13,7 @@
             </thead>
             <tbody>
                 <?php foreach ($taxes as $row) : ?>
-                    <tr data-link=<?= "/" . $tableName . "/edit/" . $row['id']; ?>>
+                    <tr data-link=<?= "/" . $tableName . "/edit/" . $row['uuid']; ?>>
                         <td class="f_s_12 f_w_400"><?= $row['id']; ?></td>
                         <td class="f_s_12 f_w_400"><?= $row['tax_code']; ?></td>
                         <td class="f_s_12 f_w_400"><?= $row['tax_rate']; ?></td>

@@ -45,11 +45,27 @@ class Projects_model extends Model
 		return $query;
 	}
 
-    public function getBusinessProjectList($bid)
+    public function getBusinessProjectList($bid, $params)
     {
+        $range = json_decode($params['range']);
+        $sort = json_decode($params['sort']);
+        $limit = (int) implode(', ', $range);
+        list($column, $order) = $sort;
+        
         $builder = $this->db->table($this->table);
-        $builder->where($this->table.".uuid_business_id",  $bid);
-
-        return $builder->get()->getResultArray();
+        $builder->select([
+            '*',             // Select all columns
+            'id AS uuid',    // Rename 'id' to 'uuid'
+            'uuid AS id',    // Rename 'uuid' to 'id'
+        ]);
+        $builder->orderBy($this->table .".$column", "$order");
+        $builder->limit($limit);
+        $builder->where("uuid_business_id", $bid);
+        
+        $total =  $this->db->table($this->table)->where("uuid_business_id", $bid)->countAllResults();
+        return [
+            'data' => $builder->get()->getResultArray(),
+            'total' => $total
+        ];
     }
 }

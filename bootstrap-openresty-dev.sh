@@ -133,10 +133,15 @@
         echo DYNAMIC_SCRIPTS_PATH=/tmp >> $FILE
         echo "==========================="
         echo "Copy openresty config file for Workstation"
+        if [ -f "/tmp/configmap/workstation.conf" ];then
         cp /tmp/configmap/workstation.conf /etc/nginx/sites-enabled/workstation.conf
+        fi
         echo "==========================="
         echo "Restart openresty nginx"
         openresty -s reload
         php spark migrate
+        php spark db:seed UpdateUserBusinessSeeder
+        php spark db:seed UpdateUuidSeeder
+        php spark db:seed AddAdministratorRole
         echo "==========================="
         echo "Workstation Nginx Bootstrap Script Completed"

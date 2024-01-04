@@ -29,11 +29,12 @@ function render_date($time="", $type="input", $format=""){
 }
 
 function getCurrency($key){
-
-    $key = $key-1;
-    $list=["GBP", "USD", "EUR"];
-
-    return $list[$key];
+    if (gettype($key) === "string" && strlen($key) > 1) {
+        $list=["gbp" => "GBP", "usd" => "USD", "eur" => "EUR"];
+        return $list[$key];
+    } else {
+        return "";
+    }
 }
 function getStatus($key){
 

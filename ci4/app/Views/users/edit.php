@@ -60,12 +60,12 @@ $json = json_decode($str, true);
                 <div class="form-group col-md-12">
                     <label for="userRole">Set User Role</label>
                     <select name="role" id="userRole" class="form-control">
-                        <option value="0" <?= (isset($user->role) && ($user->role == 0)) ? 'selected' : '' ?>>Default Role
-                        </option>
-                        <option value="1" <?= (isset($user->role) && ($user->role == 1)) ? 'selected' : '' ?>>Admin
-                        </option>
-                        <option value="2" <?= (isset($user->role) && ($user->role == 2)) ? 'selected' : '' ?>>Admin with
-                            PHP Block</option>
+                    <option value="">--Select--</option>
+                        <?php foreach ($roles as $row): ?>
+                            <option value="<?= $row['uuid']; ?>" <?= @$user->role == $row['uuid'] ? 'selected="selected"' : ''; ?>>
+                                <?= $row['role_name']; ?>
+                            </option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
             </div>
@@ -75,15 +75,13 @@ $json = json_decode($str, true);
                     <label for="inputState">Set User Roles and Permissions</label>
                     <select id="sid" name="sid[]" multiple class="form-control select2">
                         <?php
-                        if (isset($user) && (!empty($user->permissions))) {
-                            $arr = json_decode(@$user->permissions);
+                            $arr = (isset($user) && (!empty($user->permissions))) ? json_decode(@$user->permissions) : false;
                             foreach ($menu as $row): ?>
                                 <option value="<?= $row['id']; ?>" <?php if ($arr)
                                       echo
                                           in_array($row['id'], $arr) ? 'selected="selected"' : '' ?>><?= $row['name']; ?>
                                 </option>
                             <?php endforeach; ?>
-                        <?php } ?>
                     </select>
                 </div>
             </div>

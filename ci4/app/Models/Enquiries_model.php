@@ -23,6 +23,15 @@ class Enquiries_model extends Model
             return $this->getWhere($whereCond);
         }   
     }
+    public function getRowsByUUID($uuid = false)
+    {
+        if($uuid === false){
+            return $this->where($this->whereCond)->findAll();
+        }else{
+            $whereCond = array_merge(['uuid' => $uuid]);
+            return $this->getWhere($whereCond);
+        }   
+    }
 	
 	public function saveData($data)
     {

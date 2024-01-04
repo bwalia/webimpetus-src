@@ -8,11 +8,13 @@ use App\Models\Blocks_model;
 use App\Models\Users_model;
 use App\Controllers\Core\CommonController;
 use App\Models\Core\Common_model;
+use App\Libraries\UUID;
 
 
 class Blocks extends CommonController
 {
-
+	protected $blocks_model;
+	protected $user_model;
 	function __construct()
 	{
 		parent::__construct();
@@ -35,7 +37,7 @@ class Blocks extends CommonController
 	{
 		$data['role'] = $this->session->get('role');
 		$data['tableName'] = "blocks";
-		$data[$this->rawTblName] = $this->blocks_model->getRows($id)->getRow();
+		$data[$this->rawTblName] = $this->blocks_model->getRowsByUUID($id)->getRow();
 		$data['users'] = $this->user_model->getUser();
 		echo view($this->table . '/edit', $data);
 	}
@@ -61,12 +63,13 @@ class Blocks extends CommonController
 			"uuid_business_id" => $this->businessUuid,
 		);
 
-		$id = $this->request->getPost('id');
-		if ($id > 0) {
-			$this->blocks_model->updateData($id, $data);
+		$uuid = $this->request->getPost('uuid');
+		if ($uuid > 0) {
+			$this->blocks_model->updateDataByUUID($uuid, $data);
 			session()->setFlashdata('message', 'Data updated Successfully!');
 			session()->setFlashdata('alert-class', 'alert-success');
 		} else {
+			$data['uuid'] = UUID::v5(UUID::v4(), 'block_list');
 			$this->blocks_model->saveData($data);
 			session()->setFlashdata('message', 'Data entered Successfully!');
 			session()->setFlashdata('alert-class', 'alert-success');

@@ -17,7 +17,7 @@
                 <tbody>                                        
                 
                 <?php foreach($contacts as $row):?>
-                <tr data-link="contacts/edit/<?= $row['id'];?>">
+                <tr data-link="contacts/edit/<?= $row['uuid'];?>">
                     
                     <td class="f_s_12 f_w_400"><?= $row['id'];?>
                     </td>

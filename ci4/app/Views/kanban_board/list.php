@@ -10,24 +10,39 @@
 
             <div class="card bg-light">
                 <div class="card-body card-body-custom" data-category="<?= $key ?>">
-                    <h6 class="card-title text-uppercase text-truncate py-2"><?= $key ?></h6>
+                    <h6 class="card-title text-uppercase text-truncate py-2">
+                        <?= $key ?>
+                    </h6>
                     <div class="items add-dropzone" data-category="<?= $key ?>">
                         <?php if (count($values)) { ?>
                             <?php foreach ($values as $row) { ?>
-                                <div class="card draggable shadow-sm add-dropzone" data-id="<?= $row['id'] ?>" id="cd<?= $row['id'] ?>" draggable="true" ondragstart="drag(event)">
+                                <div class="card draggable shadow-sm add-dropzone" data-id="<?= $row['id'] ?>"
+                                    id="cd<?= $row['id'] ?>" draggable="true" ondragstart="drag(event)">
                                     <div class="card-body card-body-custom p-2">
                                         <div class="card-title">
-                                            <a href="<?= "/" . $tableName . "/edit/" . $row['id']; ?>" class="lead font-weight-light">TSK-<?= $row['task_id'] ?></a>
+                                            <a href="<?= "/" . $tableName . "/edit/" . $row['uuid']; ?>"
+                                                class="lead font-weight-light">TSK-
+                                                <?= $row['task_id'] ?>
+                                            </a>
                                         </div>
-                                        <p><?= $row['name'] ?></p>
-                                        <div class="mt-3 pl-2 text-white <?= $row['priority'] == 'high' ? 'bg-danger' : ($row['priority'] == 'medium' ? 'bg-warning' : 'bg-info') ?>"><?= ucfirst($row['priority']) ?></div>
-                                        <a href="<?= "/" . $tableName . "/edit/" . $row['id']; ?>" class="btn btn-success btn-sm mt-3">View</a>
+                                        <p>
+                                            <?= $row['name'] ?>
+                                        </p>
+                                        <div
+                                            class="mt-3 pl-2 text-white <?= $row['priority'] == 'high' ? 'bg-danger' : ($row['priority'] == 'medium' ? 'bg-warning' : 'bg-info') ?>">
+                                            <?= ucfirst($row['priority']) ?>
+                                        </div>
+                                        <span class="text-secondary">(<?= ucfirst($row['project_name']) ?>)</span>
+                                        <a href="<?= "/" . $tableName . "/edit/" . $row['uuid']; ?>"
+                                            class="btn btn-success btn-sm mt-3">View</a>
                                     </div>
                                 </div>
-                                <div class="dropzone rounded" ondrop="drop(event)" ondragover="allowDrop(event)" ondragleave="clearDrop(event)"> &nbsp; </div>
+                                <div class="dropzone rounded" ondrop="drop(event)" ondragover="allowDrop(event)"
+                                    ondragleave="clearDrop(event)"> &nbsp; </div>
                             <?php } ?>
-                        <?php }  ?>
-                        <div class="dropzone rounded" ondrop="drop(event)" ondragover="allowDrop(event)" ondragleave="clearDrop(event)"> &nbsp; </div>
+                        <?php } ?>
+                        <div class="dropzone rounded" ondrop="drop(event)" ondragover="allowDrop(event)"
+                            ondragleave="clearDrop(event)"> &nbsp; </div>
                     </div>
                 </div>
             </div>
@@ -101,10 +116,10 @@
             data: form,
             dataType: 'JSON',
             type: 'POST',
-            success: function(result) {
+            success: function (result) {
                 console.log(result);
             },
-            error: function(jqXHR, textStatus, errorThrown) {
+            error: function (jqXHR, textStatus, errorThrown) {
                 console.log(textStatus, errorThrown);
             },
             cache: false,
@@ -137,8 +152,8 @@
 <?php require_once(APPPATH . 'Views/common/footer.php'); ?>
 <script>
     var base_url = '<?php echo base_url('/kanban_board') ?>';
-    $(document).ready(function() {
-        $("#kanban_sprint").on("change", function(e) {
+    $(document).ready(function () {
+        $("#kanban_sprint").on("change", function (e) {
             var redirect_to = base_url;
             if ($(this).val() != "") {
                 redirect_to = base_url + "?sprint=" + $(this).val();
