@@ -23,6 +23,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - run: npm i cypress-real-events -D 
 
       - name: Set up Docker Compose to run Cypress Test framework specs
         uses: ndeloof/install-compose-action@v0.0.1
@@ -30,6 +34,9 @@ jobs:
           version: v2.1.0 # defaults to 'latest'
           legacy: true    # will also install in PATH as `docker-compose`
       - run: docker-compose --version
+
+      -
+      
 
       - name: UI Test execution using Cypress on ${{ env.TARGET_ENV }}
         working-directory: ./qa/cypress_ui_test
