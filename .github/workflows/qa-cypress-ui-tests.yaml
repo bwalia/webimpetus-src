@@ -8,7 +8,7 @@ on:
       TARGET_ENV:
         type: choice
         description: 'Please choose the Target Environment'
-        default: 'int'
+        default: 'test'
         required: true
         options:
           - int
@@ -16,7 +16,7 @@ on:
           - acc
           
 env: 
-  TARGET_ENV: ${{ inputs.TARGET_ENV || 'int' }}
+  TARGET_ENV: ${{ inputs.TARGET_ENV || 'test' }}
   
 jobs:
   build:
@@ -34,9 +34,6 @@ jobs:
           version: v2.1.0 # defaults to 'latest'
           legacy: true    # will also install in PATH as `docker-compose`
       - run: docker-compose --version
-
-      -
-      
 
       - name: UI Test execution using Cypress on ${{ env.TARGET_ENV }}
         working-directory: ./qa/cypress_ui_test
