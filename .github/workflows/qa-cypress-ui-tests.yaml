@@ -36,7 +36,7 @@ jobs:
         with:
           node-version: 18
       - run: cd qa/cypress_ui_test 
-      - run: npm i cypress-real-events -D 
+      - run: npm install cypress-real-events
 
       - name: UI Test execution using Cypress on ${{ env.TARGET_ENV }}
         working-directory: ./qa/cypress_ui_test
