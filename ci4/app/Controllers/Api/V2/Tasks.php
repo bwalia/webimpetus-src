@@ -206,7 +206,8 @@ class Tasks extends ResourceController
         $inReviewCount = 0;
         $assignedCount = 0;
         $completedCount = 0;
-        foreach($records as $record) {
+        $count = 0;
+        foreach($records['data'] as $record) {
             if ($record['status'] == "inReview") {
                 $inReviewCount++;
             } else if ($record['status'] == "assigned") {
@@ -214,11 +215,17 @@ class Tasks extends ResourceController
             } else if ($record['status'] == "completed") {
                 $completedCount++;
             }
+            $count++;
         }
+
         $data['data'] = [
             "inReview" => $inReviewCount,
             "assigned" => $assignedCount,
-            "completed" => $completedCount
+            "completed" => $completedCount,
+            "assignedTasks" => $count,
+            "allBusinessTasks" => $records['total_tasks_business'],
+            "allBusinessProjects" => $records["total_projects_business"],
+            "assignedProjects" => $records['total_projects_assigned']
         ];
         $data['status'] = 200;
         return $this->respond($data);

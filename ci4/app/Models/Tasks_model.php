@@ -158,7 +158,15 @@ class Tasks_model extends Model
             "uuid_business_id" => $bId,
             "assigned_to" => $eId
         ];
-        return $this->select('status')->where($where)->get()->getResultArray();
+        $record = $this->select('status')->where($where)->get()->getResultArray();
+        $totalProjects =  $this->db->table("projects")->where(["uuid_business_id" => $bId])->countAll();
+        $totalAssignedProjects =  $this->db->table("projects")->where($where)->countAll();
+        return [
+            "data" => $record,
+            "total_tasks_business" => $this->select('status')->where(["uuid_business_id" => $bId])->countAll(),
+            "total_projects_business" => $totalProjects,
+            "total_projects_assigned" => $totalAssignedProjects
+        ];
     }
 
     public function updateStatusByUUID($uuid = null, $status = null)
