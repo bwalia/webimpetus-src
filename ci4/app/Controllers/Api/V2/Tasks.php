@@ -199,6 +199,38 @@ class Tasks extends ResourceController
         return $this->respond($data);
     }
 
+    public function tasksStatusByEId($bId, $eId)
+    {
+        $model = new Tasks_model();
+        $records = $model->tasksStatusByEId($bId, $eId, $_GET);
+        $inReviewCount = 0;
+        $assignedCount = 0;
+        $completedCount = 0;
+        $count = 0;
+        foreach($records['data'] as $record) {
+            if ($record['status'] == "inReview") {
+                $inReviewCount++;
+            } else if ($record['status'] == "assigned") {
+                $assignedCount++;
+            } else if ($record['status'] == "completed") {
+                $completedCount++;
+            }
+            $count++;
+        }
+
+        $data['data'] = [
+            "inReview" => $inReviewCount,
+            "assigned" => $assignedCount,
+            "completed" => $completedCount,
+            "assignedTasks" => $count,
+            "allBusinessTasks" => $records['total_tasks_business'],
+            "allBusinessProjects" => $records["total_projects_business"],
+            "assignedProjects" => $records['total_projects_assigned']
+        ];
+        $data['status'] = 200;
+        return $this->respond($data);
+    }
+
     public function updateStatusByUuid()
     {
         $request = $this->request->getJSON();
