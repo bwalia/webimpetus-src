@@ -206,7 +206,11 @@ class Tasks extends ResourceController
         $inReviewCount = 0;
         $assignedCount = 0;
         $completedCount = 0;
+        $allInReviewCount = 0;
+        $allAssignedCount = 0;
+        $allCompletedCount = 0;
         $count = 0;
+        $allCount = 0;
         foreach($records['data'] as $record) {
             if ($record['status'] == "inReview") {
                 $inReviewCount++;
@@ -217,6 +221,16 @@ class Tasks extends ResourceController
             }
             $count++;
         }
+        foreach($records['all_tasks_status'] as $allTaskStatus) {
+            if ($allTaskStatus['status'] == "inReview") {
+                $allInReviewCount++;
+            } else if ($allTaskStatus['status'] == "assigned") {
+                $allAssignedCount++;
+            } else if ($allTaskStatus['status'] == "completed") {
+                $allCompletedCount++;
+            }
+            $allCount++;
+        }
 
         $data['data'] = [
             "inReview" => $inReviewCount,
@@ -225,7 +239,9 @@ class Tasks extends ResourceController
             "assignedTasks" => $count,
             "allBusinessTasks" => $records['total_tasks_business'],
             "allBusinessProjects" => $records["total_projects_business"],
-            "assignedProjects" => $records['total_projects_assigned']
+            "assignedProjects" => $records['total_projects_assigned'],
+            "assignedAverage" => $completedCount / $count * 100,
+            "allProjectsAverage" => $allCompletedCount / $records['total_tasks_business'] * 100
         ];
         $data['status'] = 200;
         return $this->respond($data);
