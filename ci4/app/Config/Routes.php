@@ -73,6 +73,8 @@ $routes->get('api/v2/business/(:segment)/projects', 'Api\V2\Projects::projectsBy
 $routes->get('api/v2/business/(:segment)/employee/(:segment)/tasks/(:segment)/timeslip', 'Api\V2\Timeslips::timeslipByTaskId/$1/$2/$3');
 // List Task by business Id
 $routes->get('api/v2/business/(:segment)/projects/(:segment)/employee/(:segment)/tasks', 'Api\V2\Tasks::tasksByPId/$1/$2/$3');
+// List Tasks and Status by Employee Id
+$routes->get('api/v2/business/(:segment)/employee/(:segment)/tasks-status', 'Api\V2\Tasks::tasksStatusByEId/$1/$2');
 // Update Task Status by Task ID
 $routes->put('api/v2/business/(:segment)/projects/(:segment)/tasks/update-status', 'Api\V2\Tasks::updateStatusByUuid');
 
