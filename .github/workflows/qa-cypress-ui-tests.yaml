@@ -41,6 +41,7 @@ jobs:
       - name: UI Test execution using Cypress on ${{ env.TARGET_ENV }}
         working-directory: ./qa/cypress_ui_test
         run: |
+            ls -alt
             chmod +x ./qa-bootstrap-cypress.sh && sh ./qa-bootstrap-cypress.sh "${{ secrets.QA_LOGIN_EMAIL }}" "${{ secrets.QA_LOGIN_PASSWORD }}" "${{ env.TARGET_ENV }}"
 
       - name: 'Upload screenshots and videos to Slack'
