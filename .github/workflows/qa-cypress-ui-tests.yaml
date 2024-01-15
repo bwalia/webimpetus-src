@@ -1,7 +1,7 @@
 name: Webimpetus Cypress UI tests suite by QA
 on:
-  # schedule:
-  #   - cron: '0 0 * * *'
+  schedule:
+    - cron: '0 21 * * *'
     
   workflow_dispatch:
     inputs:
@@ -36,21 +36,18 @@ jobs:
         with:
           node-version: 18
       - run: cd qa/cypress_ui_test 
-      - run: npm install cypress-real-events
+      - run: npm i cypress-real-events -D     
 
       - name: UI Test execution using Cypress on ${{ env.TARGET_ENV }}
         working-directory: ./qa/cypress_ui_test
         run: |
             chmod +x ./qa-bootstrap-cypress.sh && sh ./qa-bootstrap-cypress.sh "${{ secrets.QA_LOGIN_EMAIL }}" "${{ secrets.QA_LOGIN_PASSWORD }}" "${{ env.TARGET_ENV }}"
 
-      # - name: Slack Notification for Workstation CRM Cypress Test 
-      #   uses: rtCamp/action-slack-notify@v2
-      #   env:
-      #       SLACK_CHANNEL: general
-      #       SLACK_COLOR: ${{ job.status }}
-      #       SLACK_ICON: https://github.com/rtCamp.png?size=48
-      #       SLACK_MESSAGE: 'Workstation CRM UI Test executed using Cypress Test framework ${{ env.TARGET_ENV }} env :rocket:'
-      #       SLACK_TITLE: Workstation CRM Cypress UI Test on ${{ env.TARGET_ENV }}
-      #       SLACK_USERNAME: rtCamp
-      #       SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-  
+      - name: 'Upload screenshots and videos to Slack'
+        uses: trymbill/cypress-slack-video-upload-action@v1.3.0
+        with:
+            token: ${{ secrets.SLACK_TOKEN }}
+            channels: 'cypress-test-results'
+            workdir: QA/cypress_ui_test/cypress
+            message-text: 'A QA Cypress UI test just finished for Workstation CRM . The screenshots and videos are available in this thread. Good luck!.'
+   
