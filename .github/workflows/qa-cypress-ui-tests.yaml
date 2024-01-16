@@ -47,7 +47,7 @@ jobs:
       - name: 'Upload screenshots and videos to Slack'
         uses: trymbill/cypress-slack-video-upload-action@v1.3.0
         with:
-            token: ${{ secrets.SLACK_TOKEN }}
+            token: ${{ secrets.SLACK_TOKEN_QA }}
             channels: 'cypress-test-results'
             workdir: qa/cypress_ui_test/cypress
             message-text: 'A QA Cypress UI test just finished for Workstation CRM . The screenshots and videos are available in this thread. Good luck!.'
