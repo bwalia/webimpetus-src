@@ -24,6 +24,8 @@ describe(`Workstation users test on ${Cypress.env("TARGET_ENV")} environment`, (
     // Open the Users module from menu
     cy.get('a[href="/users"]').click({ multiple: true });
     cy.wait(1000);
+
+    // Creating a new User
     cy.contains('a', 'Add').click();
     cy.wait(1000);    
     cy.get('input[id="inputName"]').type("Cypress User");

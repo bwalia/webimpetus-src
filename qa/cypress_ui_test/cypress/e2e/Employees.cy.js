@@ -24,6 +24,8 @@ describe(`Workstation Employees test on ${Cypress.env("TARGET_ENV")} environment
     // Open the Employees module from menu
     cy.get('a[href="/employees"]').click({ multiple: true });
     cy.wait(1000);
+
+    // Creating a new Employee
     cy.contains('a', 'Add').click();
     cy.wait(1000);    
     cy.get('input[id="first_name"]').type("Cypress Employee");
