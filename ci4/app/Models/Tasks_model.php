@@ -125,11 +125,23 @@ class Tasks_model extends Model
     }
 
     public function tasksByPId($bId, $pId, $eId, $params) {
-        $where = [
-            "uuid_business_id" => $bId,
-            "projects_id" => $pId,
-            "assigned_to" => $eId
-        ];
+        // return ['data' => $pId, 'total' => 2];
+        if ($pId == '0' || !$pId || !isset($pId)) {
+            $where = [
+                "uuid_business_id" => $bId,
+                "assigned_to" => $eId
+            ];
+        } else if ($pId == 'allTasks') {
+            $where = [
+                "uuid_business_id" => $bId,
+            ];
+        } else {
+            $where = [
+                "uuid_business_id" => $bId,
+                "projects_id" => $pId,
+                "assigned_to" => $eId
+            ];
+        }
         $range = json_decode($params['range']);
         $sort = json_decode($params['sort']);
         $limit = (int) implode(', ', $range);
@@ -160,11 +172,11 @@ class Tasks_model extends Model
         ];
         $record = $this->select('status')->where($where)->get()->getResultArray();
         $allTasksStatus = $this->select('status')->where(["uuid_business_id" => $bId])->get()->getResultArray();
-        $totalProjects =  $this->db->table("projects")->where(["uuid_business_id" => $bId])->countAll();
-        $totalAssignedProjects =  $this->db->table("projects")->where($where)->countAll();
+        $totalProjects =  $this->db->table("projects")->where(["uuid_business_id" => $bId])->countAllResults();
+        $totalAssignedProjects =  $this->db->table("projects")->where(["uuid_business_id" => $bId, 'employees_id' => $eId])->countAllResults();
         return [
             "data" => $record,
-            "total_tasks_business" => $this->select('status')->where(["uuid_business_id" => $bId])->countAll(),
+            "total_tasks_business" => $this->select('status')->where(["uuid_business_id" => $bId])->countAllResults(),
             "total_projects_business" => $totalProjects,
             "total_projects_assigned" => $totalAssignedProjects,
             "all_tasks_status" => $allTasksStatus
