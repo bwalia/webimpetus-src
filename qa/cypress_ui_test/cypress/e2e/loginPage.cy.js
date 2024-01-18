@@ -6,9 +6,8 @@ describe(`Workstation login test on ${Cypress.env("TARGET_ENV")} environment`, (
       urlStr = `https://${targetEnv}-my.workstation.co.uk/#/login`
     }
   
-  
-    var login_username_str = Cypress.env('login_username')
-    var login_password_str = Cypress.env('login_password')
+    var login_username_str = Cypress.env('login_username') 
+    var login_password_str = Cypress.env('login_password') 
   
     it('Login with invalid email and invalid password', () => {
 
