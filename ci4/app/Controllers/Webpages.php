@@ -67,7 +67,7 @@ class Webpages extends CommonController
 			'sub_title' => $this->request->getPost('sub_title'),
 			'content' => $this->request->getPost('content'),
 			'meta_keywords' => $this->request->getPost('meta_keywords'),
-			'published_date' => strtotime($this->request->getPost('published_date')),
+			'published_date' => $this->request->getPost('published_date') ? strtotime($this->request->getPost('published_date')) : strtotime(date('Y-m-d H:i:s')),
 			'meta_title' => $this->request->getPost('meta_title'),
 			'meta_description' => $this->request->getPost('meta_description'),
 			'status' => $this->request->getPost('status'),

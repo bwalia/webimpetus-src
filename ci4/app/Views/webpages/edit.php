@@ -70,8 +70,8 @@ $data_type_format["YAML"] = "# Employee records
 									<input type="text" class="form-control" id="sub_title" name="sub_title" placeholder="" value="<?= @$webpage->sub_title ?>">
 								</div>
 								<div class="form-group col-md-12">
-									<label for="inputState">Published Date</label>
-									<input id="published_date" class="form-control datepicker" name="published_date" width="250" type="text" autocomplete="" value="<?= render_date(@$webpage->published_date) ?>" />
+									<label for="inputState">Publish Date</label>
+									<input id="publish_date" class="form-control datepicker" name="publish_date" width="250" type="text" autocomplete="" value="<?= render_date(@$webpage->publish_date) ?>" />
 
 								</div>
 
