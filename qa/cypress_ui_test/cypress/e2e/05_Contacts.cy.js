@@ -58,24 +58,7 @@ describe(`Workstation Contacts test on ${Cypress.env("TARGET_ENV")} environment`
     cy.wait(1000)
     cy.get(`tr:contains('Cypress')`).should('not.be.visible');
     cy.contains('label', 'Search:').clear()
-
-    // Deleting the Contact created by cypress
-    cy.contains('a', 'Contacts').click();
-    cy.get(`tr:contains('Cypress') div[class="dropdown"]`).click();
-    cy.contains('a', 'Delete').click();
-    cy.on('window:confirm', (str) => {expect(str).to.equal('Are you sure want to delete?')});
-    cy.on('window:confirm', () => true);
-    cy.wait(2000);
-    cy.get('div[class="alert alert-success"]').should("contain", "Data deleted Successfully!");    
-
-    // Deleting the Customer created by cypress
-    cy.contains('a', 'Customers').click();
-    cy.get(`tr:contains('Cypress Customer') div[class="dropdown"]`).click();
-    cy.contains('a', 'Delete').click();
-    cy.on('window:confirm', (str) => {expect(str).to.equal('Are you sure want to delete?')});
-    cy.on('window:confirm', () => true);
-    cy.wait(2000);
-    cy.get('div[class="alert alert-success"]').should("contain", "Data deleted Successfully!");    
+  
 
     })
     

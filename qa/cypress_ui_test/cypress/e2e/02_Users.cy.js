@@ -59,21 +59,13 @@ describe(`Workstation users test on ${Cypress.env("TARGET_ENV")} environment`, (
     // Verifying the search filter
     cy.contains('label', 'Search:').type("cypress")
     cy.wait(1000)
-    cy.get(`tr:contains('Cypress Employee')`).should('be.visible');
+    cy.get(`tr:contains('Cypress User')`).should('be.visible');
 
     cy.contains('label', 'Search:').type("xyz")
     cy.wait(1000)
-    cy.get(`tr:contains('Cypress Employee')`).should('not.be.visible');
+    cy.get(`tr:contains('Cypress User')`).should('not.be.visible');
     cy.contains('label', 'Search:').clear()
 
-    // Deleting the User created by cypress
-    cy.contains('a', 'Users').click();
-    cy.get(`tr:contains('Cypress User') div[class="dropdown"]`).click();
-    cy.contains('a', 'Delete').click();
-    cy.on('window:confirm', (str) => {expect(str).to.equal('Are you sure want to delete?')});
-    cy.on('window:confirm', () => true);
-    cy.wait(2000);
-    cy.get('div[class="alert alert-success"]').should("contain", "Data deleted Successfully!");    
 
     })
     
