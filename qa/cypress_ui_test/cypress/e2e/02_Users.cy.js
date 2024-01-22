@@ -42,7 +42,6 @@ describe(`Workstation users test on ${Cypress.env("TARGET_ENV")} environment`, (
     cy.get(`tr:contains('Cypress User') input[data-url="users/status"]`).click({ force: true });
     cy.on('window:confirm', (str) => {expect(str).to.equal('The status updated successfully!')})
     cy.on('window:confirm', () => true);
-    cy.wait(4000);
 
     // Editing the User created by cypress
     cy.contains('a', 'Users').click();
