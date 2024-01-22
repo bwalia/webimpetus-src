@@ -76,6 +76,17 @@ describe(`Workstation Clean Test data on ${Cypress.env("TARGET_ENV")} environmen
     cy.on('window:confirm', (str) => {expect(str).to.equal('Are you sure want to delete?')});
     cy.on('window:confirm', () => true);
     cy.wait(2000);
+    cy.get('div[class="alert alert-success"]').should("contain", "Data deleted Successfully!");  
+    
+    
+    // Deleting the Category created by cypress
+    cy.contains('a', 'Categories').click();
+    cy.wait(1000)
+    cy.get(`tr:contains('Cypress Category') div[class="dropdown"]`).click();
+    cy.contains('a', 'Delete').click();
+    cy.on('window:confirm', (str) => {expect(str).to.equal('Are you sure want to delete?')});
+    cy.on('window:confirm', () => true);
+    cy.wait(2000);
     cy.get('div[class="alert alert-success"]').should("contain", "Data deleted Successfully!");     
     })
     
