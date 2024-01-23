@@ -21,4 +21,4 @@ mv /tmp/cypress cypress
 ls -al
 docker compose -f qa-docker-compose-cypress.yml up cypress-chrome
 docker compose -f qa-docker-compose-cypress.yml up cypress-firefox
-# docker compose -f qa-docker-compose-cypress.yml up cypress-electron
+docker compose -f qa-docker-compose-cypress.yml up cypress-electron
