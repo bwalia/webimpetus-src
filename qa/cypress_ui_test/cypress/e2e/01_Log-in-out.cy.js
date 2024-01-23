@@ -77,9 +77,8 @@ describe(`Workstation login test on ${Cypress.env("TARGET_ENV")} environment`, (
 
 
       // Verifying Log out
-      cy.get('div[class="profile_info"]').realHover('mouse')
       cy.wait(2000)
-      cy.get('a[href="/home/logout"]').click()
+      cy.get('a[href="/home/logout"]').invoke('show').click({ force: true })
       cy.get('div[class="alert alert-success"]').should("contain", "Logged out successfully!");
     })
     

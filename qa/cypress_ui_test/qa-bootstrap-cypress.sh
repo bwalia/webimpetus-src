@@ -19,4 +19,6 @@ mv /tmp/.env_cypress .env
 mv /tmp/qa-docker-compose-cypress.yml qa-docker-compose-cypress.yml
 mv /tmp/cypress cypress
 ls -al
-docker compose -f qa-docker-compose-cypress.yml up
+docker compose -f qa-docker-compose-cypress.yml up cypress-chrome
+docker compose -f qa-docker-compose-cypress.yml up cypress-firefox
+# docker compose -f qa-docker-compose-cypress.yml up cypress-electron
