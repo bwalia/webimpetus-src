@@ -146,4 +146,12 @@ class Secret_model extends Model
         $records = $this->get()->getResultArray();		
         return $records;
     }
+
+    public function getTemplatesById($sid = false) {
+        if ($sid === false) {
+            return [];
+        }
+        $serviceTemplates = $this->db->table('templates__services')->where(['service_id' => $sid])->get()->getRowArray();
+        return $serviceTemplates;
+    }
 }

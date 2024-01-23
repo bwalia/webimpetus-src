@@ -72,6 +72,7 @@ class Services extends Api
 		$data['secret_services'] = $this->secret_model->getSecrets($id);
 		$data['serviceDomains'] = $this->serviceDomainModel->getRowsByService($id);
 		$data['all_domains'] = $this->common_model->getCommonData('domains', ['uuid_business_id' => $this->businessUuid]);
+		$data['secret_values_templates'] = $this->secret_model->getTemplatesById($id);
 
 		//print_r($data['all_domains']); die;
 		echo view('services/edit', $data);
@@ -80,8 +81,8 @@ class Services extends Api
 
 	public function update()
 	{
-		//$post = $this->request->getPost();
-		//print_r($post); die;
+		// $post = $this->request->getPost();
+		// print_r($post); die;
 		$id = $this->request->getPost('id');
 		$data = array(
 			'name'  => $this->request->getPost('name'),
@@ -93,7 +94,7 @@ class Services extends Api
 			'cid' => $this->request->getPost('cid'),
 			'tid' => $this->request->getPost('tid'),
 			'link' => $this->request->getPost('link'),
-
+			'env_tags' => implode(",", $this->request->getPost('env_tags')),
 			'uuid_business_id' => $this->businessUuid,
 		);
 		if (empty($id)) {
@@ -125,21 +126,36 @@ class Services extends Api
 				$address_data['key_value'] = $key_value[$key];
 				$address_data['status'] = 1;
 				$address_data['uuid_business_id'] = $this->businessUuid;
-	
+				$address_data['uuid'] = UUID::v5(UUID::v4(), 'secrets');
 	
 				$secret_id = $this->secret_model->saveOrUpdateData($id, $address_data);
 	
 				if ($secret_id > 0) {
 					$dataRelated['secret_id'] = $secret_id;
-					$dataRelated['service_id'] = $id;
+					$dataRelated['service_id'] = $id ?? $data["uuid"];
 					$dataRelated['uuid_business_id'] = $this->businessUuid;
+					$dataRelated['uuid'] = UUID::v5(UUID::v4(), 'secrets_services');
 					$this->secret_model->saveSecretRelatedData($dataRelated);
 				}
 			}
 		}
 
+		
 		$i = 0;
 		$post = $this->request->getPost();
+		$secretTemplateId = $post['secret_template'];
+		$valuesTemplateId = $post['values_template'];
+
+		if ($secretTemplateId && $valuesTemplateId) {
+			$templateData = [
+				'uuid' => UUID::v5(UUID::v4(), 'templates__services'),
+				'secret_template_id' => $secretTemplateId,
+				'values_template_id' => $valuesTemplateId,
+				'service_id' => $id ?? $data['uuid']
+			];
+
+			$this->common_model->insertOrUpdateTableData($templateData, "templates__services", "service_id", $id);
+		}
 		//print_r($post); die;
 		if (isset($post["blocks_code"]) && !empty($post["blocks_code"]) && count($post["blocks_code"]) > 0) {
 			foreach ($post["blocks_code"] as $code) {
@@ -176,7 +192,7 @@ class Services extends Api
 				if (empty($isDomainExists)) {
 					$serviceDomainData = [
 						'uuid' =>  UUID::v5(UUID::v4(), 'service__domains'),
-						'service_uuid' => $id,
+						'service_uuid' => $id ?? $data['uuid'],
 						'domain_uuid' => $domain
 					];
 					$this->serviceDomainModel->saveData($serviceDomainData);
@@ -234,7 +250,17 @@ class Services extends Api
 		//export service json same format as provided by the api
 		// url/api/service/uuid.json -> json
 		// write json to to file	
+		$service = $this->common_model->getSingleRowWhere("templates__services", $uuid, "service_id");
+		$secretTemplate = $this->common_model->getSingleRowWhere("templates", $service['secret_template_id'], "uuid");
+		$yamlString = $secretTemplate["template_content"];
+		preg_match_all('/<\*--(.*?)--\*>/', $yamlString, $matches);
 
+		// Print all matches
+		foreach ($matches[1] as $match) {
+			echo $match . PHP_EOL;
+		}
+		print_r($matches[1]); die;
+		$secretTemplate = $this->common_model->getSingleRowWhere("blocks_list", $service['secret_template_id'], "uuid");
 		$myfile = fopen(WRITEPATH . "tizohub_deployments/service-" . $uuid . ".json", "w") or die("Unable to open file!");
 
 		fwrite($myfile, $this->services($uuid, true));
