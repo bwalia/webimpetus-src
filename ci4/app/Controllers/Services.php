@@ -14,6 +14,7 @@ use App\Models\Amazon_s3_model;
 use App\Models\Core\Common_model;
 use App\Libraries\UUID;
 use App\Models\ServiceDomainsModel;
+use Symfony\Component\Yaml\Yaml;
 
 class Services extends Api
 {
@@ -212,7 +213,7 @@ class Services extends Api
 	{
 		if (!empty($uuid)) {
 
-			$this->export_service_json($uuid);
+			$this->create_templates($uuid);
 			$this->gen_service_env_file($uuid);
 			$this->push_service_env_vars($uuid);
 			$this->gen_service_yaml_file($uuid);
@@ -230,7 +231,7 @@ class Services extends Api
 	{
 		if (!empty($uuid)) {
 
-			$this->export_service_json($uuid);
+			$this->create_templates($uuid);
 			$this->gen_service_env_file($uuid);
 			$this->push_service_env_vars($uuid);
 			$this->gen_service_yaml_file($uuid);
@@ -245,26 +246,47 @@ class Services extends Api
 	}
 
 
-	public function export_service_json($uuid)
+	public function create_templates($uuid)
 	{
-		//export service json same format as provided by the api
-		// url/api/service/uuid.json -> json
-		// write json to to file	
 		$service = $this->common_model->getSingleRowWhere("templates__services", $uuid, "service_id");
 		$secretTemplate = $this->common_model->getSingleRowWhere("templates", $service['secret_template_id'], "uuid");
-		$yamlString = $secretTemplate["template_content"];
-		preg_match_all('/<\*--(.*?)--\*>/', $yamlString, $matches);
-
-		// Print all matches
+		$secretYaml = $secretTemplate["template_content"];
+		preg_match_all('/<\*--(.*?)--\*>/', $secretYaml, $matches);
+		$secretParsedYaml = Yaml::parse($secretYaml);
 		foreach ($matches[1] as $match) {
-			echo $match . PHP_EOL;
+			$secretTemplate = $this->common_model->getSingleRowWhere("blocks_list", $match, "code");
+			$envSecret = $secretTemplate["text"];
+			$pattern = "/<\*--" . $match . "--\*>/i";
+			$secretParsedYaml = $this->recursiveReplace($secretParsedYaml, $pattern, $envSecret);
 		}
-		print_r($matches[1]); die;
-		$secretTemplate = $this->common_model->getSingleRowWhere("blocks_list", $service['secret_template_id'], "uuid");
-		$myfile = fopen(WRITEPATH . "tizohub_deployments/service-" . $uuid . ".json", "w") or die("Unable to open file!");
+		$modifiedYamlString = Yaml::dump($secretParsedYaml);
+		$secretFile = fopen(WRITEPATH . "secret/service-" . $uuid . ".yaml", "w") or die("Unable to open file!");
+		fwrite($secretFile, $modifiedYamlString);
+		fclose($secretFile);
 
-		fwrite($myfile, $this->services($uuid, true));
-		fclose($myfile);
+		// Create Values YAML
+		$valuesTemplate = $this->common_model->getSingleRowWhere("templates", $service['values_template_id'], "uuid");
+		$valuesYaml = $valuesTemplate["template_content"];
+		$webSecrets = $this->common_model->getSingleRowWhere("secrets_services", $uuid, "service_id");
+		$secrets = $this->common_model->getSingleRowWhere("secrets", $webSecrets['secret_id'], "id");
+
+		$modifiedValuesString = str_replace($secrets['key_name'], $secrets['key_value'], $valuesYaml);
+		$valuesFile = fopen(WRITEPATH . "values/service-" . $uuid . ".yaml", "w") or die("Unable to open file!");
+		fwrite($valuesFile, $modifiedValuesString);
+		fclose($valuesFile);
+		print_r($modifiedValuesString); die;
+	}
+
+	function recursiveReplace(&$array, $search, $replace) {
+		foreach ($array as $key => &$value) {
+			if (is_array($value)) {
+				$this->recursiveReplace($value, $search, $replace);
+			} elseif (is_string($value)) {
+				$array[$key] = preg_replace($search, $replace, $array[$key]);
+			}
+		}
+
+		return $array;
 	}
 
 

@@ -205,7 +205,8 @@ class Common_model extends Model
     }
     public function insertOrUpdateTableData($data = null, $tableName = "", $field = false, $fieldValue = false)
     {
-        if ($field && $fieldValue) {
+        $isRecordExists = $this->db->table($tableName)->getWhere([$field => $fieldValue])->getRowArray();
+        if ($isRecordExists && isset($isRecordExists) && !empty($isRecordExists)) {
             $query = $this->db->table($tableName)->update($data, array($field => $fieldValue));
             return $this->db->insertID();
         }
