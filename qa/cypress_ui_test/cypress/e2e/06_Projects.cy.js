@@ -47,8 +47,6 @@ describe(`Workstation Projects test on ${Cypress.env("TARGET_ENV")} environment`
     cy.get(`tr:contains('Cypress Project') div[class="dropdown"]`).click();
     cy.contains('a', 'Edit').click();
     cy.get('select[id="currency"]').select("EUR", {force: true})
-    cy.wait(4000);
-
     cy.contains('button', 'Submit').click();    
     cy.wait(2000);
     // Verifying the Project is updated successfully

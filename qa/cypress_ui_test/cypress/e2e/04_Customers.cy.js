@@ -58,7 +58,6 @@ describe(`Workstation Customers test on ${Cypress.env("TARGET_ENV")} environment
     // Verifying if the status is updated
     cy.contains('a', 'Customers').click();
     cy.get(`tr:contains('Cypress Customer')`).should("contain", "Active");
-    cy.wait(4000);
 
     // Verifying the search filter
     cy.contains('label', 'Search:').type("cypress")
