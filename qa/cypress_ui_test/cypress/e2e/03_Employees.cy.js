@@ -6,9 +6,10 @@ describe(`Workstation Employees test on ${Cypress.env("TARGET_ENV")} environment
       urlStr = `https://${targetEnv}-my.workstation.co.uk/#/login`
     }
   
-    var login_username_str = Cypress.env('login_username')
-    var login_password_str = Cypress.env('login_password')
-  
+    var login_username_str = Cypress.env('login_username');
+    var login_password_str = Cypress.env('login_password');
+    var randomString = Cypress.env('epochTime')
+
     it('Verifying Employees actions', () => {
 
     // Login with valid credentials
@@ -28,7 +29,7 @@ describe(`Workstation Employees test on ${Cypress.env("TARGET_ENV")} environment
     // Creating a new Employee
     cy.contains('a', 'Add').click();
     cy.wait(1000);    
-    cy.get('input[id="first_name"]').type("Cypress Employee");
+    cy.get('input[id="first_name"]').type(`Cypress Employee ${randomString}`);
     cy.get('input[id="email"]').type("cypress@employee.com");
     cy.get('input[id="mobile"]').type("0123456789");
     cy.get('textarea[id="comments"]').type("This is a employee created by Cypress");
@@ -36,7 +37,7 @@ describe(`Workstation Employees test on ${Cypress.env("TARGET_ENV")} environment
 
     // Editing the employee created by cypress
     cy.contains('a', 'Employees').click();
-    cy.get(`tr:contains('Cypress Employee') div[class="dropdown"]`).click();
+    cy.get(`tr:contains('Cypress Employee ${randomString}') div[class="dropdown"]`).click();
     cy.contains('a', 'Edit').click();
     cy.get('textarea[id="comments"]').type(" updated");
     cy.contains('button', 'Submit').click();    
@@ -44,16 +45,16 @@ describe(`Workstation Employees test on ${Cypress.env("TARGET_ENV")} environment
 
     // Verifying the employee is updated successfully
     cy.get('div[class="alert alert-success"]').should("contain", "Data updated Successfully!");    
-    cy.get(`tr:contains('Cypress Employee')`).should("contain", "updated");
+    cy.get(`tr:contains('Cypress Employee ${randomString}')`).should("contain", "updated");
 
     // Verifying the search filter
-    cy.contains('label', 'Search:').type("cypress")
+    cy.contains('label', 'Search:').type(`${randomString}`)
     cy.wait(1000)
-    cy.get(`tr:contains('Cypress Employee')`).should('be.visible');
+    cy.get(`tr:contains('Cypress Employee ${randomString}')`).should('be.visible');
 
     cy.contains('label', 'Search:').type("xyz")
     cy.wait(1000)
-    cy.get(`tr:contains('Cypress Employee')`).should('not.be.visible');
+    cy.get(`tr:contains('Cypress Employee ${randomString}')`).should('not.be.visible');
     cy.contains('label', 'Search:').clear()
   
 

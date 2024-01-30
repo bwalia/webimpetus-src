@@ -11,6 +11,7 @@ echo "" > env_cypress
 echo "CYPRESS_login_username=$USERNAME" >> env_cypress
 echo "CYPRESS_login_password=$PASSWD" >> env_cypress
 echo "CYPRESS_TARGET_ENV=$TARGET_ENV" >> env_cypress
+echo "CYPRESS_epochTime=`date +%s|base64| sed 's/[0-9 =]*//g'`" >> env_cypress
 echo "" >> env_cypress
 mv env_cypress /tmp/.env_cypress
 mv qa-docker-compose-cypress.yml /tmp/qa-docker-compose-cypress.yml
