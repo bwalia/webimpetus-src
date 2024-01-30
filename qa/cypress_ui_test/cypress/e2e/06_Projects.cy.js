@@ -8,7 +8,8 @@ describe(`Workstation Projects test on ${Cypress.env("TARGET_ENV")} environment`
   
     var login_username_str = Cypress.env('login_username');
     var login_password_str = Cypress.env('login_password');
-  
+    var randomString = Cypress.env('epochTime')
+
     it('Verifying Projects actions', () => {
 
     // Login with valid credentials
@@ -28,8 +29,8 @@ describe(`Workstation Projects test on ${Cypress.env("TARGET_ENV")} environment`
     // Creating a new Project
     cy.contains('a', 'Add').click();
     cy.wait(1000);    
-    cy.get('select[id="customers_id"]').select("Cypress Customer", {force: true})
-    cy.get('input[id="name"]').type("Cypress Project");
+    cy.get('select[id="customers_id"]').select( `Cypress Customer ${randomString}` , {force: true})
+    cy.get('input[id="name"]').type(`Cypress Project ${randomString}`);
     // Verifying that the Deadline date should not be earlier than the Start date.
     cy.get('input[id="start_date"]').type("19/02/2024");
     cy.get('input[id="deadline_date"]').type("20/02/2023");
@@ -44,35 +45,35 @@ describe(`Workstation Projects test on ${Cypress.env("TARGET_ENV")} environment`
     // Editing the project created by cypress
     cy.contains('a', 'Projects').click();
     cy.scrollTo('right');
-    cy.get(`tr:contains('Cypress Project') div[class="dropdown"]`).click();
+    cy.get(`tr:contains('Cypress Project ${randomString}') div[class="dropdown"]`).click();
     cy.contains('a', 'Edit').click();
     cy.get('select[id="currency"]').select("EUR", {force: true})
     cy.contains('button', 'Submit').click();    
     cy.wait(2000);
     // Verifying the Project is updated successfully
     cy.get('div[class="alert alert-success"]').should("contain", "Data updated Successfully!");    
-    cy.get(`tr:contains('Cypress Project')`).should("contain", "EUR");
+    cy.get(`tr:contains('Cypress Project ${randomString}')`).should("contain", "EUR");
 
     // Verifying the project status can be updated successfully
     cy.contains('a', 'Projects').click();
     cy.scrollTo('right');
-    cy.get(`tr:contains('Cypress Project') div[class="dropdown"]`).click();
+    cy.get(`tr:contains('Cypress Project ${randomString}') div[class="dropdown"]`).click();
     cy.contains('a', 'Edit').click();
     cy.get('select[id="active"]').select("Completed", {force: true})
     cy.contains('button', 'Submit').click();    
     cy.wait(2000);
     // Verifying the Project is updated successfully
     cy.get('div[class="alert alert-success"]').should("contain", "Data updated Successfully!");    
-    cy.get(`tr:contains('Cypress Project')`).should("contain", "Completed");
+    cy.get(`tr:contains('Cypress Project ${randomString}')`).should("contain", "Completed");
 
     // Verifying the search filter
-    cy.contains('label', 'Search:').type("cypress")
+    cy.contains('label', 'Search:').type(`${randomString}`)
     cy.wait(1000)
-    cy.get(`tr:contains('Cypress Project')`).should('be.visible');
+    cy.get(`tr:contains('Cypress Project ${randomString}')`).should('be.visible');
 
     cy.contains('label', 'Search:').type("xyz")
     cy.wait(1000)
-    cy.get(`tr:contains('Cypress Project')`).should('not.be.visible');
+    cy.get(`tr:contains('Cypress Project ${randomString}')`).should('not.be.visible');
     cy.contains('label', 'Search:').clear()  
 
     })
