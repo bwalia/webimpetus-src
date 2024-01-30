@@ -81,8 +81,8 @@ $uriSegment = $uri->getSegment(3);
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-6">
-                                    <label for="inputPassword4">Link</label>
-                                    <input type="text" class="form-control" id="link" name="link" placeholder="" value="<?= @$service->link ?>">
+                                    <label for="inputPassword4">Clone URL</label>
+                                    <input type="text" class="form-control" id="clone-url" name="clone-url" placeholder="" value="<?= @$service->link ?>">
                                 </div>
                                 <div class="form-group required col-md-6">
                                     <label for="inputEmail4">Environment Tags</label>
@@ -511,6 +511,39 @@ $uriSegment = $uri->getSegment(3);
     </div>
 </div>
 
+<div 
+    class="modal fade" 
+    id="helmConfirmationModal" 
+    tabindex="-1" role="dialog" 
+    aria-labelledby="helmConfirmationModalTitle" 
+    aria-hidden="true"
+    data-backdrop="false"
+>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="helmModalTitle">Helm</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Do You want to run Helm command as well? If yes Please Add the template path</p>
+        <form>
+          <div class="form-group">
+            <label for="template-path" class="col-form-label">Path</label>
+            <input type="text" class="form-control" id="template-path">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+        <button type="button" class="btn btn-primary" id="helm-deploy">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <?php require_once(APPPATH . 'Views/common/footer.php'); ?>
 
 
@@ -699,7 +732,14 @@ $uriSegment = $uri->getSegment(3);
 
     }
 
+    $("#helm-deploy").on("click", function () {
+        let templatePath = $("#template-path").val();
+        console.log({templatePath});
+    })
+
     $('#DeployService').on('click', function() {
+        // $('#helmConfirmationModal').modal('toggle');
+        // return false;
         var Status = $(this).val();
         $.ajax({
             url: "/services/deploy_service/<?= @$service->uuid ?>",

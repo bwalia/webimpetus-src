@@ -102,8 +102,8 @@ class Services extends Api
 			$data['uuid'] = UUID::v5(UUID::v4(), 'services');
 		}
 
-		$image_logo = $this->request->getPost('image_logo');
-		$brand_logo = $this->request->getPost('brand_logo');
+		$image_logo = $this->request->getPost('image_logo') ?? "";
+		$brand_logo = $this->request->getPost('brand_logo') ?? "";
 		if (!empty($image_logo) && strlen($image_logo) > 0) {
 
 			$data['image_logo'] = $this->request->getPost('image_logo');
@@ -214,9 +214,9 @@ class Services extends Api
 		if (!empty($uuid)) {
 
 			$this->create_templates($uuid);
-			$this->gen_service_env_file($uuid);
-			$this->push_service_env_vars($uuid);
-			$this->gen_service_yaml_file($uuid);
+			$this->run_steps($uuid);
+			// $this->push_service_env_vars($uuid);
+			// $this->gen_service_yaml_file($uuid);
 
 			//exec('/bin/sh /var/www/html/writable/tizohub_deploy_service.sh', $output, $return);
 			$output = shell_exec('/bin/sh /var/www/html/writable/tizohub_deploy_service.sh');
@@ -260,10 +260,21 @@ class Services extends Api
 			$secretParsedYaml = $this->recursiveReplace($secretParsedYaml, $pattern, $envSecret);
 		}
 		$modifiedYamlString = Yaml::dump($secretParsedYaml);
+		// Create Secret Yaml File
 		$secretFile = fopen(WRITEPATH . "secret/service-" . $uuid . ".yaml", "w") or die("Unable to open file!");
 		fwrite($secretFile, $modifiedYamlString);
 		fclose($secretFile);
+		// Create kubeseal script to create secrets
+		$secretCommand = "kubeseal --format=yaml < " . WRITEPATH . "secret/service-" . $uuid . ".yaml" . " > " . WRITEPATH . "secret/sealed-service-" . $uuid . ".yaml";
+		$secretFileScript = fopen( WRITEPATH . "secret/kubeseal-secret.sh", "w") or die("Unable to open file!");
+		fwrite($secretFileScript, $secretCommand);
+		fclose($secretFileScript);
 
+		shell_exec('/bin/sh /var/www/html/writable/secret/kubeseal-secret.sh');
+
+		$sealedSecretContent = file_get_contents(WRITEPATH . "secret/sealed-service-" . $uuid . ".yaml");
+		$sealedSecretContent = Yaml::parse($sealedSecretContent);
+		$envSecret = $sealedSecretContent["spec"]["encryptedData"]["env_file"];
 		// Create Values YAML
 		$valuesTemplate = $this->common_model->getSingleRowWhere("templates", $service['values_template_id'], "uuid");
 		$valuesYaml = $valuesTemplate["template_content"];
@@ -271,10 +282,22 @@ class Services extends Api
 		$secrets = $this->common_model->getSingleRowWhere("secrets", $webSecrets['secret_id'], "id");
 
 		$modifiedValuesString = str_replace($secrets['key_name'], $secrets['key_value'], $valuesYaml);
+		$modifiedValuesString = Yaml::parse($modifiedValuesString);
+		$modifiedValuesString["secure_env_file"] = $envSecret;
+		$modifiedValuesString = YAML::dump($modifiedValuesString);
 		$valuesFile = fopen(WRITEPATH . "values/service-" . $uuid . ".yaml", "w") or die("Unable to open file!");
 		fwrite($valuesFile, $modifiedValuesString);
 		fclose($valuesFile);
-		print_r($modifiedValuesString); die;
+
+		// helm upgrade -i wsl-int ./devops/webimpetus-chart -f devops/webimpetus-chart/values-int-k3s2.yaml --set-string targetImage="***/webimpetus" --set-string targetImageTag="int" --namespace int --create-namespace
+	}
+
+	function run_steps($uuid) {
+		$getSteps = $this->common_model->getSingleRowWhere("blocks_list", $uuid, "uuid_linked_table");
+		$steps = $getSteps["text"];
+		$helmFile = fopen(WRITEPATH . "helm/" . $getSteps["code"] . "-" . $uuid . ".sh", "w") or die("Unable to open file!");
+		fwrite($helmFile, $steps);
+		fclose($helmFile);
 	}
 
 	function recursiveReplace(&$array, $search, $replace) {
