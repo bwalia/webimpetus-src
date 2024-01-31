@@ -1,46 +1,38 @@
 <?php require_once(APPPATH . 'Views/common/edit-title.php');
 $blocks_list = getResultArray("blocks_list", ["uuid_linked_table" => @$service->uuid]);
 $domains = getResultArray("domains", ["sid" => @$service->uuid]);
+$templates = getResultArray("templates", []);
 $uri = service('uri');
 $uriSegment = $uri->getSegment(3);
-//print_r($blocks_list); die;
+// print_r($secret_values_templates); die;
 ?>
 <div class="white_card_body">
     <div class="card-body">
         <form id="addservice" method="post" action="/services/update" enctype="multipart/form-data">
-
             <div class="row">
                 <div class="col-xs-12 col-md-12">
                     <nav>
                         <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
-                            <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home"
-                                role="tab" aria-controls="nav-home" aria-selected="true">Service Detail</a>
-                            <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile"
-                                role="tab" aria-controls="nav-profile" aria-selected="false">Service Secrets</a>
-                            <a class="nav-item nav-link" id="nav-steps-tab" data-toggle="tab" href="#nav-steps"
-                                role="tab" aria-controls="nav-steps" aria-selected="false">Service Steps</a>
-                            <a class="nav-item nav-link" id="nav-domains-tab" data-toggle="tab" href="#nav-domains"
-                                role="tab" aria-controls="nav-domains" aria-selected="false">Domains</a>
+                            <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Service Detail</a>
+                            <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Service Secrets</a>
+                            <a class="nav-item nav-link" id="nav-steps-tab" data-toggle="tab" href="#nav-steps" role="tab" aria-controls="nav-steps" aria-selected="false">Service Steps</a>
+                            <a class="nav-item nav-link" id="nav-domains-tab" data-toggle="tab" href="#nav-domains" role="tab" aria-controls="nav-domains" aria-selected="false">Domains</a>
                         </div>
                     </nav>
                     <div class="tab-content py-3 px-3 px-sm-0 col-md-12" id="nav-tabContent">
-                        <div class="tab-pane fade show active" id="nav-home" role="tabpanel"
-                            aria-labelledby="nav-home-tab">
+                        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
                             <div class="form-row">
                                 <div class="form-group required col-md-6">
                                     <label for="inputEmail4">Name</label>
-                                    <input autocomplete="off" autocomplete="off" type="text"
-                                        class="form-control required" id="name" name="name" placeholder=""
-                                        value="<?= @$service->name ?>">
+                                    <input autocomplete="off" autocomplete="off" type="text" class="form-control required" id="name" name="name" placeholder="" value="<?= @$service->name ?>">
 
-                                    <input type="hidden" class="form-control" name="id" placeholder=""
-                                        value="<?= @$service->uuid ?>" />
+                                    <input type="hidden" class="form-control" name="id" placeholder="" value="<?= @$service->uuid ?>" />
                                 </div>
                                 <div class="form-group required col-md-6">
                                     <label for="inputState">Choose User</label>
                                     <select id="uuid" name="uuid" class="form-control required">
                                         <option value="" selected="">--Select--</option>
-                                        <?php foreach ($users as $row): ?>
+                                        <?php foreach ($users as $row) : ?>
                                             <option value="<?= $row['uuid']; ?>" <?= ($row['uuid'] == @$service->user_uuid) ? 'selected' : '' ?>>
                                                 <?= $row['name']; ?>
                                             </option>
@@ -55,7 +47,7 @@ $uriSegment = $uri->getSegment(3);
                                     <label for="inputState">Choose Category</label>
                                     <select id="cid" name="cid" class="form-control">
                                         <option value="" selected="">--Select--</option>
-                                        <?php foreach ($category as $row): ?>
+                                        <?php foreach ($category as $row) : ?>
                                             <option value="<?= $row['id']; ?>" <?= ($row['id'] == @$service->cid) ? 'selected' : '' ?>>
                                                 <?= $row['name']; ?>
                                             </option>
@@ -67,7 +59,7 @@ $uriSegment = $uri->getSegment(3);
                                     <label for="inputState">Choose Tenant</label>
                                     <select id="tid" name="tid" class="form-control">
                                         <option value="" selected="">--Select--</option>
-                                        <?php foreach ($tenants as $row): ?>
+                                        <?php foreach ($tenants as $row) : ?>
                                             <option value="<?= $row['id']; ?>" <?= ($row['id'] == @$service->tid) ? 'selected' : '' ?>>
                                                 <?= $row['name']; ?>
                                             </option>
@@ -80,21 +72,57 @@ $uriSegment = $uri->getSegment(3);
                             <div class="form-row">
                                 <div class="form-group required col-md-6">
                                     <label for="inputPassword4">Code</label>
-                                    <input autocomplete="off" autocomplete="off" type="text"
-                                        class="form-control required" id="code" name="code" placeholder=""
-                                        value="<?= @$service->code ?>">
+                                    <input autocomplete="off" autocomplete="off" type="text" class="form-control required" id="code" name="code" placeholder="" value="<?= @$service->code ?>">
                                 </div>
                                 <div class="form-group required col-md-6">
                                     <label for="inputPassword4">Description</label>
-                                    <textarea class="form-control required" id="notes" name="notes"
-                                        placeholder=""><?= @$service->notes ?></textarea>
+                                    <textarea class="form-control required" id="notes" name="notes" placeholder=""><?= @$service->notes ?></textarea>
                                 </div>
                             </div>
                             <div class="form-row">
-                                <div class="form-group col-md-12">
-                                    <label for="inputPassword4">Link</label>
-                                    <input type="text" class="form-control" id="link" name="link" placeholder=""
-                                        value="<?= @$service->link ?>">
+                                <div class="form-group col-md-6">
+                                    <label for="inputPassword4">Clone URL</label>
+                                    <input type="text" class="form-control" id="clone-url" name="clone-url" placeholder="" value="<?= @$service->link ?>">
+                                </div>
+                                <div class="form-group required col-md-6">
+                                    <label for="inputEmail4">Environment Tags</label>
+
+                                    <select id="my-select2" data-select2-tags="true" name="env_tags[]" multiple="multiple" class="form-control select2 required">
+                                        <?php
+                                        if (!empty($service->env_tags)) {
+                                            $arr = explode(',', $service->env_tags);
+                                            foreach ($arr as $row) : ?>
+                                                <option value="<?= $row; ?>" selected="selected">
+                                                    <?= $row; ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group required col-md-6">
+                                    <label for="inputPassword4">Secret Template</label>
+                                    <select id="secret_template" name="secret_template" class="form-control required">
+                                        <option value="" selected="">--Select--</option>
+                                        <?php foreach ($templates as $template) : ?>
+                                            <option value="<?= $template['uuid']; ?>" <?= ($template['uuid'] == @$secret_values_templates['secret_template_id']) ? 'selected' : '' ?>>
+                                                <?= $template['code']; ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                                <div class="form-group required col-md-6">
+                                    <label for="inputPassword4">Values Template</label>
+                                    <select id="values_template" name="values_template" class="form-control required">
+                                        <option value="" selected="">--Select--</option>
+                                        <?php foreach ($templates as $template) : ?>
+                                            <option value="<?= $template['uuid']; ?>" <?= ($template['uuid'] == @$secret_values_templates['values_template_id']) ? 'selected' : '' ?>>
+                                                <?= $template['code']; ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
                                 </div>
                             </div>
 
@@ -105,14 +133,11 @@ $uriSegment = $uri->getSegment(3);
                                     <span class="all-media-image-files">
                                         <?php if (!empty(@$service->image_logo)) { ?>
                                             <img class="img-rounded" src="<?= @$service->image_logo; ?>" width="100px">
-                                            <a href="/services/rmimg/image_logo/<?= @$service->uuid ?>"
-                                                onclick="return confirm('Are you sure?')" class="btn btn-danger"><i
-                                                    class="fa fa-trash"></i></a>
+                                            <a href="/services/rmimg/image_logo/<?= @$service->uuid ?>" onclick="return confirm('Are you sure?')" class="btn btn-danger"><i class="fa fa-trash"></i></a>
                                         <?php } ?>
                                     </span>
                                     <div class="uplogInrDiv" id="drop_file_doc_zone">
-                                        <input type="file" name="file" class="form-control fileUpload  form-control-lg"
-                                            id="file">
+                                        <input type="file" name="file" class="form-control fileUpload  form-control-lg" id="file">
                                         <div class="uploadBlkInr">
                                             <div class="uplogImg">
                                                 <img src="/assets/img/fileupload.png" />
@@ -136,9 +161,7 @@ $uriSegment = $uri->getSegment(3);
                                     <span class="all-media-image-files2 media-files">
                                         <?php if (!empty(@$service->image_brand)) { ?>
                                             <img src="<?= @$service->image_brand; ?>" width="100px">
-                                            <a href="/services/rmimg/image_brand/<?= @$service->uuid ?>"
-                                                onclick="return confirm('Are you sure?')" class="btn btn-danger"><i
-                                                    class="fa fa-trash"></i></a>
+                                            <a href="/services/rmimg/image_brand/<?= @$service->uuid ?>" onclick="return confirm('Are you sure?')" class="btn btn-danger"><i class="fa fa-trash"></i></a>
                                         <?php } ?>
                                     </span>
                                     <div class="uplogInrDiv " id="drop_file_doc_zone2">
@@ -185,84 +208,71 @@ $uriSegment = $uri->getSegment(3);
                  </div>
                  <?php
                      }
-                 */?>
+                 */ ?>
                             </div>
 
                             <?php
                             if (count($secret_services) > 0) {
-                                ?>
+                            ?>
                                 <div class="form-row addresscontainer">
                                     <?php
                                     for ($jak_i = 0; $jak_i < count($secret_services); $jak_i++) {
                                         $new_id = $jak_i + 1;
-                                        ?>
+                                    ?>
                                         <div class="form-row col-md-12" id="office_address_<?php echo $new_id; ?>">
                                             <div class="form-group col-md-6">
                                                 <label for="inputEmail4">Secret Key</label>
-                                                <input autocomplete="off" type="text" class="form-control"
-                                                    id="key_name_<?php echo $new_id; ?>" name="key_name[]" placeholder=""
-                                                    value="<?= $secret_services[$jak_i]['key_name'] ?>">
+                                                <input autocomplete="off" type="text" class="form-control" id="key_name_<?php echo $new_id; ?>" name="key_name[]" placeholder="" value="<?= $secret_services[$jak_i]['key_name'] ?>">
                                             </div>
                                             <div class="form-group col-md-5">
                                                 <label for="inputEmail4">Secret Value</label>
-                                                <input autocomplete="off" type="text" class="form-control"
-                                                    id="key_value_<?php echo $new_id; ?>" name="key_value[]" placeholder=""
-                                                    value="<?= (!empty($_SESSION['role']) && $_SESSION['role'] == 1) ? $secret_services[$jak_i]['key_value'] : '********' ?>">
+                                                <input autocomplete="off" type="text" class="form-control" id="key_value_<?php echo $new_id; ?>" name="key_value[]" placeholder="" value="<?= (!empty($_SESSION['role']) && $_SESSION['role'] == 1) ? $secret_services[$jak_i]['key_value'] : '********' ?>">
                                             </div>
                                             <?php
                                             if ($jak_i == 0) {
-                                                ?>
+                                            ?>
                                                 <div class="form-group col-md-1 change d-flex">
-                                                    <button class="btn btn-primary bootstrap-touchspin-up add " type="button"
-                                                        style="max-height: 35px;margin-top: 28px;margin-left: 10px;">+</button>
-                                                    <button class="btn btn-info bootstrap-touchspin-up deleteaddress" data-type="secret_services"
-                                                        data-id="<?= $secret_services[$jak_i]['id'] ?>" id="deleteRow" type="button"
-                                                        style="max-height: 35px;margin-top: 28px;margin-left: 10px;">-</button>
+                                                    <button class="btn btn-primary bootstrap-touchspin-up add " type="button" style="max-height: 35px;margin-top: 28px;margin-left: 10px;">+</button>
+                                                    <button class="btn btn-info bootstrap-touchspin-up deleteaddress" data-type="secret_services" data-id="<?= $secret_services[$jak_i]['id'] ?>" id="deleteRow" type="button" style="max-height: 35px;margin-top: 28px;margin-left: 10px;">-</button>
                                                 </div>
-                                                <?php
+                                            <?php
                                             } else {
-                                                ?>
+                                            ?>
                                                 <div class="form-group col-md-1 change">
-                                                    <button class="btn btn-info bootstrap-touchspin-up deleteaddress" data-type="secret_services"
-                                                        data-id="<?= $secret_services[$jak_i]['id'] ?>" id="deleteRow" type="button"
-                                                        style="max-height: 35px;margin-top: 28px;margin-left: 10px;">-</button>
+                                                    <button class="btn btn-info bootstrap-touchspin-up deleteaddress" data-type="secret_services" data-id="<?= $secret_services[$jak_i]['id'] ?>" id="deleteRow" type="button" style="max-height: 35px;margin-top: 28px;margin-left: 10px;">-</button>
                                                 </div>
-                                                <?php
+                                            <?php
                                             }
                                             ?>
                                         </div>
-                                        <?php
+                                    <?php
                                     }
                                     ?>
                                 </div>
 
-                                <input type="hidden" value="<?php echo count($secret_services); ?>"
-                                    id="total_secret_services" name="total_secret_services">
+                                <input type="hidden" value="<?php echo count($secret_services); ?>" id="total_secret_services" name="total_secret_services">
 
-                                <?php
+                            <?php
                             } else {
-                                ?>
+                            ?>
                                 <div class="form-row" id="office_address_1">
                                     <div class="form-group col-md-6">
                                         <label for="inputEmail4">Secret Key</label>
-                                        <input autocomplete="off" type="text" class="form-control" id="key_name_1"
-                                            name="key_name[]" placeholder="" value="">
+                                        <input autocomplete="off" type="text" class="form-control" id="key_name_1" name="key_name[]" placeholder="" value="">
                                     </div>
                                     <div class="form-group col-md-5">
                                         <label for="inputEmail4">Secret Value</label>
-                                        <input autocomplete="off" type="text" class="form-control" id="key_value_1"
-                                            name="key_value[]" placeholder="" value="">
+                                        <input autocomplete="off" type="text" class="form-control" id="key_value_1" name="key_value[]" placeholder="" value="">
                                     </div>
                                     <div class="form-group col-md-1 change">
-                                        <button class="btn btn-primary bootstrap-touchspin-up add" type="button"
-                                            style="max-height: 35px;margin-top: 28px;margin-left: 10px;">+</button>
+                                        <button class="btn btn-primary bootstrap-touchspin-up add" type="button" style="max-height: 35px;margin-top: 28px;margin-left: 10px;">+</button>
                                     </div>
                                 </div>
                                 <div class="form-row addresscontainer">
 
                                 </div>
                                 <input type="hidden" value="1" id="total_secret_services" name="total_secret_services">
-                                <?php
+                            <?php
                             }
                             ?>
                         </div>
@@ -270,50 +280,42 @@ $uriSegment = $uri->getSegment(3);
                         <div class="tab-pane fade" id="nav-steps" role="tabpanel" aria-labelledby="nav-steps-tab">
                             <?php
                             if (count($blocks_list) > 0) {
-                                ?>
+                            ?>
                                 <div class="form-row blocks_html">
                                     <?php
                                     for ($jak_i = 0; $jak_i < count($blocks_list); $jak_i++) {
                                         $new_id = $jak_i + 1;
-                                        ?>
-                                        <div class="form-row col-md-12 each-row each-block" style="margin-bottom:30px;"
-                                            id="blocks_html_<?php echo $new_id; ?>">
+                                    ?>
+                                        <div class="form-row col-md-12 each-row each-block" style="margin-bottom:30px;" id="blocks_html_<?php echo $new_id; ?>">
                                             <div class="form-group col-md-6">
                                                 <label for="inputEmail4">Code</label>
-                                                <input autocomplete="off" type="text" class="form-control blocks_code"
-                                                    id="blocks_code<?php echo $new_id; ?>" name="blocks_code[]" placeholder=""
-                                                    value="<?= $blocks_list[$jak_i]['code'] ?>"><br>
+                                                <input autocomplete="off" type="text" class="form-control blocks_code" id="blocks_code<?php echo $new_id; ?>" name="blocks_code[]" placeholder="" value="<?= $blocks_list[$jak_i]['code'] ?>"><br>
 
                                                 <label for="inputEmail4">Title</label>
-                                                <input autocomplete="off" type="text" class="form-control"
-                                                    id="blocks_title<?php echo $new_id; ?>" name="blocks_title[]" placeholder=""
-                                                    value="<?= $blocks_list[$jak_i]['title'] ?>"><br>
+                                                <input autocomplete="off" type="text" class="form-control" id="blocks_title<?php echo $new_id; ?>" name="blocks_title[]" placeholder="" value="<?= $blocks_list[$jak_i]['title'] ?>"><br>
 
                                                 <label for="inputEmail4">Sort</label>
-                                                <input autocomplete="off" type="number" class="form-control" name="sort[]"
-                                                    placeholder="" value="<?= $blocks_list[$jak_i]['sort'] ?>">
+                                                <input autocomplete="off" type="number" class="form-control" name="sort[]" placeholder="" value="<?= $blocks_list[$jak_i]['sort'] ?>">
 
                                                 <label for="inputEmail4">Type</label>
                                                 <select name="type[]" id="text_type" class="form-control text_type">
                                                     <option value="database" <?php if ($blocks_list[$jak_i]['type'] == 'database')
-                                                        echo "selected"; ?>>Database</option>
+                                                                                    echo "selected"; ?>>Database</option>
                                                     <option value="nginx" <?php if ($blocks_list[$jak_i]['type'] == 'nginx')
-                                                        echo "selected"; ?>>Nginx</option>
+                                                                                echo "selected"; ?>>Nginx</option>
                                                     <option value="dns" <?php if ($blocks_list[$jak_i]['type'] == 'dns')
-                                                        echo "selected"; ?>>DNS</option>
+                                                                            echo "selected"; ?>>DNS</option>
                                                     <option value="varnish" <?php if ($blocks_list[$jak_i]['type'] == 'varnish')
-                                                        echo "selected"; ?>>Varnish</option>
+                                                                                echo "selected"; ?>>Varnish</option>
                                                     <option value="secrets" <?php if ($blocks_list[$jak_i]['type'] == 'secrets')
-                                                        echo "selected"; ?>>Secrets</option>
+                                                                                echo "selected"; ?>>Secrets</option>
                                                     <option value="bash" <?php if ($blocks_list[$jak_i]['type'] == 'bash')
-                                                        echo "selected"; ?>>Bash</option>
+                                                                                echo "selected"; ?>>Bash</option>
                                                 </select>
                                             </div>
 
-                                            <input type="hidden" class="hidden_type_value"
-                                                value="<?= $blocks_list[$jak_i]['type'] ?>">
-                                            <input type="hidden" class="hidden_blocks_text_value"
-                                                value="<?= $blocks_list[$jak_i]['text'] ?>">
+                                            <input type="hidden" class="hidden_type_value" value="<?= $blocks_list[$jak_i]['type'] ?>">
+                                            <input type="hidden" class="hidden_blocks_text_value" value="<?= $blocks_list[$jak_i]['text'] ?>">
 
                                             <div class="form-group col-md-5 textarea-block">
                                                 <label class="textarea_label" for="inputEmail4">
@@ -321,50 +323,38 @@ $uriSegment = $uri->getSegment(3);
                                                 </label>
 
                                                 <textarea class="form-control blocks_text <?php if ($blocks_list[$jak_i]['type'] == 'WYSIWYG') {
-                                                    echo "myClassName";
-                                                } else {
-                                                    echo "textarea-height";
-                                                } ?>"
-                                                    id="blocks_text<?php echo $new_id; ?>"
-                                                    name="blocks_text[]"><?= $blocks_list[$jak_i]['text'] ?></textarea>
+                                                                                                echo "myClassName";
+                                                                                            } else {
+                                                                                                echo "textarea-height";
+                                                                                            } ?>" id="blocks_text<?php echo $new_id; ?>" name="blocks_text[]"><?= $blocks_list[$jak_i]['text'] ?></textarea>
                                             </div>
-                                            <input type="hidden" value="<?= $blocks_list[$jak_i]['id'] ?>" id="blocks_id"
-                                                name="blocks_id[]">
+                                            <input type="hidden" value="<?= $blocks_list[$jak_i]['id'] ?>" id="blocks_id" name="blocks_id[]">
 
                                             <div class="form-group col-md-1 change">
-                                                <button class="btn btn-info bootstrap-touchspin-up deleteaddress" id="deleteRow"
-                                                    type="button" data-type="service_step" data-id="<?= $blocks_list[$jak_i]['id'] ?>"
-                                                    style="max-height: 35px;margin-top: 38px;margin-left: 10px;margin-bottom:10px;">-</button>
+                                                <button class="btn btn-info bootstrap-touchspin-up deleteaddress" id="deleteRow" type="button" data-type="service_step" data-id="<?= $blocks_list[$jak_i]['id'] ?>" style="max-height: 35px;margin-top: 38px;margin-left: 10px;margin-bottom:10px;">-</button>
                                                 <br>
-                                                <a href="#" class="tooltip-class" style="margin-left: 23px;"
-                                                    data-toggle="tooltip"
-                                                    title="<?= @$data_type_format[$blocks_list[$jak_i]['type']]; ?>"><i
-                                                        class="fa fa-info-circle"></i></a>
+                                                <a href="#" class="tooltip-class" style="margin-left: 23px;" data-toggle="tooltip" title="<?= @$data_type_format[$blocks_list[$jak_i]['type']]; ?>"><i class="fa fa-info-circle"></i></a>
                                             </div>
                                         </div>
-                                        <?php
+                                    <?php
                                     }
                                     ?>
                                 </div>
 
-                                <input type="hidden" value="<?php echo count($blocks_list); ?>" id="total_blocks"
-                                    name="total_blocks" />
+                                <input type="hidden" value="<?php echo count($blocks_list); ?>" id="total_blocks" name="total_blocks" />
 
-                                <?php
+                            <?php
                             } else {
-                                ?>
+                            ?>
                                 <div class="form-row each-block" style="margin-bottom:30px;" id="blocks_html_1">
                                     <div class="form-group col-md-6">
                                         <label for="inputEmail4">Code</label>
-                                        <input autocomplete="off" type="text" class="form-control blocks_code"
-                                            id="first_name_1" name="blocks_code[]" placeholder="" value="">
+                                        <input autocomplete="off" type="text" class="form-control blocks_code" id="first_name_1" name="blocks_code[]" placeholder="" value="">
 
                                         <label for="inputEmail4">Title</label>
-                                        <input autocomplete="off" type="text" class="form-control" id="surname"
-                                            name="blocks_title[]" placeholder="" value="">
+                                        <input autocomplete="off" type="text" class="form-control" id="surname" name="blocks_title[]" placeholder="" value="">
                                         <label for="inputEmail4">Sort</label>
-                                        <input autocomplete="off" type="number" class="form-control" name="sort[]"
-                                            placeholder="" value="">
+                                        <input autocomplete="off" type="number" class="form-control" name="sort[]" placeholder="" value="">
 
                                         <label for="inputEmail4">Type</label>
                                         <select name="type[]" id="text_type" class="form-control text_type">
@@ -378,21 +368,19 @@ $uriSegment = $uri->getSegment(3);
                                     </div>
                                     <div class="form-group col-md-5 textarea-block">
                                         <label class="textarea_label" for="inputEmail4">Text</label>
-                                        <textarea class="form-control textarea-height blocks_text" id="ck-content"
-                                            name="blocks_text[]"></textarea>
+                                        <textarea class="form-control textarea-height blocks_text" id="ck-content" name="blocks_text[]"></textarea>
                                     </div>
                                 </div>
                                 <input type="hidden" value="0" id="contact_id" name="contact_id">
                                 <div class="form-row blocks_html">
                                 </div>
                                 <input type="hidden" value="1" id="total_blocks" name="total_blocks">
-                                <?php
+                            <?php
                             }
                             ?>
 
                             <div class="form-group">
-                                <button class="btn btn-primary add_step" type="button"
-                                    style="float:right;margin-right: 120px;">Add Steps</button><br><br>
+                                <button class="btn btn-primary add_step" type="button" style="float:right;margin-right: 120px;">Add Steps</button><br><br>
                             </div>
 
                         </div>
@@ -401,12 +389,12 @@ $uriSegment = $uri->getSegment(3);
 
                             <?php
                             if (count($serviceDomains) > 0) {
-                                ?>
+                            ?>
                                 <div class="form-row domains_container">
                                     <?php
                                     for ($jak_i = 0; $jak_i < count($serviceDomains); $jak_i++) {
                                         $new_id = $jak_i + 1;
-                                        ?>
+                                    ?>
                                         <div class="form-row col-md-12" id="domains_<?php echo $new_id; ?>">
                                             <div class="form-group col-md-6">
 
@@ -416,9 +404,8 @@ $uriSegment = $uri->getSegment(3);
 
                                                 <select id="domains" name="domains[]" class="form-control">
                                                     <option value="" selected="">--Select--</option>
-                                                    <?php foreach ($all_domains as $row): ?>
-                                                        <option value="<?= $row['uuid']; ?>"
-                                                            <?= ($row['uuid'] == @$serviceDomains[$jak_i]['domain_uuid']) ? 'selected' : '' ?>>
+                                                    <?php foreach ($all_domains as $row) : ?>
+                                                        <option value="<?= $row['uuid']; ?>" <?= ($row['uuid'] == @$serviceDomains[$jak_i]['domain_uuid']) ? 'selected' : '' ?>>
                                                             <?= $row['name']; ?>
                                                         </option>
                                                     <?php endforeach; ?>
@@ -428,44 +415,38 @@ $uriSegment = $uri->getSegment(3);
 
                                             <?php
                                             if ($jak_i == 0) {
-                                                ?>
+                                            ?>
                                                 <div class="form-group col-md-1 change d-flex">
-                                                    <button class="btn btn-primary bootstrap-touchspin-up add_domain " type="button"
-                                                        style="max-height: 35px;margin-top: 28px;margin-left: 10px;">+</button>
-                                                    <button class="btn btn-info bootstrap-touchspin-up deleteaddress" data-type="domains"
-                                                        data-id="<?= $serviceDomains[$jak_i]['uuid'] ?>" id="deleteRow" type="button"
-                                                        style="max-height: 35px;margin-top: 28px;margin-left: 10px;">-</button>
+                                                    <button class="btn btn-primary bootstrap-touchspin-up add_domain " type="button" style="max-height: 35px;margin-top: 28px;margin-left: 10px;">+</button>
+                                                    <button class="btn btn-info bootstrap-touchspin-up deleteaddress" data-type="domains" data-id="<?= $serviceDomains[$jak_i]['uuid'] ?>" id="deleteRow" type="button" style="max-height: 35px;margin-top: 28px;margin-left: 10px;">-</button>
                                                 </div>
-                                                <?php
+                                            <?php
                                             } else {
-                                                ?>
+                                            ?>
                                                 <div class="form-group col-md-1 change">
-                                                    <button class="btn btn-info bootstrap-touchspin-up deleteaddress" data-type="domains"
-                                                        data-id="<?= $serviceDomains[$jak_i]['uuid'] ?>" id="deleteRow" type="button"
-                                                        style="max-height: 35px;margin-top: 28px;margin-left: 10px;">-</button>
+                                                    <button class="btn btn-info bootstrap-touchspin-up deleteaddress" data-type="domains" data-id="<?= $serviceDomains[$jak_i]['uuid'] ?>" id="deleteRow" type="button" style="max-height: 35px;margin-top: 28px;margin-left: 10px;">-</button>
                                                 </div>
-                                                <?php
+                                            <?php
                                             }
                                             ?>
                                         </div>
-                                        <?php
+                                    <?php
                                     }
                                     ?>
                                 </div>
 
-                                <input type="hidden" value="<?php echo count($serviceDomains); ?>" id="total_domains"
-                                    name="total_domains">
+                                <input type="hidden" value="<?php echo count($serviceDomains); ?>" id="total_domains" name="total_domains">
 
-                                <?php
+                            <?php
                             } else {
-                                ?>
+                            ?>
                                 <div class="form-row" id="domains_1">
                                     <div class="form-group col-md-6">
                                         <label for="inputEmail4">Select Domain</label>
 
                                         <select id="domains" name="domains[]" class="form-control">
                                             <option value="" selected="">--Select--</option>
-                                            <?php foreach ($all_domains as $row): ?>
+                                            <?php foreach ($all_domains as $row) : ?>
                                                 <option value="<?= $row['uuid']; ?>">
                                                     <?= $row['name']; ?>
                                                 </option>
@@ -476,8 +457,7 @@ $uriSegment = $uri->getSegment(3);
                                     </div>
 
                                     <div class="form-group col-md-1 change">
-                                        <button class="btn btn-primary bootstrap-touchspin-up add_domain" type="button"
-                                            style="max-height: 35px;margin-top: 28px;margin-left: 10px;">+</button>
+                                        <button class="btn btn-primary bootstrap-touchspin-up add_domain" type="button" style="max-height: 35px;margin-top: 28px;margin-left: 10px;">+</button>
                                     </div>
                                 </div>
                                 <div class="form-row domains_container">
@@ -485,7 +465,7 @@ $uriSegment = $uri->getSegment(3);
                                 </div>
                                 <input type="hidden" value="1" id="total_domains" name="total_domains">
                                 <input type="hidden" value="<?php echo $uriSegment; ?>" id="serviceId" name="serviceId">
-                                <?php
+                            <?php
                             }
                             ?>
                         </div>
@@ -527,8 +507,41 @@ $uriSegment = $uri->getSegment(3);
         </form>
         <?php /*<div class="btndata">
  <button type="button" id="RunCmd" class="btn btn-primary page_title_right">Run CMD</button>
-</div> */?>
+</div> */ ?>
     </div>
+</div>
+
+<div 
+    class="modal fade" 
+    id="helmConfirmationModal" 
+    tabindex="-1" role="dialog" 
+    aria-labelledby="helmConfirmationModalTitle" 
+    aria-hidden="true"
+    data-backdrop="false"
+>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="helmModalTitle">Helm</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Do You want to run Helm command as well? If yes Please Add the template path</p>
+        <form>
+          <div class="form-group">
+            <label for="template-path" class="col-form-label">Path</label>
+            <input type="text" class="form-control" id="template-path">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+        <button type="button" class="btn btn-primary" id="helm-deploy">Yes</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <?php require_once(APPPATH . 'Views/common/footer.php'); ?>
@@ -585,7 +598,7 @@ $uriSegment = $uri->getSegment(3);
 <script type="text/javascript">
     var id = "<?= @$service->uuid ?>";
 
-    $(document).on('drop', '#drop_file_doc_zone', function (e) {
+    $(document).on('drop', '#drop_file_doc_zone', function(e) {
         // $("#ajax_load").show();
         if (e.originalEvent.dataTransfer) {
             if (e.originalEvent.dataTransfer.files.length) {
@@ -600,7 +613,7 @@ $uriSegment = $uri->getSegment(3);
         }
     });
 
-    $(document).on("change", ".fileUpload", function () {
+    $(document).on("change", ".fileUpload", function() {
 
         for (var count = 0; count < $(this)[0].files.length; count++) {
 
@@ -627,7 +640,7 @@ $uriSegment = $uri->getSegment(3);
             dataType: 'json',
             maxNumberOfFiles: 1,
             autoUpload: false,
-            success: function (result) {
+            success: function(result) {
 
                 $("#ajax_load").hide();
                 if (result.status == '1') {
@@ -636,7 +649,7 @@ $uriSegment = $uri->getSegment(3);
                     toastr.error(result.msg);
                 }
             },
-            error: function (jqXHR, textStatus, errorThrown) {
+            error: function(jqXHR, textStatus, errorThrown) {
                 $("#ajax_load").hide();
                 console.log(textStatus, errorThrown);
             },
@@ -652,7 +665,7 @@ $uriSegment = $uri->getSegment(3);
 
     }
 
-    $(document).on('drop', '#drop_file_doc_zone2', function (e) {
+    $(document).on('drop', '#drop_file_doc_zone2', function(e) {
         // $("#ajax_load").show();
         if (e.originalEvent.dataTransfer) {
             if (e.originalEvent.dataTransfer.files.length) {
@@ -667,7 +680,7 @@ $uriSegment = $uri->getSegment(3);
         }
     });
 
-    $(document).on("change", ".fileUpload2", function () {
+    $(document).on("change", ".fileUpload2", function() {
 
         for (var count = 0; count < $(this)[0].files.length; count++) {
 
@@ -694,7 +707,7 @@ $uriSegment = $uri->getSegment(3);
             dataType: 'json',
             maxNumberOfFiles: 1,
             autoUpload: false,
-            success: function (result) {
+            success: function(result) {
 
                 $("#ajax_load").hide();
                 if (result.status == '1') {
@@ -703,7 +716,7 @@ $uriSegment = $uri->getSegment(3);
                     toastr.error(result.msg);
                 }
             },
-            error: function (jqXHR, textStatus, errorThrown) {
+            error: function(jqXHR, textStatus, errorThrown) {
                 $("#ajax_load").hide();
                 console.log(textStatus, errorThrown);
             },
@@ -719,7 +732,14 @@ $uriSegment = $uri->getSegment(3);
 
     }
 
-    $('#DeployService').on('click', function () {
+    $("#helm-deploy").on("click", function () {
+        let templatePath = $("#template-path").val();
+        console.log({templatePath});
+    })
+
+    $('#DeployService').on('click', function() {
+        // $('#helmConfirmationModal').modal('toggle');
+        // return false;
         var Status = $(this).val();
         $.ajax({
             url: "/services/deploy_service/<?= @$service->uuid ?>",
@@ -727,19 +747,19 @@ $uriSegment = $uri->getSegment(3);
             data: {
                 'data': Status
             },
-            success: function (response) {
+            success: function(response) {
                 alert(response);
 
 
                 // You will get response from your PHP page (what you echo or print)
             },
-            error: function (jqXHR, textStatus, errorThrown) {
+            error: function(jqXHR, textStatus, errorThrown) {
                 console.log(textStatus, errorThrown);
             }
         });
     });
 
-    $('#DeleteService').on('click', function () {
+    $('#DeleteService').on('click', function() {
         var Status = $(this).val();
         $.ajax({
             url: "/services/delete_service/<?= @$service->uuid ?>",
@@ -747,24 +767,24 @@ $uriSegment = $uri->getSegment(3);
             data: {
                 'data': Status
             },
-            success: function (response) {
+            success: function(response) {
                 alert(response);
 
 
                 // You will get response from your PHP page (what you echo or print)
             },
-            error: function (jqXHR, textStatus, errorThrown) {
+            error: function(jqXHR, textStatus, errorThrown) {
                 console.log(textStatus, errorThrown);
             }
         });
     });
 
 
-    $(document).ready(function () {
+    $(document).ready(function() {
 
         var max_fields_limit = 10; //set limit for maximum input fields
         var x = $('#total_secret_services').val(); //initialize counter for text box
-        $('.add').click(function (e) { //click event on add more fields button having class add_more_button
+        $('.add').click(function(e) { //click event on add more fields button having class add_more_button
             // e.preventDefault();
             if (x < max_fields_limit) { //check conditions
                 x++; //counter increment
@@ -785,7 +805,7 @@ $uriSegment = $uri->getSegment(3);
 
             }
 
-            $('.deleteaddress').on("click", function (e) { //user click on remove text links
+            $('.deleteaddress').on("click", function(e) { //user click on remove text links
                 e.preventDefault();
                 $(this).parent().parent().remove();
                 x--;
@@ -793,7 +813,7 @@ $uriSegment = $uri->getSegment(3);
         });
     });
 
-    $('.deleteaddress').on("click", function (e) { //user click on remove text links
+    $('.deleteaddress').on("click", function(e) { //user click on remove text links
 
         var current = $(this);
         var serviceId = current.attr("data-id");
@@ -807,7 +827,7 @@ $uriSegment = $uri->getSegment(3);
                 sId: pageId
             },
             method: 'post',
-            success: function (res) {
+            success: function(res) {
                 console.log(res)
                 current.parent().parent().remove();
 
@@ -817,33 +837,33 @@ $uriSegment = $uri->getSegment(3);
     })
 
     // Add the following code if you want the name of the file appear on select
-    $(".custom-file-input").on("change", function () {
+    $(".custom-file-input").on("change", function() {
         var fileName = $(this).val().split("\\").pop();
         $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
     });
 
-    $("#file2").on("change", function () {
+    $("#file2").on("change", function() {
         var fileName = $(this).val().split("\\").pop();
         $(this).siblings("#file2").addClass("selected").html(fileName);
     });
 
-    $("#delete_image_logo").on("click", function (e) {
+    $("#delete_image_logo").on("click", function(e) {
         e.preventDefault();
         $(".all-media-image-files").html("");
     })
-    $("#delete_image_logo2").on("click", function (e) {
+    $("#delete_image_logo2").on("click", function(e) {
         e.preventDefault();
         $(".all-media-image-files").html("");
     })
 
-    $(document).ready(function () {
+    $(document).ready(function() {
 
         $('[data-toggle="tooltip"]').tooltip();
 
         var max_fields_limit = 20; //set limit for maximum input fields
         total_blocks = parseInt($('#total_blocks').val()); //initialize counter for text box
 
-        $('.add_step').click(function (e) { //click event on add more fields button having class add_more_button
+        $('.add_step').click(function(e) { //click event on add more fields button having class add_more_button
 
             $('.blocks_html').append('<div class="form-row col-md-12 each-block" style="margin-bottom:30px;" id="blocks_html_' + total_blocks + '"><div class="form-group col-md-6">' +
                 '<label for="inputSecretKey">Code</label>' +
@@ -878,7 +898,7 @@ $uriSegment = $uri->getSegment(3);
 
             CKEDITOR.replaceAll('myClassName');
 
-            $('.deleteaddress').on("click", function (e) { //user click on remove text links
+            $('.deleteaddress').on("click", function(e) { //user click on remove text links
 
                 $(this).parent().parent().remove();
                 total_blocks--;
@@ -889,18 +909,18 @@ $uriSegment = $uri->getSegment(3);
 
 
 
-    $(document).ready(function () {
+    $(document).ready(function() {
 
         var max_fields_limit = 10; //set limit for maximum input fields
         var x = $('#total_domains').val(); //initialize counter for text box
-        $('.add_domain').click(function (e) { //click event on add more fields button having class add_more_button
+        $('.add_domain').click(function(e) { //click event on add more fields button having class add_more_button
             // e.preventDefault();
             if (x < max_fields_limit) { //check conditions
                 x++; //counter increment
 
                 $('.domains_container').append('<div class="form-row col-md-12" id="domains_' + x + '"><div class="form-group col-md-6">' +
                     '<label for="inputSecretKey">Select Domain</label>' +
-                    '<select id="domains" name="domains[]" class="form-control">                                      <option value="" selected="">--Select--</option> <?php foreach ($all_domains as $row): ?>     <option value="<?= $row['uuid']; ?>"><?= $row['name']; ?></option> <?php endforeach; ?> </select></div>' +
+                    '<select id="domains" name="domains[]" class="form-control">                                      <option value="" selected="">--Select--</option> <?php foreach ($all_domains as $row) : ?>     <option value="<?= $row['uuid']; ?>"><?= $row['name']; ?></option> <?php endforeach; ?> </select></div>' +
                     '<div class="form-group col-md-1 change">' +
                     '<button class="btn btn-info bootstrap-touchspin-up deleteaddress" data-type="domains" id="deleteRow" type="button" style="max-height: 35px;margin-top: 28px;margin-left: 10px;">-</button>' +
                     '</div></div>'
@@ -909,7 +929,7 @@ $uriSegment = $uri->getSegment(3);
 
             }
 
-            $('.deleteaddress').on("click", function (e) { //user click on remove text links
+            $('.deleteaddress').on("click", function(e) { //user click on remove text links
                 e.preventDefault();
                 $(this).parent().parent().remove();
                 x--;

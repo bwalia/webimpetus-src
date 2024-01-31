@@ -101,7 +101,19 @@ class Home extends BaseController
 				$this->session->set('profile_img', $row->profile_img);
 				$this->session->set('logo', $logo->meta_value);
 				$this->session->set('uuid_business_id', $uuid_business_id);
+				$cookie = [
+					'name'   => 'uuid_business_id',
+					'value'  => $uuid_business_id,
+					'expire' => '86400',
+				];
+				$this->response->setCookie($cookie);
 				$this->session->set('uuid_business', $row->uuid_business_id);
+				$uuidCookie = [
+					'name'   => 'uuid_business',
+					'value'  => $row->uuid_business_id,
+					'expire' => '86400',
+				];
+				$this->response->setCookie($uuidCookie);
 				$this->session->set('jwt_token', $token);
 				if (!$row->uuid_business_id && !isset($row->uuid_business_id)) {
 					$userMenus = $this->menu_model->getRows();
@@ -322,6 +334,12 @@ class Home extends BaseController
 	{
 		$bid = $this->request->getPost('bid');
 		session()->set('uuid_business', $bid);
+		$cookie = [
+			'name'   => 'uuid_business',
+			'value'  => $bid,
+			'expire' => '86400',
+		];
+		$this->response->setCookie($cookie);
 	}
 
 	public function get_uptime()
