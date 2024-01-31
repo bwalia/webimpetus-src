@@ -8,7 +8,8 @@ describe(`Workstation Tasks test on ${Cypress.env("TARGET_ENV")} environment`, (
   
     var login_username_str = Cypress.env('login_username');
     var login_password_str = Cypress.env('login_password');
-  
+    var randomString = Cypress.env('epochTime')
+
     it('Verifying Tasks actions', () => {
 
     // Login with valid credentials
@@ -28,52 +29,52 @@ describe(`Workstation Tasks test on ${Cypress.env("TARGET_ENV")} environment`, (
     // Creating a new Task
     cy.contains('a', 'Add').click();
     cy.wait(1000);    
-    cy.get('select[id="projects_id"]').select("Cypress Project", {force: true});
-    cy.get('select[id="customers_id"]').select("Cypress Customer", {force: true});
-    cy.get('select[id="contacts_id"]').select("Cypress", {force: true});
-    cy.get('input[id="name"]').type("Cypress Task");
-    cy.get('select[id="reported_by"]').select("Cypress User", {force: true});
+    cy.get('select[id="projects_id"]').select(`Cypress Project ${randomString}`, {force: true});
+    cy.get('select[id="customers_id"]').select(`Cypress Customer ${randomString}`, {force: true});
+    cy.get('select[id="contacts_id"]').select(`Cypress ${randomString}`, {force: true});
+    cy.get('input[id="name"]').type(`Cypress Task ${randomString}`);
+    cy.get('select[id="reported_by"]').select(`Cypress User ${randomString}`, {force: true});
     cy.get('input[id="start_date"]').type("19/02/2024");
     cy.get('input[id="end_date"]').type("20/02/2024", {force: true});
     cy.get('input[id="estimated_hour"]').type("1");
     cy.get('input[id="rate"]').type("5");
     cy.get('select[id="status"]').select("open", {force: true});
 
-    cy.get('select[id="assigned_to"]').select("Cypress Employee", {force: true});
+    cy.get('select[id="assigned_to"]').select(`Cypress Employee ${randomString}`, {force: true});
     cy.get('select[id="active"]').select("Active", {force: true});
     cy.get('select[name="category"]').select("in-progress", {force: true});
     cy.get('select[name="priority"]').select("Medium", {force: true});
-    cy.get('select[name="sprint_id"]').select("Cypress Sprint", {force: true});
+    cy.get('select[name="sprint_id"]').select(`Cypress Sprint ${randomString}`, {force: true});
     cy.get('button[type="submit"]').click();    
 
     // Editing the Task created by cypress
     cy.contains('a', 'Tasks').click();
     cy.scrollTo('right');
-    cy.get(`tr:contains('Cypress Task') div[class="dropdown"]`).click();
+    cy.get(`tr:contains('Cypress Task ${randomString}') div[class="dropdown"]`).click();
     cy.contains('a', 'Edit').click();
     cy.get('select[id="active"]').select("Completed", {force: true});
     cy.contains('button', 'Submit').click();    
     cy.wait(2000);
     // Verifying the Task is updated successfully
     cy.get('div[class="alert alert-success"]').should("contain", "Data updated Successfully!");    
-    cy.get(`tr:contains('Cypress Task')`).should("contain", "Completed");
+    cy.get(`tr:contains('Cypress Task ${randomString}')`).should("contain", "Completed");
 
     // Verifying the Task status can be updated successfully
     cy.contains('a', 'Tasks').click();
     cy.scrollTo('right');
-    cy.get(`tr:contains('Cypress Task') div[class="dropdown"]`).click();
+    cy.get(`tr:contains('Cypress Task ${randomString}') div[class="dropdown"]`).click();
     cy.contains('a', 'Edit').click();
     cy.get('select[id="status"]').select("In Review", {force: true});
     cy.contains('button', 'Submit').click();    
     cy.wait(2000);
     // Verifying the Status is updated successfully
     cy.get('div[class="alert alert-success"]').should("contain", "Data updated Successfully!");    
-    cy.get(`tr:contains('Cypress Task')`).should("contain", "InReview");
+    cy.get(`tr:contains('Cypress Task ${randomString}')`).should("contain", "InReview");
 
     // Verifying the task clone action
     cy.contains('a', 'Tasks').click();
     cy.scrollTo('right');
-    cy.get(`tr:contains('Cypress Task') div[class="dropdown"]`).click();
+    cy.get(`tr:contains('Cypress Task ${randomString}') div[class="dropdown"]`).click();
     cy.contains('a', 'Clone').click();
     cy.wait(2000);
     cy.get('div[class="alert alert-success"]').should("contain", "Data cloned Successfully!");   
@@ -82,13 +83,13 @@ describe(`Workstation Tasks test on ${Cypress.env("TARGET_ENV")} environment`, (
 
     // Verifying the search filter
     cy.contains('a', 'Tasks').click();
-    cy.contains('label', 'Search:').type("cypress")
+    cy.contains('label', 'Search:').type(`${randomString}`)
     cy.wait(1000)
-    cy.get(`tr:contains('Cypress Task')`).should('be.visible');
+    cy.get(`tr:contains('Cypress Task ${randomString}')`).should('be.visible');
 
     cy.contains('label', 'Search:').type("xyz")
     cy.wait(1000)
-    cy.get(`tr:contains('Cypress Task')`).should('not.be.visible');
+    cy.get(`tr:contains('Cypress Task ${randomString}')`).should('not.be.visible');
     cy.contains('label', 'Search:').clear()  
 
     })
