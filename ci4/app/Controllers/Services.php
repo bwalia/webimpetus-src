@@ -218,9 +218,8 @@ class Services extends Api
 			// $this->push_service_env_vars($uuid);
 			// $this->gen_service_yaml_file($uuid);
 
-			//exec('/bin/sh /var/www/html/writable/tizohub_deploy_service.sh', $output, $return);
-			$output = shell_exec('/bin/sh /var/www/html/writable/tizohub_deploy_service.sh');
-			//echo $output;
+			$output = shell_exec('/bin/sh /var/www/html/writable/helm/install-' . $uuid . '.sh');
+			// echo $output; die;
 			echo "Service deployment process started OK. Verify the deployment using kubectl get pods command";
 		} else {
 			echo "Uuid is empty!!";
@@ -278,14 +277,16 @@ class Services extends Api
 		// Create Values YAML
 		$valuesTemplate = $this->common_model->getSingleRowWhere("templates", $service['values_template_id'], "uuid");
 		$valuesYaml = $valuesTemplate["template_content"];
-		$webSecrets = $this->common_model->getSingleRowWhere("secrets_services", $uuid, "service_id");
-		$secrets = $this->common_model->getSingleRowWhere("secrets", $webSecrets['secret_id'], "id");
+		$webSecrets = $this->common_model->getDataWhere("secrets_services", $uuid, "service_id");
+		foreach ($webSecrets as $key => $webSecret) {
+			$secrets = $this->common_model->getSingleRowWhere("secrets", $webSecret['secret_id'], "id");
+			$valuesYaml = str_replace($secrets['key_name'], $secrets['key_value'], $valuesYaml);
+		}
 
-		$modifiedValuesString = str_replace($secrets['key_name'], $secrets['key_value'], $valuesYaml);
-		$modifiedValuesString = Yaml::parse($modifiedValuesString);
+		$modifiedValuesString = Yaml::parse($valuesYaml);
 		$modifiedValuesString["secure_env_file"] = $envSecret;
 		$modifiedValuesString = YAML::dump($modifiedValuesString);
-		$valuesFile = fopen(WRITEPATH . "values/service-" . $uuid . ".yaml", "w") or die("Unable to open file!");
+		$valuesFile = fopen(WRITEPATH . "values/values-" . $uuid . ".yaml", "w") or die("Unable to open file!");
 		fwrite($valuesFile, $modifiedValuesString);
 		fclose($valuesFile);
 
@@ -295,7 +296,13 @@ class Services extends Api
 	function run_steps($uuid) {
 		$getSteps = $this->common_model->getSingleRowWhere("blocks_list", $uuid, "uuid_linked_table");
 		$steps = $getSteps["text"];
-		$helmFile = fopen(WRITEPATH . "helm/" . $getSteps["code"] . "-" . $uuid . ".sh", "w") or die("Unable to open file!");
+		$secretServices = $this->common_model->getDataWhere("secrets_services", $uuid, "service_id");
+		foreach ($secretServices as $key => $secretService) {
+			$secrets = $this->common_model->getSingleRowWhere("secrets", $secretService['secret_id'], "id");
+			$steps = str_replace("$".$secrets['key_name'], $secrets['key_value'], $steps);
+		}
+		$steps = str_replace("-f values", "-f " . WRITEPATH . "values/values" , $steps);
+		$helmFile = fopen(WRITEPATH . "helm/install-" . $uuid . ".sh", "w") or die("Unable to open file!");
 		fwrite($helmFile, $steps);
 		fclose($helmFile);
 	}
