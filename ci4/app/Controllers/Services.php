@@ -14,6 +14,7 @@ use App\Models\Amazon_s3_model;
 use App\Models\Core\Common_model;
 use App\Libraries\UUID;
 use App\Models\ServiceDomainsModel;
+use Symfony\Component\Yaml\Yaml;
 
 class Services extends Api
 {
@@ -72,6 +73,7 @@ class Services extends Api
 		$data['secret_services'] = $this->secret_model->getSecrets($id);
 		$data['serviceDomains'] = $this->serviceDomainModel->getRowsByService($id);
 		$data['all_domains'] = $this->common_model->getCommonData('domains', ['uuid_business_id' => $this->businessUuid]);
+		$data['secret_values_templates'] = $this->secret_model->getTemplatesById($id);
 
 		//print_r($data['all_domains']); die;
 		echo view('services/edit', $data);
@@ -80,8 +82,8 @@ class Services extends Api
 
 	public function update()
 	{
-		//$post = $this->request->getPost();
-		//print_r($post); die;
+		// $post = $this->request->getPost();
+		// print_r($post); die;
 		$id = $this->request->getPost('id');
 		$data = array(
 			'name'  => $this->request->getPost('name'),
@@ -93,15 +95,15 @@ class Services extends Api
 			'cid' => $this->request->getPost('cid'),
 			'tid' => $this->request->getPost('tid'),
 			'link' => $this->request->getPost('link'),
-
+			'env_tags' => implode(",", $this->request->getPost('env_tags')),
 			'uuid_business_id' => $this->businessUuid,
 		);
 		if (empty($id)) {
 			$data['uuid'] = UUID::v5(UUID::v4(), 'services');
 		}
 
-		$image_logo = $this->request->getPost('image_logo');
-		$brand_logo = $this->request->getPost('brand_logo');
+		$image_logo = $this->request->getPost('image_logo') ?? "";
+		$brand_logo = $this->request->getPost('brand_logo') ?? "";
 		if (!empty($image_logo) && strlen($image_logo) > 0) {
 
 			$data['image_logo'] = $this->request->getPost('image_logo');
@@ -125,21 +127,36 @@ class Services extends Api
 				$address_data['key_value'] = $key_value[$key];
 				$address_data['status'] = 1;
 				$address_data['uuid_business_id'] = $this->businessUuid;
-	
+				$address_data['uuid'] = UUID::v5(UUID::v4(), 'secrets');
 	
 				$secret_id = $this->secret_model->saveOrUpdateData($id, $address_data);
 	
 				if ($secret_id > 0) {
 					$dataRelated['secret_id'] = $secret_id;
-					$dataRelated['service_id'] = $id;
+					$dataRelated['service_id'] = $id ?? $data["uuid"];
 					$dataRelated['uuid_business_id'] = $this->businessUuid;
+					$dataRelated['uuid'] = UUID::v5(UUID::v4(), 'secrets_services');
 					$this->secret_model->saveSecretRelatedData($dataRelated);
 				}
 			}
 		}
 
+		
 		$i = 0;
 		$post = $this->request->getPost();
+		$secretTemplateId = $post['secret_template'];
+		$valuesTemplateId = $post['values_template'];
+
+		if ($secretTemplateId && $valuesTemplateId) {
+			$templateData = [
+				'uuid' => UUID::v5(UUID::v4(), 'templates__services'),
+				'secret_template_id' => $secretTemplateId,
+				'values_template_id' => $valuesTemplateId,
+				'service_id' => $id ?? $data['uuid']
+			];
+
+			$this->common_model->insertOrUpdateTableData($templateData, "templates__services", "service_id", $id);
+		}
 		//print_r($post); die;
 		if (isset($post["blocks_code"]) && !empty($post["blocks_code"]) && count($post["blocks_code"]) > 0) {
 			foreach ($post["blocks_code"] as $code) {
@@ -176,7 +193,7 @@ class Services extends Api
 				if (empty($isDomainExists)) {
 					$serviceDomainData = [
 						'uuid' =>  UUID::v5(UUID::v4(), 'service__domains'),
-						'service_uuid' => $id,
+						'service_uuid' => $id ?? $data['uuid'],
 						'domain_uuid' => $domain
 					];
 					$this->serviceDomainModel->saveData($serviceDomainData);
@@ -196,14 +213,13 @@ class Services extends Api
 	{
 		if (!empty($uuid)) {
 
-			$this->export_service_json($uuid);
-			$this->gen_service_env_file($uuid);
-			$this->push_service_env_vars($uuid);
-			$this->gen_service_yaml_file($uuid);
+			$this->create_templates($uuid);
+			$this->run_steps($uuid);
+			// $this->push_service_env_vars($uuid);
+			// $this->gen_service_yaml_file($uuid);
 
-			//exec('/bin/sh /var/www/html/writable/tizohub_deploy_service.sh', $output, $return);
-			$output = shell_exec('/bin/sh /var/www/html/writable/tizohub_deploy_service.sh');
-			//echo $output;
+			$output = shell_exec('/bin/sh /var/www/html/writable/helm/install-' . $uuid . '.sh');
+			// echo $output; die;
 			echo "Service deployment process started OK. Verify the deployment using kubectl get pods command";
 		} else {
 			echo "Uuid is empty!!";
@@ -214,7 +230,7 @@ class Services extends Api
 	{
 		if (!empty($uuid)) {
 
-			$this->export_service_json($uuid);
+			$this->create_templates($uuid);
 			$this->gen_service_env_file($uuid);
 			$this->push_service_env_vars($uuid);
 			$this->gen_service_yaml_file($uuid);
@@ -229,16 +245,78 @@ class Services extends Api
 	}
 
 
-	public function export_service_json($uuid)
+	public function create_templates($uuid)
 	{
-		//export service json same format as provided by the api
-		// url/api/service/uuid.json -> json
-		// write json to to file	
+		$service = $this->common_model->getSingleRowWhere("templates__services", $uuid, "service_id");
+		$secretTemplate = $this->common_model->getSingleRowWhere("templates", $service['secret_template_id'], "uuid");
+		$secretYaml = $secretTemplate["template_content"];
+		preg_match_all('/<\*--(.*?)--\*>/', $secretYaml, $matches);
+		$secretParsedYaml = Yaml::parse($secretYaml);
+		foreach ($matches[1] as $match) {
+			$secretTemplate = $this->common_model->getSingleRowWhere("blocks_list", $match, "code");
+			$envSecret = $secretTemplate["text"];
+			$pattern = "/<\*--" . $match . "--\*>/i";
+			$secretParsedYaml = $this->recursiveReplace($secretParsedYaml, $pattern, $envSecret);
+		}
+		$modifiedYamlString = Yaml::dump($secretParsedYaml);
+		// Create Secret Yaml File
+		$secretFile = fopen(WRITEPATH . "secret/service-" . $uuid . ".yaml", "w") or die("Unable to open file!");
+		fwrite($secretFile, $modifiedYamlString);
+		fclose($secretFile);
+		// Create kubeseal script to create secrets
+		$secretCommand = "kubeseal --format=yaml < " . WRITEPATH . "secret/service-" . $uuid . ".yaml" . " > " . WRITEPATH . "secret/sealed-service-" . $uuid . ".yaml";
+		$secretFileScript = fopen( WRITEPATH . "secret/kubeseal-secret.sh", "w") or die("Unable to open file!");
+		fwrite($secretFileScript, $secretCommand);
+		fclose($secretFileScript);
 
-		$myfile = fopen(WRITEPATH . "tizohub_deployments/service-" . $uuid . ".json", "w") or die("Unable to open file!");
+		shell_exec('/bin/sh /var/www/html/writable/secret/kubeseal-secret.sh');
 
-		fwrite($myfile, $this->services($uuid, true));
-		fclose($myfile);
+		$sealedSecretContent = file_get_contents(WRITEPATH . "secret/sealed-service-" . $uuid . ".yaml");
+		$sealedSecretContent = Yaml::parse($sealedSecretContent);
+		$envSecret = $sealedSecretContent["spec"]["encryptedData"]["env_file"];
+		// Create Values YAML
+		$valuesTemplate = $this->common_model->getSingleRowWhere("templates", $service['values_template_id'], "uuid");
+		$valuesYaml = $valuesTemplate["template_content"];
+		$webSecrets = $this->common_model->getDataWhere("secrets_services", $uuid, "service_id");
+		foreach ($webSecrets as $key => $webSecret) {
+			$secrets = $this->common_model->getSingleRowWhere("secrets", $webSecret['secret_id'], "id");
+			$valuesYaml = str_replace($secrets['key_name'], $secrets['key_value'], $valuesYaml);
+		}
+
+		$modifiedValuesString = Yaml::parse($valuesYaml);
+		$modifiedValuesString["secure_env_file"] = $envSecret;
+		$modifiedValuesString = YAML::dump($modifiedValuesString);
+		$valuesFile = fopen(WRITEPATH . "values/values-" . $uuid . ".yaml", "w") or die("Unable to open file!");
+		fwrite($valuesFile, $modifiedValuesString);
+		fclose($valuesFile);
+
+		// helm upgrade -i wsl-int ./devops/webimpetus-chart -f devops/webimpetus-chart/values-int-k3s2.yaml --set-string targetImage="***/webimpetus" --set-string targetImageTag="int" --namespace int --create-namespace
+	}
+
+	function run_steps($uuid) {
+		$getSteps = $this->common_model->getSingleRowWhere("blocks_list", $uuid, "uuid_linked_table");
+		$steps = $getSteps["text"];
+		$secretServices = $this->common_model->getDataWhere("secrets_services", $uuid, "service_id");
+		foreach ($secretServices as $key => $secretService) {
+			$secrets = $this->common_model->getSingleRowWhere("secrets", $secretService['secret_id'], "id");
+			$steps = str_replace("$".$secrets['key_name'], $secrets['key_value'], $steps);
+		}
+		$steps = str_replace("-f values", "-f " . WRITEPATH . "values/values" , $steps);
+		$helmFile = fopen(WRITEPATH . "helm/install-" . $uuid . ".sh", "w") or die("Unable to open file!");
+		fwrite($helmFile, $steps);
+		fclose($helmFile);
+	}
+
+	function recursiveReplace(&$array, $search, $replace) {
+		foreach ($array as $key => &$value) {
+			if (is_array($value)) {
+				$this->recursiveReplace($value, $search, $replace);
+			} elseif (is_string($value)) {
+				$array[$key] = preg_replace($search, $replace, $array[$key]);
+			}
+		}
+
+		return $array;
 	}
 
 

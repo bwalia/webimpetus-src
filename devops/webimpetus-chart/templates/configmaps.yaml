@@ -198,6 +198,18 @@ data:
         mkdir -p $SUB_DIR
         chmod 777 -R ${SUB_DIR}/
         fi
+        SUB_DIR=$FILE"writable/"
+        SUB_DIR=$SUB_DIR"values/"
+        if [ ! -d "$SUB_DIR" ];then
+        mkdir -p $SUB_DIR
+        chmod 777 -R ${SUB_DIR}/
+        fi
+        SUB_DIR=$FILE"writable/"
+        SUB_DIR=$SUB_DIR"secret/"
+        if [ ! -d "$SUB_DIR" ];then
+        mkdir -p $SUB_DIR
+        chmod 777 -R ${SUB_DIR}/
+        fi
         
         cp /tmp/secrets/.env $FILE.env
         FILE=/var/www/html/.env

@@ -203,6 +203,16 @@ class Common_model extends Model
         $query = $this->db->table($tableName)->insert($data);
         return $this->db->insertID();
     }
+    public function insertOrUpdateTableData($data = null, $tableName = "", $field = false, $fieldValue = false)
+    {
+        $isRecordExists = $this->db->table($tableName)->getWhere([$field => $fieldValue])->getRowArray();
+        if ($isRecordExists && isset($isRecordExists) && !empty($isRecordExists)) {
+            $query = $this->db->table($tableName)->update($data, array($field => $fieldValue));
+            return $this->db->insertID();
+        }
+        $query = $this->db->table($tableName)->insert($data);
+        return $this->db->insertID();
+    }
     public function saveDataInTable($data, $tableName = "")
     {
         $query = $this->db->table($tableName)->insert($data);
@@ -213,6 +223,14 @@ class Common_model extends Model
         $result = $this->db->table($tableName)->getWhere([
             $field => $value
         ])->getResultArray();
+
+        return $result;
+    }
+    public function getSingleRowWhere($tableName, $value, $field = "id")
+    {
+        $result = $this->db->table($tableName)->getWhere([
+            $field => $value
+        ])->getRowArray();
 
         return $result;
     }

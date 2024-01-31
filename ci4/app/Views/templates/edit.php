@@ -33,6 +33,7 @@
                                 <option value="purchase_invoices" <?= @$template->module_name == 'purchase_invoices' ? 'selected' : ''; ?>>Purchase Invoices</option>
                                 <option value="purchase_orders" <?= @$template->module_name == 'purchase_orders' ? 'selected' : ''; ?>>Purchase Orders</option>
                                 <option value="work_orders" <?= @$template->module_name == 'work_orders' ? 'selected' : ''; ?>>Work Orders</option>
+                                <option value="services" <?= @$template->module_name == 'services' ? 'selected' : ''; ?>>Services</option>
                             </select>
                         </div>
                         <div class="form-group col-md-6">
