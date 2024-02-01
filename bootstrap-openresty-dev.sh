@@ -46,7 +46,19 @@
         chmod 777 -R ${SUB_DIR}
         fi
         SUB_DIR=$FILE"writable/"
-        SUB_DIR=$SUB_DIR"session/"
+        SUB_DIR=$SUB_DIR"helm/"
+        if [ ! -d "$SUB_DIR" ];then
+        mkdir -p $SUB_DIR
+        chmod 777 -R ${SUB_DIR}/
+        fi
+        SUB_DIR=$FILE"writable/"
+        SUB_DIR=$SUB_DIR"secret/"
+        if [ ! -d "$SUB_DIR" ];then
+        mkdir -p $SUB_DIR
+        chmod 777 -R ${SUB_DIR}/
+        fi
+        SUB_DIR=$FILE"writable/"
+        SUB_DIR=$SUB_DIR"values/"
         if [ ! -d "$SUB_DIR" ];then
         mkdir -p $SUB_DIR
         chmod 777 -R ${SUB_DIR}/
@@ -88,6 +100,21 @@
             chmod 777 -R $FILE
         fi
         FILE=/var/www/html/writable/session/
+        if [ -d "$FILE" ]; then
+            echo "$FILE exists."
+            chmod 777 -R $FILE
+        fi
+        FILE=/var/www/html/writable/helm/
+        if [ -d "$FILE" ]; then
+            echo "$FILE exists."
+            chmod 777 -R $FILE
+        fi
+        FILE=/var/www/html/writable/secret/
+        if [ -d "$FILE" ]; then
+            echo "$FILE exists."
+            chmod 777 -R $FILE
+        fi
+        FILE=/var/www/html/writable/values/
         if [ -d "$FILE" ]; then
             echo "$FILE exists."
             chmod 777 -R $FILE
