@@ -8,6 +8,24 @@ WORKDIR /var/www/html
 RUN apk update && apk upgrade \
      jq
 
+ENV KUBESEAL_VERSION='0.24.4'
+RUN wget "https://github.com/bitnami-labs/sealed-secrets/releases/download/v${KUBESEAL_VERSION:?}/kubeseal-${KUBESEAL_VERSION:?}-linux-amd64.tar.gz"
+RUN tar -xvzf kubeseal-${KUBESEAL_VERSION:?}-linux-amd64.tar.gz kubeseal
+RUN install -m 755 kubeseal /usr/local/bin/kubeseal
+
+ENV BASE_URL="https://get.helm.sh"
+ENV VERSION="3.7.2"
+ENV ARCH="amd64"
+RUN wget ${BASE_URL}/helm-v${VERSION}-linux-${ARCH}.tar.gz -O - | tar -xz && \
+    mv linux-${ARCH}/helm /usr/bin/helm && \
+    chmod +x /usr/bin/helm && \
+    rm -rf linux-${ARCH}
+
+
+#Install kubectl and helmchart binaries
+RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.18.0/bin/linux/amd64/kubectl && chmod +x ./kubectl && mv ./kubectl /usr/bin/kubectl
+RUN kubectl version --client
+
 COPY ci4 /src
 
 #updated ci4 to ci4.2.10 on 12 Dec 2022 BW/HS Testing 4.2.10 but issues with cors and s3 extension
