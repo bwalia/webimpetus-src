@@ -59,7 +59,7 @@ if (empty($_SESSION['uuid'])) { ?>
                             if (isUUID($_SESSION['role'])) {
                                 $role = $_SESSION['role'];
                                 $roleName = getRoleNameByUUID($role);
-                                $roleName = $roleName->role_name;
+                                $roleName = isset($roleName->role_name) ? $roleName->role_name : "";
                             }
                         ?>
                         <div class="profile_info_iner">

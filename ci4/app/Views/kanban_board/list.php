@@ -32,7 +32,7 @@
                                             class="mt-3 pl-2 text-white <?= $row['priority'] == 'high' ? 'bg-danger' : ($row['priority'] == 'medium' ? 'bg-warning' : 'bg-info') ?>">
                                             <?= ucfirst($row['priority']) ?>
                                         </div>
-                                        <span class="text-secondary">(<?= ucfirst($row['project_name']) ?>)</span>
+                                        <span class="text-secondary">(<?= ucfirst($row['project_name'] ?? "") ?>)</span>
                                         <a href="<?= "/" . $tableName . "/edit/" . $row['uuid']; ?>"
                                             class="btn btn-success btn-sm mt-3">View</a>
                                     </div>
