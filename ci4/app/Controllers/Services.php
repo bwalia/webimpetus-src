@@ -124,7 +124,10 @@ class Services extends Api
 			foreach ($key_name as $key => $value) {
 				//$address_data['service_id'] = $id;
 				$address_data['key_name'] = $key_name[$key];
-				$address_data['key_value'] = $key_value[$key];
+				// $address_data['key_value'] = $key_value[$key];
+				if (strpos($key_value[$key], '********') === false) {
+					$address_data['key_value'] = $key_value[$key];
+				}
 				$address_data['status'] = 1;
 				$address_data['uuid_business_id'] = $this->businessUuid;
 				$address_data['uuid'] = UUID::v5(UUID::v4(), 'secrets');
@@ -218,7 +221,7 @@ class Services extends Api
 			// $this->push_service_env_vars($uuid);
 			// $this->gen_service_yaml_file($uuid);
 
-			$output = shell_exec('/bin/sh /var/www/html/writable/helm/install-' . $uuid . '.sh');
+			$output = shell_exec('/bin/bash /var/www/html/writable/helm/install-' . $uuid . '.sh');
 			// echo $output; die;
 			echo "Service deployment process started OK. Verify the deployment using kubectl get pods command";
 		} else {
@@ -250,26 +253,41 @@ class Services extends Api
 		$service = $this->common_model->getSingleRowWhere("templates__services", $uuid, "service_id");
 		$secretTemplate = $this->common_model->getSingleRowWhere("templates", $service['secret_template_id'], "uuid");
 		$secretYaml = $secretTemplate["template_content"];
-		preg_match_all('/<\*--(.*?)--\*>/', $secretYaml, $matches);
-		$secretParsedYaml = Yaml::parse($secretYaml);
-		foreach ($matches[1] as $match) {
-			$secretTemplate = $this->common_model->getSingleRowWhere("blocks_list", $match, "code");
-			$envSecret = $secretTemplate["text"];
-			$pattern = "/<\*--" . $match . "--\*>/i";
-			$secretParsedYaml = $this->recursiveReplace($secretParsedYaml, $pattern, $envSecret);
+		// preg_match_all('/<\*--(.*?)--\*>/', $secretYaml, $matches);
+		// $secretParsedYaml = Yaml::parse($secretYaml);
+		// foreach ($matches[1] as $match) {
+		// 	$secretTemplate = $this->common_model->getSingleRowWhere("blocks_list", $match, "code");
+		// 	$envSecret = $secretTemplate["text"];
+		// 	$pattern = "/<\*--" . $match . "--\*>/i";
+		// 	$secretParsedYaml = $this->recursiveReplace($secretParsedYaml, $pattern, $envSecret);
+		// }
+		$webSecrets = $this->common_model->getDataWhere("secrets_services", $uuid, "service_id");
+		foreach ($webSecrets as $key => $webSecret) {
+			$secrets = $this->common_model->getSingleRowWhere("secrets", $webSecret['secret_id'], "id");
+			$secretYaml = str_replace($secrets['key_name'], $secrets['key_value'], $secretYaml);
 		}
-		$modifiedYamlString = Yaml::dump($secretParsedYaml);
+		$modifiedYamlString = Yaml::dump($secretYaml);
 		// Create Secret Yaml File
 		$secretFile = fopen(WRITEPATH . "secret/service-" . $uuid . ".yaml", "w") or die("Unable to open file!");
 		fwrite($secretFile, $modifiedYamlString);
 		fclose($secretFile);
 		// Create kubeseal script to create secrets
-		$secretCommand = "kubeseal --format=yaml < " . WRITEPATH . "secret/service-" . $uuid . ".yaml" . " > " . WRITEPATH . "secret/sealed-service-" . $uuid . ".yaml";
+		$kubeConfigRow = $this->common_model->getSingleRowWhere("secrets", "KUBECONFIG", "key_name");
+		$kubeConfig = base64_decode($kubeConfigRow['key_value']);
+		
+		$k3sFile = fopen( WRITEPATH . "secret/k3s.yaml", "w") or die("Unable to open file!");
+		fwrite($k3sFile, $kubeConfig);
+		fclose($k3sFile);
+
+		$secretCommand = "#!/bin/bash\n";
+		$secretCommand .= "set -x\n";
+		$secretCommand .= "export KUBECONFIG=" . WRITEPATH . "secret/k3s.yaml\n";
+		$secretCommand .= "kubeseal --format=yaml < " . WRITEPATH . "secret/service-" . $uuid . ".yaml" . " > " . WRITEPATH . "secret/sealed-service-" . $uuid . ".yaml\n";
 		$secretFileScript = fopen( WRITEPATH . "secret/kubeseal-secret.sh", "w") or die("Unable to open file!");
 		fwrite($secretFileScript, $secretCommand);
 		fclose($secretFileScript);
 
-		shell_exec('/bin/sh /var/www/html/writable/secret/kubeseal-secret.sh');
+		shell_exec('/bin/bash /var/www/html/writable/secret/kubeseal-secret.sh');
 
 		$sealedSecretContent = file_get_contents(WRITEPATH . "secret/sealed-service-" . $uuid . ".yaml");
 		$sealedSecretContent = Yaml::parse($sealedSecretContent);
@@ -296,6 +314,7 @@ class Services extends Api
 	function run_steps($uuid) {
 		$getSteps = $this->common_model->getSingleRowWhere("blocks_list", $uuid, "uuid_linked_table");
 		$steps = $getSteps["text"];
+		$steps = base64_decode($steps);
 		$secretServices = $this->common_model->getDataWhere("secrets_services", $uuid, "service_id");
 		foreach ($secretServices as $key => $secretService) {
 			$secrets = $this->common_model->getSingleRowWhere("secrets", $secretService['secret_id'], "id");
