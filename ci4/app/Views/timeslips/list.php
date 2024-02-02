@@ -160,8 +160,8 @@
             var dateString = ('0' + (d.getMonth() + 1)).slice(-2) + '/' + ('0' + (d.getDate())).slice(-2) + '/' + d.getFullYear();
             var empRow = "<tr data-link='/<?= $tableName . "/edit/" ?>" + data[emp].uuid + "'>";
             empRow += "<td class='f_s_12 f_w_400'><input type='checkbox' value=" + data[emp].uuid + " class='check_all' onclick='setExportItem(this);'></td><td>" + data[emp].week_no + "</td>";
-            empRow += "<td>" + data[emp].task_name.substr(0, 20) + (data[emp].task_name.length > 20 ? '...' : '') + "</td>";
-            empRow += "<td>" + data[emp].employee_name.substr(0, 20) + (data[emp].employee_name.length > 20 ? '...' : '') + "</td>"
+            empRow += "<td>" + data[emp].taskName.substr(0, 20) + (data[emp].taskName.length > 20 ? '...' : '') + "</td>";
+            empRow += "<td>" + data[emp].employeeName.substr(0, 20) + (data[emp].employeeName.length > 20 ? '...' : '') + "</td>"
             empRow += "<td>" + dateString + "</td>"
             empRow += "<td>" + data[emp].slip_timer_started + "</td>"
             empRow += '<td class="f_s_12 f_w_400 text-right"><div class="header_more_tool"> <div class="dropdown"> <span class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown">  <i class="ti-more-alt"></i></span> <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton"><a class="dropdown-item" onclick="return confirm(\'Are you sure want to delete?\');" href="/<?= $tableName ?>/delete/' + data[emp].uuid + '"> <i class="ti-trash"></i> Delete</a><a class="dropdown-item" href="/<?= $tableName ?>/edit/' + data[emp].uuid + '"> <i class="fas fa-edit"></i> Edit</a><a class="dropdown-item" href="/<?php echo $tableName; ?>/clone/' + data[emp].uuid + '"> <i class="fas fa-copy"></i> Clone</a> </div> </div></div></td>'

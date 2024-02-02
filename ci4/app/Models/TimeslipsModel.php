@@ -146,9 +146,9 @@ class TimeslipsModel extends Model
             $table . '.uuid',
             $table . '.id as ci4_internal_id',
             $table . '.uuid as id',
-            'tasks.name as task_name',
+            'tasks.name as taskName',
             $table . '.week_no',
-            'CONCAT_WS(" ", employees.saludation, employees.first_name, employees.surname) as employee_name',
+            'CONCAT_WS(" ", employees.saludation, employees.first_name, employees.surname) as employeeName',
             $table . '.slip_start_date',
             $table . '.slip_timer_started',
             $table . '.slip_end_date',
@@ -170,7 +170,6 @@ class TimeslipsModel extends Model
         $this->select($selectFields);
         $this->join('tasks', 'tasks.id = ' . $table . '.task_name');
         $this->join('employees', 'employees.id = ' . $table . '.employee_name');
-
         if ($id === false) {
             if (empty($timeslip_where)) {
                 if (!empty($search)) {

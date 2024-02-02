@@ -15,7 +15,7 @@ $uriSegment = $uri->getSegment(3);
                         <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
                             <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Service Detail</a>
                             <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Service Secrets</a>
-                            <a class="nav-item nav-link" id="nav-steps-tab" data-toggle="tab" href="#nav-steps" role="tab" aria-controls="nav-steps" aria-selected="false">Service Steps</a>
+                            <a class="nav-item nav-link" id="nav-steps-tab" data-toggle="tab" href="#nav-steps" role="tab" aria-controls="nav-steps" aria-selected="false">Service Workflows</a>
                             <a class="nav-item nav-link" id="nav-domains-tab" data-toggle="tab" href="#nav-domains" role="tab" aria-controls="nav-domains" aria-selected="false">Domains</a>
                         </div>
                     </nav>

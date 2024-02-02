@@ -25,7 +25,7 @@
                 <?php foreach ($timeslips as $eachSlip) {
                     $startDate = strtotime(trim($eachSlip['slip_start_date'] . ' ' . $eachSlip['slip_timer_started']));
                     $endDate = strtotime(trim($eachSlip['slip_end_date'] . ' ' . $eachSlip['slip_timer_end']));
-                    $splitted = explode(" ", $eachSlip['slip_timer_started']);
+                    // $splitted = explode(" ", $eachSlip['slip_timer_started']);
                     $titleStartDateHour = getTitleHour($eachSlip['slip_timer_started']);
                     $titleEndDateHour = getTitleHour($eachSlip['slip_timer_end']);
                     echo "{
