@@ -2,21 +2,27 @@ version: 'cypress-docker-v1'
 services:
   cypress-chrome:
     image: cypress/included:12.8.1
-    command: "--browser chrome"
+    command: "--browser chrome --env allure=true "
     working_dir: /cypress
     volumes:
       - ./:/cypress/
+      - ./allure-results:/cypress/allure-results
     env_file: .env
+
   cypress-firefox:
     image: cypress/included:12.8.1
-    command: "--browser firefox"
+    command: "--browser firefox --env allure=true"
     working_dir: /cypress
     volumes:
       - ./:/cypress/
+      - ./allure-results:/cypress/allure-results
     env_file: .env
+    
   cypress-electron:
     image: cypress/included:12.8.1
+    command: "--browser electron --env allure=true "
     working_dir: /cypress
     volumes:
       - ./:/cypress/
+      - ./allure-results:/cypress/allure-results
     env_file: .env     

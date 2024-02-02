@@ -23,3 +23,7 @@ ls -al
 docker compose -f qa-docker-compose-cypress.yml up cypress-chrome
 docker compose -f qa-docker-compose-cypress.yml up cypress-firefox
 docker compose -f qa-docker-compose-cypress.yml up cypress-electron
+npm run allure-report
+# npm run allure-report-open
+
+
