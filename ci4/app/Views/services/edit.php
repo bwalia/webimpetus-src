@@ -220,13 +220,27 @@ $uriSegment = $uri->getSegment(3);
                                         $new_id = $jak_i + 1;
                                     ?>
                                         <div class="form-row col-md-12" id="office_address_<?php echo $new_id; ?>">
-                                            <div class="form-group col-md-6">
+                                            <div class="form-group col-md-4">
                                                 <label for="inputEmail4">Secret Key</label>
                                                 <input autocomplete="off" type="text" class="form-control" id="key_name_<?php echo $new_id; ?>" name="key_name[]" placeholder="" value="<?= $secret_services[$jak_i]['key_name'] ?>">
                                             </div>
                                             <div class="form-group col-md-5">
                                                 <label for="inputEmail4">Secret Value</label>
                                                 <input autocomplete="off" type="text" class="form-control" id="key_value_<?php echo $new_id; ?>" name="key_value[]" placeholder="" value="<?= (!empty($_SESSION['role']) && $_SESSION['role'] == 1) ? $secret_services[$jak_i]['key_value'] : '********' ?>">
+                                            </div>
+                                            <div class="form-group col-md-2 d-flex flex-column">
+                                                <label for="my-select2_<?php echo $new_id; ?>">Environment</label>
+                                                
+                                                <select id="my-select2_<?php echo $new_id; ?>" data-select2-tags="true" name="secret_tags[]" class="form-control select2">
+                                                    <option value="" >--Select--</option>
+                                                    <?php
+                                                    if (isset($secret_services[$jak_i]['secret_tags'])) {
+                                                        ?>
+                                                            <option value="<?= $secret_services[$jak_i]['secret_tags']; ?>" selected="selected">
+                                                                <?= $secret_services[$jak_i]['secret_tags']; ?>
+                                                            </option>
+                                                    <?php } ?>
+                                                </select>
                                             </div>
                                             <?php
                                             if ($jak_i == 0) {
@@ -522,18 +536,24 @@ $uriSegment = $uri->getSegment(3);
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="helmModalTitle">Helm</h5>
+        <h5 class="modal-title" id="helmModalTitle">Deploy to?</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <p>Do You want to run Helm command as well? If yes Please Add the template path</p>
-        <form>
-          <div class="form-group">
-            <label for="template-path" class="col-form-label">Path</label>
-            <input type="text" class="form-control" id="template-path">
-          </div>
+        <p>Please select the environment where you want to deploy</p>
+        <form id="deploy-modal-form">
+            <?php
+            if (!empty($service->env_tags)) {
+                $arr = explode(',', $service->env_tags);
+                foreach ($arr as $key => $envTag) : ?>
+                    <div class="form-check">
+                        <input type="checkbox" name="<?= $envTag ?>" class="form-check-input select-env-tag" id="select-env_<?= $key ?>">
+                        <label for="select-env_<?= $key ?>" class="form-check-label"><?= $envTag ?></label>
+                    </div>
+                <?php endforeach; ?>
+            <?php } ?>
         </form>
       </div>
       <div class="modal-footer">
@@ -732,14 +752,35 @@ $uriSegment = $uri->getSegment(3);
 
     }
 
-    $("#helm-deploy").on("click", function () {
-        let templatePath = $("#template-path").val();
-        console.log({templatePath});
+    $(document).ready(function() {
+        $("#helm-deploy").click(function() {
+            selectedTags = [];
+            var x = $(".select-env-tag"); 
+            $.each(x, function(i, field) {
+                selectedTags.push({[field.name]: $(field).is(':checked')});
+            }); 
+            console.log({selectedTags});
+            var Status = $(this).val();
+            $.ajax({
+                url: "/services/deploy_service/<?= @$service->uuid ?>",
+                type: "post",
+                data: {
+                    'data': { Status,  selectedTags}
+                },
+                success: function(response) {
+                    alert(response);
+                    // You will get response from your PHP page (what you echo or print)
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log(textStatus, errorThrown);
+                }
+            });
+        }); 
     })
 
     $('#DeployService').on('click', function() {
-        // $('#helmConfirmationModal').modal('toggle');
-        // return false;
+        $('#helmConfirmationModal').modal('toggle');
+        return false;
         var Status = $(this).val();
         $.ajax({
             url: "/services/deploy_service/<?= @$service->uuid ?>",

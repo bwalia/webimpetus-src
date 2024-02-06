@@ -223,3 +223,12 @@ function MenuByCategory($mid = "")
     return $db->query("select menu.*,categories.name as catname,categories.ID from menu left join menu_category ON menu_category.uuid_menu=menu.id left join categories ON categories.ID=menu_category.uuid_category and categories.uuid_business_id = '" . session('uuid_business') . "' where menu.language_code='" . $lang . "' order by categories.sort_order asc,menu_category.uuid_category asc,menu.sort_order desc")->getResultArray(); //where menu.language_code='".$lang."'
 
 }
+
+function filterFalseValues($item) {
+    foreach ($item as $key => $value) {
+        if ($value == 'false') {
+            return false;
+        }
+    }
+    return true;
+}
