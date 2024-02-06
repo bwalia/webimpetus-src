@@ -220,11 +220,11 @@ class Services extends Api
 				$selectedTag = array_keys($selectedTag);
 				$this->create_templates($uuid, $selectedTag[0]);
 				$this->run_steps($uuid, $selectedTag[0]);
+				$output = shell_exec('/bin/bash /var/www/html/writable/helm/' . $selectedTag[0] . '-install-' . $uuid . '.sh');
 			}
 			// $this->push_service_env_vars($uuid);
 			// $this->gen_service_yaml_file($uuid);
 
-			$output = shell_exec('/bin/bash /var/www/html/writable/helm/install-' . $uuid . '.sh');
 			// echo $output; die;
 			echo "Service deployment process started OK. Verify the deployment using kubectl get pods command";
 		} else {
