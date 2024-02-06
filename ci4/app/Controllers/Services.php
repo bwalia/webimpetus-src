@@ -218,13 +218,20 @@ class Services extends Api
 			$selectedTags = array_filter($post['data']['selectedTags'], 'filterFalseValues');
 			foreach ($selectedTags as $tk => $selectedTag) {
 				$selectedTag = array_keys($selectedTag);
+
+				if (empty($selectedTag[0])) {
+					echo "No environment selected";
+					die;
+				} else {
 				$this->create_templates($uuid, $selectedTag[0]);
 				$this->run_steps($uuid, $selectedTag[0]);
-				$output = shell_exec('/bin/bash /var/www/html/writable/helm/' . $selectedTag[0] . '-install-' . $uuid . '.sh');
-			}
+				$installScript = '/bin/bash /var/www/html/writable/helm/' . $selectedTag[0] . '-install-' . $uuid . '.sh';
+				$output = shell_exec($installScript);
+				}
+
+		}
 			// $this->push_service_env_vars($uuid);
 			// $this->gen_service_yaml_file($uuid);
-
 			// echo $output; die;
 			echo "Service deployment process started OK. Verify the deployment using kubectl get pods command";
 		} else {
@@ -241,8 +248,8 @@ class Services extends Api
 			$this->push_service_env_vars($uuid);
 			$this->gen_service_yaml_file($uuid);
 
-			//exec('/bin/bash /var/www/html/writable/tizohub_deploy_service.sh', $output, $return);
-			$output = shell_exec('/bin/sh /var/www/html/writable/tizohub_delete_service.sh');
+			//exec('/bin/bash /var/www/html/writable/webimpetus_deploy_service.sh', $output, $return);
+			$output = shell_exec('/bin/sh /var/www/html/writable/webimpetus_delete_service.sh');
 			//echo $output;
 			echo "Service deletion process started OK. Note: This process does not delete the tenant database.";
 		} else {
@@ -251,7 +258,7 @@ class Services extends Api
 	}
 
 
-	public function create_templates($uuid, $selectedENV)
+	public function create_templates($uuid, $userSelectedENV)
 	{
 		$service = $this->common_model->getSingleRowWhere("templates__services", $uuid, "service_id");
 		$secretTemplate = $this->common_model->getSingleRowWhere("templates", $service['secret_template_id'], "uuid");
@@ -266,20 +273,33 @@ class Services extends Api
 		// }
 
 		$targetEnvRow = $this->common_model->getSingleRowWhere("secrets", "TARGET_ENV", "key_name");
-		if (empty($targetEnvRow)) {
-            echo "TARGET_ENV secret is not found or is empty";
-            die;
-        }
-
+			if(empty($targetEnvRow)){
+				//echo "TARGET_ENV secret not found or is empty"; die;
+			} else {
+				if(isset($targetEnvRow['key_value']) && !empty($targetEnvRow['key_value'])){
+					$targetEnv = $targetEnvRow['key_value'];
+					//	echo  "TARGET_ENV var :" . $targetEnv . ". User selected env: " . $userSelectedENV; die;
+				} else {
+					//	echo "TARGET_ENV secret found and is not empty"; die;
+				}
+			}
 		$webSecrets = $this->common_model->getDataWhere("secrets_services", $uuid, "service_id");
 		foreach ($webSecrets as $key => $webSecret) {
 			$secrets = $this->common_model->getSingleRowWhere("secrets", $webSecret['secret_id'], "id");
-			if ($selectedENV == $secrets["secret_tags"] || !$secrets["secret_tags"] || !isset($secrets["secret_tags"])) {
-				$secretYaml = str_replace($secrets['key_name'], $secrets['key_value'], $secretYaml);
+			if ($userSelectedENV == $secrets["secret_tags"] || !$secrets["secret_tags"] || !isset($secrets["secret_tags"])) { //
+					//	echo $secrets['key_name'] . " 1 : " . $secrets['key_value'] . "<br>";die;
+				if ($secrets['key_name'] == "TARGET_ENV") {
+					$secretYaml = str_replace($secrets['key_name'], $userSelectedENV, $secretYaml);
+				} else {
+					$secretYaml = str_replace($secrets['key_name'], $secrets['key_value'], $secretYaml);
+				}
+
+			}else{
+				//echo "293: " . $secrets['key_name'] . "[" . $key ."] ". $secrets['key_value'] . "\n\n";
 			}
 		}
 		// Create Secret Yaml File
-		$secretFile = fopen(WRITEPATH . "secret/". $selectedENV. "-secret-" . $uuid . ".yaml", "w") or die("Unable to open file!");
+		$secretFile = fopen(WRITEPATH . "secret/". $userSelectedENV. "-secret-" . $uuid . ".yaml", "w") or die("Unable to open file!");
 		fwrite($secretFile, $secretYaml);
 		fclose($secretFile);
 		// Create kubeseal script to create secrets
@@ -297,14 +317,14 @@ class Services extends Api
 		$secretCommand = "#!/bin/bash\n";
 		$secretCommand .= "set -x\n";
 		$secretCommand .= "export KUBECONFIG=" . WRITEPATH . "secret/k3s.yaml\n";
-		$secretCommand .= "kubeseal --format=yaml < " . WRITEPATH . "secret/". $selectedENV. "-secret-" . $uuid . ".yaml" . " > " . WRITEPATH . "secret/". $selectedENV ."-sealed-secret-" . $uuid . ".yaml\n";
-		$secretFileScript = fopen( WRITEPATH . "secret/". $selectedENV ."-kubeseal-secret.sh", "w") or die("Unable to open file!");
+		$secretCommand .= "kubeseal --format=yaml < " . WRITEPATH . "secret/". $userSelectedENV. "-secret-" . $uuid . ".yaml" . " > " . WRITEPATH . "secret/". $userSelectedENV ."-sealed-secret-" . $uuid . ".yaml\n";
+		$secretFileScript = fopen( WRITEPATH . "secret/". $userSelectedENV ."-kubeseal-secret.sh", "w") or die("Unable to open file!");
 		fwrite($secretFileScript, $secretCommand);
 		fclose($secretFileScript);
 
-		shell_exec('/bin/bash /var/www/html/writable/secret/'. $selectedENV .'-kubeseal-secret.sh');
+		$output = shell_exec('/bin/bash /var/www/html/writable/secret/'. $userSelectedENV .'-kubeseal-secret.sh');
 
-		$sealedSecretContent = file_get_contents(WRITEPATH . "secret/". $selectedENV ."-sealed-secret-" . $uuid . ".yaml");
+		$sealedSecretContent = file_get_contents(WRITEPATH . "secret/". $userSelectedENV ."-sealed-secret-" . $uuid . ".yaml");
 		$sealedSecretContent = Yaml::parse($sealedSecretContent);
 		$envSecret = $sealedSecretContent["spec"]["encryptedData"]["env_file"];
 		// Create Values YAML
@@ -313,32 +333,52 @@ class Services extends Api
 		$webSecrets = $this->common_model->getDataWhere("secrets_services", $uuid, "service_id");
 		foreach ($webSecrets as $key => $webSecret) {
 			$secrets = $this->common_model->getSingleRowWhere("secrets", $webSecret['secret_id'], "id");
-			if ($selectedENV == $secrets["secret_tags"] || !$secrets["secret_tags"] || !isset($secrets["secret_tags"])) {
-				$valuesYaml = str_replace($secrets['key_name'], $secrets['key_value'], $valuesYaml);
+			if ($userSelectedENV == $secrets["secret_tags"] || !$secrets["secret_tags"] || !isset($secrets["secret_tags"])) {
+				if ($secrets['key_name'] == "TARGET_ENV") {
+					$valuesYaml = str_replace($secrets['key_name'], $userSelectedENV, $valuesYaml);
+				} else {
+					$valuesYaml = str_replace($secrets['key_name'], $secrets['key_value'], $valuesYaml);
+				}
+
 			}
 		}
 
 		$modifiedValuesString = Yaml::parse($valuesYaml);
 		$modifiedValuesString["secure_env_file"] = $envSecret;
 		$modifiedValuesString = YAML::dump($modifiedValuesString);
-		$valuesFile = fopen(WRITEPATH . "values/". $selectedENV ."-values-" . $uuid . ".yaml", "w") or die("Unable to open file!");
+		$valuesFile = fopen(WRITEPATH . "values/". $userSelectedENV ."-values-" . $uuid . ".yaml", "w") or die("Unable to open file!");
 		fwrite($valuesFile, $modifiedValuesString);
 		fclose($valuesFile);
 
 		// helm upgrade -i wsl-int ./devops/webimpetus-chart -f devops/webimpetus-chart/values-int-k3s2.yaml --set-string targetImage="***/webimpetus" --set-string targetImageTag="int" --namespace int --create-namespace
 	}
 
-	function run_steps($uuid, $selectedENV) {
+	function run_steps($uuid, $userSelectedENV) {
 		$getSteps = $this->common_model->getSingleRowWhere("blocks_list", $uuid, "uuid_linked_table");
 		$steps = $getSteps["text"];
 		$steps = base64_decode($steps);
 		$secretServices = $this->common_model->getDataWhere("secrets_services", $uuid, "service_id");
 		foreach ($secretServices as $key => $secretService) {
 			$secrets = $this->common_model->getSingleRowWhere("secrets", $secretService['secret_id'], "id");
-			$steps = str_replace("$".$secrets['key_name'], $secrets['key_value'], $steps);
+
+			if ($userSelectedENV == $secrets["secret_tags"] || !$secrets["secret_tags"] || !isset($secrets["secret_tags"])) {
+				if ($secrets['key_name'] == "TARGET_ENV") {
+					$steps = str_replace("$".$secrets['key_name'], $userSelectedENV, $steps);
+				} else {
+					$steps = str_replace("$".$secrets['key_name'], $secrets['key_value'], $steps);
+				}
+
+			} else {
+				if ($secrets['key_name'] == "TARGET_ENV") {
+					$steps = str_replace("$".$secrets['key_name'], $userSelectedENV, $steps);
+				} else {
+					$steps = str_replace("$".$secrets['key_name'], $secrets['key_value'], $steps);
+				}
+		
+			}
 		}
-		$steps = str_replace("-f values", "-f " . WRITEPATH . "values/". $selectedENV ."-values" , $steps);
-		$helmFile = fopen(WRITEPATH . "helm/". $selectedENV ."-install-" . $uuid . ".sh", "w") or die("Unable to open file!");
+		$steps = str_replace("-f values", "-f " . WRITEPATH . "values/". $userSelectedENV ."-values" , $steps);
+		$helmFile = fopen(WRITEPATH . "helm/". $userSelectedENV ."-install-" . $uuid . ".sh", "w") or die("Unable to open file!");
 		fwrite($helmFile, $steps);
 		fclose($helmFile);
 	}
@@ -359,7 +399,7 @@ class Services extends Api
 	public function push_service_env_vars($uuid)
 	{
 		// Get the contents of the JSON file for service and add as env variables to pass to the deployment
-		$svcJsonFileContents = file_get_contents(WRITEPATH . "tizohub_deployments/service-" . $uuid . ".json");
+		$svcJsonFileContents = file_get_contents(WRITEPATH . "webimpetus_deployments/service-" . $uuid . ".json");
 		// Convert to array
 		$svcJsonFileObj = json_decode($svcJsonFileContents);
 		putenv("SERVICE_ID=" . $uuid);
@@ -374,7 +414,7 @@ class Services extends Api
 					fclose($myfile);
 				}
 
-				if ($val['key_name'] == 'TIZOHUB_DOCKER_IMAGE' || $val['key_name'] == 'TIZOHUB_DOCKER_IMAGE_TAG' || $val['key_name'] == 'KUBENETES_CLUSTER_NAME' || $val['key_name'] == 'AWS_ACCESS_KEY_ID' || $val['key_name'] == 'AWS_SECRET_ACCESS_KEY' || $val['key_name'] == 'AWS_DEFAULT_REGION') {
+				if ($val['key_name'] == 'webimpetus_DOCKER_IMAGE' || $val['key_name'] == 'webimpetus_DOCKER_IMAGE_TAG' || $val['key_name'] == 'KUBENETES_CLUSTER_NAME' || $val['key_name'] == 'AWS_ACCESS_KEY_ID' || $val['key_name'] == 'AWS_SECRET_ACCESS_KEY' || $val['key_name'] == 'AWS_DEFAULT_REGION') {
 					putenv($val['key_name'] . "=" . $val['key_value']);
 				}
 			}
@@ -406,19 +446,19 @@ class Services extends Api
 		$secrets = $this->secret_model->getRows();
 		if (!empty($secrets)) {
 			foreach ($secrets as $key => $val) {
-				if ($val['key_name'] == 'TIZOHUB_DOCKER_IMAGE' || $val['key_name'] == 'TIZOHUB_DOCKER_IMAGE_TAG' || $val['key_name'] == 'KUBENETES_CLUSTER_NAME' || $val['key_name'] == 'AWS_ACCESS_KEY_ID' || $val['key_name'] == 'AWS_SECRET_ACCESS_KEY' || $val['key_name'] == 'AWS_DEFAULT_REGION') {
+				if ($val['key_name'] == 'webimpetus_DOCKER_IMAGE' || $val['key_name'] == 'webimpetus_DOCKER_IMAGE_TAG' || $val['key_name'] == 'KUBENETES_CLUSTER_NAME' || $val['key_name'] == 'AWS_ACCESS_KEY_ID' || $val['key_name'] == 'AWS_SECRET_ACCESS_KEY' || $val['key_name'] == 'AWS_DEFAULT_REGION') {
 					$pattern = "/{{" . $val['key_name'] . "}}/i";
 					$service_data = preg_replace($pattern, $val['key_value'], $service_data);
 				}
 			}
 		}
 
-		$myfile = fopen(WRITEPATH . "tizohub_deployments/values-" . $uuid . ".yaml", "w") or die("Unable to open file!");
+		$myfile = fopen(WRITEPATH . "webimpetus_deployments/values-" . $uuid . ".yaml", "w") or die("Unable to open file!");
 		fwrite($myfile, $service_data);
 		fclose($myfile);
 
 		//create php seed
-		// $myfile = fopen(WRITEPATH . "tizohub_deployments/service-".$uuid.".php", "w") or die("Unable to open file!");
+		// $myfile = fopen(WRITEPATH . "webimpetus_deployments/service-".$uuid.".php", "w") or die("Unable to open file!");
 		// fwrite($myfile, $service_data);
 		// fclose($myfile);
 
@@ -441,14 +481,14 @@ class Services extends Api
 		$secrets = $this->secret_model->getRows();
 		if (!empty($secrets)) {
 			foreach ($secrets as $key => $val) {
-				if ($val['key_name'] == 'TIZOHUB_DOCKER_IMAGE' || $val['key_name'] == 'TIZOHUB_DOCKER_IMAGE_TAG' || $val['key_name'] == 'KUBENETES_CLUSTER_NAME' || $val['key_name'] == 'AWS_ACCESS_KEY_ID' || $val['key_name'] == 'AWS_SECRET_ACCESS_KEY' || $val['key_name'] == 'AWS_DEFAULT_REGION') {
+				if ($val['key_name'] == 'webimpetus_DOCKER_IMAGE' || $val['key_name'] == 'webimpetus_DOCKER_IMAGE_TAG' || $val['key_name'] == 'KUBENETES_CLUSTER_NAME' || $val['key_name'] == 'AWS_ACCESS_KEY_ID' || $val['key_name'] == 'AWS_SECRET_ACCESS_KEY' || $val['key_name'] == 'AWS_DEFAULT_REGION') {
 					$pattern = "/{{" . $val['key_name'] . "}}/i";
 					$service_data = preg_replace($pattern, $val['key_value'], $service_data);
 				}
 			}
 		}
 
-		$myfile = fopen(WRITEPATH . "tizohub_deployments/service-" . $uuid . ".yaml", "w") or die("Unable to open file!");
+		$myfile = fopen(WRITEPATH . "webimpetus_deployments/service-" . $uuid . ".yaml", "w") or die("Unable to open file!");
 		fwrite($myfile, $service_data);
 		fclose($myfile);
 	}
