@@ -169,11 +169,11 @@ $json = json_decode($str, true);
     })
     function validatePassword(password, evt, ele) {
         if (!password || password == "") return false;
-        const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+        const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?!.*\s).{8,}$/;
         if (passwordRegex.test(password)) {
             $("#" + ele).text("");
         } else {
-            $("#" + ele).text("The password must have at least 8 characters, at least 1 number, and at least 1 capital letter.");
+            $("#" + ele).text("The password must have at least 8 characters, at least 1 number, at least 1 capital letter, and does not contains whitespace.");
             evt.preventDefault();
             return false;
         }

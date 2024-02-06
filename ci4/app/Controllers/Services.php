@@ -120,11 +120,13 @@ class Services extends Api
 
 		$key_name = $this->request->getPost('key_name');
 		$key_value = $this->request->getPost('key_value');
+		$secret_tags = $this->request->getPost('secret_tags');
+		
 		if (isset($key_name) && isset($key_value)) {
 			foreach ($key_name as $key => $value) {
 				//$address_data['service_id'] = $id;
 				$address_data['key_name'] = $key_name[$key];
-				// $address_data['key_value'] = $key_value[$key];
+				$address_data['secret_tags'] = $secret_tags[$key] ?? NULL;
 				if (strpos($key_value[$key], '********') === false) {
 					$address_data['key_value'] = $key_value[$key];
 				}
@@ -209,15 +211,16 @@ class Services extends Api
 		return redirect()->to('/services');
 	}
 
-
-
-
 	public function deploy_service($uuid = 0)
 	{
 		if (!empty($uuid)) {
-
-			$this->create_templates($uuid);
-			$this->run_steps($uuid);
+			$post = $this->request->getPost();
+			$selectedTags = array_filter($post['data']['selectedTags'], 'filterFalseValues');
+			foreach ($selectedTags as $tk => $selectedTag) {
+				$selectedTag = array_keys($selectedTag);
+				$this->create_templates($uuid, $selectedTag[0]);
+				$this->run_steps($uuid, $selectedTag[0]);
+			}
 			// $this->push_service_env_vars($uuid);
 			// $this->gen_service_yaml_file($uuid);
 
@@ -233,7 +236,7 @@ class Services extends Api
 	{
 		if (!empty($uuid)) {
 
-			$this->create_templates($uuid);
+			// $this->create_templates($uuid);
 			$this->gen_service_env_file($uuid);
 			$this->push_service_env_vars($uuid);
 			$this->gen_service_yaml_file($uuid);
@@ -248,7 +251,7 @@ class Services extends Api
 	}
 
 
-	public function create_templates($uuid)
+	public function create_templates($uuid, $selectedENV)
 	{
 		$service = $this->common_model->getSingleRowWhere("templates__services", $uuid, "service_id");
 		$secretTemplate = $this->common_model->getSingleRowWhere("templates", $service['secret_template_id'], "uuid");
@@ -261,18 +264,30 @@ class Services extends Api
 		// 	$pattern = "/<\*--" . $match . "--\*>/i";
 		// 	$secretParsedYaml = $this->recursiveReplace($secretParsedYaml, $pattern, $envSecret);
 		// }
+
+		$targetEnvRow = $this->common_model->getSingleRowWhere("secrets", "TARGET_ENV", "key_name");
+		if (empty($targetEnvRow)) {
+            echo "TARGET_ENV secret is not found or is empty";
+            die;
+        }
+
 		$webSecrets = $this->common_model->getDataWhere("secrets_services", $uuid, "service_id");
 		foreach ($webSecrets as $key => $webSecret) {
 			$secrets = $this->common_model->getSingleRowWhere("secrets", $webSecret['secret_id'], "id");
-			$secretYaml = str_replace($secrets['key_name'], $secrets['key_value'], $secretYaml);
+			if ($selectedENV == $secrets["secret_tags"] || !$secrets["secret_tags"] || !isset($secrets["secret_tags"])) {
+				$secretYaml = str_replace($secrets['key_name'], $secrets['key_value'], $secretYaml);
+			}
 		}
-		$modifiedYamlString = Yaml::dump($secretYaml);
 		// Create Secret Yaml File
-		$secretFile = fopen(WRITEPATH . "secret/service-" . $uuid . ".yaml", "w") or die("Unable to open file!");
-		fwrite($secretFile, $modifiedYamlString);
+		$secretFile = fopen(WRITEPATH . "secret/". $selectedENV. "-secret-" . $uuid . ".yaml", "w") or die("Unable to open file!");
+		fwrite($secretFile, $secretYaml);
 		fclose($secretFile);
 		// Create kubeseal script to create secrets
 		$kubeConfigRow = $this->common_model->getSingleRowWhere("secrets", "KUBECONFIG", "key_name");
+		if (empty($kubeConfigRow)) {
+            echo "KUBECONFIG secret not found or is empty";
+            die;
+        }
 		$kubeConfig = base64_decode($kubeConfigRow['key_value']);
 		
 		$k3sFile = fopen( WRITEPATH . "secret/k3s.yaml", "w") or die("Unable to open file!");
@@ -282,14 +297,14 @@ class Services extends Api
 		$secretCommand = "#!/bin/bash\n";
 		$secretCommand .= "set -x\n";
 		$secretCommand .= "export KUBECONFIG=" . WRITEPATH . "secret/k3s.yaml\n";
-		$secretCommand .= "kubeseal --format=yaml < " . WRITEPATH . "secret/service-" . $uuid . ".yaml" . " > " . WRITEPATH . "secret/sealed-service-" . $uuid . ".yaml\n";
-		$secretFileScript = fopen( WRITEPATH . "secret/kubeseal-secret.sh", "w") or die("Unable to open file!");
+		$secretCommand .= "kubeseal --format=yaml < " . WRITEPATH . "secret/". $selectedENV. "-secret-" . $uuid . ".yaml" . " > " . WRITEPATH . "secret/". $selectedENV ."-sealed-secret-" . $uuid . ".yaml\n";
+		$secretFileScript = fopen( WRITEPATH . "secret/". $selectedENV ."-kubeseal-secret.sh", "w") or die("Unable to open file!");
 		fwrite($secretFileScript, $secretCommand);
 		fclose($secretFileScript);
 
-		shell_exec('/bin/bash /var/www/html/writable/secret/kubeseal-secret.sh');
+		shell_exec('/bin/bash /var/www/html/writable/secret/'. $selectedENV .'-kubeseal-secret.sh');
 
-		$sealedSecretContent = file_get_contents(WRITEPATH . "secret/sealed-service-" . $uuid . ".yaml");
+		$sealedSecretContent = file_get_contents(WRITEPATH . "secret/". $selectedENV ."-sealed-secret-" . $uuid . ".yaml");
 		$sealedSecretContent = Yaml::parse($sealedSecretContent);
 		$envSecret = $sealedSecretContent["spec"]["encryptedData"]["env_file"];
 		// Create Values YAML
@@ -298,20 +313,22 @@ class Services extends Api
 		$webSecrets = $this->common_model->getDataWhere("secrets_services", $uuid, "service_id");
 		foreach ($webSecrets as $key => $webSecret) {
 			$secrets = $this->common_model->getSingleRowWhere("secrets", $webSecret['secret_id'], "id");
-			$valuesYaml = str_replace($secrets['key_name'], $secrets['key_value'], $valuesYaml);
+			if ($selectedENV == $secrets["secret_tags"] || !$secrets["secret_tags"] || !isset($secrets["secret_tags"])) {
+				$valuesYaml = str_replace($secrets['key_name'], $secrets['key_value'], $valuesYaml);
+			}
 		}
 
 		$modifiedValuesString = Yaml::parse($valuesYaml);
 		$modifiedValuesString["secure_env_file"] = $envSecret;
 		$modifiedValuesString = YAML::dump($modifiedValuesString);
-		$valuesFile = fopen(WRITEPATH . "values/values-" . $uuid . ".yaml", "w") or die("Unable to open file!");
+		$valuesFile = fopen(WRITEPATH . "values/". $selectedENV ."-values-" . $uuid . ".yaml", "w") or die("Unable to open file!");
 		fwrite($valuesFile, $modifiedValuesString);
 		fclose($valuesFile);
 
 		// helm upgrade -i wsl-int ./devops/webimpetus-chart -f devops/webimpetus-chart/values-int-k3s2.yaml --set-string targetImage="***/webimpetus" --set-string targetImageTag="int" --namespace int --create-namespace
 	}
 
-	function run_steps($uuid) {
+	function run_steps($uuid, $selectedENV) {
 		$getSteps = $this->common_model->getSingleRowWhere("blocks_list", $uuid, "uuid_linked_table");
 		$steps = $getSteps["text"];
 		$steps = base64_decode($steps);
@@ -320,8 +337,8 @@ class Services extends Api
 			$secrets = $this->common_model->getSingleRowWhere("secrets", $secretService['secret_id'], "id");
 			$steps = str_replace("$".$secrets['key_name'], $secrets['key_value'], $steps);
 		}
-		$steps = str_replace("-f values", "-f " . WRITEPATH . "values/values" , $steps);
-		$helmFile = fopen(WRITEPATH . "helm/install-" . $uuid . ".sh", "w") or die("Unable to open file!");
+		$steps = str_replace("-f values", "-f " . WRITEPATH . "values/". $selectedENV ."-values" , $steps);
+		$helmFile = fopen(WRITEPATH . "helm/". $selectedENV ."-install-" . $uuid . ".sh", "w") or die("Unable to open file!");
 		fwrite($helmFile, $steps);
 		fclose($helmFile);
 	}
