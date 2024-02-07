@@ -50,7 +50,12 @@
 			$('.js-example-basic-multiple').select2();
 		}
 
-		$('.select2').select2();
+		$('.select2').select2({
+			placeholder: "Select an Option",
+			allowClear: true,
+			tags: true,
+		});
+
 		$('.datepicker').datepicker({
 			autoclose: true,
 			clearBtn: true,

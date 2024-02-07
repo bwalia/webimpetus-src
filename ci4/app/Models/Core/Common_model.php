@@ -234,6 +234,17 @@ class Common_model extends Model
 
         return $result;
     }
+    public function getSingleRowMultipleWhere($tableName, $where = [], $resultType = "row")
+    {
+        if ($resultType == "array") {
+            $result = $this->db->table($tableName)->getWhere($where)->getResultArray();
+        } else {
+            $result = $this->db->table($tableName)->getWhere($where)->getRowArray();
+
+        }
+
+        return $result;
+    }
     public function getRow($tableName, $value, $field = "id", $arrType = false)
     {
         $fields = $this->getFieldNames($tableName);
