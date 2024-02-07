@@ -365,10 +365,10 @@ class Services extends Api
 				"key_name" => $secrets['key_name'],
 				"secret_tags" => $userSelectedENV
 			];
-			$isOverrided = $this->common_model->getSingleRowMultipleWhere("secrets", $overridedWhere);
+			$isOverrided = $this->common_model->getSingleRowMultipleWhere("secrets", $overridedWhere, "row");
 			if (!empty($isOverrided)) {
 				if ($userSelectedENV == $isOverrided['secret_tags']) {
-					$secretYaml = str_replace($isOverrided['key_name'], $isOverrided['key_value'], $secretYaml);
+					$valuesYaml = str_replace($isOverrided['key_name'], $isOverrided['key_value'], $valuesYaml);
 				} else {
 					echo "302: " . $secrets['key_name'] . " is not found in $userSelectedENV environment or empty";
 					die;
@@ -388,7 +388,7 @@ class Services extends Api
 					];
 					$isNullOverrided = $this->common_model->getSingleRowMultipleWhere("secrets", $nullOverridedWhere, "row");
 					if (!empty($isNullOverrided)) {
-						$secretYaml = str_replace($isNullOverrided['key_name'], $isNullOverrided['key_value'], $secretYaml);
+						$valuesYaml = str_replace($isNullOverrided['key_name'], $isNullOverrided['key_value'], $valuesYaml);
 					} else {
 						echo "335: " . $secrets['key_name'] . " is not found in $userSelectedENV environment or empty";
 						die;
