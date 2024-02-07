@@ -242,6 +242,7 @@ $uriSegment = $uri->getSegment(3);
                                                     <?php } ?>
                                                 </select>
                                             </div>
+                                            <input type="hidden" class="form-control" name="secret_uuid[]" placeholder="" value="<?= @$secret_services[$jak_i]['uuid'] ?>" />
                                             <?php
                                             if ($jak_i == 0) {
                                             ?>
@@ -270,13 +271,20 @@ $uriSegment = $uri->getSegment(3);
                             } else {
                             ?>
                                 <div class="form-row" id="office_address_1">
-                                    <div class="form-group col-md-6">
+                                    <div class="form-group col-md-4">
                                         <label for="inputEmail4">Secret Key</label>
                                         <input autocomplete="off" type="text" class="form-control" id="key_name_1" name="key_name[]" placeholder="" value="">
                                     </div>
                                     <div class="form-group col-md-5">
                                         <label for="inputEmail4">Secret Value</label>
                                         <input autocomplete="off" type="text" class="form-control" id="key_value_1" name="key_value[]" placeholder="" value="">
+                                    </div>
+                                    <div class="form-group col-md-2 d-flex flex-column">
+                                        <label for="my-select2_0">Environment</label>
+                                        
+                                        <select id="my-select2_0" data-select2-tags="true" name="secret_tags[]" class="form-control select2">
+                                            <option value="" >--Select--</option>
+                                        </select>
                                     </div>
                                     <div class="form-group col-md-1 change">
                                         <button class="btn btn-primary bootstrap-touchspin-up add" type="button" style="max-height: 35px;margin-top: 28px;margin-left: 10px;">+</button>
@@ -830,7 +838,7 @@ $uriSegment = $uri->getSegment(3);
             if (x < max_fields_limit) { //check conditions
                 x++; //counter increment
 
-                $('.addresscontainer').append('<div class="form-row col-md-12" id="office_address_' + x + '"><div class="form-group col-md-6">' +
+                $('.addresscontainer').append('<div class="form-row col-md-12" id="office_address_' + x + '"><div class="form-group col-md-4">' +
                     '<label for="inputSecretKey">Secret Key</label>' +
                     '<input autocomplete="off" type="text" class="form-control" id="key_name_' + x + '" name="key_name[]" placeholder="" value="">' +
                     '</div>' +
@@ -838,13 +846,26 @@ $uriSegment = $uri->getSegment(3);
                     '<label for="inputSecretValue">Secret Value</label>' +
                     '<input autocomplete="off" type="text" class="form-control" id="key_value_' + x + '" name="key_value[]" placeholder="" value="">' +
                     '</div>' +
+                    '<div class="form-group col-md-2 d-flex flex-column">' +
+                    '<label for="my-select2_' + x + '">Environment</label>' +
+                    '<select id="my-select2_' + x + '" data-select2-tags="true" name="secret_tags[]" class="form-control select2">' +
+                    '<option value="" >--Select--</option>' + 
+                    '</select>' +
+                    '</div>' +
                     '<div class="form-group col-md-1 change">' +
                     '<button class="btn btn-info bootstrap-touchspin-up deleteaddress" data-type="secret_services" id="deleteRow" type="button" style="max-height: 35px;margin-top: 28px;margin-left: 10px;">-</button>' +
                     '</div></div>'
                 );
 
-
             }
+            $('.select2').select2({
+                placeholder: "Select an Option",
+                allowClear: true,
+                tags: true,
+            });
+            
+            $(".select2-container--default .select2-selection--single .select2-selection__clear").css("padding-right", "20px");
+            $(".select2-container--default .select2-selection--single .select2-selection__clear").css("padding-top", "7px");
 
             $('.deleteaddress').on("click", function(e) { //user click on remove text links
                 e.preventDefault();
@@ -852,6 +873,9 @@ $uriSegment = $uri->getSegment(3);
                 x--;
             })
         });
+
+        $(".select2-container--default .select2-selection--single .select2-selection__clear").css("padding-right", "20px");
+        $(".select2-container--default .select2-selection--single .select2-selection__clear").css("padding-top", "7px");
     });
 
     $('.deleteaddress').on("click", function(e) { //user click on remove text links

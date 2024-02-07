@@ -121,7 +121,8 @@ class Services extends Api
 		$key_name = $this->request->getPost('key_name');
 		$key_value = $this->request->getPost('key_value');
 		$secret_tags = $this->request->getPost('secret_tags');
-		
+		$secret_uuids = $this->request->getPost('secret_uuid');
+
 		if (isset($key_name) && isset($key_value)) {
 			foreach ($key_name as $key => $value) {
 				//$address_data['service_id'] = $id;
@@ -132,10 +133,14 @@ class Services extends Api
 				}
 				$address_data['status'] = 1;
 				$address_data['uuid_business_id'] = $this->businessUuid;
-				$address_data['uuid'] = UUID::v5(UUID::v4(), 'secrets');
-	
+				if (isset($secret_uuids[$key])) {
+					$address_data['uuid'] = $secret_uuids[$key];
+				} else {
+					$address_data['uuid'] = UUID::v5(UUID::v4(), 'secrets');
+				}
+
 				$secret_id = $this->secret_model->saveOrUpdateData($id, $address_data);
-	
+
 				if ($secret_id > 0) {
 					$dataRelated['secret_id'] = $secret_id;
 					$dataRelated['service_id'] = $id ?? $data["uuid"];
@@ -146,7 +151,7 @@ class Services extends Api
 			}
 		}
 
-		
+
 		$i = 0;
 		$post = $this->request->getPost();
 		$secretTemplateId = $post['secret_template'];
@@ -223,13 +228,12 @@ class Services extends Api
 					echo "No environment selected";
 					die;
 				} else {
-				$this->create_templates($uuid, $selectedTag[0]);
-				$this->run_steps($uuid, $selectedTag[0]);
-				$installScript = '/bin/bash /var/www/html/writable/helm/' . $selectedTag[0] . '-install-' . $uuid . '.sh';
-				$output = shell_exec($installScript);
+					$this->create_templates($uuid, $selectedTag[0]);
+					$this->run_steps($uuid, $selectedTag[0]);
+					$installScript = '/bin/bash /var/www/html/writable/helm/' . $selectedTag[0] . '-install-' . $uuid . '.sh';
+					$output = shell_exec($installScript);
 				}
-
-		}
+			}
 			// $this->push_service_env_vars($uuid);
 			// $this->gen_service_yaml_file($uuid);
 			// echo $output; die;
@@ -273,58 +277,82 @@ class Services extends Api
 		// }
 
 		$targetEnvRow = $this->common_model->getSingleRowWhere("secrets", "TARGET_ENV", "key_name");
-			if(empty($targetEnvRow)){
-				//echo "TARGET_ENV secret not found or is empty"; die;
+		if (empty($targetEnvRow)) {
+			//echo "TARGET_ENV secret not found or is empty"; die;
+		} else {
+			if (isset($targetEnvRow['key_value']) && !empty($targetEnvRow['key_value'])) {
+				$targetEnv = $targetEnvRow['key_value'];
+				//	echo  "TARGET_ENV var :" . $targetEnv . ". User selected env: " . $userSelectedENV; die;
 			} else {
-				if(isset($targetEnvRow['key_value']) && !empty($targetEnvRow['key_value'])){
-					$targetEnv = $targetEnvRow['key_value'];
-					//	echo  "TARGET_ENV var :" . $targetEnv . ". User selected env: " . $userSelectedENV; die;
-				} else {
-					//	echo "TARGET_ENV secret found and is not empty"; die;
-				}
+				//	echo "TARGET_ENV secret found and is not empty"; die;
 			}
+		}
 		$webSecrets = $this->common_model->getDataWhere("secrets_services", $uuid, "service_id");
 		foreach ($webSecrets as $key => $webSecret) {
 			$secrets = $this->common_model->getSingleRowWhere("secrets", $webSecret['secret_id'], "id");
-			if ($userSelectedENV == $secrets["secret_tags"] || !$secrets["secret_tags"] || !isset($secrets["secret_tags"])) { //
-					//	echo $secrets['key_name'] . " 1 : " . $secrets['key_value'] . "<br>";die;
-				if ($secrets['key_name'] == "TARGET_ENV") {
-					$secretYaml = str_replace($secrets['key_name'], $userSelectedENV, $secretYaml);
+			$overridedWhere = [
+				"key_name" => $secrets['key_name'],
+				"secret_tags" => $userSelectedENV
+			];
+			$isOverrided = $this->common_model->getSingleRowMultipleWhere("secrets", $overridedWhere, "row");
+			if (!empty($isOverrided)) {
+				if ($userSelectedENV == $isOverrided['secret_tags']) {
+					$secretYaml = str_replace($isOverrided['key_name'], $isOverrided['key_value'], $secretYaml);
 				} else {
-					$secretYaml = str_replace($secrets['key_name'], $secrets['key_value'], $secretYaml);
+					echo "302: " . $secrets['key_name'] . " is not found in $userSelectedENV environment or empty";
+					die;
 				}
-
-			}else{
-				//echo "293: " . $secrets['key_name'] . "[" . $key ."] ". $secrets['key_value'] . "\n\n";
+			} else {
+				if ($userSelectedENV == $secrets["secret_tags"] || !$secrets["secret_tags"] || !isset($secrets["secret_tags"])) { //
+					//	echo $secrets['key_name'] . " 1 : " . $secrets['key_value'] . "<br>";die;
+					if ($secrets['key_name'] == "TARGET_ENV") {
+						$secretYaml = str_replace($secrets['key_name'], $userSelectedENV, $secretYaml);
+					} else {
+						$secretYaml = str_replace($secrets['key_name'], $secrets['key_value'], $secretYaml);
+					}
+				} else {
+					$nullOverridedWhere = [
+						"key_name" => $secrets['key_name'],
+						"secret_tags IS" => NULL,
+						"secret_tags =" => "",
+					];
+					$isNullOverrided = $this->common_model->getSingleRowMultipleWhere("secrets", $nullOverridedWhere, "row");
+					if (!empty($isNullOverrided)) {
+						$secretYaml = str_replace($isNullOverrided['key_name'], $isNullOverrided['key_value'], $secretYaml);
+					} else {
+						echo "335: " . $secrets['key_name'] . " is not found in $userSelectedENV environment or empty";
+						die;
+					}
+				}
 			}
 		}
 		// Create Secret Yaml File
-		$secretFile = fopen(WRITEPATH . "secret/". $userSelectedENV. "-secret-" . $uuid . ".yaml", "w") or die("Unable to open file!");
+		$secretFile = fopen(WRITEPATH . "secret/" . $userSelectedENV . "-secret-" . $uuid . ".yaml", "w") or die("Unable to open file!");
 		fwrite($secretFile, $secretYaml);
 		fclose($secretFile);
 		// Create kubeseal script to create secrets
 		$kubeConfigRow = $this->common_model->getSingleRowWhere("secrets", "KUBECONFIG", "key_name");
 		if (empty($kubeConfigRow)) {
-            echo "KUBECONFIG secret not found or is empty";
-            die;
-        }
+			echo "KUBECONFIG secret not found or is empty";
+			die;
+		}
 		$kubeConfig = base64_decode($kubeConfigRow['key_value']);
-		
-		$k3sFile = fopen( WRITEPATH . "secret/k3s.yaml", "w") or die("Unable to open file!");
+
+		$k3sFile = fopen(WRITEPATH . "secret/k3s.yaml", "w") or die("Unable to open file!");
 		fwrite($k3sFile, $kubeConfig);
 		fclose($k3sFile);
 
 		$secretCommand = "#!/bin/bash\n";
 		$secretCommand .= "set -x\n";
 		$secretCommand .= "export KUBECONFIG=" . WRITEPATH . "secret/k3s.yaml\n";
-		$secretCommand .= "kubeseal --format=yaml < " . WRITEPATH . "secret/". $userSelectedENV. "-secret-" . $uuid . ".yaml" . " > " . WRITEPATH . "secret/". $userSelectedENV ."-sealed-secret-" . $uuid . ".yaml\n";
-		$secretFileScript = fopen( WRITEPATH . "secret/". $userSelectedENV ."-kubeseal-secret.sh", "w") or die("Unable to open file!");
+		$secretCommand .= "kubeseal --format=yaml < " . WRITEPATH . "secret/" . $userSelectedENV . "-secret-" . $uuid . ".yaml" . " > " . WRITEPATH . "secret/" . $userSelectedENV . "-sealed-secret-" . $uuid . ".yaml\n";
+		$secretFileScript = fopen(WRITEPATH . "secret/" . $userSelectedENV . "-kubeseal-secret.sh", "w") or die("Unable to open file!");
 		fwrite($secretFileScript, $secretCommand);
 		fclose($secretFileScript);
 
-		$output = shell_exec('/bin/bash /var/www/html/writable/secret/'. $userSelectedENV .'-kubeseal-secret.sh');
+		$output = shell_exec('/bin/bash /var/www/html/writable/secret/' . $userSelectedENV . '-kubeseal-secret.sh');
 
-		$sealedSecretContent = file_get_contents(WRITEPATH . "secret/". $userSelectedENV ."-sealed-secret-" . $uuid . ".yaml");
+		$sealedSecretContent = file_get_contents(WRITEPATH . "secret/" . $userSelectedENV . "-sealed-secret-" . $uuid . ".yaml");
 		$sealedSecretContent = Yaml::parse($sealedSecretContent);
 		$envSecret = $sealedSecretContent["spec"]["encryptedData"]["env_file"];
 		// Create Values YAML
@@ -333,27 +361,54 @@ class Services extends Api
 		$webSecrets = $this->common_model->getDataWhere("secrets_services", $uuid, "service_id");
 		foreach ($webSecrets as $key => $webSecret) {
 			$secrets = $this->common_model->getSingleRowWhere("secrets", $webSecret['secret_id'], "id");
-			if ($userSelectedENV == $secrets["secret_tags"] || !$secrets["secret_tags"] || !isset($secrets["secret_tags"])) {
-				if ($secrets['key_name'] == "TARGET_ENV") {
-					$valuesYaml = str_replace($secrets['key_name'], $userSelectedENV, $valuesYaml);
+			$overridedWhere = [
+				"key_name" => $secrets['key_name'],
+				"secret_tags" => $userSelectedENV
+			];
+			$isOverrided = $this->common_model->getSingleRowMultipleWhere("secrets", $overridedWhere);
+			if (!empty($isOverrided)) {
+				if ($userSelectedENV == $isOverrided['secret_tags']) {
+					$secretYaml = str_replace($isOverrided['key_name'], $isOverrided['key_value'], $secretYaml);
 				} else {
-					$valuesYaml = str_replace($secrets['key_name'], $secrets['key_value'], $valuesYaml);
+					echo "302: " . $secrets['key_name'] . " is not found in $userSelectedENV environment or empty";
+					die;
 				}
-
+			} else {
+				if ($userSelectedENV == $secrets["secret_tags"] || !$secrets["secret_tags"] || !isset($secrets["secret_tags"])) {
+					if ($secrets['key_name'] == "TARGET_ENV") {
+						$valuesYaml = str_replace($secrets['key_name'], $userSelectedENV, $valuesYaml);
+					} else {
+						$valuesYaml = str_replace($secrets['key_name'], $secrets['key_value'], $valuesYaml);
+					}
+				} else {
+					$nullOverridedWhere = [
+						"key_name" => $secrets['key_name'],
+						"secret_tags IS" => NULL,
+						"secret_tags =" => "",
+					];
+					$isNullOverrided = $this->common_model->getSingleRowMultipleWhere("secrets", $nullOverridedWhere, "row");
+					if (!empty($isNullOverrided)) {
+						$secretYaml = str_replace($isNullOverrided['key_name'], $isNullOverrided['key_value'], $secretYaml);
+					} else {
+						echo "335: " . $secrets['key_name'] . " is not found in $userSelectedENV environment or empty";
+						die;
+					}
+				}
 			}
 		}
 
 		$modifiedValuesString = Yaml::parse($valuesYaml);
 		$modifiedValuesString["secure_env_file"] = $envSecret;
 		$modifiedValuesString = YAML::dump($modifiedValuesString);
-		$valuesFile = fopen(WRITEPATH . "values/". $userSelectedENV ."-values-" . $uuid . ".yaml", "w") or die("Unable to open file!");
+		$valuesFile = fopen(WRITEPATH . "values/" . $userSelectedENV . "-values-" . $uuid . ".yaml", "w") or die("Unable to open file!");
 		fwrite($valuesFile, $modifiedValuesString);
 		fclose($valuesFile);
 
 		// helm upgrade -i wsl-int ./devops/webimpetus-chart -f devops/webimpetus-chart/values-int-k3s2.yaml --set-string targetImage="***/webimpetus" --set-string targetImageTag="int" --namespace int --create-namespace
 	}
 
-	function run_steps($uuid, $userSelectedENV) {
+	function run_steps($uuid, $userSelectedENV)
+	{
 		$getSteps = $this->common_model->getSingleRowWhere("blocks_list", $uuid, "uuid_linked_table");
 		$steps = $getSteps["text"];
 		$steps = base64_decode($steps);
@@ -363,27 +418,26 @@ class Services extends Api
 
 			if ($userSelectedENV == $secrets["secret_tags"] || !$secrets["secret_tags"] || !isset($secrets["secret_tags"])) {
 				if ($secrets['key_name'] == "TARGET_ENV") {
-					$steps = str_replace("$".$secrets['key_name'], $userSelectedENV, $steps);
+					$steps = str_replace("$" . $secrets['key_name'], $userSelectedENV, $steps);
 				} else {
-					$steps = str_replace("$".$secrets['key_name'], $secrets['key_value'], $steps);
+					$steps = str_replace("$" . $secrets['key_name'], $secrets['key_value'], $steps);
 				}
-
 			} else {
 				if ($secrets['key_name'] == "TARGET_ENV") {
-					$steps = str_replace("$".$secrets['key_name'], $userSelectedENV, $steps);
+					$steps = str_replace("$" . $secrets['key_name'], $userSelectedENV, $steps);
 				} else {
-					$steps = str_replace("$".$secrets['key_name'], $secrets['key_value'], $steps);
+					$steps = str_replace("$" . $secrets['key_name'], $secrets['key_value'], $steps);
 				}
-		
 			}
 		}
-		$steps = str_replace("-f values", "-f " . WRITEPATH . "values/". $userSelectedENV ."-values" , $steps);
-		$helmFile = fopen(WRITEPATH . "helm/". $userSelectedENV ."-install-" . $uuid . ".sh", "w") or die("Unable to open file!");
+		$steps = str_replace("-f values", "-f " . WRITEPATH . "values/" . $userSelectedENV . "-values", $steps);
+		$helmFile = fopen(WRITEPATH . "helm/" . $userSelectedENV . "-install-" . $uuid . ".sh", "w") or die("Unable to open file!");
 		fwrite($helmFile, $steps);
 		fclose($helmFile);
 	}
 
-	function recursiveReplace(&$array, $search, $replace) {
+	function recursiveReplace(&$array, $search, $replace)
+	{
 		foreach ($array as $key => &$value) {
 			if (is_array($value)) {
 				$this->recursiveReplace($value, $search, $replace);
