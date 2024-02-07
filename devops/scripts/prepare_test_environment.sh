@@ -12,5 +12,5 @@ export KUBECONFIG=/home/bwalia/.kube/k3s-test.yml
 
 kubectl get all -A
 
-#kubectl delete -f /var/www/html/writable/tizohub_deployments/service-$SERVICE_ID.yaml
+#kubectl delete -f /var/www/html/writable/webimpetus_deployments/service-$SERVICE_ID.yaml
 
