@@ -214,13 +214,13 @@ $uriSegment = $uri->getSegment(3);
                             <?php
                             if (count($secret_services) > 0) {
                             ?>
-                                <div class="form-row addresscontainer">
+                                <div class="form-row addresscontainer" id="addresscontainer">
                                     <?php
                                     for ($jak_i = 0; $jak_i < count($secret_services); $jak_i++) {
                                         $new_id = $jak_i + 1;
                                     ?>
-                                        <div class="form-row col-md-12" id="office_address_<?php echo $new_id; ?>">
-                                            <div class="form-group col-md-4">
+                                        <div class="form-row col-md-12 secret-row-container" id="office_address_<?php echo $new_id; ?>">
+                                            <div class="form-group col-md-3">
                                                 <label for="inputEmail4">Secret Key</label>
                                                 <input autocomplete="off" type="text" class="form-control" id="key_name_<?php echo $new_id; ?>" name="key_name[]" placeholder="" value="<?= $secret_services[$jak_i]['key_name'] ?>">
                                             </div>
@@ -259,6 +259,20 @@ $uriSegment = $uri->getSegment(3);
                                             <?php
                                             }
                                             ?>
+                                            <div class="form-group col-md-1 change">
+                                                <button 
+                                                    class="btn btn-info bootstrap-touchspin-up clone-row" 
+                                                    data-type="secret_services" 
+                                                    data-uuid="<?= $secret_services[$jak_i]['uuid'] ?>" 
+                                                    data-id="office_address_<?php echo $new_id; ?>"
+                                                    data-key="<?php echo $new_id; ?>"
+                                                    id="cloneRow" 
+                                                    type="button" 
+                                                    style="max-height: 35px;margin-top: 28px;margin-left: 10px;"
+                                                >
+                                                    <i class="fas fa-clone"></i>
+                                                </button>
+                                            </div>
                                         </div>
                                     <?php
                                     }
@@ -271,7 +285,7 @@ $uriSegment = $uri->getSegment(3);
                             } else {
                             ?>
                                 <div class="form-row" id="office_address_1">
-                                    <div class="form-group col-md-4">
+                                    <div class="form-group col-md-3">
                                         <label for="inputEmail4">Secret Key</label>
                                         <input autocomplete="off" type="text" class="form-control" id="key_name_1" name="key_name[]" placeholder="" value="">
                                     </div>
@@ -288,6 +302,20 @@ $uriSegment = $uri->getSegment(3);
                                     </div>
                                     <div class="form-group col-md-1 change">
                                         <button class="btn btn-primary bootstrap-touchspin-up add" type="button" style="max-height: 35px;margin-top: 28px;margin-left: 10px;">+</button>
+                                    </div>
+                                    <div class="form-group col-md-1 change">
+                                        <button 
+                                            class="btn btn-info bootstrap-touchspin-up clone-row" 
+                                            data-type="secret_services" 
+                                            data-uuid="" 
+                                            data-id="office_address_1"
+                                            data-key="1"
+                                            id="cloneRow" 
+                                            type="button" 
+                                            style="max-height: 35px;margin-top: 28px;margin-left: 10px;"
+                                        >
+                                            <i class="fas fa-clone"></i>
+                                        </button>
                                     </div>
                                 </div>
                                 <div class="form-row addresscontainer">
@@ -348,7 +376,7 @@ $uriSegment = $uri->getSegment(3);
                                                                                                 echo "myClassName";
                                                                                             } else {
                                                                                                 echo "textarea-height";
-                                                                                            } ?>" id="blocks_text<?php echo $new_id; ?>" name="blocks_text[]"><?= $blocks_list[$jak_i]['text'] ?></textarea>
+                                                                                            } ?>" id="blocks_text<?php echo $new_id; ?>" name="blocks_text[]" rows="12"><?= $blocks_list[$jak_i]['text'] ?></textarea>
                                             </div>
                                             <input type="hidden" value="<?= $blocks_list[$jak_i]['id'] ?>" id="blocks_id" name="blocks_id[]">
 
@@ -390,7 +418,7 @@ $uriSegment = $uri->getSegment(3);
                                     </div>
                                     <div class="form-group col-md-5 textarea-block">
                                         <label class="textarea_label" for="inputEmail4">Text</label>
-                                        <textarea class="form-control textarea-height blocks_text" id="ck-content" name="blocks_text[]"></textarea>
+                                        <textarea class="form-control textarea-height blocks_text" id="ck-content" name="blocks_text[]" rows="12"></textarea>
                                     </div>
                                 </div>
                                 <input type="hidden" value="0" id="contact_id" name="contact_id">
@@ -838,23 +866,40 @@ $uriSegment = $uri->getSegment(3);
             if (x < max_fields_limit) { //check conditions
                 x++; //counter increment
 
-                $('.addresscontainer').append('<div class="form-row col-md-12" id="office_address_' + x + '"><div class="form-group col-md-4">' +
-                    '<label for="inputSecretKey">Secret Key</label>' +
-                    '<input autocomplete="off" type="text" class="form-control" id="key_name_' + x + '" name="key_name[]" placeholder="" value="">' +
-                    '</div>' +
-                    '<div class="form-group col-md-5">' +
-                    '<label for="inputSecretValue">Secret Value</label>' +
-                    '<input autocomplete="off" type="text" class="form-control" id="key_value_' + x + '" name="key_value[]" placeholder="" value="">' +
-                    '</div>' +
-                    '<div class="form-group col-md-2 d-flex flex-column">' +
-                    '<label for="my-select2_' + x + '">Environment</label>' +
-                    '<select id="my-select2_' + x + '" data-select2-tags="true" name="secret_tags[]" class="form-control select2">' +
-                    '<option value="" >--Select--</option>' + 
-                    '</select>' +
-                    '</div>' +
-                    '<div class="form-group col-md-1 change">' +
-                    '<button class="btn btn-info bootstrap-touchspin-up deleteaddress" data-type="secret_services" id="deleteRow" type="button" style="max-height: 35px;margin-top: 28px;margin-left: 10px;">-</button>' +
-                    '</div></div>'
+                $('.addresscontainer').append(`
+                    <div class="form-row col-md-12" id="office_address_${x}">
+                        <div class="form-group col-md-3">
+                            <label for="inputSecretKey">Secret Key</label>
+                            <input autocomplete="off" type="text" class="form-control" id="key_name_${x}" name="key_name[]" placeholder="" value="">
+                        </div>
+                        <div class="form-group col-md-5">
+                            <label for="inputSecretValue">Secret Value</label>
+                            <input autocomplete="off" type="text" class="form-control" id="key_value_${x}" name="key_value[]" placeholder="" value="">
+                        </div>
+                        <div class="form-group col-md-2 d-flex flex-column">
+                            <label for="my-select2_${x}">Environment</label>
+                            <select id="my-select2_${x}" data-select2-tags="true" name="secret_tags[]" class="form-control select2">
+                                <option value="" >--Select--</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-1 change">
+                            <button class="btn btn-info bootstrap-touchspin-up deleteaddress" data-type="secret_services" id="deleteRow" type="button" style="max-height: 35px;margin-top: 28px;margin-left: 10px;">-</button>
+                        </div>
+                        <div class="form-group col-md-1 change">
+                            <button 
+                                class="btn btn-info bootstrap-touchspin-up clone-row" 
+                                data-type="secret_services" 
+                                data-uuid="" 
+                                data-id="office_address_${x}"
+                                data-key="${x}"
+                                id="cloneRow" 
+                                type="button" 
+                                style="max-height: 35px;margin-top: 28px;margin-left: 10px;"
+                            >
+                                <i class="fas fa-clone"></i>
+                            </button>
+                        </div>
+                    </div>`
                 );
 
             }
@@ -899,6 +944,42 @@ $uriSegment = $uri->getSegment(3);
             }
         })
 
+    })
+
+    $(document).on("click", "#cloneRow", function () {
+        let row = $(this).attr("data-id");
+        var originalField = document.querySelector(`#${row}`);
+        var clonedField = originalField.cloneNode(true);
+        var parentNode = document.getElementById("addresscontainer");
+        var nodeCount = parentNode.childElementCount;
+
+        clonedField.id = `office_address_${nodeCount + 1}`
+        clonedField.children[0].children[1].id = `key_name_${nodeCount + 1}`;
+        clonedField.children[1].children[1].id = `key_value_${nodeCount + 1}`;
+        clonedField.children[1].children[1].value = ``;
+        clonedField.children[1].children[1].defaultValue = ``;
+        clonedField.removeChild(clonedField.children[2]);
+        var envField = `
+            <label for="my-select2_${nodeCount + 1}">Environment</label>
+            <select id="my-select2_${nodeCount + 1}" data-select2-tags="true" name="secret_tags[]" class="form-control select2">
+                <option value="" >--Select--</option>
+            </select>
+        `;
+        var envNode = document.createElement("div");
+        envNode.classList.add("form-group", "col-md-2", "d-flex", "flex-column");
+        envNode.innerHTML = envField;
+        clonedField.children[2].defaultValue = "";
+        clonedField.children[2].value = "";
+        var indexToInsertAt = 2;
+        var existingElement = clonedField.children[indexToInsertAt];
+        clonedField.insertBefore(envNode, existingElement);
+        console.log({clonedField});
+        document.getElementById('addresscontainer').appendChild(clonedField);
+        $('.select2').select2({
+            placeholder: "Select an Option",
+            allowClear: true,
+            tags: true,
+        });
     })
 
     // Add the following code if you want the name of the file appear on select

@@ -41,7 +41,7 @@ class Secrets extends CommonController
 		$data['rawTblName'] = $this->rawTblName;
 		$data['secret'] = $secretsData;
 		$data['services'] = $this->service_model->getRows();
-		$data['sservices'] = array_column($this->secretModel->getServices($secretsData ? $secretsData->id : $uuid), 'service_id');
+		$data['sservices'] = $this->secretModel->getServices($secretsData ? $secretsData->id : $uuid);
 
 		return view('secrets/edit', $data);
 	}

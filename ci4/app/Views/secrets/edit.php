@@ -22,8 +22,8 @@
                 <?php if($sservices){?>
                 <div class="form-group col-md-12">
                     <label for="inputState">Service Name</label><br>
-                    <?php foreach($services as $row):?>
-                    <strong>   <?php  if(in_array($row['id'],$sservices)){ echo $row['name']; }?></strong>
+                    <?php foreach($sservices as $row):?>
+                    <strong>   <?php   echo $row['name']; ?></strong>
                     <?php endforeach;?>
          
                 </div>
