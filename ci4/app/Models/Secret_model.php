@@ -81,7 +81,10 @@ class Secret_model extends Model
 		
 	public function getServices($id)
     {        
-        return $this->db->table($this->table2)->where(['secret_id' => $id])->get()->getResult('array');
+        return $this->db->table($this->table2)
+        ->join("secrets", "secrets_services.secret_id=secrets.id")
+        ->join("services", "secrets_services.service_id=services.uuid")
+        ->where(['secrets.id' => $id])->get()->getResult('array');
     }
 	
 	public function getSecrets($id)
@@ -138,7 +141,7 @@ class Secret_model extends Model
         $table = $this->table;
         $this->select($table . '.*,services.name');
         $this->join('secrets_services', $table.'.id=secrets_services.secret_id', 'LEFT');			
-        $this->join('services', 'services.id=secrets_services.service_id', 'LEFT');						
+        $this->join('services', 'services.uuid=secrets_services.service_id', 'LEFT');						
         $this->where($table . '.uuid_business_id', $this->businessUuid);
         $records = $this->get()->getResultArray();		
         return $records;
