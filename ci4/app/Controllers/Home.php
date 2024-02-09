@@ -25,6 +25,7 @@ class Home extends BaseController
 		$this->Email_model = new Email_model();
 		$this->cmodel = new Common_model();
 		helper(["global"]);
+		helper('cookie');
 	}
 
 	public function index()
@@ -79,12 +80,12 @@ class Home extends BaseController
 		
 		if (!empty($this->request->getPost('email')) && !empty($this->request->getPost('password'))) {
 
-			$count = $this->model->getWhere(['status' => 1, 'email' => $this->request->getPost('email'), 'password' => md5($this->request->getPost('password'))])->getNumRows();
+			$count = $this->model->getWhere(['status' => 1, 'email' => $this->request->getPost('email'), 'password' => md5($this->request->getPost('password') ?? "")])->getNumRows();
 			if (!empty($count)) {
-
+				$expirationTime = time() + 365 * 24 * 60 * 60;
 				//echo '<pre>'; $this->curlcmd($this->request->getPost('email'),$this->request->getPost('password')); 
 				helper('jwt');
-				$token = getSignedJWTForUser($this->request->getPost('email'));
+				$token = getSignedJWTForUser($this->request->getPost('email') ?? "");
 				//session()->setFlashdata('message', 'Email already exist!');
 				//session()->setFlashdata('alert-class', 'alert-success');
 				$row = $this->model->getWhere(['email' => $this->request->getPost('email')])->getRow();
@@ -104,18 +105,23 @@ class Home extends BaseController
 				$cookie = [
 					'name'   => 'uuid_business_id',
 					'value'  => $uuid_business_id,
-					'expire' => '86400',
+					'expire' => $expirationTime,
 				];
 				$this->response->setCookie($cookie);
 				$this->session->set('uuid_business', $row->uuid_business_id);
-				$uuidCookie = [
-					'name'   => 'uuid_business',
-					'value'  => $row->uuid_business_id,
-					'expire' => '86400',
-				];
-				$this->response->setCookie($uuidCookie);
+				$uuidBusiness = get_cookie("uuid_business");
+				if (!$uuidBusiness || !isset($uuidBusiness)) {
+					$uuidCookie = [
+						'name'   => 'uuid_business',
+						'value'  => $row->uuid_business_id,
+						'expire' => $expirationTime,
+					];
+					$this->response->setCookie($uuidCookie);
+				} else {
+					$this->session->set('uuid_business', $uuidBusiness);
+				}
 				$this->session->set('jwt_token', $token);
-				if (!$row->uuid_business_id && !isset($row->uuid_business_id)) {
+				if ($row->id == "1") {
 					$userMenus = $this->menu_model->getRows();
 				} else {
 					if (isUUID($row->role)) {

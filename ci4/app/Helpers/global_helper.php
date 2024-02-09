@@ -69,7 +69,7 @@ function getResultWithoutBusiness($tableName, $where = array(), $returnArr = tru
     if ($returnArr) {
         $result = $query->getResultArray();
     } else {
-        $result = $query->getResult();
+        $result = $query->getRowArray();
     }
 
     return $result;
