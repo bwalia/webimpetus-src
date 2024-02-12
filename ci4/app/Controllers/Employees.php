@@ -42,4 +42,22 @@ class Employees extends CommonController
 
         return redirect()->to('/'.$this->table);
     }
+
+    public function checkEmail() {
+        $email = $this->request->getPost("email");
+        
+        $checkEmail = $this->model->getSingleRowWhere("employees", $email, "email");
+        
+        if (isset($checkEmail) || $checkEmail || !empty($checkEmail)) {
+            echo json_encode([
+                "status" => 409,
+                "message" => "Email already exists."
+            ]);
+        } else {
+            echo json_encode([
+                "status" => 200,
+                "message" => "Email is unique."
+            ]);
+        }
+    }
 }
