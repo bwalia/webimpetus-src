@@ -13246,6 +13246,16 @@ form#loginform .form-group {
     display: none;
 }
 
+.passwordIcon {
+  width: 25px;
+  height: 25px;
+  position: absolute;
+  z-index: 200;
+  top: 42px;
+  right: 10px;
+  cursor: pointer;
+}
+
 .changeIcon .fa.fa-eye-slash {
     display: block;
 }

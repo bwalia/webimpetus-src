@@ -26,6 +26,11 @@ $json = json_decode($str, true);
                         <label for="inputPassword4">Password</label>
                         <input type="password" id="inputPassword4" class="form-control required" name="password"
                             placeholder="">
+                            <span class="passwordIcon psswrdIcon">
+                                <a href="#" onclick="showPassword('inputPassword4')">
+                                    <i class="fa fa-eye"></i><i class="fa fa-eye-slash"></i>
+                                </a>
+                            </span>
                             <span class="form-control-feedback" id="passwordError"></span>
                     </div>
                 <?php } ?>
@@ -98,6 +103,11 @@ $json = json_decode($str, true);
                     <div class="form-group  col-md-6">
                         <label for="npassword">New Password</label>
                         <input type="password" id="npassword" class="form-control" name="npassword" placeholder="">
+                        <span class="passwordIcon psswrdIcon">
+                            <a href="javascript:void(0)" onclick="showPassword('npassword')">
+                                <i class="fa fa-eye"></i><i class="fa fa-eye-slash"></i>
+                            </a>
+                        </span>
                         <span class="form-control-feedback" id="newpasswordError"></span>
                     </div>
                     <input type="hidden" class="form-control" name="id" placeholder="" value="<?= @$user->id ?>" />
@@ -177,5 +187,16 @@ $json = json_decode($str, true);
             evt.preventDefault();
             return false;
         }
+    }
+
+    function showPassword(id) {
+      var x = document.getElementById(id);
+      if (x.type === "password") {
+        x.type = "text";
+        $('.psswrdIcon').addClass('changeIcon');
+      } else {
+        x.type = "password";
+        $('.psswrdIcon').removeClass('changeIcon');
+      }
     }
 </script>
