@@ -45,11 +45,11 @@ $categories = getResultArray("categories");
                                         <input class="form-check-input" type="checkbox" name="status" id="status" <?php if (@$customer->status == "1") {
                                             echo
                                                 "checked";
-                                        } ?> value="<?php echo @$customer->status; ?>">
+                                        } ?>   value="<?php echo @$customer->status; ?>">
                                         <label class="form-check-label" for="flexCheckIndeterminate">
                                             <?php /* if (@$customer->status == "1") {
-                                           echo "Inactive";
-                                       } else { */
+                                      echo "Inactive";
+                                  } else { */
                                             echo "Active";
                                             //} 
                                             ?>
@@ -170,11 +170,11 @@ $categories = getResultArray("categories");
                                 </div>
                             </div>
                         </div>
-                        <?php 
-                            $contactUUIDs = [];
-                            foreach ($selectedContacts as $key => $selectedContact) {
-                                array_push($contactUUIDs, $selectedContact['contact_uuid']);
-                            }
+                        <?php
+                        $contactUUIDs = [];
+                        foreach ($selectedContacts as $key => $selectedContact) {
+                            array_push($contactUUIDs, $selectedContact['contact_uuid']);
+                        }
                         ?>
                         <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
                             <div class="form-group col-md-12">
@@ -219,6 +219,33 @@ $categories = getResultArray("categories");
             $(this).val(1);
         }
     });
+
+    $("#email").blur(function (e) {
+        var email = $("#email").val();
+        var rowUuid = '<?php echo @$customer->uuid ?? ""; ?>';
+        if (!rowUuid) {
+            $.ajax({
+                url: baseUrl + "/customers/checkEmail",
+                data: {
+                    email: email
+                },
+                method: 'post',
+                success: function (res) {
+                    var result = JSON.parse(res);
+                    if (result.status == 409) {
+                        e.preventDefault();
+                        if ($("#emailError").length === 0) {
+                            $("<span class='form-control-feedback' id='emailError'>Email already exists.</span>").insertAfter(e.target);
+                        }
+                        return false
+                    } else {
+                        $("#emailError").text("");
+                        $("#emailError").remove();
+                    }
+                }
+            })
+        } 
+    })
 </script>
 
 <script>
