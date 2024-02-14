@@ -41,9 +41,9 @@ service:
 
 ingress:
   enabled: true
-  className: "nginx"
+  className: "traefik"
   annotations: {}
-    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/ingress.class: traefik
     # kubernetes.io/tls-acme: "true"
   hosts:
     - host: dev.workstationcrm.com
@@ -57,9 +57,9 @@ ingress:
 
 ingressAdminer:
   enabled: true
-  className: "nginx"
+  className: "traefik"
   annotations: {}
-    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/ingress.class: traefik
     # kubernetes.io/tls-acme: "true"
   hosts:
     - host: dev-adminer.workstationcrm.com
