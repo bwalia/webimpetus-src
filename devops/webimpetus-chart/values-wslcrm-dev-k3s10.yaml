@@ -62,7 +62,7 @@ ingressAdminer:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: dev-adminer.workstation.co.uk
+    - host: dev-adminer.workstationcrm.com
       paths:
         - path: /
           pathType: Prefix
