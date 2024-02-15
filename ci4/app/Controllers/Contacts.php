@@ -116,4 +116,21 @@ class Contacts extends CommonController
      
         echo json_encode($response);
     }
+    public function checkEmail() {
+        $email = $this->request->getPost("email");
+        
+        $checkEmail = $this->model->getSingleRowWhere("contacts", $email, "email");
+        
+        if (isset($checkEmail) || $checkEmail || !empty($checkEmail)) {
+            echo json_encode([
+                "status" => 409,
+                "message" => "Email already exists."
+            ]);
+        } else {
+            echo json_encode([
+                "status" => 200,
+                "message" => "Email is unique."
+            ]);
+        }
+    }
 }

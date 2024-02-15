@@ -349,7 +349,7 @@ class Common_model extends Model
         $builder = $this->db->table("categories");
         if ($id === false) {
             //$whereCond = array_merge(['role!='=>1], $whereCond);
-            return $builder->get()->getResultArray();
+            return $builder->getWhere($whereCond)->getResultArray();
         } else {
             $whereCond = array_merge(['id' => $id], $whereCond);
             return $builder->getWhere($whereCond)->getRowArray();

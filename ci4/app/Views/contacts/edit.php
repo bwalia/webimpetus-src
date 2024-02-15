@@ -218,6 +218,40 @@ if (isset($row)) {
 
     var uuid = $('#uuid').val();
 
+    $("#email").blur(function (e) {
+        var email = $("#email").val();
+        var rowUuid = '<?php echo @$contact->uuid ?? ""; ?>';
+        if (!rowUuid) {
+            $.ajax({
+                url: baseUrl + "/contacts/checkEmail",
+                data: {
+                    email: email
+                },
+                method: 'post',
+                success: function (res) {
+                    var result = JSON.parse(res);
+                    if (result.status == 409) {
+                        e.preventDefault();
+                        if ($("#emailError").length === 0) {
+                            $("<span class='form-control-feedback' id='emailError'>Email already exists.</span>").insertAfter(e.target);
+                        }
+                        return false
+                    } else {
+                        $("#emailError").text("");
+                        $("#emailError").remove();
+                    }
+                }
+            })
+        } 
+    });
+
+    $(":submit").click(function (e) {
+        if ($("#emailError").length) {
+            e.preventDefault();
+            return false;
+        }
+    });
+
     $(document).on("click", ".form-check-input", function () {
         if ($(this).prop("checked") == false) {
             $(this).val(0);

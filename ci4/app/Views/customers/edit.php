@@ -74,7 +74,7 @@ $categories = getResultArray("categories");
                             <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <label for="inputEmail4"> Contact First Name</label>
-                                    <input autocomplete="off" type="text" class="form-control" id="company_name"
+                                    <input autocomplete="off" type="text" class="form-control" id="contact_firstname"
                                         name="contact_firstname" placeholder=""
                                         value="<?= @$customer->contact_firstname ?>">
                                 </div>
@@ -245,7 +245,17 @@ $categories = getResultArray("categories");
                 }
             })
         } 
-    })
+    });
+
+    $(":submit").click(function (e) {
+        validateName($("#company_name"), e);
+        validateName($("#contact_firstname"), e);
+
+        if ($("#emailError").length) {
+            e.preventDefault();
+            return false;
+        }
+    });
 </script>
 
 <script>

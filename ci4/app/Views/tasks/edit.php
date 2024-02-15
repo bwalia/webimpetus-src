@@ -84,6 +84,7 @@ $sprints = getResultArray("sprints");
                         <label for="inputEmail4">Task End Date</label>
                         <input type="text" autocomplete="off" class="form-control required datepicker" id="end_date"
                             name="end_date" placeholder="" value="<?= render_date(@$task->end_date) ?>">
+                        <span id="deadlineError" class="form-control-feedback"></span>
                     </div>
 
                 </div>
@@ -323,6 +324,12 @@ $sprints = getResultArray("sprints");
         }
     });
 
+    $(":submit").click(function (event) {
+        const startDate = $("#start_date").val();
+        const deadLineDate = $("#end_date").val();
+        validateEndDate(startDate, deadLineDate, event)
+        validateName($("#name"), event);
+    });
 
     $(document).on("change", ".fileUpload", function () {
         console.log({
@@ -391,4 +398,28 @@ $sprints = getResultArray("sprints");
             $(this).val(1);
         }
     });
+
+    $("#end_date").change(function () {
+        const startDate = $("#start_date").val();
+        const deadLineDate = $(this).val();
+        
+        validateEndDate(startDate, deadLineDate, null)
+    })
+
+    function validateEndDate(slipStartDate, slipEndDate, evt) {
+        const endDate = new Date(slipEndDate);
+        const startDate = new Date(slipStartDate);
+        const timeDifference = endDate - startDate;
+        const daysDifference = Math.round(timeDifference / (1000 * 60 * 60 * 24));
+        console.log({timeDifference, daysDifference});
+        if (daysDifference < 0) {
+            $("#deadlineError").text("Deadline date should be greater than the start date.");
+            if (evt !== null) {
+                evt.preventDefault();
+            }
+            return false;
+        } else {
+            $("#deadlineError").text("");
+        }
+    }
 </script>

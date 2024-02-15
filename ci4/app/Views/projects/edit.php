@@ -107,17 +107,16 @@
     });
 
     $("#projectsSubmit").click(function (event) {
-        console.log("hi");
         const startDate = $("#start_date").val();
         const deadLineDate = $("#deadline_date").val();
-        console.log({startDate, deadLineDate});
+        validateName($("#name"), event);
         validateEndDate(startDate, deadLineDate, event)
     })
 
     $("#deadline_date").change(function () {
         const startDate = $("#start_date").val();
         const deadLineDate = $(this).val();
-        console.log({startDate, deadLineDate});
+        
         validateEndDate(startDate, deadLineDate, null)
     })
 
