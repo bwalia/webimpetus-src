@@ -134,7 +134,7 @@ $businesses = getWithOutUuidResultArray("businesses");
         </form>
     </div>
 </div>
-
+<?php $pageUUID = @$employee->uuid ?? ""; ?>
 <?php require_once(APPPATH . 'Views/common/footer.php'); ?>
 <!-- main content part end -->
 
@@ -159,33 +159,36 @@ $businesses = getWithOutUuidResultArray("businesses");
 
     $("#email").blur(function (e) {
         var email = $("#email").val();
-        $.ajax({
-            url: baseUrl + "/employees/checkEmail",
-            data: {
-                email: email
-            },
-            method: 'post',
-            success: function (res) {
-                console.log(res);
-                e.preventDefault();
-                return false
-            }
-        })
+        var rowUuid = '<?php echo $pageUUID; ?>';
+        if (!rowUuid) {
+            $.ajax({
+                url: baseUrl + "/employees/checkEmail",
+                data: {
+                    email: email
+                },
+                method: 'post',
+                success: function (res) {
+                    var result = JSON.parse(res);
+                    if (result.status == 409) {
+                        e.preventDefault();
+                        if ($("#emailError").length === 0) {
+                            $("<span class='form-control-feedback' id='emailError'>Email already exists.</span>").insertAfter(e.target);
+                        }
+                        return false
+                    } else {
+                        $("#emailError").text("");
+                        $("#emailError").remove();
+                    }
+                }
+            })
+        } 
     })
-    $(":submit").click( function ( e ) {
+    $(":submit").click( async function ( e ) {
         validateName($("#first_name"), e);
-        var email = $("#email").val();
-        $.ajax({
-            url: baseUrl + "/employees/checkEmail",
-            data: {
-                email: email
-            },
-            method: 'post',
-            success: function (res) {
-                console.log(res);
-                e.preventDefault();
-                return false
-            }
-        })
+
+        if ($("#emailError").length) {
+            e.preventDefault();
+            return false;
+        }
     })
 </script>

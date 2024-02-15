@@ -74,7 +74,7 @@
 
     function validateName(name, event) {
         let nameVal = name.val();
-        var nameRegex = /^[a-zA-Z ]{2,30}$/;
+        var nameRegex = /^[a-zA-Z ]{2,64}$/;
         if (nameRegex.test(nameVal)) {
             $("#nameError").text("");
             $("#nameError").remove();
