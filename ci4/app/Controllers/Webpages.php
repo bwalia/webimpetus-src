@@ -55,8 +55,12 @@ class Webpages extends CommonController
 
 				if (!empty($fieldsIds)) {
 					$data['custom_fields'] = $this->model->getDataWhereIN('custom_fields', $fieldsIds, 'uuid');
+				} else {
+					$data['custom_fields'] = [];
 				}
 				
+			} else {
+				$data['custom_fields'] = [];
 			}
 		} else {
 			$data['custom_fields'] = [];
