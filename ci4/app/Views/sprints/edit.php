@@ -10,7 +10,7 @@
                             <label for="sprint_name">Sprint Name</label>
                         </div>
                         <div class="col-md-6">
-                            <input type="input" autocomplete="off" class="form-control required" name="sprint_name"
+                            <input type="input" autocomplete="off" class="form-control required" name="sprint_name" id="sprint_name"
                                 value="<?= empty($sprint->sprint_name) ? "Sprint Week " . date("W") : $sprint->sprint_name ?>" />
                         </div>
                     </div>
@@ -59,7 +59,8 @@
     $("#sprintsSubmit").click(function (event) {
         const startDate = $("#start_date").val();
         const deadLineDate = $("#end_date").val();
-        validateEndDate(startDate, deadLineDate, event)
+        validateEndDate(startDate, deadLineDate, event);
+        validateName($("#sprint_name"), event);
     })
 
     $("#end_date").change(function () {

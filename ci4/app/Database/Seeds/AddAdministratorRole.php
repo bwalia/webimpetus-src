@@ -27,20 +27,20 @@ class AddAdministratorRole extends Seeder
             $db->table('roles')->insert($data);
             $db->query("UPDATE `users` SET `role` = '$sUUID' WHERE `id` = 1");
         }
-        foreach ($businessUUIDs as $businessUUID) {
-            $bID = $businessUUID['uuid'];
-            $roleQuery = $db->query('SELECT role_name FROM roles WHERE uuid_business_id = "' . $bID . '"');
-            $isRoleExists = $roleQuery->getRow();
-            if (!$isRoleExists && empty($isRoleExists) && !isset($isRoleExists)) {
-                $uuidNamespace = UUID::v4();
-                $uuid = UUID::v5($uuidNamespace, 'roles');
-                $data = [
-                    'uuid' => $uuid,
-                    'role_name'  => "Admin",
-                    'uuid_business_id'  => $bID,
-                ];
-                $db->table('roles')->insert($data);
-            }
-        }
+        // foreach ($businessUUIDs as $businessUUID) {
+        //     $bID = $businessUUID['uuid'];
+        //     $roleQuery = $db->query('SELECT role_name FROM roles WHERE uuid_business_id = "' . $bID . '"');
+        //     $isRoleExists = $roleQuery->getRow();
+        //     if (!$isRoleExists && empty($isRoleExists) && !isset($isRoleExists)) {
+        //         $uuidNamespace = UUID::v4();
+        //         $uuid = UUID::v5($uuidNamespace, 'roles');
+        //         $data = [
+        //             'uuid' => $uuid,
+        //             'role_name'  => "Admin",
+        //             'uuid_business_id'  => $bID,
+        //         ];
+        //         $db->table('roles')->insert($data);
+        //     }
+        // }
     }
 }

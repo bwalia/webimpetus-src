@@ -80,7 +80,7 @@ if (empty($_SESSION['uuid'])) { ?>
                                         href="/dashboard/settings"><i class="fa fa-cog"></i>Settings</a>
                                 <?php } ?>
                                 <a href="/home/logout"><i class="fa fa-sign-out-alt"></i>Log Out </a>
-                                <div class="text-right p-2 text-info">
+                                <div class="text-right p-2 text-info font-weight-bolder">
                                     <?= $roleName ? $roleName :''?>
                                 </div>
                             </div>

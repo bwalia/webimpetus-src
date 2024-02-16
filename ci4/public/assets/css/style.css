@@ -3849,6 +3849,7 @@ table.dataTable.dtr-inline.collapsed > tbody > tr.parent > th:first-child::befor
   -webkit-border-radius: 15px;
   -moz-border-radius: 15px;
   border-radius: 15px;
+  border: #e6d3d3 1px solid;
 }
 
 /* line 282, /scss/_header.scss */
@@ -14405,7 +14406,7 @@ p.dashTitle {
     margin-bottom: 10px;
 }
 
-.add-dropzone .card-title a::before {
+/* .add-dropzone .card-title a::before {
     position: absolute;
     right: 13px;
     width: 15px;
@@ -14414,7 +14415,7 @@ p.dashTitle {
     font-family: 'themify';
     z-index: 1;
     opacity: 0.6;
-}
+} */
 
 .add-dropzone .card-title a {
     font-weight: 700 !important;

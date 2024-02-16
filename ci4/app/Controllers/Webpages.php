@@ -14,6 +14,8 @@ ini_set('display_errors', 1);
 
 class Webpages extends CommonController
 {
+	public $content_model;
+	public $user_model;
 	public function __construct()
 	{
 		parent::__construct();
@@ -45,8 +47,21 @@ class Webpages extends CommonController
 		if (!empty($id)) {
 			$data['webpage'] = $this->content_model->getRows($id)->getRow();
 			$data['images'] = $this->model->getDataWhere("media_list", $id, "uuid_linked_table");
-		}
+			$fieldsAllData = $this->model->getDataWhere("content_list__custom_fields", $id, "content_list_id");
+			if (!empty($fieldsAllData)) {
+				$fieldsIds = array_map(function ($v, $k) {
+					return $v['custom_field_id'];
+				}, $fieldsAllData, array_keys($fieldsAllData));
 
+				if (!empty($fieldsIds)) {
+					$data['custom_fields'] = $this->model->getDataWhereIN('custom_fields', $fieldsIds, 'uuid');
+				}
+				
+			}
+		} else {
+			$data['custom_fields'] = [];
+		}
+		
 		$data['users'] = $this->user_model->getUser();
 		if (isset($_GET['cat']) && $_GET['cat'] == 'strategies') {
 			$data['menuName'] = $_GET['cat'];
@@ -58,20 +73,22 @@ class Webpages extends CommonController
 
 	public function update()
 	{
-
+		// $post = $this->request->getPost();
+		// echo '<pre>'; print_r($post); echo '</pre>'; die;
+		
 		$id = $this->request->getPost('id');
 		$uuid = $this->request->getPost('uuid');
-		$menuName = $this->request->getPost('strategies');
+		$menuName = $this->request->getPost('strategies') ?? "";
 		$data = array(
 			'title'  => $this->request->getPost('title'),
 			'sub_title' => $this->request->getPost('sub_title'),
 			'content' => $this->request->getPost('content'),
 			'meta_keywords' => $this->request->getPost('meta_keywords'),
-			'published_date' => $this->request->getPost('published_date') ? strtotime($this->request->getPost('published_date')) : strtotime(date('Y-m-d H:i:s')),
+			'published_date' => $this->request->getPost('published_date') ? strtotime($this->request->getPost('published_date') ?? 0) : strtotime(date('Y-m-d H:i:s')),
 			'meta_title' => $this->request->getPost('meta_title'),
 			'meta_description' => $this->request->getPost('meta_description'),
 			'status' => $this->request->getPost('status'),
-			'publish_date' => ($this->request->getPost('publish_date') ? strtotime($this->request->getPost('publish_date')) : strtotime(date('Y-m-d H:i:s'))),
+			'publish_date' => ($this->request->getPost('publish_date') ? strtotime($this->request->getPost('publish_date') ?? 0) : strtotime(date('Y-m-d H:i:s'))),
 			"categories" => json_encode($this->request->getPost('categories')),
 			'user_uuid' => $this->request->getPost('user_uuid'),
 			'language_code' => $this->request->getPost('language_code')
@@ -203,8 +220,44 @@ class Webpages extends CommonController
 			}
 		}
 
+		$customFieldNames = $this->request->getPost("customFieldName");
+		$customFieldValues = $this->request->getPost("customFieldValue");
+		$customFieldTypes = $this->request->getPost("customFieldType");
+		$customFieldsUuids = $this->request->getPost("custom_fields_uuid");
+		
+		if (!empty($customFieldNames) && !empty($customFieldValues)) {
+			$customData = [];
+			foreach ($customFieldValues as $ckey => $customFieldValue) {
+				$customData['field_name'] = $customFieldNames[$ckey];
+				$customData['field_value'] = $customFieldValues[$ckey];
+				$customData['field_type'] = $customFieldTypes[$ckey];
+				
+				if (!empty($customFieldsUuids) && isset($customFieldsUuids[$ckey])) {
+					$customData['uuid'] = $customFieldsUuids[$ckey];
+				} else {
+					$customData['uuid'] = UUID::v5(UUID::v4(), 'custom_fields');
+				}
+				$isFieldExists = $this->model->getExistsTableRowsByUUID("custom_fields", $customData['uuid']);
+				
+				if (empty($isFieldExists) || !isset($isFieldExists) || !$isFieldExists) {
+					$this->model->insertTableData($customData, "custom_fields");
+				} else {
+					$this->model->updateTableDataByUUID($customData['uuid'], $customData, "custom_fields");
+				}
+				if ($customData['uuid']) {
+					$this->model->deleteTableData("content_list__custom_fields", $customData['uuid'], "custom_field_id");
+				} 
+				$relationData = [
+					'custom_field_id' => $customData['uuid'],
+					'content_list_id' => $uuid,
+					'uuid' => UUID::v5(UUID::v4(), 'content_list__custom_fields')
+				];
+				$this->model->insertTableData($relationData, "content_list__custom_fields");
+			}
+		}
+
 		$fromWhere = "";
-		if (strlen($menuName) > 1) {
+		if (strlen($menuName ?? "") > 1) {
 			$fromWhere = "?cat=$menuName";
 		}
 		if ($id > 0) {

@@ -37,7 +37,7 @@ class Blocks extends CommonController
 	{
 		$data['role'] = $this->session->get('role');
 		$data['tableName'] = "blocks";
-		$data[$this->rawTblName] = $this->blocks_model->getRowsByUUID($id)->getRow();
+		$data[$this->rawTblName] = $id ? $this->blocks_model->getRowsByUUID($id)->getRow() : [];
 		$data['users'] = $this->user_model->getUser();
 		echo view($this->table . '/edit', $data);
 	}
