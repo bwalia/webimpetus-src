@@ -206,36 +206,38 @@ $data_type_format["YAML"] = "# Employee records
 								<?php
 							} else {
 								?>
-								<div class="form-row" id="custom_fields_1">
-									<div class="form-group col-md-3">
-										<label for="customFieldName_1">Field Name</label>
-										<input autocomplete="off" type="text" class="form-control" id="customFieldName_1"
-											name="customFieldName[]" placeholder="" value="">
+								<div class="form-row customFieldContainer" id="customFieldContainer">
+									<div class="form-row" id="custom_fields_1">
+										<div class="form-group col-md-3">
+											<label for="customFieldName_1">Field Name</label>
+											<input autocomplete="off" type="text" class="form-control"
+												id="customFieldName_1" name="customFieldName[]" placeholder="" value="">
+										</div>
+										<div class="form-group col-md-5">
+											<label for="customFieldValue_1">Field Value</label>
+											<input autocomplete="off" type="text" class="form-control"
+												id="customFieldValue_1" name="customFieldValue[]" placeholder="" value="">
+										</div>
+										<div class="form-group col-md-2 d-flex flex-column">
+											<label for="customFieldType_1">Field Type</label>
+											<input autocomplete="off" type="text" class="form-control"
+												id="customFieldType_1" name="customFieldType[]" placeholder="" value="">
+										</div>
+										<div class="form-group col-md-1 change">
+											<button class="btn btn-primary bootstrap-touchspin-up add-field" type="button"
+												style="max-height: 35px;margin-top: 28px;margin-left: 10px;">+</button>
+										</div>
+										<div class="form-group col-md-1 change">
+											<button class="btn btn-info bootstrap-touchspin-up clone-row"
+												data-type="custom_fields" data-uuid="" data-id="custom_fields_1"
+												data-key="1" id="cloneRow" type="button"
+												style="max-height: 35px;margin-top: 28px;margin-left: 10px;">
+												<i class="fas fa-clone"></i>
+											</button>
+										</div>
 									</div>
-									<div class="form-group col-md-5">
-										<label for="customFieldValue_1">Field Value</label>
-										<input autocomplete="off" type="text" class="form-control" id="customFieldValue_1"
-											name="customFieldValue[]" placeholder="" value="">
-									</div>
-									<div class="form-group col-md-2 d-flex flex-column">
-										<label for="customFieldType_1">Field Type</label>
-										<input autocomplete="off" type="text" class="form-control" id="customFieldType_1"
-											name="customFieldType[]" placeholder="" value="">
-									</div>
-									<div class="form-group col-md-1 change">
-										<button class="btn btn-primary bootstrap-touchspin-up add" type="button"
-											style="max-height: 35px;margin-top: 28px;margin-left: 10px;">+</button>
-									</div>
-									<div class="form-group col-md-1 change">
-										<button class="btn btn-info bootstrap-touchspin-up clone-row"
-											data-type="custom_fields" data-uuid="" data-id="office_address_1" data-key="1"
-											id="cloneRow" type="button"
-											style="max-height: 35px;margin-top: 28px;margin-left: 10px;">
-											<i class="fas fa-clone"></i>
-										</button>
-									</div>
+									<input type="hidden" value="1" id="total_custom_fields" name="total_custom_fields">
 								</div>
-								<input type="hidden" value="1" id="total_custom_fields" name="total_custom_fields">
 								<?php
 							}
 							?>
@@ -660,9 +662,9 @@ $data_type_format["YAML"] = "# Employee records
 
 	});
 	var max_fields_limit = 10;
-	var totalCustomFields = $('#total_custom_fields').val(); //initialize counter for text box
-	$('.add-field').click(function (e) { //click event on add more fields button having class add_more_button
-		// e.preventDefault();
+	var totalCustomFields = $('#total_custom_fields').val();
+	$('.add-field').click(function (e) {
+		// console.log({ totalCustomFields });
 		if (totalCustomFields < max_fields_limit) { //check conditions
 			totalCustomFields++; //counter increment
 
