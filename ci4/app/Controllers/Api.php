@@ -211,6 +211,7 @@ class Api extends BaseController
                 $webPageList = [];
                 foreach ($webpages as $key => $eachPage) {
                     $eachPage->contacts = $this->getContacts(@$eachPage->id);
+                    $eachPage->customFields = $this->getCustomFields(@$eachPage->uuid);
                     $webPageList[$key] = $eachPage;
                 }
                 $data['data'] = $webPageList;
@@ -228,6 +229,24 @@ class Api extends BaseController
     {
         $blocks = $this->bmodel->where(["webpages_id" => $id])->get()->getResult();
         return $blocks;
+    }
+    public function getCustomFields($uuid)
+    {
+        $fieldsAllData = $this->common_model->getDataWhere("content_list__custom_fields", $uuid, "content_list_id");
+        if (!empty($fieldsAllData)) {
+            $fieldsIds = array_map(function ($v, $k) {
+                return $v['custom_field_id'];
+            }, $fieldsAllData, array_keys($fieldsAllData));
+
+            if (!empty($fieldsIds)) {
+                return $this->common_model->getDataWhereIN('custom_fields', $fieldsIds, 'uuid');
+            } else {
+                return [];
+            }
+            
+        } else {
+            return [];
+        }
     }
     public function webpagesEdit($id = false)
     {
