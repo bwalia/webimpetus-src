@@ -79,6 +79,15 @@ class Common_model extends Model
             return $this->getWhere($whereCond);
         }
     }
+    public function getExistsTableRowsByUUID($tableName, $uuid = false)
+    {
+        $whereCond = $this->whereCond;
+
+        if ($uuid) {
+            $whereCond = array('uuid' => $uuid);
+            return $this->db->table($tableName)->getWhere($whereCond)->getRowArray();
+        }
+    }
 
     public function getCats($id = false)
     {
@@ -223,6 +232,12 @@ class Common_model extends Model
         $result = $this->db->table($tableName)->getWhere([
             $field => $value
         ])->getResultArray();
+
+        return $result;
+    }
+    public function getDataWhereIN($tableName, $value, $field = "id")
+    {
+        $result = $this->db->table($tableName)->whereIn($field, $value)->get()->getResultArray();
 
         return $result;
     }
