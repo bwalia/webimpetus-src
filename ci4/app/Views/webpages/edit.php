@@ -152,9 +152,20 @@ $data_type_format["YAML"] = "# Employee records
 											</div>
 											<div class="form-group col-md-2 d-flex flex-column">
 												<label for="customFieldType_<?php echo $new_id; ?>">Field Type</label>
-												<input autocomplete="off" type="text" class="form-control"
+												<!-- <input autocomplete="off" type="text" class="form-control"
 													id="customFieldType_<?php echo $new_id; ?>" name="customFieldType[]"
-													placeholder="" value="<?= $custom_fields[$jak_i]['field_type'] ?>">
+													placeholder="" value="<?= $custom_fields[$jak_i]['field_type'] ?>"
+												> -->
+												<select name="customFieldType[]" id="customFieldType_<?php echo $new_id; ?>" class="form-control text_type">
+													<option value="TEXT">TEXT</option>
+													<!-- <option value="NUMBER">NUMBER</option> -->
+													<!-- <option value="JSON">JSON</option>
+													<option value="LIST">LIST</option>
+													<option value="YAML">YAML</option>
+													<option value="WYSIWYG">WYSIWYG</option>
+													<option value="MARKDOWN">MARKDOWN</option>
+													<option value="YAML">YAML</option> -->
+												</select>
 											</div>
 											<input type="hidden" class="form-control" name="custom_fields_uuid[]" placeholder=""
 												value="<?= @$custom_fields[$jak_i]['uuid'] ?>" />
@@ -206,7 +217,7 @@ $data_type_format["YAML"] = "# Employee records
 								<?php
 							} else {
 								?>
-								<div class="form-row customFieldContainer" id="customFieldContainer">
+								<div class="customFieldContainer" id="customFieldContainer">
 									<div class="form-row" id="custom_fields_1">
 										<div class="form-group col-md-3">
 											<label for="customFieldName_1">Field Name</label>
@@ -220,8 +231,11 @@ $data_type_format["YAML"] = "# Employee records
 										</div>
 										<div class="form-group col-md-2 d-flex flex-column">
 											<label for="customFieldType_1">Field Type</label>
-											<input autocomplete="off" type="text" class="form-control"
-												id="customFieldType_1" name="customFieldType[]" placeholder="" value="">
+											<!-- <input autocomplete="off" type="text" class="form-control"
+												id="customFieldType_1" name="customFieldType[]" placeholder="" value=""> -->
+												<select name="customFieldType[]" id="customFieldType_1" class="form-control text_type">
+													<option value="TEXT">TEXT</option>
+												</select>
 										</div>
 										<div class="form-group col-md-1 change">
 											<button class="btn btn-primary bootstrap-touchspin-up add-field" type="button"
@@ -480,7 +494,7 @@ $data_type_format["YAML"] = "# Employee records
 
 							<div class="form-group">
 								<button class="btn btn-primary  add" type="button"
-									style="float:right;margin-right: 120px;">Add Blocks</button><br><br>
+									style="float:right;margin-right: 120px;">Add Block</button><br><br>
 							</div>
 						</div>
 					</div>
@@ -680,9 +694,9 @@ $data_type_format["YAML"] = "# Employee records
 						</div>
 						<div class="form-group col-md-2 d-flex flex-column">
 							<label for="customFieldType_${totalCustomFields}">Field Type</label>
-							<input autocomplete="off" type="text" class="form-control"
-								id="customFieldType_${totalCustomFields}" name="customFieldType[]"
-								placeholder="" value="">
+								<select name="customFieldType[]" id="customFieldType_${totalCustomFields}" class="form-control text_type">
+									<option value="TEXT">TEXT</option>
+								</select>
 						</div>
 						<div class="form-group col-md-1 change">
 							<button class="btn btn-info bootstrap-touchspin-up deleteaddress" data-type="custom_fields" id="deleteRow" type="button" style="max-height: 35px;margin-top: 28px;margin-left: 10px;">-</button>
