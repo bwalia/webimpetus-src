@@ -100,6 +100,7 @@ class Webpages extends CommonController
 		$post = $this->request->getPost();
 
 		$i = 0;
+		if (isset($post["blocks_code"])) {
 		foreach ($post["blocks_code"] as $code) {
 			if ($post["type"][$i] == 'JSON') {
 				@json_decode($post["blocks_text"][$i]);
@@ -125,6 +126,7 @@ class Webpages extends CommonController
 				// }
 			}
 			$i++;
+		}
 		}
 		$i = 0;
 
