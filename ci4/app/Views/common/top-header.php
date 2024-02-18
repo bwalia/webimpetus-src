@@ -81,7 +81,7 @@ if (empty($_SESSION['uuid'])) { ?>
                                 <?php } ?>
                                 <a href="/home/logout"><i class="fa fa-sign-out-alt"></i>Log Out </a>
                                 <div class="text-right p-2 text-info font-weight-bolder">
-                                    <?= $roleName ? $roleName :''?>
+                                    You are logged in as: <strong><?= $roleName ? $roleName :''?></strong>
                                 </div>
                             </div>
                         </div>

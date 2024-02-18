@@ -516,6 +516,7 @@
 
 
 	$(document).on('click', "#save_block", function(e) {
+		var errorMessageStr = "";
 		var code_arr = [];
 		$(".each-block").each(function() {
 			var blocks_code = $(this).find(".blocks_code").val();
@@ -525,12 +526,13 @@
 				e.preventDefault()
 			}
 			if (code_arr.indexOf(blocks_code) > -1) {
-				alert("Duplicate code not allowed.");
+				errorMessageStr="Duplicate code is not allowed."
 				e.preventDefault()
 			}
 			code_arr.push(blocks_code);
 
 		})
+		alert(errorMessageStr);
 	})
 	// $(document).on('click', ".blocks_code", function(e){
 	// 	var code = $(this).val();
