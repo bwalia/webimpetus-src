@@ -41,7 +41,7 @@ if [ $targetEnv == "int2" ]; then
 HOST_ENDPOINT_UNSECURE_URL="http://int2-my.workstation.co.uk"
 fi
 
-curl -IL $HOST_ENDPOINT_UNSECURE_URL
+curl -I $HOST_ENDPOINT_UNSECURE_URL
 os_type=$(uname -s)
 
 if [ "$os_type" = "Darwin" ]; then
