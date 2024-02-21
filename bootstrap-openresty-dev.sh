@@ -64,29 +64,30 @@
         chmod 777 -R ${SUB_DIR}/
         fi
         
-        SRC_ENV_FILE=${pwd}/.env
+        SRC_ENV_FILE=/tmp/secrets/.env
         if [ -f "$SRC_ENV_FILE" ];then
-        cp $SRC_ENV_FILE /tmp/secrets/.env
-        FILE=/var/www/html/.env
-        cp /tmp/secrets/.env $FILE
-        if [ -f "$FILE" ];then
-            echo "$FILE exists."
-            cat $FILE
-            exit 0
-            awk '/----WEBIMPETUS-SYSTEM-INFO----/{exit} 1' $FILE > $FILE
-            echo "#----WEBIMPETUS-SYSTEM-INFO----=''" >> $FILE
-                echo "==========================="
-                echo "Workstation Bootstrap Script Copied"
-                echo "==========================="
-            fi
+            FILE=/var/www/html/.env
+            cp $SRC_ENV_FILE $FILE
+            
+                if [ -f "$FILE" ];then
+                    echo "$FILE exists."
+                    awk '/----WEBIMPETUS-SYSTEM-INFO----/{exit} 1' $FILE > /tmp/.env
+                    mv /tmp/.env $FILE
+                    echo "#----WEBIMPETUS-SYSTEM-INFO----=''" >> $FILE
+
+                    echo "==========================="
+                    echo "Workstation Bootstrap Script Copied"
+                    echo "==========================="
+                fi
                 echo "Starting Workstation"
                 echo "==========================="
                 php -v
             echo "==========================="
+            #   sed '/"#----WEBIMPETUS-SYSTEM-INFO----"/q' $FILE
             echo "Workstation Src copy to /var/www/html Complete"
-            fi
-            fi
-            
+         fi
+         fi
+
             FILE=/var/www/html/writable/
             if [ -d "$FILE" ]; then
                 echo "$FILE exists."
