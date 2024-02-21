@@ -35,17 +35,21 @@ docker exec -it ${DOCKER_CONTAINER_NAME} bash /usr/local/bin/bootstrap-openresty
 
 rm Dockerfile
 
-HOST_ENDPOINT_UNSECURE_URL="https://localhost:9093/dashboard"
+HOST_ENDPOINT_UNSECURE_URL="http://localhost:8080/dashboard"
+HOST_ENDPOINT_SECURE_URL="https://localhost:9093/dashboard"
 
 if [ $targetEnv == "int2" ]; then
-HOST_ENDPOINT_UNSECURE_URL="http://int2-my.workstation.co.uk"
+HOST_ENDPOINT_SECURE_URL="https://int2-my.workstation.co.uk"
 fi
 
 curl -I $HOST_ENDPOINT_UNSECURE_URL
+curl -I $HOST_ENDPOINT_SECURE_URL
+
 os_type=$(uname -s)
 
 if [ "$os_type" = "Darwin" ]; then
 open $HOST_ENDPOINT_UNSECURE_URL
+open $HOST_ENDPOINT_SECURE_URL
 fi
 
 if [ "$os_type" = "Linux" ]; then

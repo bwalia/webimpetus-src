@@ -4,7 +4,7 @@ services:
   #1 - Run the mariadb database
   webimpetus-db:
     container_name: "webimpetus-db"
-    image: mariadb:latest
+    image: mariadb:11.2.2
     restart: always
     environment:
       MYSQL_DATABASE: 'myworkstation_dev'
