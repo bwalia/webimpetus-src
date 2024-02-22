@@ -48,6 +48,7 @@ Use the helm package manager [helm](https://webimpetus.io/en/stable/) to install
 | Environment | Link     | Credentials                |
 | :-------- | :------- | :------------------------- |
 | `dev` | `http://localhost:8080/` | `Ask administrator` |
+| `dev with https:// tls cert` | `https://localhost:9093/` | `Ask administrator` | `see deploy-to-docker.sh`
 | `int` | `https://int-my.workstation.co.uk/` | `Ask administrator` |
 | `test` | `https://test-my.workstation.co.uk/` | `Ask administrator` |
 | `acc` | `https://acc-my.workstation.co.uk/` | `Ask administrator` |

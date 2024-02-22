@@ -217,7 +217,8 @@ data:
             
                 if [ -f "$FILE" ];then
                     echo "$FILE exists."
-                    awk '/----WEBIMPETUS-SYSTEM-INFO----/{exit} 1' $FILE > $FILE
+                    awk '/----WEBIMPETUS-SYSTEM-INFO----/{exit} 1' $FILE > /tmp/.env
+                    mv /tmp/.env $FILE
                     echo "#----WEBIMPETUS-SYSTEM-INFO----=''" >> $FILE
 
                     echo "==========================="
