@@ -5,7 +5,7 @@ use App\Models\Documents_model;
 use App\Libraries\UUID;
 class Documents extends CommonController
 {	
-	
+	public $documents_model;
     function __construct()
     {
         parent::__construct();
@@ -17,11 +17,16 @@ class Documents extends CommonController
     
     public function index()
     {        
-
+        $curretntBusiness = $this->model->getExistsTableRowsByUUID("businesses", session('uuid_business'));
+        $frontDomain = base_url();
+        if (!empty($curretntBusiness) && isset($curretntBusiness['frontend_domain'])) {
+            $frontDomain = $curretntBusiness['frontend_domain'];
+        }
         $data[$this->table] = $this->documents_model->getList();
         $data['tableName'] = $this->table;
         $data['rawTblName'] = $this->rawTblName;
         $data['is_add_permission'] = 1;
+        $data['front_domain'] = $frontDomain;
 
         echo view($this->table."/list",$data);
     }
