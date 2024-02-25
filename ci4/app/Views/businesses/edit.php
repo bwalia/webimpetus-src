@@ -100,7 +100,10 @@ $json = json_decode($str, true);
                             } ?>
                         </select>
                     </div>
-
+                    <div class="form-group  col-md-12">
+                        <label for="frontend_domain">Frontend Domain</label>
+                        <input autocomplete="off" type="text" class="form-control " id="frontend_domain" name="frontend_domain" placeholder="for e.g. https://frontdomain.com" value="<?= @$businesse->frontend_domain ?>">
+                    </div>
                     <?php if (in_array($role, [1, 2])) { ?>
                         <div class="form-group col-md-12">
                             <br><span class="help-block">Primary Business</span><br>
@@ -120,6 +123,11 @@ $json = json_decode($str, true);
 <?php require_once(APPPATH . 'Views/common/footer.php'); ?>
 
 <script>
+    function isValidHttpOrHttpsDomain(domain) {
+        const domainRegex = /^(https?:\/\/)?(?:www\.)?([a-zA-Z0-9.-]+)\.([a-zA-Z]{2,})(?:\/\S*)?$/;
+        return domainRegex.test(domain);
+    }
+
     $("#status").on("change", function() {
         <?php if (isset($secret) && (!empty($secret->key_value))) { ?>
             var vall = '<?= base64_encode(@$secret->key_value) ?>';
@@ -131,9 +139,22 @@ $json = json_decode($str, true);
         <?php } ?>
     });
 
+    $("#frontend_domain").on('blur', function () {
+        var domainName = $(this).val();
+        if (!isValidHttpOrHttpsDomain(domainName)) {
+            if ($("#domainError").length === 0) {
+                $("<span class='form-control-feedback' id='domainError'>Invalid domain! Please enter domain for e.g. https://domain.com</span>").insertAfter($(this));
+            }
+        } else {
+            $("#domainError").remove();
+        }
+    })
     $("#adddomain").submit(function(event) {
         // $("<span class='form-control-feedback' id='emailError'></span>").insertAfter($("#inputEmail"));
         validateEmail($("#inputEmail").val(), "#inputEmail", event);
         validatePhoneNo($("#telephone_no").val(), event);
+        if ($("#domainError").length !== 0) {
+            event.preventDefault();
+        }
     })
 </script>
