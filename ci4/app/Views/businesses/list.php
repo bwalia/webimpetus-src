@@ -1,4 +1,7 @@
-<?php require_once(APPPATH . 'Views/common/list-title.php'); ?>
+<?php 
+    require_once(APPPATH . 'Views/common/list-title.php'); 
+    $roles = getResultWithoutBusiness("roles", ["uuid" => $_SESSION['role']], false);
+?>
 
 <div class="white_card_body ">
     <div class="QA_table ">
@@ -9,13 +12,13 @@
                     <th scope="col">Id</th>
                     <th scope="col">Name</th>
                     <th scope="col">Created at</th>
-                    <?php if (!empty($_SESSION['role'])) { ?><th scope="col" width="50">Action</th><?php } ?>
+                    <?php if ((!empty($_SESSION['role']) && $roles['role_name'] == "Administrator") || session('uuid') == 1) { ?><th scope="col" width="50">Action</th><?php } ?>
                 </tr>
             </thead>
             <tbody>
 
                 <?php foreach ($businesses as $row) :
-                    if (@$_SESSION['role'] > 0) {
+                    if ((isset($_SESSION['role']) && $roles['role_name'] == "Administrator") || session('uuid') == 1) {
                         $url = "data-link=/" . $tableName . "/edit/" . $row['uuid'];
                     } ?>
                     <tr <?= @$url; ?>>
