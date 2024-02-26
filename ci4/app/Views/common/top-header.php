@@ -7,6 +7,7 @@ if (empty($_SESSION['uuid'])) { ?>
     </script>
     <?php
 }
+$roles = getResultWithoutBusiness("roles", ["uuid" => $_SESSION['role']], false);
 ?><!-- menu  -->
 <div class="container-fluid no-gutters">
     <div class="row">
@@ -72,11 +73,11 @@ if (empty($_SESSION['uuid'])) { ?>
                                 <span><i class="fa fa-envelope"></i>
                                     <?= !empty($_SESSION['uemail']) ? $_SESSION['uemail'] : '' ?>
                                 </span>
-                                <?php if (!empty($_SESSION['role']) && $_SESSION['role'] == 1) { ?>
+                                <?php if ((isset($_SESSION['role']) && $roles['role_name'] == "Administrator") || session('uuid') == 1) { ?>
                                     <a href="/dashboard/user_role"><i class="fa fa-eye"></i>Role Based Access Manager</a>
                                 <?php } ?>
                                 <a href="/dashboard/chgpwd"><i class="fa fa-eye"></i>My Profile</a>
-                                <?php if (!empty($_SESSION['role']) && $_SESSION['role'] == 1) { ?><a
+                                <?php if ((isset($_SESSION['role']) && $roles['role_name'] == "Administrator") || session('uuid') == 1) { ?><a
                                         href="/dashboard/settings"><i class="fa fa-cog"></i>Settings</a>
                                 <?php } ?>
                                 <a href="/home/logout"><i class="fa fa-sign-out-alt"></i>Log Out </a>

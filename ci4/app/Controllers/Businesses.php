@@ -16,13 +16,13 @@ class Businesses extends CommonController
 
 	public function index()
 	{
-
+		$roles = getResultWithoutBusiness("roles", ["uuid" => $_SESSION['role']], false);
 		$data['columns'] = $this->db->getFieldNames($this->table);
 		$data['fields'] = array_diff($data['columns'], $this->notAllowedFields);
 		$data[$this->table] = getWithOutUuidResultArray("businesses");
 		$data['tableName'] = $this->table;
 		$data['rawTblName'] = $this->rawTblName;
-		if (@$_SESSION['role'] > 0) {
+		if ((@$_SESSION['role'] && $roles['role_name'] == "Administrator") || session('uuid') == 1) {
 			$data['is_add_permission'] = 1;
 		} else {
 			$data['is_add_permission'] = 0;

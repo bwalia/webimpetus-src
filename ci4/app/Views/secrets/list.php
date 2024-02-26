@@ -1,4 +1,7 @@
-<?php require_once (APPPATH.'Views/common/list-title.php'); ?>
+<?php 
+    require_once (APPPATH.'Views/common/list-title.php'); 
+    $roles = getResultWithoutBusiness("roles", ["uuid" => $_SESSION['role']], false);
+?>
 
 <div class="white_card_body ">
     <div class="QA_table ">
@@ -13,7 +16,7 @@
                     <th scope="col">Services</th>
                     
                     <th scope="col">Created at</th>
-                    <?php if(!empty($_SESSION['role'])){ ?><th scope="col" width="50">Action</th><?php } ?>
+                    <?php if ((isset($_SESSION['role']) && $roles['role_name'] == "Administrator") || session('uuid') == 1) { ?><th scope="col" width="50">Action</th><?php } ?>
                 </tr>
             </thead>
             <tbody>                                        
@@ -37,7 +40,7 @@
                 <td class="f_s_12 f_w_400  ">
                 <p class="pd10"> <?= $row['created'];?></p>
                 </td>
-                <?php if(!empty($_SESSION['role'])){ ?> <td class="f_s_12 f_w_400 text-right">
+                <?php if ((isset($_SESSION['role']) && $roles['role_name'] == "Administrator") || session('uuid') == 1) { ?> <td class="f_s_12 f_w_400 text-right">
                     <div class="header_more_tool">
                         <div class="dropdown">
                             <span class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown">

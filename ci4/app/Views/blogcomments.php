@@ -1,4 +1,7 @@
-<?php include('common/header.php'); ?>
+<?php 
+    include('common/header.php'); 
+    $roles = getResultWithoutBusiness("roles", ["uuid" => $_SESSION['role']], false);
+?>
 <!-- main content part here -->
  
 
@@ -20,7 +23,7 @@
                             </ol>
                         </div>
                         <div class="page_title_right">
-                          <?php if(!empty($_SESSION['role'])){ ?>
+                          <?php if ((@$_SESSION['role'] && $roles['role_name'] == "Administrator") || session('uuid') == 1) { ?>
                             <!--div class="header_more_tool setDropDownBlk">
                               
                             <a href="/jobapps/add" class="btn btn-primary"><i class="ti-plus"></i> Add job</a>
