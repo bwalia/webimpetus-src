@@ -16,7 +16,19 @@ on:
           - test
           - acc
           - prod
-        
+
+      TARGET_CLUSTER:
+        type: choice
+        description: 'Please choose the cluster'
+        default: 'k3s2'
+        required: true
+        options:
+          - k3s1
+          - k3s2
+          - k3s3
+          - k3s4
+          - k3s5
+              
 env:
   IMAGE_TAG: "int"
   TARGET_IMAGE_TAG: "int"
@@ -25,7 +37,7 @@ env:
   TARGET_ENV: ${{ github.event.inputs.TARGET_ENV || 'int' }}
   minReplicas: ${{ secrets.minReplicas_test }}
   IMAGE_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
-  TARGET_CLUSTER: "k3s2"
+  TARGET_CLUSTER: ${{ github.event.inputs.TARGET_CLUSTER || 'k3s2' }}
   KUBE_CONFIG_K3S: ${{ secrets.KUBE_CONFIG_DATA_K3S2 }}
 
 jobs:
@@ -92,7 +104,7 @@ jobs:
             KUBE_CONFIG_DATA: ${{ env.KUBE_CONFIG_K3S }}
           with:
             command: |
-              helm upgrade -i wsl-${{ env.TARGET_ENV }} ./devops/webimpetus-chart -f devops/webimpetus-chart/values-${{ env.TARGET_ENV }}-${{ env.TARGET_CLUSTER}}.yaml --set-string targetImage="${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}" --set-string targetImageTag="${{ env.IMAGE_TAG }}" --namespace ${{ env.TARGET_ENV }} --create-namespace
+              helm upgrade -i wsl-${{ env.TARGET_ENV }} ./devops/webimpetus-chart -f devops/webimpetus-chart/values-${{ env.TARGET_ENV }}-${{ env.TARGET_CLUSTER }}.yaml --set-string targetImage="${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}" --set-string targetImageTag="${{ env.IMAGE_TAG }}" --namespace ${{ env.TARGET_ENV }} --create-namespace
                     
         - name: Restart Workstation CRM Pods using Kubectl            
           uses: actions-hub/kubectl@master
