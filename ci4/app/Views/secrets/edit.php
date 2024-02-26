@@ -45,7 +45,7 @@ $roles = getResultWithoutBusiness("roles", ["uuid" => $_SESSION['role']], false)
                     </select>
                 </div> -->
 
-                <?php if (@$secret->id && !empty($_SESSION['role']) && $roles['role_name'] == "Administrator") { ?>
+                <?php if (@$secret->id && !empty($_SESSION['role']) && isset($roles['role_name']) && $roles['role_name'] == "Administrator") { ?>
                     <div class="form-check">
                         <input type="checkbox" value="1" class="form-check-input" id="status"
                         name="status" placeholder="" />
