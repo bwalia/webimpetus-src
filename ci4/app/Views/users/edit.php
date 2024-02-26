@@ -66,8 +66,8 @@ $json = json_decode($str, true);
                     <label for="userRole">Set User Role</label>
                     <select name="role" id="userRole" class="form-control">
                     <option value="">--Select--</option>
-                    <?php if (!empty($roles) && $roles) { ?>
-                        <?php foreach ($roles as $row): ?>
+                    <?php if (!empty($user_roles) && $user_roles) { ?>
+                        <?php foreach ($user_roles as $key => $row): ?>
                             <option value="<?= $row['uuid']; ?>" <?= @$user->role == $row['uuid'] ? 'selected="selected"' : ''; ?>>
                                 <?= $row['role_name']; ?>
                             </option>
