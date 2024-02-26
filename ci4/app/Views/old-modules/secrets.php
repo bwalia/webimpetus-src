@@ -23,7 +23,7 @@
                             </ol>
                         </div>
                         <div class="page_title_right">
-                          <?php if ((isset($_SESSION['role']) && $roles['role_name'] == "Administrator") || session('uuid') == 1) { ?>
+                          <?php if ((isset($_SESSION['role']) && isset($roles['role_name']) && $roles['role_name'] == "Administrator") || session('uuid') == 1) { ?>
                             <div class="header_more_tool setDropDownBlk">
                               
                             <a href="/secrets/add" class="btn btn-primary"><i class="ti-plus"></i> Add Secret</a>

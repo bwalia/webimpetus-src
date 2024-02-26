@@ -16,7 +16,7 @@
                     <th scope="col">Services</th>
                     
                     <th scope="col">Created at</th>
-                    <?php if ((isset($_SESSION['role']) && $roles['role_name'] == "Administrator") || session('uuid') == 1) { ?><th scope="col" width="50">Action</th><?php } ?>
+                    <?php if ((isset($_SESSION['role']) && isset($roles['role_name']) && $roles['role_name'] == "Administrator") || session('uuid') == 1) { ?><th scope="col" width="50">Action</th><?php } ?>
                 </tr>
             </thead>
             <tbody>                                        
@@ -40,7 +40,7 @@
                 <td class="f_s_12 f_w_400  ">
                 <p class="pd10"> <?= $row['created'];?></p>
                 </td>
-                <?php if ((isset($_SESSION['role']) && $roles['role_name'] == "Administrator") || session('uuid') == 1) { ?> <td class="f_s_12 f_w_400 text-right">
+                <?php if ((isset($_SESSION['role']) && isset($roles['role_name']) && $roles['role_name'] == "Administrator") || session('uuid') == 1) { ?> <td class="f_s_12 f_w_400 text-right">
                     <div class="header_more_tool">
                         <div class="dropdown">
                             <span class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown">

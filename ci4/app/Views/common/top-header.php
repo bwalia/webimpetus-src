@@ -73,11 +73,11 @@ $roles = getResultWithoutBusiness("roles", ["uuid" => $_SESSION['role']], false)
                                 <span><i class="fa fa-envelope"></i>
                                     <?= !empty($_SESSION['uemail']) ? $_SESSION['uemail'] : '' ?>
                                 </span>
-                                <?php if ((isset($_SESSION['role']) && $roles['role_name'] == "Administrator") || session('uuid') == 1) { ?>
+                                <?php if ((isset($_SESSION['role']) && isset($roles['role_name']) && $roles['role_name'] == "Administrator") || session('uuid') == 1) { ?>
                                     <a href="/dashboard/user_role"><i class="fa fa-eye"></i>Role Based Access Manager</a>
                                 <?php } ?>
                                 <a href="/dashboard/chgpwd"><i class="fa fa-eye"></i>My Profile</a>
-                                <?php if ((isset($_SESSION['role']) && $roles['role_name'] == "Administrator") || session('uuid') == 1) { ?><a
+                                <?php if ((isset($_SESSION['role']) && isset($roles['role_name']) && $roles['role_name'] == "Administrator") || session('uuid') == 1) { ?><a
                                         href="/dashboard/settings"><i class="fa fa-cog"></i>Settings</a>
                                 <?php } ?>
                                 <a href="/home/logout"><i class="fa fa-sign-out-alt"></i>Log Out </a>
