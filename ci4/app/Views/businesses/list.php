@@ -1,6 +1,7 @@
 <?php 
     require_once(APPPATH . 'Views/common/list-title.php'); 
     $roles = getResultWithoutBusiness("roles", ["uuid" => $_SESSION['role']], false);
+
 ?>
 
 <div class="white_card_body ">
@@ -12,7 +13,7 @@
                     <th scope="col">Id</th>
                     <th scope="col">Name</th>
                     <th scope="col">Created at</th>
-                    <?php if ((!empty($_SESSION['role']) && $roles['role_name'] == "Administrator") || session('uuid') == 1) { ?><th scope="col" width="50">Action</th><?php } ?>
+                    <?php if ((isset($_SESSION['role']) && isset($roles['role_name']) && $roles['role_name'] == "Administrator") || session('uuid') == 1) { ?><th scope="col" width="50">Action</th><?php } ?>
                 </tr>
             </thead>
             <tbody>

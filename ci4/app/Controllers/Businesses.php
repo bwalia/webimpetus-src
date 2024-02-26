@@ -22,7 +22,7 @@ class Businesses extends CommonController
 		$data[$this->table] = getWithOutUuidResultArray("businesses");
 		$data['tableName'] = $this->table;
 		$data['rawTblName'] = $this->rawTblName;
-		if ((@$_SESSION['role'] && $roles['role_name'] == "Administrator") || session('uuid') == 1) {
+		if ((@$_SESSION['role'] && isset($roles['role_name']) && $roles['role_name'] == "Administrator") || session('uuid') == 1) {
 			$data['is_add_permission'] = 1;
 		} else {
 			$data['is_add_permission'] = 0;
