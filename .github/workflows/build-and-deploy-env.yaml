@@ -30,8 +30,8 @@ on:
           - k3s5
               
 env:
-  IMAGE_TAG: "int"
-  TARGET_IMAGE_TAG: "int"
+  IMAGE_TAG: "latest"
+  TARGET_IMAGE_TAG: "latest"
   TARGET_STACK: openresty_php
   IMAGE_NAME: webimpetus
   TARGET_ENV: ${{ github.event.inputs.TARGET_ENV || 'int' }}
