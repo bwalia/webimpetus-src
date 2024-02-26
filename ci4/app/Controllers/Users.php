@@ -33,7 +33,7 @@ class Users extends CommonController
 		$data['rawTblName'] = $this->rawTblName;
 		$data['user'] = !empty($id) ? $this->userModel->getUserByUUID($id)->getRow() : [];
 		$data['menu'] = $this->menu_model->getRows();
-		$data['roles'] = $this->rolesModel->getRows();
+		$data['user_roles'] = $this->rolesModel->getRows();
 		return view('users/edit', $data);
 	}
 
