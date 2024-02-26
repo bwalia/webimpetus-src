@@ -10,12 +10,14 @@
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($roles as $row) : ?>
-                    <tr data-link=<?= "/" . $tableName . "/edit/" . $row['uuid']; ?>>
-                        <td class="f_s_12 f_w_400"><?= $row['id']; ?></td>
-                        <td class="f_s_12 f_w_400"><?= $row['role_name']; ?></td>
-                    </tr>
-                <?php endforeach; ?>
+                <?php if (!empty($user_roles) && $user_roles) { ?>
+                    <?php foreach ($user_roles as $row) : ?>
+                        <tr data-link=<?= "/" . $tableName . "/edit/" . $row['uuid']; ?>>
+                            <td class="f_s_12 f_w_400"><?= $row['id']; ?></td>
+                            <td class="f_s_12 f_w_400"><?= $row['role_name']; ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php } ?>
             </tbody>
         </table>
     </div>

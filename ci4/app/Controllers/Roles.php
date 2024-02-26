@@ -25,7 +25,7 @@ class Roles extends CommonController
     {
         $data['tableName'] = "roles";
         $data['rawTblName'] = "roles";
-		$data['roles'] = $this->rolesModel->getRowsByUUID();
+		$data['user_roles'] = $this->rolesModel->getRowsByUUID();
 		return view('roles/list', $data);
     }
 
