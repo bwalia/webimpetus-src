@@ -19,7 +19,7 @@
             <tbody>
 
                 <?php foreach ($businesses as $row) :
-                    if ((isset($_SESSION['role']) && $roles['role_name'] == "Administrator") || session('uuid') == 1) {
+                    if ((isset($_SESSION['role']) && isset($roles['role_name']) && $roles['role_name'] == "Administrator") || session('uuid') == 1) {
                         $url = "data-link=/" . $tableName . "/edit/" . $row['uuid'];
                     } ?>
                     <tr <?= @$url; ?>>
