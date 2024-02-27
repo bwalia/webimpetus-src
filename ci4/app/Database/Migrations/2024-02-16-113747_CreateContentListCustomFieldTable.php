@@ -29,7 +29,7 @@ class CreateContentListCustomFieldTable extends Migration
             ],
         ]);
         $this->forge->addKey('id', true);
-        $this->forge->createTable('content_list__custom_fields');
+        $this->forge->createTable('content_list__custom_fields', true);
     }
 
     public function down()

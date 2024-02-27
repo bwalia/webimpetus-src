@@ -2,6 +2,7 @@
 require_once(APPPATH . 'Views/common/edit-title.php');
 $str = file_get_contents(APPPATH . 'languages.json');
 $json = json_decode($str, true);
+$roles = getResultWithoutBusiness("roles", ["uuid" => $_SESSION['role']], false);
 ?>
 
 <div class="white_card_body">
@@ -60,23 +61,24 @@ $json = json_decode($str, true);
                     </select>
                 </div>
             </div>
-
-            <div class="form-row">
-                <div class="form-group col-md-12">
-                    <label for="userRole">Set User Role</label>
-                    <select name="role" id="userRole" class="form-control">
-                    <option value="">--Select--</option>
-                    <?php if (!empty($user_roles) && $user_roles) { ?>
-                        <?php foreach ($user_roles as $key => $row): ?>
-                            <option value="<?= $row['uuid']; ?>" <?= @$user->role == $row['uuid'] ? 'selected="selected"' : ''; ?>>
-                                <?= $row['role_name']; ?>
-                            </option>
-                        <?php endforeach; ?>
-                        <?php } ?>
-                    </select>
+            
+            <?php if ((isset($_SESSION['role']) && isset($roles['role_name']) && $roles['role_name'] == "Administrator") || session('uuid') == 1) { ?>
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <label for="userRole">Set User Role</label>
+                        <select name="role" id="userRole" class="form-control">
+                        <option value="">--Select--</option>
+                        <?php if (!empty($user_roles) && $user_roles) { ?>
+                            <?php foreach ($user_roles as $key => $row): ?>
+                                <option value="<?= $row['uuid']; ?>" <?= @$user->role == $row['uuid'] ? 'selected="selected"' : ''; ?>>
+                                    <?= $row['role_name']; ?>
+                                </option>
+                            <?php endforeach; ?>
+                            <?php } ?>
+                        </select>
+                    </div>
                 </div>
-            </div>
-
+            <?php } ?>
             <div class="form-row">
                 <div class="form-group col-md-12">
                     <label for="inputState">Set User Roles and Permissions</label>

@@ -36,7 +36,7 @@ class CreateDemoTable extends Migration
              ],
         ]);
         $this->forge->addKey('id', true);
-        $this->forge->createTable('demo');
+        $this->forge->createTable('demo', true);
    }
 
    public function down(){

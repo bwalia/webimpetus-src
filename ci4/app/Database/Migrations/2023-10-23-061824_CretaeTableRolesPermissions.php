@@ -29,7 +29,7 @@ class CretaeTableRolesPermissions extends Migration
             ]
         ]);
         $this->forge->addKey('id', true);
-        $this->forge->createTable('roles__permissions');
+        $this->forge->createTable('roles__permissions', true);
     }
 
     public function down()

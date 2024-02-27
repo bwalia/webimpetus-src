@@ -29,7 +29,7 @@ class CreateTableCustomerContact extends Migration
             ],
         ]);
         $this->forge->addKey('id', true);
-        $this->forge->createTable('customer__contact');
+        $this->forge->createTable('customer__contact', true);
     }
 
     public function down()
