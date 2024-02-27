@@ -8,6 +8,7 @@
 <!-- sidebar menu  -->
 <script src="/assets/js/metisMenu.js"></script>
 <script src="/assets/js/select2.min.js"></script>
+<script src="/assets/js/notify.js"></script>
 
 
 <script src="https://cdn.datatables.net/1.11.1/js/jquery.dataTables.min.js" type="text/javascript"></script>

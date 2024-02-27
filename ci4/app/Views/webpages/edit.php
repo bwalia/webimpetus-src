@@ -607,7 +607,6 @@ $data_type_format["YAML"] = "# Employee records
 
 <script>
 	$(document).ready(function () {
-
 		$('[data-toggle="tooltip"]').tooltip();
 
 		var max_fields_limit = 10; //set limit for maximum input fields
@@ -728,17 +727,29 @@ $data_type_format["YAML"] = "# Employee records
 			var blocks_code = $(this).find(".blocks_code").val();
 
 			if (blocks_code.length == 0) {
-				alert("Code is mandatory in each blocks.");
-				e.preventDefault()
+				// alert("Blocks Code field is mandatory in each blocks.");
+				$.notify(
+					"Blocks Code field is mandatory in each blocks.", 
+					"error",
+					{ elementPosition:"bottom center" }
+				)
+				e.preventDefault();
+				return false;
 			}
 			if (code_arr.indexOf(blocks_code) > -1) {
-				errorMessageStr="Duplicate code is not allowed."
-				e.preventDefault()
+				errorMessageStr="Blocks Duplicate code field value is not allowed.";
+				$.notify(
+					"Blocks Duplicate code field value is not allowed.", 
+					"error",
+					{ elementPosition:"bottom center" }
+				)
+				e.preventDefault();
+				return false;
 			}
 			code_arr.push(blocks_code);
 
 		})
-		alert(errorMessageStr);
+		// alert(errorMessageStr);
 
 	})
 	// $(document).on('click', ".blocks_code", function(e){

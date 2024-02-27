@@ -29,7 +29,7 @@ class CreateNewTableServiceDomains extends Migration
             ],
         ]);
         $this->forge->addKey('id', true);
-        $this->forge->createTable('service__domains');
+        $this->forge->createTable('service__domains', true);
     }
 
     public function down()

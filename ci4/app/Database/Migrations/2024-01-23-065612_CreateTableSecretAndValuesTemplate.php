@@ -33,7 +33,7 @@ class CreateTableSecretAndValuesTemplate extends Migration
             ]
         ]);
         $this->forge->addKey('id', true);
-        $this->forge->createTable('templates__services');
+        $this->forge->createTable('templates__services', true);
     }
 
     public function down()

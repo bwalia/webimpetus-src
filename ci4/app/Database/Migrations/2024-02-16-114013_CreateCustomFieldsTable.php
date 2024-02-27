@@ -32,7 +32,7 @@ class CreateCustomFieldsTable extends Migration
             ],
         ]);
         $this->forge->addKey('id', true);
-        $this->forge->createTable('custom_fields');
+        $this->forge->createTable('custom_fields', true);
     }
 
     public function down()
