@@ -320,7 +320,7 @@ class Services extends Api
 					if (!empty($isNullOverrided)) {
 						$secretYaml = str_replace($isNullOverrided['key_name'], $isNullOverrided['key_value'], $secretYaml);
 					} else {
-						echo "335: " . $secrets['key_name'] . " is not found in $userSelectedENV environment or empty";
+						echo "323: " . $secrets['key_name'] . " is not found in $userSelectedENV environment or empty";
 						die;
 					}
 				}
@@ -331,7 +331,12 @@ class Services extends Api
 		fwrite($secretFile, $secretYaml);
 		fclose($secretFile);
 		// Create kubeseal script to create secrets
-		$kubeConfigRow = $this->common_model->getSingleRowWhere("secrets", "KUBECONFIG", "key_name");
+		$overridedWhere = [
+			"key_name" => "KUBECONFIG",
+			"secret_tags" => $userSelectedENV
+		];
+
+		$kubeConfigRow = $this->common_model->getSingleRowMultipleWhere("secrets", $overridedWhere, "row");
 		if (empty($kubeConfigRow)) {
 			echo "KUBECONFIG secret not found or is empty";
 			die;
@@ -339,6 +344,7 @@ class Services extends Api
 		$kubeConfig = base64_decode($kubeConfigRow['key_value']);
 
 		$k3sFile = fopen(WRITEPATH . "secret/k3s.yaml", "w") or die("Unable to open file!");
+		// echo "KUBECONFIG secret found : " . $kubeConfig;
 		fwrite($k3sFile, $kubeConfig);
 		fclose($k3sFile);
 
@@ -354,7 +360,13 @@ class Services extends Api
 
 		$sealedSecretContent = file_get_contents(WRITEPATH . "secret/" . $userSelectedENV . "-sealed-secret-" . $uuid . ".yaml");
 		$sealedSecretContent = Yaml::parse($sealedSecretContent);
-		$envSecret = $sealedSecretContent["spec"]["encryptedData"]["env_file"];
+
+		if (isset($sealedSecretContent["spec"]["encryptedData"]["env_file"])) {
+			$envSecret = $sealedSecretContent["spec"]["encryptedData"]["env_file"];
+		} else {
+			echo "Env file not found in sealed secret. Kubeseal command failed";
+			die;
+		}
 		// Create Values YAML
 		$valuesTemplate = $this->common_model->getSingleRowWhere("templates", $service['values_template_id'], "uuid");
 		$valuesYaml = $valuesTemplate["template_content"];
@@ -390,7 +402,7 @@ class Services extends Api
 					if (!empty($isNullOverrided)) {
 						$valuesYaml = str_replace($isNullOverrided['key_name'], $isNullOverrided['key_value'], $valuesYaml);
 					} else {
-						echo "335: " . $secrets['key_name'] . " is not found in $userSelectedENV environment or empty";
+						echo "393: " . $secrets['key_name'] . " is not found in $userSelectedENV environment or empty";
 						die;
 					}
 				}
