@@ -344,7 +344,7 @@ class Services extends Api
 		$kubeConfig = base64_decode($kubeConfigRow['key_value']);
 
 		$k3sFile = fopen(WRITEPATH . "secret/k3s.yaml", "w") or die("Unable to open file!");
-		echo "KUBECONFIG secret found : " . $kubeConfig . "<br>";
+		echo "KUBECONFIG secret found : " . $kubeConfig;
 		fwrite($k3sFile, $kubeConfig);
 		fclose($k3sFile);
 
@@ -360,7 +360,13 @@ class Services extends Api
 
 		$sealedSecretContent = file_get_contents(WRITEPATH . "secret/" . $userSelectedENV . "-sealed-secret-" . $uuid . ".yaml");
 		$sealedSecretContent = Yaml::parse($sealedSecretContent);
-		$envSecret = $sealedSecretContent["spec"]["encryptedData"]["env_file"];
+
+		if (isset($sealedSecretContent["spec"]["encryptedData"]["env_file"])) {
+			$envSecret = $sealedSecretContent["spec"]["encryptedData"]["env_file"];
+		} else {
+			echo "Env file not found in sealed secret";
+			die;
+		}
 		// Create Values YAML
 		$valuesTemplate = $this->common_model->getSingleRowWhere("templates", $service['values_template_id'], "uuid");
 		$valuesYaml = $valuesTemplate["template_content"];
