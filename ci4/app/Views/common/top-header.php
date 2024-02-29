@@ -7,7 +7,8 @@ if (empty($_SESSION['uuid'])) { ?>
     </script>
     <?php
 }
-$roles = getResultWithoutBusiness("roles", ["uuid" => $_SESSION['role']], false);
+
+$roles = isset($_SESSION['role']) ? getResultWithoutBusiness("roles", ["uuid" => $_SESSION['role']], false) : "";
 ?><!-- menu  -->
 <div class="container-fluid no-gutters">
     <div class="row">
@@ -57,7 +58,7 @@ $roles = getResultWithoutBusiness("roles", ["uuid" => $_SESSION['role']], false)
 
                         <?php 
                             $roleName = "";
-                            if (isUUID($_SESSION['role'])) {
+                            if (isset($_SESSION['role']) && isUUID($_SESSION['role'])) {
                                 $role = $_SESSION['role'];
                                 $roleName = getRoleNameByUUID($role);
                                 $roleName = isset($roleName->role_name) ? $roleName->role_name : "";
