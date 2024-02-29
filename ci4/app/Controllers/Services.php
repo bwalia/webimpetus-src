@@ -100,6 +100,8 @@ class Services extends Api
 		);
 		if (empty($id)) {
 			$data['uuid'] = UUID::v5(UUID::v4(), 'services');
+		} else {
+			$data['uuid'] = $id;
 		}
 
 		$image_logo = $this->request->getPost('image_logo') ?? "";
@@ -143,7 +145,7 @@ class Services extends Api
 
 				if ($secret_id > 0) {
 					$dataRelated['secret_id'] = $secret_id;
-					$dataRelated['service_id'] = $id ?? $data["uuid"];
+					$dataRelated['service_id'] = $data["uuid"];
 					$dataRelated['uuid_business_id'] = $this->businessUuid;
 					$dataRelated['uuid'] = UUID::v5(UUID::v4(), 'secrets_services');
 					$this->secret_model->saveSecretRelatedData($dataRelated);
@@ -162,7 +164,7 @@ class Services extends Api
 				'uuid' => UUID::v5(UUID::v4(), 'templates__services'),
 				'secret_template_id' => $secretTemplateId,
 				'values_template_id' => $valuesTemplateId,
-				'service_id' => $id ?? $data['uuid']
+				'service_id' => $data['uuid']
 			];
 
 			$this->common_model->insertOrUpdateTableData($templateData, "templates__services", "service_id", $id);
@@ -203,7 +205,7 @@ class Services extends Api
 				if (empty($isDomainExists)) {
 					$serviceDomainData = [
 						'uuid' =>  UUID::v5(UUID::v4(), 'service__domains'),
-						'service_uuid' => $id ?? $data['uuid'],
+						'service_uuid' => $data['uuid'],
 						'domain_uuid' => $domain
 					];
 					$this->serviceDomainModel->saveData($serviceDomainData);
@@ -276,7 +278,8 @@ class Services extends Api
 		// 	$secretParsedYaml = $this->recursiveReplace($secretParsedYaml, $pattern, $envSecret);
 		// }
 
-		$targetEnvRow = $this->common_model->getSingleRowWhere("secrets", "TARGET_ENV", "key_name");
+		$targetEnvRow = $this->common_model->getSecretByServiceUuid("TARGET_ENV", $uuid);
+		
 		if (empty($targetEnvRow)) {
 			//echo "TARGET_ENV secret not found or is empty"; die;
 		} else {
@@ -290,11 +293,11 @@ class Services extends Api
 		$webSecrets = $this->common_model->getDataWhere("secrets_services", $uuid, "service_id");
 		foreach ($webSecrets as $key => $webSecret) {
 			$secrets = $this->common_model->getSingleRowWhere("secrets", $webSecret['secret_id'], "id");
-			$overridedWhere = [
-				"key_name" => $secrets['key_name'],
-				"secret_tags" => $userSelectedENV
-			];
-			$isOverrided = $this->common_model->getSingleRowMultipleWhere("secrets", $overridedWhere, "row");
+			// $overridedWhere = [
+			// 	"key_name" => $secrets['key_name'],
+			// 	"secret_tags" => $userSelectedENV
+			// ];
+			$isOverrided = $this->common_model->getSecretByServiceUuid($secrets['key_name'], $uuid, $userSelectedENV);
 			if (!empty($isOverrided)) {
 				if ($userSelectedENV == $isOverrided['secret_tags']) {
 					$secretYaml = str_replace($isOverrided['key_name'], $isOverrided['key_value'], $secretYaml);
@@ -311,12 +314,12 @@ class Services extends Api
 						$secretYaml = str_replace($secrets['key_name'], $secrets['key_value'], $secretYaml);
 					}
 				} else {
-					$nullOverridedWhere = [
-						"key_name" => $secrets['key_name'],
-						"secret_tags IS" => NULL,
-						"secret_tags =" => "",
-					];
-					$isNullOverrided = $this->common_model->getSingleRowMultipleWhere("secrets", $nullOverridedWhere, "row");
+					// $nullOverridedWhere = [
+					// 	"key_name" => $secrets['key_name'],
+					// 	"secret_tags IS" => NULL,
+					// 	"secret_tags =" => "",
+					// ];
+					$isNullOverrided = $this->common_model->getSecretByServiceUuid($secrets['key_name'], $uuid, NULL);
 					if (!empty($isNullOverrided)) {
 						$secretYaml = str_replace($isNullOverrided['key_name'], $isNullOverrided['key_value'], $secretYaml);
 					} else {
@@ -331,12 +334,12 @@ class Services extends Api
 		fwrite($secretFile, $secretYaml);
 		fclose($secretFile);
 		// Create kubeseal script to create secrets
-		$overridedWhere = [
-			"key_name" => "KUBECONFIG",
-			"secret_tags" => $userSelectedENV
-		];
+		// $overridedWhere = [
+		// 	"key_name" => "KUBECONFIG",
+		// 	"secret_tags" => $userSelectedENV
+		// ];
 
-		$kubeConfigRow = $this->common_model->getSingleRowMultipleWhere("secrets", $overridedWhere, "row");
+		$kubeConfigRow = $this->common_model->getSecretByServiceUuid("KUBECONFIG", $uuid, $userSelectedENV);
 		if (empty($kubeConfigRow)) {
 			echo "KUBECONFIG secret not found or is empty";
 			die;
@@ -373,11 +376,11 @@ class Services extends Api
 		$webSecrets = $this->common_model->getDataWhere("secrets_services", $uuid, "service_id");
 		foreach ($webSecrets as $key => $webSecret) {
 			$secrets = $this->common_model->getSingleRowWhere("secrets", $webSecret['secret_id'], "id");
-			$overridedWhere = [
-				"key_name" => $secrets['key_name'],
-				"secret_tags" => $userSelectedENV
-			];
-			$isOverrided = $this->common_model->getSingleRowMultipleWhere("secrets", $overridedWhere, "row");
+			// $overridedWhere = [
+			// 	"key_name" => $secrets['key_name'],
+			// 	"secret_tags" => $userSelectedENV
+			// ];
+			$isOverrided = $this->common_model->getSecretByServiceUuid($secrets['key_name'], $uuid, $userSelectedENV);
 			if (!empty($isOverrided)) {
 				if ($userSelectedENV == $isOverrided['secret_tags']) {
 					$valuesYaml = str_replace($isOverrided['key_name'], $isOverrided['key_value'], $valuesYaml);
@@ -393,12 +396,12 @@ class Services extends Api
 						$valuesYaml = str_replace($secrets['key_name'], $secrets['key_value'], $valuesYaml);
 					}
 				} else {
-					$nullOverridedWhere = [
-						"key_name" => $secrets['key_name'],
-						"secret_tags IS" => NULL,
-						"secret_tags =" => "",
-					];
-					$isNullOverrided = $this->common_model->getSingleRowMultipleWhere("secrets", $nullOverridedWhere, "row");
+					// $nullOverridedWhere = [
+					// 	"key_name" => $secrets['key_name'],
+					// 	"secret_tags IS" => NULL,
+					// 	"secret_tags =" => "",
+					// ];
+					$isNullOverrided = $this->common_model->getSecretByServiceUuid($secrets['key_name'], $uuid, NULL);
 					if (!empty($isNullOverrided)) {
 						$valuesYaml = str_replace($isNullOverrided['key_name'], $isNullOverrided['key_value'], $valuesYaml);
 					} else {

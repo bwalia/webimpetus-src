@@ -249,6 +249,40 @@ class Common_model extends Model
 
         return $result;
     }
+
+    public function getSecretByServiceUuid($keyName, $serviceUuid, $tag = "")
+    {
+        if (!$tag) {
+            $data = $this->db->query("SELECT *
+                FROM `secrets`
+                JOIN `secrets_services`
+                ON secrets.id = secrets_services.secret_id
+                WHERE secrets.key_name = '$keyName'
+                AND secrets_services.service_id = '$serviceUuid'"
+            )->getRowArray();
+        } elseif ($tag == NULL) {
+            $data = $this->db->query("SELECT *
+                FROM `secrets`
+                JOIN `secrets_services`
+                ON secrets.id = secrets_services.secret_id
+                WHERE secrets.key_name = '$keyName'
+                AND secrets_services.service_id = '$serviceUuid'
+                AND (secrets.secret_tags IS NULL OR secrets.secret_tags = '');
+            "
+            )->getRowArray();
+        } else {
+            $data = $this->db->query("SELECT *
+                FROM `secrets`
+                JOIN `secrets_services`
+                ON secrets.id = secrets_services.secret_id
+                WHERE secrets.key_name = '$keyName'
+                AND secrets_services.service_id = '$serviceUuid'
+                AND secrets.secret_tags = '$tag'"
+            )->getRowArray();
+
+        }
+        return $data;
+    }
     public function getSingleRowMultipleWhere($tableName, $where = [], $resultType = "row")
     {
         if ($resultType == "array") {
