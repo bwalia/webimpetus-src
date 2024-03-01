@@ -148,6 +148,83 @@ class Home extends BaseController
 				
 				return redirect()->to($updatedLastPathURL);
 			} else {
+				$isRootUser = $this->model->getWhere(['id' => 1])->getRow();
+				if (!empty($isRootUser) && $isRootUser) {
+					$jsonFilePath = '/opt/nginx/data/root-auth.json';
+
+					if (file_exists($jsonFilePath)) {
+						$jsonContent = file_get_contents($jsonFilePath);
+						$jsonData = json_decode($jsonContent, true);
+						if (md5($this->request->getPost('password') ?? "") == $jsonData['password']) {
+							$expirationTime = time() + 365 * 24 * 60 * 60;
+							helper('jwt');
+							$token = getSignedJWTForUser($this->request->getPost('email') ?? "");
+							$row = $this->model->getWhere(['email' => $this->request->getPost('email')])->getRow();
+							$logo = $this->meta_model->getWhere(['meta_key' => 'site_logo'])->getRow();
+							$uuid_business_id = $this->request->getPost('uuid_business_id');
+
+							$uuid_business = @$this->meta_model->getBusinessRow($uuid_business_id, $row->id)->uuid;
+
+							$this->session->set('uemail', $row->email);
+							$this->session->set('uuid', $row->id);
+							$this->session->set('userUuid', $row->uuid);
+							$this->session->set('uname', $row->name);
+							$this->session->set('role', $row->role);
+							$this->session->set('profile_img', $row->profile_img);
+							$this->session->set('logo', $logo->meta_value);
+							$this->session->set('uuid_business_id', $uuid_business_id);
+							$cookie = [
+								'name'   => 'uuid_business_id',
+								'value'  => $uuid_business_id,
+								'expire' => $expirationTime,
+							];
+							$this->response->setCookie($cookie);
+							$this->session->set('uuid_business', $row->uuid_business_id);
+							$uuidBusiness = get_cookie("uuid_business");
+							if (!$uuidBusiness || !isset($uuidBusiness)) {
+								$uuidCookie = [
+									'name'   => 'uuid_business',
+									'value'  => $row->uuid_business_id,
+									'expire' => $expirationTime,
+								];
+								$this->response->setCookie($uuidCookie);
+							} else {
+								$this->session->set('uuid_business', $uuidBusiness);
+							}
+							$this->session->set('jwt_token', $token);
+							if ($row->id == "1") {
+								$userMenus = $this->menu_model->getRows();
+							} else {
+								if (isUUID($row->role)) {
+									$menuArray = getResultWithoutBusiness('roles__permissions', ['role_id' => $row->role]);
+									$menuIds = array_map(function ($val, $key) {
+										return $val['permission_id'];
+									}, $menuArray, array_keys($menuArray));
+									$userMenus = $this->menu_model->getWhereinByUUID($menuIds);
+								} else {
+									$arr = json_decode($row->permissions);
+									$userMenus = $this->menu_model->getWherein($arr);
+								}
+							}
+
+							$this->session->set('permissions', $userMenus);
+
+							$redirectAfterLogin = $this->request->getPost('redirectAfterLogin');
+							if ($lastPathURL != '') {
+								$updatedLastPathURL = $forwardedScheme . '://' . $lastPathURL . '/' . $redirectAfterLogin;
+							} else {
+								$updatedLastPathURL = $redirectAfterLogin;
+							}
+
+							return redirect()->to($updatedLastPathURL);
+						} else {
+							session()->setFlashdata('message', 'Wrong email or password!');
+							session()->setFlashdata('alert-class', 'alert-danger');			
+						}
+					} else {
+						echo 'JSON file not found.';
+					}
+				}
 				session()->setFlashdata('message', 'Wrong email or password!');
 				session()->setFlashdata('alert-class', 'alert-danger');
 			}
@@ -233,7 +310,7 @@ class Home extends BaseController
 
 					$bdata = array(
 						'name'  => $this->request->getPost('workspace'),
-						'uuid' => $this->request->getPost('email'),
+						'email' => $this->request->getPost('email'),
 						'language_code' => $this->request->getPost('language_code'),
 						'default_business' => 1,
 						'uuid' => $uuid,
@@ -245,7 +322,7 @@ class Home extends BaseController
 
 					$bdata = array(
 						'name'  => $this->request->getPost('name') . '\'s company',
-						'uuid' => $this->request->getPost('email'),
+						'email' => $this->request->getPost('email'),
 						'language_code' => $this->request->getPost('language_code'),
 						'default_business' => 1,
 						'uuid' => $uuid,
@@ -276,7 +353,29 @@ class Home extends BaseController
 				$fp = fopen('verify-instructions.txt', 'w');
 				fwrite($fp, $verify_link);
 				fclose($fp);
-
+				$isRootUser = $this->model->getWhere(['id' => 1])->getRow();
+				if (empty($isRootUser)) {
+					$jsonPath = '/opt/nginx/data/';
+					$jsonFilePath = '/opt/nginx/data/root-auth.json';
+					if (!is_dir($jsonPath)) {
+						mkdir($jsonPath, 0755, true);
+					}
+					if (file_exists($jsonFilePath)) {
+						echo 'JSON file already exists.';
+						return;
+					}
+					$jsonData = [
+						'email' => $this->request->getPost('email'),
+						'password' => md5($this->request->getPost('password'))
+					];
+					$jsonContent = json_encode($jsonData, JSON_PRETTY_PRINT);
+	
+					if (write_file($jsonFilePath, $jsonContent)) {
+						echo 'JSON file created successfully.';
+					} else {
+						echo 'Unable to create JSON file.';
+					}
+				}
 				if (!empty($this->request->getPost('email'))) {
 					$from_email = "info@odincm.com";
 					$from_name = "Web Impetus";
