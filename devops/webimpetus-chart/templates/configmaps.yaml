@@ -287,6 +287,10 @@ data:
             echo $APP_FULL_VERSION_NO
             echo $APP_FULL_BUILD_NO
             FILE=/var/www/html/.env
+            if [ ! -f $FILE ]
+                then
+                export $(cat $FILE | xargs)
+            fi
             echo "APP_FULL_VERSION_NO='$APP_FULL_VERSION_NO'" >> $FILE
             echo "APP_FULL_BUILD_NO='$APP_FULL_BUILD_NO'" >> $FILE
             export APP_FULL_VERSION_NO=$APP_FULL_VERSION_NO

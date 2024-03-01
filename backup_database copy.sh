@@ -12,11 +12,12 @@ DUMP_FILE_TAR="$TMP_DIR/db_dump_$TIMESTAMP.tar.gz"
 echo "$KUBE_CONFIG" | base64 -d > k3s2.yaml
 ls -al
 
-FILE=/var/www/html/.env
-if [ ! -f $FILE ]
-then
-export $(cat $FILE | xargs)
-fi
+export KUBECONFIG=k3s2.yaml
+
+DB_HOST=`kubectl get secrets mariadb-secret-$TARGET_ENV -n $TARGET_ENV -o "jsonpath={.data.hostname}" | base64 -d`
+DB_USER=`kubectl get secrets mariadb-secret-$TARGET_ENV -n $TARGET_ENV -o "jsonpath={.data.username}" | base64 -d`
+DB_PASSWORD=`kubectl get secrets mariadb-secret-$TARGET_ENV -n $TARGET_ENV -o "jsonpath={.data.password}" | base64 -d`
+DB_PORT=`kubectl get secrets mariadb-secret-$TARGET_ENV -n $TARGET_ENV -o "jsonpath={.data.port}" | base64 -d`
 
 # Create MySQL Dump
 mysqldump -h $DB_HOST -u $DB_USER -p $DB_PASSWORD $DB_NAME > $DUMP_FILE
