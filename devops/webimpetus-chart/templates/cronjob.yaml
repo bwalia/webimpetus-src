@@ -28,14 +28,15 @@ spec:
             envFrom:
             resources:
               null
+            volumeMounts:
+              - name: wslenv-vol-{{ .Values.targetEnv }}-backup
+                mountPath: "/tmp/secrets"
+                readOnly: false
           volumes:
             - name: wslenv-vol-{{ .Values.targetEnv }}-backup
-              mountPath: /var/www/html
-            volumeMounts:
-                - name: wslenv-vol-{{ .Values.targetEnv }}-backup
-                secret:
-                    secretName: wsl-secret-{{ .Values.targetEnv }}
-                    items:
-                    - key: env_file
-                    path: .env
+              secret:
+                secretName: wsl-secret-{{ .Values.targetEnv }}
+                  # - key: env_file
+                  #   path: .env
+                optional: false
       backoffLimit: 0
