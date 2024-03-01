@@ -1,0 +1,41 @@
+# Source: wsl/templates/cronjob.yaml
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: wsl-{{ .Values.targetEnv }}-db-backup
+spec:
+  schedule: "0 */1 * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+          - name: wsl-db-backup-{{ .Values.targetEnv }}
+            image: {{ .Values.targetImage }}:{{ .Values.targetImageTag }}
+            imagePullPolicy: Always
+            command:
+              - /bin/sh
+              - -c
+              - --
+            args:
+              - sleep infinity
+# Test for few days then go live - stat -c %a /tmp && ls -la /tmp && cp /tmp/configmap/backup-database.sh /usr/local/bin/backup-database.sh.sh && chmod +x /usr/local/bin/backup-database.sh && bash /usr/local/bin/backup-database.sh
+            env:
+              - name: DB_BACKUP_JOB_NAME
+                value: wsl-{{ .Values.targetEnv }}-db-backup
+            envFrom:
+            resources:
+              null
+          volumes:
+            - name: wslenv-vol-{{ .Values.targetEnv }}-backup
+              mountPath: /var/www/html
+            volumeMounts:
+                - name: wslenv-vol-{{ .Values.targetEnv }}-backup
+                secret:
+                    secretName: wsl-secret-{{ .Values.targetEnv }}
+                    items:
+                    - key: env_file
+                    path: .env
+      backoffLimit: 0
