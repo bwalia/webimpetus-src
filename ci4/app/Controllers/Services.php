@@ -135,7 +135,7 @@ class Services extends Api
 				}
 				$address_data['status'] = 1;
 				$address_data['uuid_business_id'] = $this->businessUuid;
-				if (isset($secret_uuids[$key])) {
+				if (isset($secret_uuids[$key]) && $secret_uuids[$key] != '') {
 					$address_data['uuid'] = $secret_uuids[$key];
 				} else {
 					$address_data['uuid'] = UUID::v5(UUID::v4(), 'secrets');
