@@ -3,8 +3,8 @@ name: "Workstation CRM DR DB Backup MySQL to Minio"
 on:
   push:
     branches: [ dummy ]
-  schedule:
-    - cron: "0 0 * * FRI"
+  # schedule:
+  #   - cron: "0 0 * * FRI"
   workflow_dispatch:
     inputs:
       TARGET_ENV:
