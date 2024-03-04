@@ -117,8 +117,8 @@ class Users_model extends Model
     {
         return $this->db->query(
             "SELECT roles.role_name, roles.uuid, count(users.id) AS userCount 
-            FROM roles LEFT JOIN users ON users.role = roles.uuid 
-            WHERE roles.role_name = 'Administrator'"
+            FROM roles INNER JOIN users ON users.role = roles.uuid 
+            WHERE roles.role_name = 'Administrator' GROUP BY users.id, roles.uuid, roles.role_name LIMIT 1"
         )->getRowArray();
     }
 
