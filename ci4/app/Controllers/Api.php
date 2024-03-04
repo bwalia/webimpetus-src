@@ -206,7 +206,7 @@ class Api extends BaseController
             }
         }
         if (count($webPagesId)) {
-            $webpages = $this->cmodel->where("status", 1)->whereIn('id', $webPagesId)->orderBy("publish_date", 'DESC')->get()->getResult();
+            $webpages = $this->cmodel->where("status", 1)->whereIn('id', $webPagesId)->orderBy("publish_date", 'ASC')->get()->getResult();
             if ($webpages) {
                 $webPageList = [];
                 foreach ($webpages as $key => $eachPage) {
