@@ -26,12 +26,13 @@ class Home extends BaseController
 		$this->cmodel = new Common_model();
 		helper(["global"]);
 		helper('cookie');
+		helper('filesystem');
 	}
 
 	public function index()
 	{
-		$count = $this->model->countUsers();
-		if ($count == 0) { //
+		$count = $this->model->isRootUserExists();
+		if ($count['userCount'] == 0) { //
 			$data['logo'] = $this->meta_model->getWhere(['meta_key' => 'site_logo'])->getRow();
 			$data['uuid'] = $this->meta_model->getAllBusiness();
 			$data['title'] = "";

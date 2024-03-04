@@ -14,9 +14,9 @@ class AddAdministratorRole extends Seeder
         $businessQuery  = $db->query('SELECT uuid FROM businesses');
         $businessUUIDs = $businessQuery->getResultArray();
 
-        $roleQuery = $db->query('SELECT role_name FROM roles WHERE uuid_business_id = NULL');
-        $isRoleExists = $roleQuery->getRow();
-        if (!$isRoleExists && empty($isRoleExists) && !isset($isRoleExists)) {
+        $roleQuery = $db->query('SELECT role_name FROM roles WHERE role_name = "Administrator"');
+        $isRoleExists = $roleQuery->getRowArray();
+        if (!$isRoleExists && empty($isRoleExists) && !isset($isRoleExists['role_name']) && $isRoleExists['role_name'] != "Administrator") {
             $saUUID = UUID::v4();
             $sUUID = UUID::v5($saUUID, 'roles');
             $data = [

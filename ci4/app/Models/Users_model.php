@@ -113,6 +113,15 @@ class Users_model extends Model
         }
     }
 
+    public function isRootUserExists()
+    {
+        return $this->db->query(
+            "SELECT roles.role_name, roles.uuid, count(users.id) AS userCount 
+            FROM roles LEFT JOIN users ON users.role = roles.uuid 
+            WHERE roles.role_name = 'Administrator'"
+        )->getRowArray();
+    }
+
     public function countUsers()
     {
         //$whereCond = $whereCond = array_merge(['role' => 1], $this->whereCond);

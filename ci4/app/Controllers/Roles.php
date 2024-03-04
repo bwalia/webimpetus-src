@@ -47,6 +47,11 @@ class Roles extends CommonController
 			'role_name' => $this->request->getPost('role_name'),
             'uuid_business_id' => session('uuid_business')
 		);
+		if ($this->request->getPost('role_name') == "Administrator") {
+			session()->setFlashdata('message', 'Sorry the role name Administrator is reserved for root user. Please choose a different role name.');
+			session()->setFlashdata('alert-class', 'alert-danger');
+			return redirect()->to('/roles');
+		}
 		if (!$uuid || empty($uuid) || !isset($uuid)) {
             $roleData['uuid'] = UUID::v5(UUID::v4(), 'roles');
         }

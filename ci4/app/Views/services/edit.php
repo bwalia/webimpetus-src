@@ -1,5 +1,5 @@
 <?php require_once(APPPATH . 'Views/common/edit-title.php');
-$blocks_list = getResultArray("blocks_list", ["uuid_linked_table" => @$service->uuid]);
+$blocks_list = getResultArray("blocks_list", ["uuid_linked_table" => @$service->id]);
 $domains = getResultArray("domains", ["sid" => @$service->uuid]);
 $templates = getResultArray("templates", []);
 $uri = service('uri');
