@@ -180,7 +180,7 @@ class Services extends Api
 				$blocks["title"] = $post["blocks_title"][$i];
 				$blocks["sort"] = $post["sort"][$i];
 				$blocks["type"] = $post["type"][$i];
-				$blocks["uuid_linked_table"] = $id;
+				$blocks["uuid_linked_table"] = $data['uuid'];
 				$blocks["uuid_business_id"] = session('uuid_business');
 				$blocks_id =  @$post["blocks_id"][$i];
 				//print_r($blocks); die;
