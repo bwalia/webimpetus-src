@@ -341,8 +341,11 @@ class Services extends Api
 
 		$kubeConfigRow = $this->common_model->getSecretByServiceUuid("KUBECONFIG", $uuid, $userSelectedENV);
 		if (empty($kubeConfigRow)) {
-			echo "KUBECONFIG secret not found or is empty";
-			die;
+			$kubeConfigRow = $this->common_model->getSecretByServiceUuid("KUBECONFIG", $uuid, NULL);
+			if (empty($kubeConfigRow)) {
+				echo "KUBECONFIG secret not found or is empty";
+				die;
+			}
 		}
 		$kubeConfig = base64_decode($kubeConfigRow['key_value']);
 
