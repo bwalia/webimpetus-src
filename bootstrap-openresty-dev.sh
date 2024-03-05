@@ -24,68 +24,46 @@
         if [ -d "$FILE" ]; then
         FILE=/var/www/html/
         cp -r /src/* $FILE
-        if [ -d "$FILE" ]; then
+         if [ -d "$FILE" ]; then
         # chmod 755 -R $FILE
         # chown www-data:root -R $FILE
 
-        SUB_DIR=$FILE"writable/"
-        if [ ! -d "$SUB_DIR" ];then
-        mkdir -p $SUB_DIR
-        chmod 777 -R ${SUB_DIR}
-        fi
-        SUB_DIR=$FILE"writable/"
-        SUB_DIR=$SUB_DIR"cache/"
-        if [ ! -d "$SUB_DIR" ];then
-        mkdir -p $SUB_DIR
-        chmod 777 -R ${SUB_DIR}
-        fi
-        SUB_DIR=$FILE"writable/"
-        SUB_DIR=$SUB_DIR"session/"
-        if [ ! -d "$SUB_DIR" ];then
-        mkdir -p $SUB_DIR
-        chmod 777 -R ${SUB_DIR}
-        fi
-        SUB_DIR=$FILE"writable/"
-        SUB_DIR=$SUB_DIR"helm/"
-        if [ ! -d "$SUB_DIR" ];then
-        mkdir -p $SUB_DIR
-        chmod 777 -R ${SUB_DIR}/
-        fi
-        SUB_DIR=$FILE"writable/"
-        SUB_DIR=$SUB_DIR"secret/"
-        if [ ! -d "$SUB_DIR" ];then
-        mkdir -p $SUB_DIR
-        chmod 777 -R ${SUB_DIR}/
-        fi
-        SUB_DIR=$FILE"writable/"
-        SUB_DIR=$SUB_DIR"values/"
-        if [ ! -d "$SUB_DIR" ];then
-        mkdir -p $SUB_DIR
-        chmod 777 -R ${SUB_DIR}/
-        fi
+            SUB_DIR=$FILE"writable/"
+            if [ ! -d "$SUB_DIR" ];then
+            mkdir -p $SUB_DIR
+            chmod 777 -R ${SUB_DIR}
+            fi
+            SUB_DIR=$FILE"writable/"
+            SUB_DIR=$SUB_DIR"cache/"
+            if [ ! -d "$SUB_DIR" ];then
+            mkdir -p $SUB_DIR
+            chmod 777 -R ${SUB_DIR}
+            fi
+            SUB_DIR=$FILE"writable/"
+            SUB_DIR=$SUB_DIR"session/"
+            if [ ! -d "$SUB_DIR" ];then
+            mkdir -p $SUB_DIR
+            chmod 777 -R ${SUB_DIR}
+            fi
+            SUB_DIR=$FILE"writable/"
+            SUB_DIR=$SUB_DIR"helm/"
+            if [ ! -d "$SUB_DIR" ];then
+            mkdir -p $SUB_DIR
+            chmod 777 -R ${SUB_DIR}/
+            fi
+            SUB_DIR=$FILE"writable/"
+            SUB_DIR=$SUB_DIR"secret/"
+            if [ ! -d "$SUB_DIR" ];then
+            mkdir -p $SUB_DIR
+            chmod 777 -R ${SUB_DIR}/
+            fi
+            SUB_DIR=$FILE"writable/"
+            SUB_DIR=$SUB_DIR"values/"
+            if [ ! -d "$SUB_DIR" ];then
+            mkdir -p $SUB_DIR
+            chmod 777 -R ${SUB_DIR}/
+            fi
         
-        SRC_ENV_FILE=/tmp/secrets/.env
-        if [ -f "$SRC_ENV_FILE" ];then
-            FILE=/var/www/html/.env
-            cp $SRC_ENV_FILE $FILE
-            
-                if [ -f "$FILE" ];then
-                    echo "$FILE exists."
-                    awk '/----WEBIMPETUS-SYSTEM-INFO----/{exit} 1' $FILE > /tmp/.env
-                    mv /tmp/.env $FILE
-                    echo "#----WEBIMPETUS-SYSTEM-INFO----=''" >> $FILE
-
-                    echo "==========================="
-                    echo "Workstation Bootstrap Script Copied"
-                    echo "==========================="
-                fi
-                echo "Starting Workstation"
-                echo "==========================="
-                php -v
-            echo "==========================="
-            #   sed '/"#----WEBIMPETUS-SYSTEM-INFO----"/q' $FILE
-            echo "Workstation Src copy to /var/www/html Complete"
-         fi
          fi
 
             FILE=/var/www/html/writable/
