@@ -118,7 +118,7 @@ class Services extends Api
 
 		$id = $this->serviceModel->insertOrUpdate("services", $id, $data); //die;
 
-		$this->secret_model->deleteServiceFromServiceID($id);
+		$this->secret_model->deleteServiceFromServiceID($data["uuid"]);
 
 		$key_name = $this->request->getPost('key_name');
 		$key_value = $this->request->getPost('key_value');
@@ -367,12 +367,34 @@ class Services extends Api
 		$sealedSecretContent = file_get_contents(WRITEPATH . "secret/" . $userSelectedENV . "-sealed-secret-" . $uuid . ".yaml");
 		$sealedSecretContent = Yaml::parse($sealedSecretContent);
 
+		// env_file must be present in the secrets file for this work until we fully create dynamic secrets management system
 		if (isset($sealedSecretContent["spec"]["encryptedData"]["env_file"])) {
 			$envSecret = $sealedSecretContent["spec"]["encryptedData"]["env_file"];
 		} else {
 			echo "Env file not found in sealed secret. Kubeseal command failed";
 			die;
 		}
+
+		if (isset($sealedSecretContent["spec"]["encryptedData"]["hostname"])) {
+			$secret_hostname = $sealedSecretContent["spec"]["encryptedData"]["hostname"];
+		} 
+
+		if (isset($sealedSecretContent["spec"]["encryptedData"]["password"])) {
+			$secret_dbPassword = $sealedSecretContent["spec"]["encryptedData"]["password"];
+		}
+		
+		if (isset($sealedSecretContent["spec"]["encryptedData"]["root-password"])) {
+			$secret_dbRootPassword = $sealedSecretContent["spec"]["encryptedData"]["root-password"];
+		}
+
+		if (isset($sealedSecretContent["spec"]["encryptedData"]["username"])) {
+			$secret_dbUsername = $sealedSecretContent["spec"]["encryptedData"]["username"];
+		}
+
+		if (isset($sealedSecretContent["spec"]["encryptedData"]["port"])) {
+			$secret_dbRootPort = $sealedSecretContent["spec"]["encryptedData"]["port"];
+		}
+
 		// Create Values YAML
 		$valuesTemplate = $this->common_model->getSingleRowWhere("templates", $service['values_template_id'], "uuid");
 		$valuesYaml = $valuesTemplate["template_content"];
@@ -414,9 +436,23 @@ class Services extends Api
 				}
 			}
 		}
-
+		
 		$modifiedValuesString = Yaml::parse($valuesYaml);
-		$modifiedValuesString["secure_env_file"] = $envSecret;
+		
+		if (isset($modifiedValuesString["secure_env_file"])) {
+            $modifiedValuesString["secure_env_file"] = $envSecret;
+        } elseif (isset($modifiedValuesString["safeSealedSecret"])) {
+            $modifiedValuesString["\"] = $envSecret;
+        }
+
+		//$modifiedValuesString["secure_env_file"] = $envSecret;
+		
+		isset($secret_hostname) ? $modifiedValuesString["db"]["hostname"] = $secret_hostname : "";
+		isset($secret_dbPassword) ? $modifiedValuesString["db"]["password"] = $secret_dbPassword : "";
+		isset($secret_dbRootPassword) ? $modifiedValuesString["db"]["root-password"] = $secret_dbRootPassword : "";
+		isset($secret_dbUsername) ? $modifiedValuesString["db"]["username"] = $secret_dbUsername : "";
+		isset($secret_dbRootPort) ? $modifiedValuesString["db"]["port"] = $secret_dbRootPort : "";
+
 		$modifiedValuesString = YAML::dump($modifiedValuesString);
 		$valuesFile = fopen(WRITEPATH . "values/" . $userSelectedENV . "-values-" . $uuid . ".yaml", "w") or die("Unable to open file!");
 		fwrite($valuesFile, $modifiedValuesString);
