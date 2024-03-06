@@ -442,10 +442,10 @@ class Services extends Api
 		if (isset($modifiedValuesString["secure_env_file"])) {
             $modifiedValuesString["secure_env_file"] = $envSecret;
         } elseif (isset($modifiedValuesString["safeSealedSecret"])) {
-            $modifiedValuesString["\"] = $envSecret;
+            $modifiedValuesString["safeSealedSecret"] = $envSecret;
         }
 
-		//$modifiedValuesString["secure_env_file"] = $envSecret;
+		/*	$modifiedValuesString["secure_env_file"] = $envSecret; */
 		
 		isset($secret_hostname) ? $modifiedValuesString["db"]["hostname"] = $secret_hostname : "";
 		isset($secret_dbPassword) ? $modifiedValuesString["db"]["password"] = $secret_dbPassword : "";
