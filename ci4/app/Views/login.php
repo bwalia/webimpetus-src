@@ -63,7 +63,7 @@
                             src="<?= $logo->meta_value ? 'data:image/jpeg;base64,' . $logo->meta_value : '/assets/img/logo.jpg' ?>"
                             style="width: 100%;" alt=""></a>
                       </div>
-                      <br /><br />
+
                       <form id="loginform" method="post" action="/home/login">
                         <!-- <div class="form-group">
                         <label>Service</label>
@@ -98,9 +98,15 @@
                       </form>
                     </div>
                   </div>
+
+                  <div class="cookie-message-wrapper mt-3 p-2">
+                    <span class="cokkie-message text-muted">
+                      <small> Note: Workstation CRM database requires the use of cookies to secure information related to your identity and to store your screen settings. No identity or personal information is stored and no third party cookies are used. By logging in via this page you are agreeing to the use of cookies for these purposes. </small>
+                    </span>
+                  </div>
+
                 </div>
               </div>
-
             </div>
           </div>
         </div>
