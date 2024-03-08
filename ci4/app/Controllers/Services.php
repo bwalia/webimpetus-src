@@ -254,9 +254,10 @@ class Services extends Api
 			$this->push_service_env_vars($uuid);
 			$this->gen_service_yaml_file($uuid);
 
-			//exec('/bin/bash /var/www/html/writable/webimpetus_deploy_service.sh', $output, $return);
+			//	exec('/bin/bash /var/www/html/writable/webimpetus_deploy_service.sh', $output, $return);
 			$output = shell_exec('/bin/sh /var/www/html/writable/webimpetus_delete_service.sh');
-			//echo $output;
+			// This just needs to run the delete script using helm uninstall cmd instead [BUG: This is not working as expected. Need to fix it.]
+			//	echo $output;
 			echo "Service deletion process started OK. Note: This process does not delete the tenant database.";
 		} else {
 			echo "Uuid is empty!!";
@@ -365,6 +366,12 @@ class Services extends Api
 		$output = shell_exec('/bin/bash /var/www/html/writable/secret/' . $userSelectedENV . '-kubeseal-secret.sh');
 
 		$sealedSecretContent = file_get_contents(WRITEPATH . "secret/" . $userSelectedENV . "-sealed-secret-" . $uuid . ".yaml");
+
+		if (empty($sealedSecretContent)) {
+			echo "Kubeseal command failed. Please check kubernetes cluster connection is working and Kubeseal is setup.";
+			die;
+		}
+
 		$sealedSecretContent = Yaml::parse($sealedSecretContent);
 
 		// env_file must be present in the secrets file for this work until we fully create dynamic secrets management system
