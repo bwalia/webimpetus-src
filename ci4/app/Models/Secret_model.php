@@ -129,7 +129,7 @@ class Secret_model extends Model
         $records = $builder->get()->getRowArray();
         // echo $service_id; print_r($records);die;
         if( !empty($records)) {
-            $query = $this->db->table($this->table)->update($data, array('id' => $records["id"]));
+            $query = $this->db->table($this->table)->update($data, array('uuid' => $records["uuid"]));
             return $records["id"];
         }else{
             $query = $this->db->table($this->table)->insert($data);

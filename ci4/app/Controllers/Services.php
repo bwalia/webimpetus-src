@@ -119,7 +119,8 @@ class Services extends Api
 		$id = $this->serviceModel->insertOrUpdate("services", $id, $data); //die;
 
 		$this->secret_model->deleteServiceFromServiceID($data["uuid"]);
-
+		// print_r($this->secret_model->getLastQuery()->getQuery());
+		// echo "\n";
 		$key_name = $this->request->getPost('key_name');
 		$key_value = $this->request->getPost('key_value');
 		$secret_tags = $this->request->getPost('secret_tags');
@@ -130,9 +131,6 @@ class Services extends Api
 				//$address_data['service_id'] = $id;
 				$address_data['key_name'] = $key_name[$key];
 				$address_data['secret_tags'] = $secret_tags[$key] ?? NULL;
-				if (strpos($key_value[$key], '********') === false) {
-					$address_data['key_value'] = $key_value[$key];
-				}
 				$address_data['status'] = 1;
 				$address_data['uuid_business_id'] = $this->businessUuid;
 				if (isset($secret_uuids[$key]) && $secret_uuids[$key] != '') {
@@ -140,15 +138,26 @@ class Services extends Api
 				} else {
 					$address_data['uuid'] = UUID::v5(UUID::v4(), 'secrets');
 				}
+				if (strpos($key_value[$key], '********') === false) {
+					$address_data['key_value'] = $key_value[$key];
+					$secret_id = $this->secret_model->saveOrUpdateData($id, $address_data);
+				} else {
+					$secret_id = $this->secret_model->getRowsByUUID($address_data['uuid'])->getRowArray();
+					if ($secret_id && !empty($secret_id)) {
+						$secret_id = $secret_id['id'];
+					}
+				}
 
-				$secret_id = $this->secret_model->saveOrUpdateData($id, $address_data);
-
+				// print_r($this->secret_model->getLastQuery()->getQuery());
+				// echo "\n";
 				if ($secret_id > 0) {
 					$dataRelated['secret_id'] = $secret_id;
 					$dataRelated['service_id'] = $data["uuid"];
 					$dataRelated['uuid_business_id'] = $this->businessUuid;
 					$dataRelated['uuid'] = UUID::v5(UUID::v4(), 'secrets_services');
 					$this->secret_model->saveSecretRelatedData($dataRelated);
+					// print_r($this->secret_model->getLastQuery()->getQuery());
+					// echo "\n";
 				}
 			}
 		}
