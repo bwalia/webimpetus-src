@@ -118,7 +118,7 @@ class Services extends Api
 
 		$id = $this->serviceModel->insertOrUpdate("services", $id, $data); //die;
 
-		$this->secret_model->deleteServiceFromServiceID($id);
+		$this->secret_model->deleteServiceFromServiceID($data["uuid"]);
 
 		$key_name = $this->request->getPost('key_name');
 		$key_value = $this->request->getPost('key_value');
@@ -254,9 +254,10 @@ class Services extends Api
 			$this->push_service_env_vars($uuid);
 			$this->gen_service_yaml_file($uuid);
 
-			//exec('/bin/bash /var/www/html/writable/webimpetus_deploy_service.sh', $output, $return);
+			//	exec('/bin/bash /var/www/html/writable/webimpetus_deploy_service.sh', $output, $return);
 			$output = shell_exec('/bin/sh /var/www/html/writable/webimpetus_delete_service.sh');
-			//echo $output;
+			// This just needs to run the delete script using helm uninstall cmd instead [BUG: This is not working as expected. Need to fix it.]
+			//	echo $output;
 			echo "Service deletion process started OK. Note: This process does not delete the tenant database.";
 		} else {
 			echo "Uuid is empty!!";
@@ -365,14 +366,42 @@ class Services extends Api
 		$output = shell_exec('/bin/bash /var/www/html/writable/secret/' . $userSelectedENV . '-kubeseal-secret.sh');
 
 		$sealedSecretContent = file_get_contents(WRITEPATH . "secret/" . $userSelectedENV . "-sealed-secret-" . $uuid . ".yaml");
+
+		if (empty($sealedSecretContent)) {
+			echo "Kubeseal command failed. Please check kubernetes cluster connection is working and Kubeseal is setup.";
+			die;
+		}
+
 		$sealedSecretContent = Yaml::parse($sealedSecretContent);
 
+		// env_file must be present in the secrets file for this work until we fully create dynamic secrets management system
 		if (isset($sealedSecretContent["spec"]["encryptedData"]["env_file"])) {
 			$envSecret = $sealedSecretContent["spec"]["encryptedData"]["env_file"];
 		} else {
 			echo "Env file not found in sealed secret. Kubeseal command failed";
 			die;
 		}
+
+		if (isset($sealedSecretContent["spec"]["encryptedData"]["hostname"])) {
+			$secret_hostname = $sealedSecretContent["spec"]["encryptedData"]["hostname"];
+		} 
+
+		if (isset($sealedSecretContent["spec"]["encryptedData"]["password"])) {
+			$secret_dbPassword = $sealedSecretContent["spec"]["encryptedData"]["password"];
+		}
+		
+		if (isset($sealedSecretContent["spec"]["encryptedData"]["root-password"])) {
+			$secret_dbRootPassword = $sealedSecretContent["spec"]["encryptedData"]["root-password"];
+		}
+
+		if (isset($sealedSecretContent["spec"]["encryptedData"]["username"])) {
+			$secret_dbUsername = $sealedSecretContent["spec"]["encryptedData"]["username"];
+		}
+
+		if (isset($sealedSecretContent["spec"]["encryptedData"]["port"])) {
+			$secret_dbRootPort = $sealedSecretContent["spec"]["encryptedData"]["port"];
+		}
+
 		// Create Values YAML
 		$valuesTemplate = $this->common_model->getSingleRowWhere("templates", $service['values_template_id'], "uuid");
 		$valuesYaml = $valuesTemplate["template_content"];
@@ -414,9 +443,23 @@ class Services extends Api
 				}
 			}
 		}
-
+		
 		$modifiedValuesString = Yaml::parse($valuesYaml);
-		$modifiedValuesString["secure_env_file"] = $envSecret;
+		
+		if (isset($modifiedValuesString["secure_env_file"])) {
+            $modifiedValuesString["secure_env_file"] = $envSecret;
+        } elseif (isset($modifiedValuesString["safeSealedSecret"])) {
+            $modifiedValuesString["safeSealedSecret"] = $envSecret;
+        }
+
+		/*	$modifiedValuesString["secure_env_file"] = $envSecret; */
+		
+		isset($secret_hostname) ? $modifiedValuesString["db"]["hostname"] = $secret_hostname : "";
+		isset($secret_dbPassword) ? $modifiedValuesString["db"]["password"] = $secret_dbPassword : "";
+		isset($secret_dbRootPassword) ? $modifiedValuesString["db"]["root-password"] = $secret_dbRootPassword : "";
+		isset($secret_dbUsername) ? $modifiedValuesString["db"]["username"] = $secret_dbUsername : "";
+		isset($secret_dbRootPort) ? $modifiedValuesString["db"]["port"] = $secret_dbRootPort : "";
+
 		$modifiedValuesString = YAML::dump($modifiedValuesString);
 		$valuesFile = fopen(WRITEPATH . "values/" . $userSelectedENV . "-values-" . $uuid . ".yaml", "w") or die("Unable to open file!");
 		fwrite($valuesFile, $modifiedValuesString);
