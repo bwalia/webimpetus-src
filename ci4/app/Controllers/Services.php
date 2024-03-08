@@ -270,17 +270,9 @@ class Services extends Api
 		$service = $this->common_model->getSingleRowWhere("templates__services", $uuid, "service_id");
 		$secretTemplate = $this->common_model->getSingleRowWhere("templates", $service['secret_template_id'], "uuid");
 		$secretYaml = $secretTemplate["template_content"];
-		// preg_match_all('/<\*--(.*?)--\*>/', $secretYaml, $matches);
-		// $secretParsedYaml = Yaml::parse($secretYaml);
-		// foreach ($matches[1] as $match) {
-		// 	$secretTemplate = $this->common_model->getSingleRowWhere("blocks_list", $match, "code");
-		// 	$envSecret = $secretTemplate["text"];
-		// 	$pattern = "/<\*--" . $match . "--\*>/i";
-		// 	$secretParsedYaml = $this->recursiveReplace($secretParsedYaml, $pattern, $envSecret);
-		// }
+		$secretYamlArray = explode("---", $secretYaml);
 
 		$targetEnvRow = $this->common_model->getSecretByServiceUuid("TARGET_ENV", $uuid);
-		
 		if (empty($targetEnvRow)) {
 			//echo "TARGET_ENV secret not found or is empty"; die;
 		} else {
@@ -291,54 +283,43 @@ class Services extends Api
 				//	echo "TARGET_ENV secret found and is not empty"; die;
 			}
 		}
-		$webSecrets = $this->common_model->getDataWhere("secrets_services", $uuid, "service_id");
-		foreach ($webSecrets as $key => $webSecret) {
-			$secrets = $this->common_model->getSingleRowWhere("secrets", $webSecret['secret_id'], "id");
-			// $overridedWhere = [
-			// 	"key_name" => $secrets['key_name'],
-			// 	"secret_tags" => $userSelectedENV
-			// ];
-			$isOverrided = $this->common_model->getSecretByServiceUuid($secrets['key_name'], $uuid, $userSelectedENV);
-			if (!empty($isOverrided)) {
-				if ($userSelectedENV == $isOverrided['secret_tags']) {
-					$secretYaml = str_replace($isOverrided['key_name'], $isOverrided['key_value'], $secretYaml);
-				} else {
-					echo "302: " . $secrets['key_name'] . " is not found in $userSelectedENV environment or empty";
-					die;
-				}
-			} else {
-				if ($userSelectedENV == $secrets["secret_tags"] || !$secrets["secret_tags"] || !isset($secrets["secret_tags"])) { //
-					//	echo $secrets['key_name'] . " 1 : " . $secrets['key_value'] . "<br>";die;
-					if ($secrets['key_name'] == "TARGET_ENV") {
-						$secretYaml = str_replace($secrets['key_name'], $userSelectedENV, $secretYaml);
+		foreach($secretYamlArray as $templateKey => $secretYamlTemplate) {
+			$webSecrets = $this->common_model->getDataWhere("secrets_services", $uuid, "service_id");
+			foreach ($webSecrets as $key => $webSecret) {
+				$secrets = $this->common_model->getSingleRowWhere("secrets", $webSecret['secret_id'], "id");
+				$isOverrided = $this->common_model->getSecretByServiceUuid($secrets['key_name'], $uuid, $userSelectedENV);
+				if (!empty($isOverrided)) {
+					if ($userSelectedENV == $isOverrided['secret_tags']) {
+						$secretYamlTemplate = str_replace($isOverrided['key_name'], $isOverrided['key_value'], $secretYamlTemplate);
 					} else {
-						$secretYaml = str_replace($secrets['key_name'], $secrets['key_value'], $secretYaml);
+						echo "302: " . $secrets['key_name'] . " is not found in $userSelectedENV environment or empty";
+						die;
 					}
 				} else {
-					// $nullOverridedWhere = [
-					// 	"key_name" => $secrets['key_name'],
-					// 	"secret_tags IS" => NULL,
-					// 	"secret_tags =" => "",
-					// ];
-					$isNullOverrided = $this->common_model->getSecretByServiceUuid($secrets['key_name'], $uuid, NULL);
-					if (!empty($isNullOverrided)) {
-						$secretYaml = str_replace($isNullOverrided['key_name'], $isNullOverrided['key_value'], $secretYaml);
+					if ($userSelectedENV == $secrets["secret_tags"] || !$secrets["secret_tags"] || !isset($secrets["secret_tags"])) { //
+						//	echo $secrets['key_name'] . " 1 : " . $secrets['key_value'] . "<br>";die;
+						if ($secrets['key_name'] == "TARGET_ENV") {
+							$secretYamlTemplate = str_replace($secrets['key_name'], $userSelectedENV, $secretYamlTemplate);
+						} else {
+							$secretYamlTemplate = str_replace($secrets['key_name'], $secrets['key_value'], $secretYamlTemplate);
+						}
 					} else {
-						echo "323: " . $secrets['key_name'] . " is not found in $userSelectedENV environment or empty";
-						die;
+						$isNullOverrided = $this->common_model->getSecretByServiceUuid($secrets['key_name'], $uuid, NULL);
+						if (!empty($isNullOverrided)) {
+							$secretYamlTemplate = str_replace($isNullOverrided['key_name'], $isNullOverrided['key_value'], $secretYamlTemplate);
+						} else {
+							echo "323: " . $secrets['key_name'] . " is not found in $userSelectedENV environment or empty";
+							die;
+						}
 					}
 				}
 			}
+			// Create Secret Yaml File
+			$secretFile = fopen(WRITEPATH . "secret/" . $userSelectedENV . "-secret-" . $templateKey . "-" . $uuid . ".yaml", "w") or die("Unable to open file!");
+			fwrite($secretFile, $secretYamlTemplate);
+			fclose($secretFile);
 		}
-		// Create Secret Yaml File
-		$secretFile = fopen(WRITEPATH . "secret/" . $userSelectedENV . "-secret-" . $uuid . ".yaml", "w") or die("Unable to open file!");
-		fwrite($secretFile, $secretYaml);
-		fclose($secretFile);
 		// Create kubeseal script to create secrets
-		// $overridedWhere = [
-		// 	"key_name" => "KUBECONFIG",
-		// 	"secret_tags" => $userSelectedENV
-		// ];
 
 		$kubeConfigRow = $this->common_model->getSecretByServiceUuid("KUBECONFIG", $uuid, $userSelectedENV);
 		if (empty($kubeConfigRow)) {
@@ -358,60 +339,63 @@ class Services extends Api
 		$secretCommand = "#!/bin/bash\n";
 		$secretCommand .= "set -x\n";
 		$secretCommand .= "export KUBECONFIG=" . WRITEPATH . "secret/k3s.yaml\n";
-		$secretCommand .= "kubeseal --format=yaml < " . WRITEPATH . "secret/" . $userSelectedENV . "-secret-" . $uuid . ".yaml" . " > " . WRITEPATH . "secret/" . $userSelectedENV . "-sealed-secret-" . $uuid . ".yaml\n";
+		foreach($secretYamlArray as $templateKey2 => $secretYamlTemplate2) {
+			$secretCommand .= "kubeseal --format=yaml < " . WRITEPATH . "secret/" . $userSelectedENV . "-secret-" . $templateKey2 . "-" . $uuid . ".yaml" . " > " . WRITEPATH . "secret/" . $userSelectedENV . "-sealed-secret-" . $templateKey2 . "-" . $uuid . ".yaml\n";
+		}
 		$secretFileScript = fopen(WRITEPATH . "secret/" . $userSelectedENV . "-kubeseal-secret.sh", "w") or die("Unable to open file!");
 		fwrite($secretFileScript, $secretCommand);
 		fclose($secretFileScript);
 
-		$output = shell_exec('/bin/bash /var/www/html/writable/secret/' . $userSelectedENV . '-kubeseal-secret.sh');
+		shell_exec('/bin/bash /var/www/html/writable/secret/' . $userSelectedENV . '-kubeseal-secret.sh');
 
-		$sealedSecretContent = file_get_contents(WRITEPATH . "secret/" . $userSelectedENV . "-sealed-secret-" . $uuid . ".yaml");
+		$secretsArray = [];
+		foreach($secretYamlArray as $templateKey3 => $secretYamlTemplate3) {
+			$sealedSecretContent = file_get_contents(WRITEPATH . "secret/" . $userSelectedENV . "-sealed-secret-" . $templateKey3 . "-" . $uuid . ".yaml");
+			if (empty($sealedSecretContent)) {
+				echo "Kubeseal command failed. Please check kubernetes cluster connection is working and Kubeseal is setup.";
+				die;
+			}
+			$sealedSecretContent = Yaml::parse($sealedSecretContent);
+			// env_file must be present in the secrets file for this work until we fully create dynamic secrets management system
+			if (isset($sealedSecretContent["spec"]["encryptedData"]["env_file"])) {
+				$envSecret = $sealedSecretContent["spec"]["encryptedData"]["env_file"];
+				$secretsArray['env_file'] = $envSecret;
+			} else {
+				echo "Env file not found in sealed secret. Kubeseal command failed";
+				die;
+			}
 
-		if (empty($sealedSecretContent)) {
-			echo "Kubeseal command failed. Please check kubernetes cluster connection is working and Kubeseal is setup.";
-			die;
+			if (isset($sealedSecretContent["spec"]["encryptedData"]["hostname"])) {
+				$secret_hostname = $sealedSecretContent["spec"]["encryptedData"]["hostname"];
+				$secretsArray['hostname'] = $secret_hostname;
+			} 
+
+			if (isset($sealedSecretContent["spec"]["encryptedData"]["password"])) {
+				$secret_dbPassword = $sealedSecretContent["spec"]["encryptedData"]["password"];
+				$secretsArray['password'] = $secret_dbPassword;
+			}
+			
+			if (isset($sealedSecretContent["spec"]["encryptedData"]["root-password"])) {
+				$secret_dbRootPassword = $sealedSecretContent["spec"]["encryptedData"]["root-password"];
+				$secretsArray['root-password'] = $secret_dbRootPassword;
+			}
+
+			if (isset($sealedSecretContent["spec"]["encryptedData"]["username"])) {
+				$secret_dbUsername = $sealedSecretContent["spec"]["encryptedData"]["username"];
+				$secretsArray['username'] = $secret_dbUsername;
+			}
+
+			if (isset($sealedSecretContent["spec"]["encryptedData"]["port"])) {
+				$secret_dbRootPort = $sealedSecretContent["spec"]["encryptedData"]["port"];
+				$secretsArray['port'] = $secret_dbRootPort;
+			}
 		}
-
-		$sealedSecretContent = Yaml::parse($sealedSecretContent);
-
-		// env_file must be present in the secrets file for this work until we fully create dynamic secrets management system
-		if (isset($sealedSecretContent["spec"]["encryptedData"]["env_file"])) {
-			$envSecret = $sealedSecretContent["spec"]["encryptedData"]["env_file"];
-		} else {
-			echo "Env file not found in sealed secret. Kubeseal command failed";
-			die;
-		}
-
-		if (isset($sealedSecretContent["spec"]["encryptedData"]["hostname"])) {
-			$secret_hostname = $sealedSecretContent["spec"]["encryptedData"]["hostname"];
-		} 
-
-		if (isset($sealedSecretContent["spec"]["encryptedData"]["password"])) {
-			$secret_dbPassword = $sealedSecretContent["spec"]["encryptedData"]["password"];
-		}
-		
-		if (isset($sealedSecretContent["spec"]["encryptedData"]["root-password"])) {
-			$secret_dbRootPassword = $sealedSecretContent["spec"]["encryptedData"]["root-password"];
-		}
-
-		if (isset($sealedSecretContent["spec"]["encryptedData"]["username"])) {
-			$secret_dbUsername = $sealedSecretContent["spec"]["encryptedData"]["username"];
-		}
-
-		if (isset($sealedSecretContent["spec"]["encryptedData"]["port"])) {
-			$secret_dbRootPort = $sealedSecretContent["spec"]["encryptedData"]["port"];
-		}
-
 		// Create Values YAML
 		$valuesTemplate = $this->common_model->getSingleRowWhere("templates", $service['values_template_id'], "uuid");
 		$valuesYaml = $valuesTemplate["template_content"];
 		$webSecrets = $this->common_model->getDataWhere("secrets_services", $uuid, "service_id");
 		foreach ($webSecrets as $key => $webSecret) {
 			$secrets = $this->common_model->getSingleRowWhere("secrets", $webSecret['secret_id'], "id");
-			// $overridedWhere = [
-			// 	"key_name" => $secrets['key_name'],
-			// 	"secret_tags" => $userSelectedENV
-			// ];
 			$isOverrided = $this->common_model->getSecretByServiceUuid($secrets['key_name'], $uuid, $userSelectedENV);
 			if (!empty($isOverrided)) {
 				if ($userSelectedENV == $isOverrided['secret_tags']) {
@@ -428,11 +412,6 @@ class Services extends Api
 						$valuesYaml = str_replace($secrets['key_name'], $secrets['key_value'], $valuesYaml);
 					}
 				} else {
-					// $nullOverridedWhere = [
-					// 	"key_name" => $secrets['key_name'],
-					// 	"secret_tags IS" => NULL,
-					// 	"secret_tags =" => "",
-					// ];
 					$isNullOverrided = $this->common_model->getSecretByServiceUuid($secrets['key_name'], $uuid, NULL);
 					if (!empty($isNullOverrided)) {
 						$valuesYaml = str_replace($isNullOverrided['key_name'], $isNullOverrided['key_value'], $valuesYaml);
@@ -447,18 +426,18 @@ class Services extends Api
 		$modifiedValuesString = Yaml::parse($valuesYaml);
 		
 		if (isset($modifiedValuesString["secure_env_file"])) {
-            $modifiedValuesString["secure_env_file"] = $envSecret;
+            $modifiedValuesString["secure_env_file"] = $secretsArray['env_file'];
         } elseif (isset($modifiedValuesString["safeSealedSecret"])) {
-            $modifiedValuesString["safeSealedSecret"] = $envSecret;
+            $modifiedValuesString["safeSealedSecret"] = $secretsArray['env_file'];
         }
 
 		/*	$modifiedValuesString["secure_env_file"] = $envSecret; */
 		
-		isset($secret_hostname) ? $modifiedValuesString["db"]["hostname"] = $secret_hostname : "";
-		isset($secret_dbPassword) ? $modifiedValuesString["db"]["password"] = $secret_dbPassword : "";
-		isset($secret_dbRootPassword) ? $modifiedValuesString["db"]["root-password"] = $secret_dbRootPassword : "";
-		isset($secret_dbUsername) ? $modifiedValuesString["db"]["username"] = $secret_dbUsername : "";
-		isset($secret_dbRootPort) ? $modifiedValuesString["db"]["port"] = $secret_dbRootPort : "";
+		isset($secretsArray['hostname']) ? $modifiedValuesString["db"]["hostname"] = $secretsArray['hostname'] : "";
+		isset($secretsArray['password']) ? $modifiedValuesString["db"]["password"] = $secretsArray['password'] : "";
+		isset($secretsArray['root-password']) ? $modifiedValuesString["db"]["root-password"] = $secretsArray['root-password'] : "";
+		isset($secretsArray['username']) ? $modifiedValuesString["db"]["username"] = $secretsArray['username'] : "";
+		isset($secretsArray['port']) ? $modifiedValuesString["db"]["port"] = $secretsArray['port'] : "";
 
 		$modifiedValuesString = YAML::dump($modifiedValuesString);
 		$valuesFile = fopen(WRITEPATH . "values/" . $userSelectedENV . "-values-" . $uuid . ".yaml", "w") or die("Unable to open file!");
