@@ -370,8 +370,7 @@ class Services extends Api
 				$envSecret = $sealedSecretContent["spec"]["encryptedData"]["env_file"];
 				$secretsArray['env_file'] = $envSecret;
 			} else {
-				echo "Env file not found in sealed secret. Kubeseal command failed";
-				die;
+				echo "Env file not found in sealed secret. Kubeseal command failed\n";
 			}
 
 			if (isset($sealedSecretContent["spec"]["encryptedData"]["hostname"])) {
