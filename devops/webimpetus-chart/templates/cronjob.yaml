@@ -15,13 +15,14 @@ spec:
           - name: wsl-db-backup-{{ .Values.targetEnv }}
             image: {{ .Values.targetImage }}:{{ .Values.targetImageTag }}
             imagePullPolicy: Always
-            command:
-              - /bin/sh
-              - -c
-              - --
-            args:
-              - sleep infinity
-# Test for few days then go live - stat -c %a /tmp && ls -la /tmp && cp /tmp/configmap/backup-database.sh /usr/local/bin/backup-database.sh.sh && chmod +x /usr/local/bin/backup-database.sh && bash /usr/local/bin/backup-database.sh
+            command: ["/bin/sh", "-c", "stat -c %a /tmp && ls -la /tmp && cp /tmp/configmap/backup-database.sh /usr/local/bin/backup-database.sh && chmod +x /usr/local/bin/backup-database.sh && bash /usr/local/bin/backup-database.sh"]
+            #   - /bin/sh
+            #   - -c
+            #   - --
+            # args:
+            #   - sleep infinity
+
+              # Test for few days then go live - stat -c %a /tmp && ls -la /tmp && 
             env:
               - name: DB_BACKUP_JOB_NAME
                 value: wsl-{{ .Values.targetEnv }}-db-backup

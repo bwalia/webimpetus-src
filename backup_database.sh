@@ -15,7 +15,27 @@ ls -al
 FILE=/var/www/html/.env
 if [ ! -f $FILE ]
 then
-export $(cat $FILE | xargs)
+    echo "$FILE not found."
+    exit 1
+    else
+#   export $(cat $FILE | xargs)
+#   load all environment variables into current session
+TEMP_FILE=/tmp/.env
+sed -e's/amazons3.use_ssl/S3_USE_SSL/g' $FILE > $TEMP_FILE
+sed -e's/amazons3.bucket/S3_BUCKET/g' $TEMP_FILE > $FILE
+sed -e's/amazons3.region/S3_REGION/g' $FILE > $TEMP_FILE
+sed -e's/amazons3.s3_directory/S3_DIRECTORY/g' $TEMP_FILE > $FILE
+sed -e's/amazons3.verify_peer/S3_VERIFY_PEER/g' $FILE > $TEMP_FILE
+sed -e's/amazons3.access_key/S3_ACCESS_KEY/g' $TEMP_FILE > $FILE
+sed -e's/amazons3.secret_key/S3_SECRET/g' $FILE > $TEMP_FILE
+sed -e's/amazons3.get_from_enviroment/S3_GET_FROM_ENV/g' $TEMP_FILE > $FILE
+sed -e's/app.baseURL/BASE_URL/g' $FILE > $TEMP_FILE
+sed -e's/database.default.hostname/DB_HOST/g' $TEMP_FILE > $FILE
+sed -e's/database.default.username/DB_USER/g' $FILE > $TEMP_FILE
+sed -e's/database.default.database/DB_NAME/g' $TEMP_FILE > $FILE
+sed -e's/database.default.password/DB_PASSWORD/g' $FILE > $TEMP_FILE
+sed -e's/database.default.DBDriver/DB_DRIVER/g' $TEMP_FILE > $FILE
+source $FILE set
 fi
 
 # Create MySQL Dump
@@ -46,4 +66,4 @@ fi
 # Clean up temporary dump file
 rm $DUMP_FILE
 
-echo "Script completed."
+echo "$DUMP_FILE completed."
