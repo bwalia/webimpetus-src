@@ -155,8 +155,8 @@ data:
         TIMESTAMP=$(date +%Y%m%d%H%M%S)
 
         # MySQL Dump File Name
-        DUMP_FILE="$TMP_DIR/db_dump_$TIMESTAMP.sql"
-        DUMP_FILE_TAR="$TMP_DIR/db_dump_$TIMESTAMP.tar.gz"
+        DUMP_FILE="$TMP_DIR/wsl_{{ .Values.targetEnv }}_db_dump_$TIMESTAMP.sql"
+        DUMP_FILE_TAR="$TMP_DIR/wsl_{{ .Values.targetEnv }}_db_dump_$TIMESTAMP.tar.gz"
         echo "$KUBE_CONFIG" | base64 -d > k3s2.yaml
         ls -al
         SRC_ENV_FILE=/tmp/secrets/.env
