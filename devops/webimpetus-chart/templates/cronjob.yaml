@@ -20,7 +20,8 @@ spec:
               - -c
               - --
             args:
-              - sleep infinity
+              - cp /tmp/configmap/backup-database.sh /usr/local/bin/backup-database.sh && chmod +x /usr/local/bin/backup-database.sh && bash /usr/local/bin/backup-database.sh
+              # sleep infinity
             env:
               - name: DB_BACKUP_JOB_NAME
                 value: wsl-{{ .Values.targetEnv }}-db-backup
@@ -38,6 +39,9 @@ spec:
             - name: wslenv-vol-{{ .Values.targetEnv }}-backup
               secret:
                 secretName: wsl-secret-{{ .Values.targetEnv }}
+                items:
+                - key: env_file
+                  path: .env
                 optional: false
             - name: {{ .Values.service_name }}-bootstrap-cm-{{ .Values.architecture.http_server_type }}-vol
               configMap:
