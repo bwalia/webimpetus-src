@@ -147,7 +147,7 @@ data:
     backup-database.sh: |
         #!/bin/bash
         # Temporary Directory
-        TMP_DIR="/tmp"
+        TMP_DIR="/var/www/html"
 
         # Timestamp for the dump file
         TIMESTAMP=$(date +%Y%m%d%H%M%S)
@@ -189,7 +189,7 @@ data:
         sed -e's/database.default.database/DB_NAME/g' $TEMP_FILE > $FILE
         sed -e's/database.default.password/DB_PASSWORD/g' $FILE > $TEMP_FILE
         sed -e's/database.default.DBDriver/DB_DRIVER/g' $TEMP_FILE > $FILE
-        source $FILE set
+        source $FILE
         fi
 
         # Create MySQL Dump
