@@ -147,9 +147,9 @@ data:
     backup-database.sh: |
         #!/bin/bash
         set -x
-        # Temporary Directory
-        TMP_DIR="/var/www/html"
-
+        # Temporary Directory is readonly so use /var/www/html/writeable
+        TMP_DIR="/var/www/html/writeable/backups"
+        mkdir -p $TMP_DIR
         # Timestamp for the dump file
         TIMESTAMP=$(date +%Y%m%d%H%M%S)
 
@@ -192,7 +192,8 @@ data:
         fi
 
         # Create MySQL Dump
-        mysqldump -h $DB_HOST -u $DB_USER -p $DB_PASSWORD $DB_NAME > $DUMP_FILE
+        
+        mysqldump -h '$DB_HOST' -user='$DB_USER' --password='$DB_PASSWORD' $DB_NAME > $DUMP_FILE
 
         if [ $? -eq 0 ]; then
             echo "MySQL dump created successfully: $DUMP_FILE"
