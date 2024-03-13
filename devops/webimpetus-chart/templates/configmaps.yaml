@@ -194,7 +194,7 @@ data:
 
         # Create MySQL Dump
         
-        mysqldump -h "$DB_HOST" -user="$DB_USER" --password="$DB_PASSWORD" $DB_NAME > $DUMP_FILE
+        mysqldump -h $DB_HOST "--user=$DB_USER" "--password=$DB_PASSWORD" $DB_NAME > $DUMP_FILE
 
         if [ $? -eq 0 ]; then
             echo "MySQL dump created successfully: $DUMP_FILE"
