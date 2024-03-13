@@ -158,6 +158,8 @@ data:
         echo "$KUBE_CONFIG" | base64 -d > k3s2.yaml
         ls -al
         SRC_ENV_FILE=/tmp/secrets/.env
+        # dos2unix Removes CTRL-M (^M) blue carriage return characters from a file in Linux.
+        dos2unix $SRC_ENV_FILE
         if [ -f "$SRC_ENV_FILE" ];then
             FILE=/var/www/html/.env
             cp $SRC_ENV_FILE $FILE
@@ -170,6 +172,8 @@ data:
             else
         #   export $(cat $FILE | xargs)
         #   load all environment variables into current session
+        # dos2unix Removes CTRL-M (^M) blue carriage return characters from a file in Linux.
+        dos2unix $FILE
         TEMP_FILE=/tmp/.env
         sed -e's/amazons3.use_ssl/S3_USE_SSL/g' $FILE > $TEMP_FILE
         sed -e's/amazons3.bucket/S3_BUCKET/g' $TEMP_FILE > $FILE

@@ -20,7 +20,8 @@ spec:
               - -c
               - --
             args:
-              - cp /tmp/configmap/backup-database.sh /usr/local/bin/backup-database.sh && chmod +x /usr/local/bin/backup-database.sh && bash /usr/local/bin/backup-database.sh
+              - sleep infinity
+              #cp /tmp/configmap/backup-database.sh /usr/local/bin/backup-database.sh && chmod +x /usr/local/bin/backup-database.sh && bash /usr/local/bin/backup-database.sh
               # sleep infinity
             env:
               - name: DB_BACKUP_JOB_NAME
