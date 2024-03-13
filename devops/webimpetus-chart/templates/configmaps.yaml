@@ -146,6 +146,7 @@ metadata:
 data:
     backup-database.sh: |
         #!/bin/bash
+        set -x
         # Temporary Directory
         TMP_DIR="/var/www/html"
 
@@ -158,8 +159,6 @@ data:
         echo "$KUBE_CONFIG" | base64 -d > k3s2.yaml
         ls -al
         SRC_ENV_FILE=/tmp/secrets/.env
-        # dos2unix Removes CTRL-M (^M) blue carriage return characters from a file in Linux.
-        dos2unix $SRC_ENV_FILE
         if [ -f "$SRC_ENV_FILE" ];then
             FILE=/var/www/html/.env
             cp $SRC_ENV_FILE $FILE
