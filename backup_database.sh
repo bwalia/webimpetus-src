@@ -11,6 +11,11 @@ DUMP_FILE="$TMP_DIR/db_dump_$TIMESTAMP.sql"
 DUMP_FILE_TAR="$TMP_DIR/db_dump_$TIMESTAMP.tar.gz"
 echo "$KUBE_CONFIG" | base64 -d > k3s2.yaml
 ls -al
+SRC_ENV_FILE=/tmp/secrets/.env
+    if [ -f "$SRC_ENV_FILE" ];then
+    FILE=/var/www/html/.env
+    cp $SRC_ENV_FILE $FILE
+fi
 
 FILE=/var/www/html/.env
 if [ ! -f $FILE ]
