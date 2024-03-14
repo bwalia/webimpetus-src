@@ -209,10 +209,10 @@ data:
         file $DUMP_FILE
         stat $DUMP_FILE
         tar -czvf $DUMP_FILE_TAR $TMP_DIR
-        mc cp $DUMP_FILE_TAR myminio/$MINIO_BUCKET/
+        mc cp $DUMP_FILE_TAR myminio/$MINIO_BUCKET/hourly/$DUMP_FILE_TAR
 
         if [ $? -eq 0 ]; then
-            echo "Dump file uploaded to Minio bucket: $MINIO_BUCKET"
+            echo "Dump file uploaded to Minio bucket: $MINIO_BUCKET/hourly/$DUMP_FILE_TAR"
         else
             echo "Error uploading dump file to Minio bucket."
             exit 1
@@ -220,6 +220,7 @@ data:
 
         # Clean up temporary dump file
         rm $DUMP_FILE
+        rm $DUMP_FILE_TAR
 
         echo "$DUMP_FILE completed."
 
