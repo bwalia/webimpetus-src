@@ -147,6 +147,12 @@ data:
     backup-database.sh: |
         #!/bin/bash
         set -x
+
+        if [ -z "$BACKUP_FREQUENCY" ]; then
+            echo "BACKUP_FREQUENCY set to hourly."
+            BACKUP_FREQUENCY="hourly"
+        fi
+        
         # Temporary Directory is readonly so use /var/www/html/writeable
         TMP_DIR="/var/www/html/writeable/backups"
         mkdir -p $TMP_DIR
@@ -220,7 +226,7 @@ data:
         stat $DUMP_FILE_TAR
         
         echo "Uploading dump file to Minio bucket: $MINIO_BUCKET/"
-        mc cp $DUMP_FILE_TAR myminio/$MINIO_BUCKET/hourly/
+        mc cp $DUMP_FILE_TAR myminio/$MINIO_BUCKET/$BACKUP_FREQUENCY/
 
         if [ $? -eq 0 ]; then
             echo "DB backup file uploaded to Minio bucket: $MINIO_BUCKET/hourly/"
