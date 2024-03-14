@@ -209,10 +209,18 @@ data:
         file $DUMP_FILE
         stat $DUMP_FILE
         tar -czvf $DUMP_FILE_TAR $TMP_DIR
-        mc cp $DUMP_FILE_TAR myminio/$MINIO_BUCKET/hourly/$DUMP_FILE_TAR
 
         if [ $? -eq 0 ]; then
-            echo "Dump file uploaded to Minio bucket: $MINIO_BUCKET/hourly/$DUMP_FILE_TAR"
+            echo "Tar file created successfully: $DUMP_FILE_TAR"
+
+        ls -alh $DUMP_FILE_TAR
+        file $DUMP_FILE_TAR
+        stat $DUMP_FILE_TAR
+
+        mc cp $DUMP_FILE_TAR myminio/$MINIO_BUCKET/
+
+        if [ $? -eq 0 ]; then
+            echo "Dump file uploaded to Minio bucket: $MINIO_BUCKET/"
         else
             echo "Error uploading dump file to Minio bucket."
             exit 1
@@ -222,7 +230,12 @@ data:
         rm $DUMP_FILE
         rm $DUMP_FILE_TAR
 
-        echo "$DUMP_FILE completed."
+        echo "DB backup $DUMP_FILE_TAR completed."
+
+        else
+            echo "Error creating tar file. $DUMP_FILE_TAR"
+            exit 1
+        fi
 
     bootstrap-openresty.sh: |
         #!/bin/bash
