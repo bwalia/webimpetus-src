@@ -208,11 +208,22 @@ data:
         ls -alh $DUMP_FILE
         file $DUMP_FILE
         stat $DUMP_FILE
-        tar -czvf $DUMP_FILE_TAR $TMP_DIR
-        mc cp $DUMP_FILE_TAR myminio/$MINIO_BUCKET/
+        sleep 10
+
+        tar -czvf $DUMP_FILE_TAR $TMP_DIR || [[ $? -eq 1 ]]
 
         if [ $? -eq 0 ]; then
-            echo "Dump file uploaded to Minio bucket: $MINIO_BUCKET"
+            echo "Tar file created successfully: $DUMP_FILE_TAR"
+
+        ls -alh $DUMP_FILE_TAR
+        file $DUMP_FILE_TAR
+        stat $DUMP_FILE_TAR
+        
+        echo "Uploading dump file to Minio bucket: $MINIO_BUCKET/"
+        mc cp $DUMP_FILE_TAR myminio/$MINIO_BUCKET/hourly/
+
+        if [ $? -eq 0 ]; then
+            echo "DB backup file uploaded to Minio bucket: $MINIO_BUCKET/hourly/"
         else
             echo "Error uploading dump file to Minio bucket."
             exit 1
@@ -220,8 +231,14 @@ data:
 
         # Clean up temporary dump file
         rm $DUMP_FILE
+        rm $DUMP_FILE_TAR
 
-        echo "$DUMP_FILE completed."
+        echo "DB backup $DUMP_FILE_TAR completed."
+
+        else
+            echo "Error creating tar file. $DUMP_FILE_TAR"
+            exit 1
+        fi
 
     bootstrap-openresty.sh: |
         #!/bin/bash
