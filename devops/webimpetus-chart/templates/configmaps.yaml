@@ -208,7 +208,9 @@ data:
         ls -alh $DUMP_FILE
         file $DUMP_FILE
         stat $DUMP_FILE
-        tar -czvf $DUMP_FILE_TAR $TMP_DIR
+        sleep 10
+
+        tar -czvf $DUMP_FILE_TAR $TMP_DIR || [[ $? -eq 1 ]]
 
         if [ $? -eq 0 ]; then
             echo "Tar file created successfully: $DUMP_FILE_TAR"
