@@ -4,7 +4,8 @@ kind: CronJob
 metadata:
   name: wsl-{{ .Values.targetEnv }}-db-backup
 spec:
-  schedule: "0 */1 * * *"
+  schedule: "0 * * * *"
+  #testing 1 min "0 */1 * * *"
   concurrencyPolicy: Forbid
   jobTemplate:
     spec:
@@ -20,8 +21,9 @@ spec:
               - -c
               - --
             args:
-              - sleep infinity
-# Test for few days then go live - stat -c %a /tmp && ls -la /tmp && cp /tmp/configmap/backup-database.sh /usr/local/bin/backup-database.sh.sh && chmod +x /usr/local/bin/backup-database.sh && bash /usr/local/bin/backup-database.sh
+              - cp /tmp/configmap/backup-database.sh /usr/local/bin/backup-database.sh && chmod +x /usr/local/bin/backup-database.sh && bash /usr/local/bin/backup-database.sh
+              # cp /tmp/configmap/backup-database.sh /usr/local/bin/backup-database.sh && chmod +x /usr/local/bin/backup-database.sh && bash /usr/local/bin/backup-database.sh
+              # sleep infinity
             env:
               - name: DB_BACKUP_JOB_NAME
                 value: wsl-{{ .Values.targetEnv }}-db-backup
@@ -32,11 +34,26 @@ spec:
               - name: wslenv-vol-{{ .Values.targetEnv }}-backup
                 mountPath: "/tmp/secrets"
                 readOnly: false
+              - name: {{ .Values.service_name }}-bootstrap-cm-{{ .Values.architecture.http_server_type }}-vol
+                mountPath: "/tmp/configmap"
+                readOnly: false
           volumes:
             - name: wslenv-vol-{{ .Values.targetEnv }}-backup
               secret:
                 secretName: wsl-secret-{{ .Values.targetEnv }}
-                  # - key: env_file
-                  #   path: .env
+                items:
+                - key: env_file
+                  path: .env
                 optional: false
+            - name: {{ .Values.service_name }}-bootstrap-cm-{{ .Values.architecture.http_server_type }}-vol
+              configMap:
+                name: {{ .Values.service_name }}-bootstrap-cm-{{ .Values.architecture.http_server_type }}-{{ .Values.targetEnv }}
       backoffLimit: 0
+
+            # wsl-bootstrap-cm-openresty-vol
+            #   - /bin/sh
+            #   - -c
+            #   - --
+            # args:
+            #   - "cp /tmp/configmap/backup-database.sh /usr/local/bin/backup-database.sh && chmod +x /usr/local/bin/backup-database.sh && bash /usr/local/bin/backup-database.sh"
+            #   ["/bin/sh", "-c", "cp /tmp/configmap/backup-database.sh /usr/local/bin/backup-database.sh && chmod +x /usr/local/bin/backup-database.sh && bash /usr/local/bin/backup-database.sh"]
