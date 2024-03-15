@@ -383,9 +383,9 @@ class Services extends Api
 				$secretsArray['password'] = $secret_dbPassword;
 			}
 			
-			if (isset($sealedSecretContent["spec"]["encryptedData"]["root-password"])) {
-				$secret_dbRootPassword = $sealedSecretContent["spec"]["encryptedData"]["root-password"];
-				$secretsArray['root-password'] = $secret_dbRootPassword;
+			if (isset($sealedSecretContent["spec"]["encryptedData"]["rootPassword"])) {
+				$secret_dbRootPassword = $sealedSecretContent["spec"]["encryptedData"]["rootPassword"];
+				$secretsArray['rootPassword'] = $secret_dbRootPassword;
 			}
 
 			if (isset($sealedSecretContent["spec"]["encryptedData"]["username"])) {
@@ -443,7 +443,7 @@ class Services extends Api
 		
 		isset($secretsArray['hostname']) ? $modifiedValuesString["db"]["hostname"] = $secretsArray['hostname'] : "";
 		isset($secretsArray['password']) ? $modifiedValuesString["db"]["password"] = $secretsArray['password'] : "";
-		isset($secretsArray['root-password']) ? $modifiedValuesString["db"]["root-password"] = $secretsArray['root-password'] : "";
+		isset($secretsArray['rootPassword']) ? $modifiedValuesString["db"]["rootPassword"] = $secretsArray['rootPassword'] : "";
 		isset($secretsArray['username']) ? $modifiedValuesString["db"]["username"] = $secretsArray['username'] : "";
 		isset($secretsArray['port']) ? $modifiedValuesString["db"]["port"] = $secretsArray['port'] : "";
 
