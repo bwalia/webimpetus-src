@@ -2,7 +2,7 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: wsl-{{ .Values.targetEnv }}-db-backup
+  name: wsl-{{ .Values.targetEnv }}-db-backup-hourly
 spec:
   schedule: "0 * * * *"
   #testing 1 min "0 */1 * * *"
@@ -13,7 +13,7 @@ spec:
         spec:
           restartPolicy: Never
           containers:
-          - name: wsl-db-backup-{{ .Values.targetEnv }}
+          - name: wsl-db-backup-{{ .Values.targetEnv }}-hourly
             image: {{ .Values.targetImage }}:{{ .Values.targetImageTag }}
             imagePullPolicy: Always
             command:
@@ -26,7 +26,9 @@ spec:
               # sleep infinity
             env:
               - name: DB_BACKUP_JOB_NAME
-                value: wsl-{{ .Values.targetEnv }}-db-backup
+                value: wsl-{{ .Values.targetEnv }}-db-backup-hourly
+              - name: BACKUP_FREQUENCY
+                value: hourly
             envFrom:
             resources:
               null
@@ -57,3 +59,57 @@ spec:
             # args:
             #   - "cp /tmp/configmap/backup-database.sh /usr/local/bin/backup-database.sh && chmod +x /usr/local/bin/backup-database.sh && bash /usr/local/bin/backup-database.sh"
             #   ["/bin/sh", "-c", "cp /tmp/configmap/backup-database.sh /usr/local/bin/backup-database.sh && chmod +x /usr/local/bin/backup-database.sh && bash /usr/local/bin/backup-database.sh"]
+---
+# Source: wsl/templates/cronjob.yaml
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: wsl-{{ .Values.targetEnv }}-db-backup-daily
+spec:
+  schedule: "0 4 * * *"
+  #testing 1 min "0 */1 * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+          - name: wsl-db-backup-{{ .Values.targetEnv }}-daily
+            image: {{ .Values.targetImage }}:{{ .Values.targetImageTag }}
+            imagePullPolicy: Always
+            command:
+              - /bin/sh
+              - -c
+              - --
+            args:
+              - cp /tmp/configmap/backup-database.sh /usr/local/bin/backup-database.sh && chmod +x /usr/local/bin/backup-database.sh && bash /usr/local/bin/backup-database.sh
+              # cp /tmp/configmap/backup-database.sh /usr/local/bin/backup-database.sh && chmod +x /usr/local/bin/backup-database.sh && bash /usr/local/bin/backup-database.sh
+              # sleep infinity
+            env:
+              - name: DB_BACKUP_JOB_NAME
+                value: wsl-{{ .Values.targetEnv }}-db-backup-daily
+              - name: BACKUP_FREQUENCY
+                value: daily
+            envFrom:
+            resources:
+              null
+            volumeMounts:
+              - name: wslenv-vol-{{ .Values.targetEnv }}-backup
+                mountPath: "/tmp/secrets"
+                readOnly: false
+              - name: {{ .Values.service_name }}-bootstrap-cm-{{ .Values.architecture.http_server_type }}-vol
+                mountPath: "/tmp/configmap"
+                readOnly: false
+          volumes:
+            - name: wslenv-vol-{{ .Values.targetEnv }}-backup
+              secret:
+                secretName: wsl-secret-{{ .Values.targetEnv }}
+                items:
+                - key: env_file
+                  path: .env
+                optional: false
+            - name: {{ .Values.service_name }}-bootstrap-cm-{{ .Values.architecture.http_server_type }}-vol
+              configMap:
+                name: {{ .Values.service_name }}-bootstrap-cm-{{ .Values.architecture.http_server_type }}-{{ .Values.targetEnv }}
+      backoffLimit: 0
