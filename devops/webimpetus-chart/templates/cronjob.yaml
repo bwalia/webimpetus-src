@@ -1,3 +1,4 @@
+---
 # Source: wsl/templates/cronjob.yaml
 apiVersion: batch/v1
 kind: CronJob
@@ -13,7 +14,7 @@ spec:
         spec:
           restartPolicy: Never
           containers:
-          - name: wsl-db-backup-{{ .Values.targetEnv }}-hourly
+          - name: "wsl-db-backup-{{ .Values.targetEnv }}-hourly"
             image: {{ .Values.targetImage }}:{{ .Values.targetImageTag }}
             imagePullPolicy: Always
             command:
@@ -51,14 +52,6 @@ spec:
               configMap:
                 name: {{ .Values.service_name }}-bootstrap-cm-{{ .Values.architecture.http_server_type }}-{{ .Values.targetEnv }}
       backoffLimit: 0
-
-            # wsl-bootstrap-cm-openresty-vol
-            #   - /bin/sh
-            #   - -c
-            #   - --
-            # args:
-            #   - "cp /tmp/configmap/backup-database.sh /usr/local/bin/backup-database.sh && chmod +x /usr/local/bin/backup-database.sh && bash /usr/local/bin/backup-database.sh"
-            #   ["/bin/sh", "-c", "cp /tmp/configmap/backup-database.sh /usr/local/bin/backup-database.sh && chmod +x /usr/local/bin/backup-database.sh && bash /usr/local/bin/backup-database.sh"]
 ---
 # Source: wsl/templates/cronjob.yaml
 apiVersion: batch/v1
