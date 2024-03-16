@@ -7,7 +7,7 @@ services:
     image: mariadb:11.2.2
     restart: always
     environment:
-      MYSQL_DATABASE: 'myworkstation_dev'
+      MYSQL_DATABASE: 'wsl-dev-db'
       MYSQL_USER: 'wsl_dev'
       MYSQL_PASSWORD: 'CHANGE_ME'
       MYSQL_ROOT_PASSWORD: 'CHANGE_ME_DEFINITELY'

@@ -27,7 +27,7 @@ RUN apk add mysql-client curl && \
     wget https://dl.min.io/client/mc/release/linux-amd64/mc -O /usr/local/bin/mc \
     --tries=3 --timeout=30 && \
     chmod +x /usr/local/bin/mc
-#Install kubectl and helmchart binaries
+#   Install kubectl and helmchart binaries
 
 RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.18.0/bin/linux/amd64/kubectl && chmod +x ./kubectl && mv ./kubectl /usr/bin/kubectl
 RUN kubectl version --client
@@ -41,4 +41,4 @@ COPY ci4 /src
 COPY ./config/vhosts/webimpetus.conf /etc/nginx/sites-enabled/webimpetus.conf
 COPY ./config/vhosts/nginx.conf /usr/local/openresty/nginx/conf/nginx.conf
 
-     #RUN sed -i "s|listen = 127.0.0.1:9000|listen = 127.0.0.1:9000\nlisten = /var/run/php-fpm/www.sock|g" /usr/local/etc/php-fpm.d/www.conf
+     #  RUN sed -i "s|listen = 127.0.0.1:9000|listen = 127.0.0.1:9000\nlisten = /var/run/php-fpm/www.sock|g" /usr/local/etc/php-fpm.d/www.conf
