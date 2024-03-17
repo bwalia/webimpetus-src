@@ -146,20 +146,16 @@ metadata:
 data:
     backup-database.sh: |
         #!/bin/bash
-        set -x
-
         if [ -z "$BACKUP_FREQUENCY" ]; then
             echo "BACKUP_FREQUENCY set to hourly."
             BACKUP_FREQUENCY="hourly"
         fi
-        
         # Temporary Directory is readonly so use /var/www/html/writeable
         TMP_DIR="/var/www/html/writeable/backups"
         mkdir -p $TMP_DIR
         chmod 777 -R $TMP_DIR
         # Timestamp for the dump file
-        TIMESTAMP=$(date +%Y%m%d%H%M%S)
-
+        TIMESTAMP=$(date +%Y-%m-%d-%H-%M)
         # MySQL Dump File Name
         DUMP_FILE="$TMP_DIR/wsl_{{ .Values.targetEnv }}_db_dump_$TIMESTAMP.sql"
         DUMP_FILE_TAR="$TMP_DIR/wsl_{{ .Values.targetEnv }}_db_dump_$TIMESTAMP.tar.gz"
@@ -197,53 +193,63 @@ data:
         sed -e's/database.default.DBDriver/DB_DRIVER/g' $TEMP_FILE > $FILE
         source $FILE
         fi
-
         # Create MySQL Dump
-        
         mysqldump -h $DB_HOST "--user=$DB_USER" "--password=$DB_PASSWORD" $DB_NAME > $DUMP_FILE
-
         if [ $? -eq 0 ]; then
             echo "MySQL dump created successfully: $DUMP_FILE"
         else
             echo "Error creating MySQL dump."
             exit 1
         fi
-
+        if [ -f $DUMP_FILE ]; then
         # Upload Dump File to Minio Bucket
         mc config host add myminio $MINIO_HOST $MINIO_ACCESS_KEY $MINIO_SECRET_KEY
         ls -alh $DUMP_FILE
         file $DUMP_FILE
         stat $DUMP_FILE
         sleep 10
-
         tar -czvf $DUMP_FILE_TAR $TMP_DIR || [[ $? -eq 1 ]]
 
         if [ $? -eq 0 ]; then
             echo "Tar file created successfully: $DUMP_FILE_TAR"
 
+        if [ -f $DUMP_FILE_TAR ]; then
+                echo "Dump file compressed successfully: $DUMP_FILE_TAR"
+        else
+                echo "Error compressing dump file."
+                exit 0
+        fi
         ls -alh $DUMP_FILE_TAR
         file $DUMP_FILE_TAR
         stat $DUMP_FILE_TAR
-        
         echo "Uploading dump file to Minio bucket: $MINIO_BUCKET/"
         mc cp $DUMP_FILE_TAR myminio/$MINIO_BUCKET/$BACKUP_FREQUENCY/
-
         if [ $? -eq 0 ]; then
-            echo "DB backup file uploaded to Minio bucket: $MINIO_BUCKET/hourly/"
+        echo "Dump file uploaded to Minio bucket: $MINIO_BUCKET"
+        mv $DUMP_FILE_TAR $TMP_DIR/wsl_{{ .Values.targetEnv }}_db_dump_latest.tar.gz
+        DUMP_FILE_TAR = $TMP_DIR/wsl_{{ .Values.targetEnv }}_db_dump_latest.tar.gz
+        if [ -f $DUMP_FILE_TAR ]; then
+            echo "Dump file renamed to wsl_{{ .Values.targetEnv }}_db_dump_latest.tar.gz"
+            mc cp $DUMP_FILE_TAR myminio/$MINIO_BUCKET/hourly/      # Copy the latest dump to hourly folder
+        else
+            echo "Error renaming dump file wsl_{{ .Values.targetEnv }}_db_dump_latest.tar.gz."
+        fi
+
         else
             echo "Error uploading dump file to Minio bucket."
             exit 1
         fi
-
         # Clean up temporary dump file
         rm $DUMP_FILE
         rm $DUMP_FILE_TAR
-
         echo "DB backup $DUMP_FILE_TAR completed."
-
         else
             echo "Error creating tar file. $DUMP_FILE_TAR"
             exit 1
+        fi
+        else
+                echo "Error creating mysql dump file. Backup failed."
+                exit 0
         fi
 
     bootstrap-openresty.sh: |
@@ -268,7 +274,7 @@ data:
         echo "Workstation Nginx Bootstrap Script"
         export COMPOSER_ALLOW_SUPERUSER=1
         yes | composer update
-        echo "==========================="
+        echo "............................"
         FILE=/src/
         if [ -d "$FILE" ]; then
         FILE=/var/www/html/
