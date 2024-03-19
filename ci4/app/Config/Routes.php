@@ -77,6 +77,8 @@ $routes->get('api/v2/business/(:segment)/projects/(:segment)/employee/(:segment)
 $routes->get('api/v2/business/(:segment)/employee/(:segment)/tasks-status', 'Api\V2\Tasks::tasksStatusByEId/$1/$2');
 // Update Task Status by Task ID
 $routes->put('api/v2/business/(:segment)/projects/(:segment)/tasks/update-status', 'Api\V2\Tasks::updateStatusByUuid');
+// Add enquiry by business code
+$routes->post('api/v2/enquiries/business-enqury', 'Api\V2\Enquiries::addEnquiryByBCode');
 
 
 /*
