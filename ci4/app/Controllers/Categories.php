@@ -7,7 +7,9 @@ use App\Models\Amazon_s3_model;
 use App\Libraries\UUID;
 
 class Categories extends CommonController
-{	
+{
+	public $catModel;
+	public $user_model;
 	function __construct()
 	{
 		parent::__construct();
@@ -29,6 +31,7 @@ class Categories extends CommonController
 			'notes' => $this->request->getPost('notes'),
 			'sort_order' => $this->request->getPost('sort_order'),
 			'user_uuid' => $this->request->getPost('uuid'),
+			'contact_uuid' => $this->request->getPost('contact_uuid'),
 			'uuid_business_id' => $this->session->get('uuid_business'),
 		);
 

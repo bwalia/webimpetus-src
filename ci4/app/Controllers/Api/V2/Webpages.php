@@ -3,7 +3,10 @@
 namespace App\Controllers\Api\V2;
 
 use App\Controllers\Api_v2;
-
+use App\Models\Blocks_model;
+use App\Models\Cat_model;
+use App\Models\Content_model;
+use App\Models\Customers_model;
 use CodeIgniter\RESTful\ResourceController;
 
 /**
@@ -58,6 +61,9 @@ class Webpages extends ResourceController
         $_GET['q'] = !empty($params['filter']) && !empty($params['filter']['q']) ? $params['filter']['q'] : $_GET['q'] ?? '';
         $_GET['category_id'] = !empty($params['filter']) && !empty($params['filter']['category_id']) ? $params['filter']['category_id'] : $catId;
         $_GET['uuid_business_id'] = !empty($params['filter']) && !empty($params['filter']['uuid_business_id']) ? $params['filter']['uuid_business_id'] : $_GET['uuid_business_id'] ?? false;
+
+        echo '<pre>'; print_r($_GET); echo '</pre>'; die;
+        
         if (empty($_GET['uuid_business_id']) || !isset($_GET['uuid_business_id']) || !$_GET['uuid_business_id']) {
             $data['data'] = 'You must need to specify the User Business ID';
             return $this->respond($data, 403);
@@ -74,7 +80,7 @@ class Webpages extends ResourceController
      * @return mixed
      */
     public function show($id = null)
-    {
+    {   
         $api =  new Api_v2();
         return $this->respond($api->webpagesEdit($id));
     }
@@ -129,5 +135,78 @@ class Webpages extends ResourceController
     public function delete($id = null)
     {
         //
+    }
+
+    public function getWebPages ($bId, $contactId) {
+        $customerModel = new Customers_model();
+        $contentListModel = new Content_model();
+        $blockModel = new Blocks_model();
+        $data = [];
+        $customerDetails = $customerModel->getRows($contactId)->getRowArray();
+        if (!empty($customerDetails) && $customerDetails) {
+            $categoryIds = $customerDetails['categories'];
+            if (!empty($categoryIds) && $categoryIds && isset($categoryIds)) {
+                $contentList = $contentListModel->getRowByCatId($categoryIds, $bId)->getRowArray();
+                if (!empty($contentList) && $contentList) {
+                    $data['content'] = $contentList;
+                    $blocks = $blockModel->getRowsByWebId($contentList['id'])->getResultArray();
+                    $data['blocks'] = $blocks;
+                } else {
+                    return $this->respond([
+                        'error' => 'No Content Found.!',
+                        'status' => 401
+                    ]);
+                }
+            } else {
+                return $this->respond([
+                    'error' => 'No Category Found.!',
+                    'status' => 401
+                ]);
+            }
+        } else {
+            return $this->respond([
+                'error' => 'No Customer Found.!',
+                'status' => 401
+            ]);
+        }
+        return $this->respond([
+            'data' => $data,
+            'status' => 200
+        ]);
+    }
+
+    public function getBlogsByCategory($bId, $contactId) {
+        $categoryModel = new Cat_model();
+        $contentListModel = new Content_model();
+        $data = [];
+        $category = $categoryModel->getRowByContactId($contactId, $bId)->getRowArray();
+        if (!empty($category) && $category) {
+            $getContents = $categoryModel->getContentByCat($category['id'], $bId)->getResultArray();
+            if (!empty($getContents) && $getContents) {
+                $contentIds = array_map(function ($v, $k) {
+                    return $v['contentid'];
+                }, $getContents, array_keys($getContents));
+
+                if (is_array($contentIds)) {
+                    $content = $contentListModel->getDataWhereIN($contentIds, "id");
+                    $data['blogs'] = $content;
+                }
+            } else {
+                return $this->respond([
+                    'error' => 'No Blog Found.!',
+                    'status' => 401
+                ]);
+            }
+        } else {
+            return $this->respond([
+                'error' => 'No Category Found.!',
+                'status' => 401
+            ]);
+        }
+
+        return $this->respond([
+            'data' => $data,
+            'status' => 200
+        ]);
     }
 }

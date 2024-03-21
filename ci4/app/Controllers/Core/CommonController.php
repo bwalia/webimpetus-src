@@ -126,6 +126,7 @@ class CommonController extends BaseController
 		$data['tableName'] = $this->table;
 		$data['rawTblName'] = $this->rawTblName;
 		$data["users"] = $this->model->getUser();
+		$data["contacts"] = $this->model->getContacts();
 		$data[$this->rawTblName] = $tableData;
 		// if there any special cause we can overried this function and pass data to add or edit view
 		$data['additional_data'] = $this->getAdditionalData($uuid ? $tableData->id : '');
@@ -137,6 +138,7 @@ class CommonController extends BaseController
 		$data['tableName'] = $this->table;
 		$data['rawTblName'] = $this->rawTblName;
 		$data["users"] = $this->model->getUser();
+		$data["contacts"] = $this->model->getContacts();
 		$data[$this->rawTblName] = !empty($uuid)?$this->model->getRowsByUUID($uuid)->getRow():[];
 		// if there any special cause we can overried this function and pass data to add or edit view
 		if($this->rawTblName=='task'){

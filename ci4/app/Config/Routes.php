@@ -79,6 +79,9 @@ $routes->get('api/v2/business/(:segment)/employee/(:segment)/tasks-status', 'Api
 $routes->put('api/v2/business/(:segment)/projects/(:segment)/tasks/update-status', 'Api\V2\Tasks::updateStatusByUuid');
 // Add enquiry by business code
 $routes->post('api/v2/enquiries/business-enqury', 'Api\V2\Enquiries::addEnquiryByBCode');
+// List webpages by contacts
+$routes->get('api/v2/business/(:segment)/contact/(:segment)/webpages', 'Api\V2\Webpages::getWebPages/$1/$2');
+$routes->get('api/v2/business/(:segment)/contact/(:segment)/blogs', 'Api\V2\Webpages::getBlogsByCategory/$1/$2');
 
 
 /*

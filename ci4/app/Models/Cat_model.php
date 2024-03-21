@@ -65,4 +65,23 @@ class Cat_model extends Model
 		$query = $this->db->table($this->table)->update($data, array('id' => $id));
 		return $query;
 	}
+
+    public function getRowByContactId($contactId, $bId)
+    {
+        if($contactId === false){
+            return [];
+        }else{
+            $whereCond = array('contact_uuid' => $contactId, 'uuid_business_id' => $bId);
+            return $this->getWhere($whereCond);
+        }   
+    }
+    public function getContentByCat($catId, $bId)
+    {
+        if($catId === false){
+            return [];
+        }else{
+            $whereCond = array('categoryid' => $catId, 'uuid_business_id' => $bId);
+            return $this->db->table($this->table2)->getWhere($whereCond);
+        }   
+    }
 }
