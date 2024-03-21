@@ -431,6 +431,8 @@ $data_type_format["YAML"] = "# Employee records
 											</div>
 											<input type="hidden" value="<?= $blocks_list[$jak_i]['id'] ?>" id="blocks_id"
 												name="blocks_id[]">
+											<input type="hidden" value="<?= $blocks_list[$jak_i]['uuid'] ?>" id="blocks_uuid"
+												name="blocks_uuid[]">
 
 											<div class="form-group col-md-1 change">
 												<button class="btn btn-info bootstrap-touchspin-up deleteaddress" id="deleteRow"

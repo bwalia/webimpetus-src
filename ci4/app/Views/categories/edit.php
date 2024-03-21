@@ -17,6 +17,18 @@
                     </select>
                 </div>
 
+                <div class="form-group  col-md-12">
+                    <label for="inputState" class="control-label">Choose Contact</label>
+                    <select id="contact_uuid" name="contact_uuid" class="form-control dashboard-dropdown">
+                        <option value="" selected="">--Select--</option>
+                        <?php foreach ($contacts as $row): ?>
+                            <option value="<?= $row['uuid']; ?>" <?= ($row['uuid'] == @$category->contact_uuid) ? 'selected' : '' ?>>
+                                <?= $row['first_name'] . " " . $row['surname']; ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
                 <div class="form-group required col-md-12">
                     <label for="inputEmail4">Name</label>
                     <input type="text" class="form-control required" id="title" name="name" placeholder=""

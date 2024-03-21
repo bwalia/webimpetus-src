@@ -178,6 +178,18 @@ class Common_model extends Model
             return $builder->getWhere($whereCond)->getRowArray();
         }
     }
+    public function getContacts($id = false)
+    {
+        $whereCond = $this->whereCond;
+        $builder = $this->db->table("contacts");
+        if ($id === false) {
+            $whereCond = array_merge(['allow_web_access' => 1], $whereCond);
+            return $builder->where($whereCond)->get()->getResultArray();
+        } else {
+            $whereCond = array_merge(['id' => $id], $whereCond);
+            return $builder->getWhere($whereCond)->getRowArray();
+        }
+    }
 
     public function updateColumn($tableName, $id = null, $data = null)
     {

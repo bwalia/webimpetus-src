@@ -194,6 +194,12 @@ class Webpages extends CommonController
 					$blocks["uuid_linked_table"] = $uuid;
 					$blocks["uuid_business_id"] = session('uuid_business');
 					$blocks_id =  @$post["blocks_id"][$i];
+					$blocks_uuid =  @$post["blocks_uuid"][$i];
+					if (!$blocks_uuid || !isset($blocks_uuid)) {
+						$blocks['uuid'] = UUID::v5(UUID::v4(), 'blocks_list');
+					} else {
+						$blocks['uuid'] = $blocks_uuid;
+					}
 					if (empty($blocks["sort"])) {
 						$blocks["sort"] = $blocks_id;
 					}

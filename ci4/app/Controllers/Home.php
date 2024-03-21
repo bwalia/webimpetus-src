@@ -32,7 +32,7 @@ class Home extends BaseController
 	public function index()
 	{
 		$count = $this->model->isRootUserExists();
-		if ($count['userCount'] == 0) { //
+		if (!empty($count) && isset($count['userCount']) && $count['userCount'] == 0) { //
 			$data['logo'] = $this->meta_model->getWhere(['meta_key' => 'site_logo'])->getRow();
 			$data['uuid'] = $this->meta_model->getAllBusiness();
 			$data['title'] = "";

@@ -15,23 +15,22 @@ class JWTAuthenticationFilter implements FilterInterface
 
     public function before(RequestInterface $request, $arguments = null)
     {
+        // echo '<pre>'; print_r($_SERVER); echo '</pre>'; die;
+        
+        $pos = strpos($_SERVER['REQUEST_URI'], "api/sendEmail");
+        $ping = strpos($_SERVER['REQUEST_URI'], "api/v1/ping");
+        $enquiry = strpos($_SERVER['REQUEST_URI'], "api/v2/enquiries");
+        $method = $_SERVER['REQUEST_METHOD'];
 
-        $pos = strpos( $_SERVER['REQUEST_URI'], "api/sendEmail");
-        $ping = strpos( $_SERVER['REQUEST_URI'], "api/v1/ping");
-
-        if($pos  ===  false && $ping  ===  false){
+        if ($pos  ===  false && $ping  ===  false && ($enquiry === false && $method === "POST")) {
 
             $authenticationHeader = $request->getServer('HTTP_AUTHORIZATION');
             try {
-
-          
                 helper('jwt');
                 $encodedToken = getJWTFromRequest($authenticationHeader);
                 validateJWTFromRequest($encodedToken);
                 return $request;
-    
             } catch (Exception $e) {
-    
                 return Services::response()
                     ->setJSON(
                         [
@@ -39,15 +38,14 @@ class JWTAuthenticationFilter implements FilterInterface
                         ]
                     )
                     ->setStatusCode(ResponseInterface::HTTP_UNAUTHORIZED);
-    
             }
         }
- 
     }
 
-    public function after(RequestInterface $request,
-                          ResponseInterface $response,
-                          $arguments = null)
-    {
+    public function after(
+        RequestInterface $request,
+        ResponseInterface $response,
+        $arguments = null
+    ) {
     }
 }
