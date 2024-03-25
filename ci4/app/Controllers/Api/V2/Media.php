@@ -34,7 +34,7 @@ class Media extends ResourceController
         if (!empty($_GET['uuid_business_id'])) {
             $arr['uuid_business_id'] = $_GET['uuid_business_id'];
         } else {
-            $data['data'] = 'You must need to specify the User Business ID';
+            $data['data'] = 'You must specify the Business UUID';
             return $this->respond($data, 403);
         }
         $data['data'] = $api->common_model->getApiData('media_list', $arr);

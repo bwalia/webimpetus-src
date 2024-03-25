@@ -112,7 +112,7 @@ class Timeslips extends ResourceController
         $_GET['list_year'] = !empty($params['filter']) && !empty($params['filter']['list_year']) ? $params['filter']['list_year'] : '';
         $_GET['uuid_business_id'] = !empty($params['filter']) && !empty($params['filter']['uuid_business_id']) ? $params['filter']['uuid_business_id'] : $_GET['uuid_business_id'] ?? false;
         if(empty($_GET['uuid_business_id']) || !isset($_GET['uuid_business_id']) || !$_GET['uuid_business_id']){
-            $data['data'] = 'You must need to specify the User Business ID';
+            $data['data'] = 'You must specify the Business UUID';
             return $this->respond($data, 403);
         }
         $_GET['q'] = !empty($params['filter']) && !empty($params['filter']['q']) ? $params['filter']['q'] : '';

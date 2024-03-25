@@ -112,7 +112,7 @@ class Tasks extends ResourceController
 
         $_GET['uuid_business_id'] = !empty($params['filter']) && !empty($params['filter']['uuid_business_id']) ? $params['filter']['uuid_business_id'] : $_GET['uuid_business_id'] ?? false;
         if(empty($_GET['uuid_business_id']) || !isset($_GET['uuid_business_id']) || !$_GET['uuid_business_id']){
-            $data['data'] = 'You must need to specify the User Business ID';
+            $data['data'] = 'You must specify the Business UUID';
             return $this->respond($data, 403);
         }
         $data['data'] = $api->tasksModel->getApiTaskList($_GET['uuid_business_id']);

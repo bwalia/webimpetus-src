@@ -65,7 +65,7 @@ class Webpages extends ResourceController
         echo '<pre>'; print_r($_GET); echo '</pre>'; die;
         
         if (empty($_GET['uuid_business_id']) || !isset($_GET['uuid_business_id']) || !$_GET['uuid_business_id']) {
-            $data['data'] = 'You must need to specify the User Business ID';
+            $data['data'] = 'You must specify the Business UUID';
             return $this->respond($data, 403);
         }
         // $data['data'] = $api->webpages($category_id);
