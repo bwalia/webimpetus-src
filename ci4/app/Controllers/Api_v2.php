@@ -577,7 +577,7 @@ class Api_v2 extends BaseController
             }
         } else {
             $response_data['status'] = 400;
-            $response_data['message']    = 'business uuid, Company name and account number cannot be empty!!';
+            $response_data['message']    = 'You must specify the Business UUID, Company name and Customer Account number.!!';
             echo json_encode($response_data);
             die;
         }
@@ -653,7 +653,7 @@ class Api_v2 extends BaseController
             }
         } else {
             $response_data['status'] = 400;
-            $response_data['message']    = 'uuid, business uuid, Company name and account number cannot be empty!!';
+            $response_data['message']    = 'uuid, You must specify the Business UUID, Company name and Customer Account number.!!';
             echo json_encode($response_data);
             die;
         }
