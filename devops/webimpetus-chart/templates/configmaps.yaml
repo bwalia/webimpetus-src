@@ -414,7 +414,7 @@ data:
             echo "APP_TARGET_CLUSTER='{{ .Values.targetCluster }}'" >> $FILE
             export APP_TARGET_CLUSTER="{{ .Values.targetCluster }}'"
             echo "APP_RELEASE_NOTES_DOC_URL='$APP_RELEASE_NOTES_DOC_URL'" >> $FILE
-            echo DYNAMIC_SCRIPTS_PATH=/tmp >> $FILE
+            echo "DYNAMIC_SCRIPTS_PATH=/tmp" >> $FILE
             echo "==========================="
             echo "Copy openresty config file for Workstation"
             if [ -f "/tmp/configmap/workstation.conf" ];then
