@@ -6,6 +6,7 @@ use App\Controllers\Api_v2;
 use App\Models\Blocks_model;
 use App\Models\Cat_model;
 use App\Models\Content_model;
+use App\Models\Core\Common_model;
 use App\Models\Customers_model;
 use CodeIgniter\RESTful\ResourceController;
 
@@ -204,6 +205,32 @@ class Webpages extends ResourceController
             ]);
         }
 
+        return $this->respond([
+            'data' => $data,
+            'status' => 200
+        ]);
+    }
+
+    public function getPublicBlogs($bCode) {
+        $commonModel = new Common_model();
+        $contentListModel = new Content_model();
+        $data = [];
+        $businessInfo = $commonModel->getSingleRowWhere("businesses", $bCode, "business_code");
+        if (!empty($businessInfo) && $businessInfo) {
+            $content = $contentListModel->getPublicDataWhere($businessInfo['uuid'], "uuid_business_id");
+            if (empty($content) && !$content) {
+                return $this->respond([
+                    'error' => 'No Public Blog Found.',
+                    'status' => 401
+                ]);                
+            }
+            $data['content'] = $content;
+        } else {
+            return $this->respond([
+                'error' => 'No Business Found.',
+                'status' => 401
+            ]);    
+        }
         return $this->respond([
             'data' => $data,
             'status' => 200

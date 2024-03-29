@@ -84,6 +84,7 @@ class Blog extends CommonController
 			'meta_title' => $this->request->getPost('meta_title'),
 			'meta_description' => $this->request->getPost('meta_description'),
 			'status' => $this->request->getPost('status'),
+			'blog_type' => $this->request->getPost('blog_type') ?? 0,
 			'publish_date' => ($this->request->getPost('publish_date')?strtotime($this->request->getPost('publish_date')):strtotime(date('Y-m-d H:i:s'))),
 			'type' => ($this->request->getPost('type')?$this->request->getPost('type'):1),
 					//'image_logo' => $filepath

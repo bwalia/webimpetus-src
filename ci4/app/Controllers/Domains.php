@@ -56,13 +56,18 @@ class Domains extends CommonController
 
 	public function update()
 	{
-		$id = $this->request->getPost('id');
+		$post = $this->request->getPost();
+		$id = $post['id'];
 		$domainUUID = $id;
 		$data = array(
-			'name'  => $this->request->getPost('name'),
-			'notes' => $this->request->getPost('notes'),
-			'customer_uuid' => $this->request->getPost('uuid'),
-			'sid' => json_encode($this->request->getPost('sid')),
+			'name'  => $post['name'],
+			'notes' => $post['notes'],
+			'customer_uuid' => $post['uuid'],
+			'domain_path' => $post['domain_path'],
+			'domain_path_type' => $post['domain_path_type'],
+			'domain_service_name' => $post['domain_service_name'],
+			'domain_service_port' => $post['domain_service_port'],
+			'sid' => json_encode($post['sid']),
 			'uuid_business_id' => session('uuid_business'),
 		);
 		if (empty($id)) {
@@ -74,9 +79,8 @@ class Domains extends CommonController
 			$data['image_logo'] = $file->getName();
 		}
 		
-		$response = $this->model->insertOrUpdate($id, $data);
-		
-		$sids = $this->request->getPost('sid');
+		$response = $this->model->insertOrUpdateByUUID($id, $data);
+		$sids = $post['sid'];
 		$this->serviceDomainModel->deleteDataByDomain($domainUUID);
 		if ($sids && !empty($sids)) {
 			foreach ($sids as $key => $sid) {

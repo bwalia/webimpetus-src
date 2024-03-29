@@ -432,6 +432,25 @@ class Services extends Api
 		}
 		
 		$modifiedValuesString = Yaml::parse($valuesYaml);
+		$serviceDomains = $this->serviceDomainModel->getRowsByService($uuid);
+		$hostsArray = [];
+		foreach ($serviceDomains as $key => $serviceDomain) {
+			$domainData = $this->common_model->getSingleRowWhere("domains", $serviceDomain['domain_uuid'], "uuid");
+			if (!empty($domainData) && $domainData) {
+				$hostsArray[] = [
+					'host' => $domainData['name'],
+					'paths' => [[
+						'path' => $domainData['domain_path'],
+						'pathType' => $domainData['domain_path_type'],
+						'serviceName' => $domainData['domain_service_name'],
+						'servicePort' => $domainData['domain_service_port'],
+					]]
+				];
+			}
+		}
+		if (isset($modifiedValuesString['ingress']['hosts'])) {
+			$modifiedValuesString['ingress']['hosts'] = $hostsArray;
+		}
 		
 		if (isset($modifiedValuesString["secure_env_file"])) {
             $modifiedValuesString["secure_env_file"] = $secretsArray['env_file'];
