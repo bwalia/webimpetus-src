@@ -1,89 +1,136 @@
-<?php require_once(APPPATH . 'Views/common/edit-title.php'); ?>
+<?php require_once (APPPATH . 'Views/common/edit-title.php'); ?>
 
 <div class="white_card_body">
     <div class="card-body">
         <form id="addcat" method="post" action="/domains/update" enctype="multipart/form-data"
             onsubmit="return frmValidate();">
-            <div class="form-row">
-
-                <div class="form-group required col-md-12">
-                    <label for="inputState">Choose Customer</label>
-                    <select id="uuid" name="uuid" class="form-control required select2">
-                        <option value="" selected="">--Select--</option>
-                        <?php foreach ($customers as $row): ?>
-                            <option value="<?= $row['uuid']; ?>" <?= (is_object($domain) && property_exists($domain, 'customer_uuid') && $row['uuid'] == $domain->customer_uuid) ? 'selected' : '' ?>>
-                                <?= $row['company_name']; ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
+            <nav>
+                <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+                    <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab"
+                        aria-controls="nav-home" aria-selected="true">Domain</a>
+                    <a class="nav-item nav-link" id="nav-domains-tab" data-toggle="tab" href="#nav-domains" role="tab"
+                        aria-controls="nav-domains" aria-selected="true">Paths</a>
                 </div>
-                <?php 
-                    $serviceUuids = [];
-                    foreach ($serviceDomains as $key => $serviceDomain) {
-                        array_push($serviceUuids, $serviceDomain['service_uuid']);
-                    }
-                ?>
-                <div class="form-group col-md-12">
-                    <label for="inputState">Choose Service</label>
-                    <select id="sid" name="sid[]" multiple class="form-control select2">
-                        <option value="">--Select--</option>
-                        <?php foreach ($services as $row): ?>
-                            <option value="<?= $row['uuid']; ?>" <?= (in_array($row['uuid'], $serviceUuids)) ? 'selected' : '' ?>>
-                                <?= $row['name']; ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
+            </nav>
+            <div class="tab-content py-3 px-3 px-sm-0 col-md-12" id="nav-tabContent">
+                <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                    <div class="form-row">
 
-                <div class="form-group required col-md-12">
-                    <label for="inputEmail4">Domain Name</label>
-                    <input type="text" class="form-control required" id="name" name="name" placeholder=""
-                        value="<?= @$domain->name ?>">
-
-                    <p id="domain_error"></p>
-
-                    <input type="hidden" class="form-control" name="id" placeholder="" value="<?= @$domain->uuid ?>" />
-                </div>
-
-                <div class="form-group col-md-12">
-                    <label for="inputAddress">Upload</label>
-                    <span class="all-media-image-files">
-                        <?php if (!empty(@$domain->image_logo)) { ?>
-                            <img src="<?= @$domain->image_logo; ?>" width="100px">
-                            <a href="/domains/deleteImage/<?= @$domain->uuid ?>" onclick="return confirm('Are you sure?')"
-                                class="btn btn-danger"><i class="fa fa-trash"></i></a>
-                        <?php } ?>
-                    </span>
-                    <div class="uplogInrDiv" id="drop_file_doc_zone">
-                        <input type="file" name="file" class="fileUpload" id="customFile">
-                        <div class="uploadBlkInr">
-                            <div class="uplogImg">
-                                <img src="/assets/img/fileupload.png" />
-                            </div>
-                            <div class="uploadFileCnt">
-                                <p>
-                                    <a href="#">Upload a file </a> file chosen or drag
-                                    and drop
-                                </p>
-                                <p>
-                                    <span>Video, PNG, JPG, GIF up to 10MB</span>
-                                </p>
-                            </div>
+                        <div class="form-group required col-md-12">
+                            <label for="inputState">Choose Customer</label>
+                            <select id="uuid" name="uuid" class="form-control required select2">
+                                <option value="" selected="">--Select--</option>
+                                <?php foreach ($customers as $row): ?>
+                                    <option value="<?= $row['uuid']; ?>" <?= (is_object($domain) && property_exists($domain, 'customer_uuid') && $row['uuid'] == $domain->customer_uuid) ? 'selected' : '' ?>>
+                                        <?= $row['company_name']; ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
+                        <?php
+                        $serviceUuids = [];
+                        foreach ($serviceDomains as $key => $serviceDomain) {
+                            array_push($serviceUuids, $serviceDomain['service_uuid']);
+                        }
+                        ?>
+                        <div class="form-group col-md-12">
+                            <label for="inputState">Choose Service</label>
+                            <select id="sid" name="sid[]" multiple class="form-control select2">
+                                <option value="">--Select--</option>
+                                <?php foreach ($services as $row): ?>
+                                    <option value="<?= $row['uuid']; ?>" <?= (in_array($row['uuid'], $serviceUuids)) ? 'selected' : '' ?>>
+                                        <?= $row['name']; ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
+                        <div class="form-group required col-md-12">
+                            <label for="inputEmail4">Domain Name</label>
+                            <input type="text" class="form-control required" id="name" name="name" placeholder=""
+                                value="<?= @$domain->name ?>">
+
+                            <p id="domain_error"></p>
+
+                            <input type="hidden" class="form-control" name="id" placeholder=""
+                                value="<?= @$domain->uuid ?>" />
+                        </div>
+
+                        <div class="form-group col-md-12">
+                            <label for="inputAddress">Upload</label>
+                            <span class="all-media-image-files">
+                                <?php if (!empty (@$domain->image_logo)) { ?>
+                                    <img src="<?= @$domain->image_logo; ?>" width="100px">
+                                    <a href="/domains/deleteImage/<?= @$domain->uuid ?>"
+                                        onclick="return confirm('Are you sure?')" class="btn btn-danger"><i
+                                            class="fa fa-trash"></i></a>
+                                <?php } ?>
+                            </span>
+                            <div class="uplogInrDiv" id="drop_file_doc_zone">
+                                <input type="file" name="file" class="fileUpload" id="customFile">
+                                <div class="uploadBlkInr">
+                                    <div class="uplogImg">
+                                        <img src="/assets/img/fileupload.png" />
+                                    </div>
+                                    <div class="uploadFileCnt">
+                                        <p>
+                                            <a href="#">Upload a file </a> file chosen or drag
+                                            and drop
+                                        </p>
+                                        <p>
+                                            <span>Video, PNG, JPG, GIF up to 10MB</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
                     </div>
 
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label for="inputPassword4">Notes</label>
+                            <textarea class="form-control" name="notes"><?= @$domain->notes ?></textarea>
+                        </div>
+
+                    </div>
                 </div>
 
-            </div>
+                <div class="tab-pane fade" id="nav-domains" role="tabpanel" aria-labelledby="nav-domains-tab">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="domain_path">Path</label>
+                            <input type="text" class="form-control" id="domain_path" name="domain_path" placeholder=""
+                                value="<?= @$domain->domain_path ?>">
 
-            <div class="form-row">
-                <div class="form-group col-md-12">
-                    <label for="inputPassword4">Notes</label>
-                    <textarea class="form-control" name="notes"><?= @$domain->notes ?></textarea>
+                            <p id="domain_error"></p>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="domain_path_type">Path Type</label>
+                            <input type="text" class="form-control" id="domain_path_type" name="domain_path_type" placeholder=""
+                                value="<?= @$domain->domain_path_type ?>">
+
+                            <p id="domain_error"></p>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="domain_service_name">Service Name</label>
+                            <input type="text" class="form-control" id="domain_service_name" name="domain_service_name" placeholder=""
+                                value="<?= @$domain->domain_service_name ?>">
+
+                            <p id="domain_error"></p>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="domain_service_port">Service Port</label>
+                            <input type="text" class="form-control" id="domain_service_port" name="domain_service_port" placeholder=""
+                                value="<?= @$domain->domain_service_port ?>">
+                            <p id="domain_error"></p>
+                        </div>
+                    </div>
                 </div>
-
             </div>
-
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
     </div>
@@ -91,7 +138,7 @@
 
 <!-- main content part end -->
 
-<?php require_once(APPPATH . 'Views/common/footer.php'); ?>
+<?php require_once (APPPATH . 'Views/common/footer.php'); ?>
 
 <script>
     var id = "<?= @$domain->uuid ?>";

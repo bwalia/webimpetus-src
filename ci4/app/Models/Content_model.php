@@ -173,4 +173,10 @@ class Content_model extends Model
 
         return $result;
     }
+	public function getPublicDataWhere($value, $field = "id")
+    {
+        $result = $this->db->table("content_list")->where([$field => $value, 'blog_type' => 1])->get()->getResultArray();
+
+        return $result;
+    }
 }

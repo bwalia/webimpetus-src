@@ -37,6 +37,43 @@
                            <label for="inputEmail4" class="pr_10"><input type="radio" value="1" class="form-control" id="status" name="status" <?=@$content->status==1?'checked':''?> placeholder=""> Yes</label>
                            <label for="inputEmail4"><input type="radio" <?=@$content->status==0?'checked':''?> value="0" class="form-control" id="status" name="status" placeholder=""> No</label>
                         </div>
+                        <!-- <div class="">
+                           <label>Blog Type</label>
+                        </div>
+                        <div class="form-group col-md-12">
+                           <label for="blog_type" class="pr_10">
+                              <input 
+                                 type="radio" 
+                                 value="1" 
+                                 class="form-control" 
+                                 id="blog_type" 
+                                 name="blog_type" 
+                                 <?=@$content->blog_type == 1 ? 'checked' : ''?> 
+                                 placeholder=""
+                              >
+                              Public
+                           </label>
+                           <label for="blog_type">
+                              <input 
+                                 type="radio" 
+                                 <?=@$content->blog_type == 0 ? 'checked' : ''?> 
+                                 value="0" 
+                                 class="form-control" 
+                                 id="blog_type" 
+                                 name="blog_type" 
+                                 placeholder=""
+                              > 
+                              Private
+                           </label>
+                        </div> -->
+                        <div class="form-group col-md-4">
+                           <label for="blog_type">Blog Type</label>
+                           <select class="custom-select" id="blog_type" name="blog_type">
+                              <option selected>Please Select the Blog Type</option>
+                              <option value="1" <?=@$content->blog_type == 1 ? 'selected' : ''?> >Public</option>
+                              <option value="0" <?=@$content->blog_type == 0 ? 'selected' : ''?>>Private</option>
+                           </select>
+                        </div>
                      </div>
                   </div>
                   <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">

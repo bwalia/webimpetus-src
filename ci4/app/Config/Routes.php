@@ -82,6 +82,7 @@ $routes->post('api/v2/enquiries/business-enqury', 'Api\V2\Enquiries::addEnquiryB
 // List webpages by contacts
 $routes->get('api/v2/business/(:segment)/contact/(:segment)/webpages', 'Api\V2\Webpages::getWebPages/$1/$2');
 $routes->get('api/v2/business/(:segment)/contact/(:segment)/blogs', 'Api\V2\Webpages::getBlogsByCategory/$1/$2');
+$routes->get('api/v2/business/(:segment)/public/blogs', 'Api\V2\Webpages::getPublicBlogs/$1');
 
 
 /*

@@ -415,7 +415,7 @@ $data_type_format["YAML"] = "# Employee records
 											<input type="hidden" class="hidden_type_value"
 												value="<?= $blocks_list[$jak_i]['type'] ?>">
 											<input type="hidden" class="hidden_blocks_text_value"
-												value="<?= $blocks_list[$jak_i]['text'] ?>">
+												value="<?= urlencode($blocks_list[$jak_i]['text']) ?>">
 
 											<div class="form-group col-md-5 textarea-block">
 												<label class="textarea_label" for="inputEmail4">

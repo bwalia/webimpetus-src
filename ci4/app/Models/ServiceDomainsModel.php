@@ -58,7 +58,7 @@ class ServiceDomainsModel extends Model
         if($id === false){
             return $this->findAll();
         }else{
-            return $this->getWhere(['service_uuid' => $id])->getResultArray();
+            return $this->getWhere(['service_uuid' => $id, 'domain_uuid !=' => NULL,  'domain_uuid <>' => ''])->getResultArray();
         }   
     }
 

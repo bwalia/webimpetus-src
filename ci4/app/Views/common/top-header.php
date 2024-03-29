@@ -42,6 +42,7 @@ $roles = isset($_SESSION['role']) ? getResultWithoutBusiness("roles", ["uuid" =>
                     <div class="business-uuid-selector mr-3">
                         <select name="uuid_business_id" id="uuidBusinessIdSwitcher"
                             class="form-control dashboard-dropdown">
+                            <option value="">-- Choose Business --</option>
                             <?php foreach ($business as $eachUuid) { ?>
                                 <option value="<?php echo $eachUuid['uuid'] ?>" <?php if (@$_SESSION['uuid_business'] == $eachUuid['uuid']) {
                                        echo "selected";
