@@ -236,4 +236,30 @@ class Webpages extends ResourceController
             'status' => 200
         ]);
     }
+
+    public function getPublicBlog($bCode, $contentId) {
+        $commonModel = new Common_model();
+        $contentListModel = new Content_model();
+        $data = [];
+        $businessInfo = $commonModel->getSingleRowWhere("businesses", $bCode, "business_code");
+        if (!empty($businessInfo) && $businessInfo) {
+            $content = $contentListModel->getContentByUUID($contentId)->getRowArray();
+            if (empty($content) && !$content) {
+                return $this->respond([
+                    'error' => 'No Public Blog Found.',
+                    'status' => 404
+                ]);                
+            }
+            $data['content'] = $content;
+        } else {
+            return $this->respond([
+                'error' => 'No Business Found.',
+                'status' => 404
+            ]);    
+        }
+        return $this->respond([
+            'data' => $data,
+            'status' => 200
+        ]);
+    }
 }

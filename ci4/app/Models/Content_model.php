@@ -175,8 +175,24 @@ class Content_model extends Model
     }
 	public function getPublicDataWhere($value, $field = "id")
     {
-        $result = $this->db->table("content_list")->where([$field => $value, 'blog_type' => 1])->get()->getResultArray();
+        $result = $this->db->table("content_list")
+				->select(["content_list.*", "blog_images.image"])
+				->join("blog_images", "content_list.id = blog_images.blog_id", "left")
+				->where(["content_list.".$field => $value, 'blog_type' => 1])
+				->get()->getResultArray();
 
         return $result;
     }
+
+	public function getContentByUUID($uuid = false)
+	{
+		if ($uuid === false) {
+			return [];
+		} else {
+			return $this
+					->select(["content_list.*", "blog_images.image"])
+					->join("blog_images", "content_list.id = blog_images.blog_id", "left")
+					->getWhere(['content_list.uuid' => $uuid]);
+		}
+	}
 }
