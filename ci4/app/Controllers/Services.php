@@ -449,7 +449,7 @@ class Services extends Api
 			}
 		}
 		if (isset($modifiedValuesString['ingress']['hosts'])) {
-			$modifiedValuesString['ingress']['hosts'] = $hostsArray;
+			array_push($modifiedValuesString['ingress']['hosts'], $hostsArray);
 		}
 		
 		if (isset($modifiedValuesString["secure_env_file"])) {
