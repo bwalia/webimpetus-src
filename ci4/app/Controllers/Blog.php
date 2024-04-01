@@ -109,6 +109,7 @@ class Blog extends CommonController
 					$blog_images['uuid_business_id'] =  session('uuid_business');
 					$blog_images['image'] = $filePath;				
 					$blog_images['blog_id'] = $id;
+					$blog_images['uuid'] = UUID::v5(UUID::v4(), 'blog_images');
 
 					$this->content_model->saveDataInTable($blog_images, "blog_images"); 						
 				}
@@ -124,6 +125,7 @@ class Blog extends CommonController
 					$cat_data['categoryid'] = $val;
 					$cat_data['contentid'] = $id;
 					$cat_data['uuid_business_id'] =  session('uuid_business');
+					$cat_data['uuid'] = UUID::v5(UUID::v4(), 'content_category');
 
 					$this->cat_model->saveData2($cat_data);					
 				}			
