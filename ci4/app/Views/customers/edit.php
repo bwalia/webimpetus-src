@@ -34,7 +34,7 @@ $categories = getResultArray("categories");
 
                                 <div class="form-group required col-md-4">
                                     <label for="inputEmail4">Customer Account No</label>
-                                    <input autocomplete="off" type="text" class="form-control required acc_number"
+                                    <input autocomplete="off" type="text" class="form-control required"
                                         id="acc_no" name="acc_no" placeholder="" value="<?= @$customer->acc_no ?>">
                                 </div>
                                 <div class="form-check col-md-1">

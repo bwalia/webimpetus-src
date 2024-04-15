@@ -448,7 +448,7 @@ class Services extends Api
 				];
 			}
 		}
-		if (isset($modifiedValuesString['ingress']['hosts'])) {
+		if (isset($modifiedValuesString['ingress']['hosts']) && !empty($hostsArray)) {
 			array_push($modifiedValuesString['ingress']['hosts'], $hostsArray);
 		}
 		
