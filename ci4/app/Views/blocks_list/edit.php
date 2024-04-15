@@ -18,7 +18,7 @@
 
                 <div class="form-group col-md-12">
                     <label for="inputPassword4">Text</label>
-                    <textarea class="form-control block-text" name="text" style="width:100%!important;height:250px"><?= @$blocks->text ?></textarea>
+                    <textarea class="form-control block-text" name="text" style="width:100%!important;height:700px"><?= @$blocks->text ?></textarea>
                 </div>
 
 

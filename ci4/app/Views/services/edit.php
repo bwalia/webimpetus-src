@@ -76,7 +76,7 @@ $uriSegment = $uri->getSegment(3);
                                 </div>
                                 <div class="form-group required col-md-6">
                                     <label for="inputPassword4">Description</label>
-                                    <textarea class="form-control required" id="notes" name="notes" placeholder=""><?= @$service->notes ?></textarea>
+                                    <textarea class="form-control required" id="notes" name="notes" rows="16" placeholder=""><?= @$service->notes ?></textarea>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -524,20 +524,6 @@ $uriSegment = $uri->getSegment(3);
                     </div>
                 </div>
             </div>
-
-
-
-            <!-- <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label for="inputPassword4">nginx config</label>
-                    <textarea autocomplete="off" type="text" class="form-control" id="nginx_config" name="nginx_config" placeholder=""  value=""><?= @$service->nginx_config ?></textarea>
-                </div>
-                    <div class="form-group col-md-6">
-                    <label for="inputPassword4">varnish config</label>
-                    <textarea autocomplete="off" type="text" class="form-control" id="varnish_config" name="varnish_config" placeholder=""  value=""><?= @$service->varnish_config ?></textarea>
-                </div>                                      
-            </div>                                    
-            --->
 
             <div class="form-row justify-content-end">
                 <div class="form-group mr-3">

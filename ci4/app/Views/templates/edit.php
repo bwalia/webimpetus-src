@@ -18,7 +18,7 @@
                         </div>
                         <div class="form-group required col-md-12">
                             <label for="inputEmail4">Template Content</label>
-                            <textarea class="form-control required template_content" id="template_content" name="template_content" placeholder="" rows="20" column="20" value=""><?= @$template->template_content ?></textarea>
+                            <textarea class="form-control required template_content" id="template_content" name="template_content" placeholder="" rows="40" column="20" value=""><?= @$template->template_content ?></textarea>
                         </div>
                         <div class="form-group required col-md-12">
                             <label for="inputEmail4">Comment</label>
