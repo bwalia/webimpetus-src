@@ -1,8 +1,8 @@
 <?php require_once(APPPATH . 'Views/common/list-title.php'); ?>
 <div class="white_card_body ">
-    <div class="QA_table ">
+    <div class="QA_table table-responsive">
         <!-- table-responsive -->
-        <table id="example" class="table table-listing-items tableDocument table-striped table-bordered">
+        <table id="example" class="table table-listing-items tableDocument table-striped table-bordered" style="width: 100%;">
             <thead>
                 <tr>
                     <th scope="col">Id</th>
