@@ -12,222 +12,198 @@ if (empty(@$timeslips['slip_timer_started'])) {
 }
 
 ?>
+<style>
+    .white_card {
+    min-width: 40%;
+    background-color: #FFFFFF;
+    -webkit-border-radius: 15px;
+    -moz-border-radius: 15px;
+    border-radius: 15px;
+    display: inline-block;
+    }
+
+@media screen and (max-width: 992px) {
+  .white_card {
+    width: 60%;
+    background-color: #FFFFFF;
+    -webkit-border-radius: 15px;
+    -moz-border-radius: 15px;
+    border-radius: 15px;
+  }
+  
+    @media screen and (max-width: 768px) {
+        .white_card {
+            width: 100%;
+            background-color: #FFFFFF;
+            -webkit-border-radius: 15px;
+            -moz-border-radius: 15px;
+            border-radius: 15px;
+        }
+    }
+}
+</style>
+
 <div class="white_card_body">
     <div class="card-body">
 
         <form id="addcat" method="post" action="<?php echo $actionUrl; ?>" enctype="multipart/form-data">
-
-            <div class="form-row">
-
-                <div class="form-group col-md-3">
-                    <?php echo lang('Timeslips.task_name');//readableFieldName('task_name'); ?>
-                    <span class="redstar">*</span>
-                </div>
-                <div class="form-group required col-md-4">
-                    <select id="task_name" name="task_name" class="form-control required dashboard-dropdown">
-                        <option value="">--Select--</option>
-                        <?php foreach ($tasks as $row) { ?>
-                            <option value="<?= $row['id']; ?>" <?= ($row['id'] == @$timeslips['task_name']) ? 'selected' : '' ?>><?= $row['name']; ?></option>
-                        <?php } ?>
-                    </select>
-                </div>
-
+            <div class="form-group">
+                <label for="task_name" class="font-weight-bolder"><?= lang('Timeslips.task_name');?> <span class="redstar">*</span></label>
+                <select id="task_name" name="task_name" class="form-control required dashboard-dropdown">
+                    <option value="">--Select--</option>
+                    <?php foreach ($tasks as $row) { ?>
+                        <option value="<?= $row['id']; ?>" <?= ($row['id'] == @$timeslips['task_name']) ? 'selected' : '' ?>><?= $row['name']; ?></option>
+                    <?php } ?>
+                </select>
             </div>
 
-            <div class="form-row">
-                <div class="form-group col-md-3">
-                    <?php echo lang('Timeslips.week_no'); //readableFieldName('week_no'); ?>
-                </div>
-                <div class="form-group col-md-4">
-                    <input id="week_no" readonly name="week_no" class="form-control" value="<?= empty($timeslips['week_no']) ? date("W") : $timeslips['week_no'] ?>">
-                </div>
+            <div class="form-group">
+                <label for="week_no" class="font-weight-bolder"><?=lang('Timeslips.week_no');?> </label>
+                <input id="week_no" readonly name="week_no" class="form-control" value="<?= empty($timeslips['week_no']) ? date("W") : $timeslips['week_no'] ?>">
             </div>
 
-            <div class="form-row">
-                <div class="form-group col-md-3">
-                    <?php echo lang('Timeslips.employee_name'); //readableFieldName('employee_name'); ?>
-                </div>
-                <div class="form-group required col-md-4">
-                    <select id="employee_name" name="employee_name" class="form-control required dashboard-dropdown">
-                        <option value="">--Select--</option>
-                        <?php foreach ($employees as $row) { ?>
-                            <option value="<?= $row['id']; ?>" <?= ($row['id'] == @$timeslips['employee_name']) ? 'selected' : '' ?>><?= $row['name']; ?></option>
-                        <?php } ?>
-                    </select>
+            <div class="form-group">
+                <label for="employee_name" class="font-weight-bolder"> <?=lang('Timeslips.employee_name');?> <span class="redstar">*</span></label>
+                <select id="employee_name" name="employee_name" class="form-control required dashboard-dropdown">
+                    <option value="">--Select--</option>
+                    <?php foreach ($employees as $row) { ?>
+                        <option value="<?= $row['id']; ?>" <?= ($row['id'] == @$timeslips['employee_name']) ? 'selected' : '' ?>><?= $row['name']; ?></option>
+                    <?php } ?>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="slip_start_date" class="font-weight-bolder"> <?=lang('Timeslips.slip_start_date');?> <span class="redstar">*</span></label>
+                <div class="input-group">
+                    <input type="text" id="slip_start_date" name="slip_start_date" class="form-control required datepicker" value="<?php echo render_date($startDate); ?>">
+                    <span class="input-group-append">
+                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                    </span>
                 </div>
             </div>
 
-            <div class="form-row">
-                <div class="form-group col-md-3">
-                    <?php echo lang('Timeslips.slip_start_date'); //readableFieldName('slip_start_date'); ?>
-                    <span class="redstar">*</span>
-                </div>
-                <div class="form-group col-md-4">
-                    <div class="input-group">
-                        <input type="text" id="slip_start_date" name="slip_start_date" class="form-control required datepicker" value="<?php echo render_date($startDate); ?>">
-                        <span class="input-group-append">
-                            <span class="input-group-text"><i class="fa fa-calendar"></i></span>
-                        </span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group col-md-3">
-                    <?php echo lang('Timeslips.slip_timer_started'); //readableFieldName('slip_timer_started'); ?>
-                </div>
-                <div class="form-group col-md-4">
-                    <div class="input-group">
-                        <input id="slip_timer_started" name="slip_timer_started" class="form-control timepicker" value="<?php echo @$slip_timer_started; ?>">
-                        <div class="input-group-append">
-                            <span class="input-group-text"><i class="fa fa-clock"></i></span>
+            <div class="form-group">
+                <label for="slip_timer_started" class="font-weight-bolder"> <?=lang('Timeslips.slip_timer_started');?> </label>
+                <div class="form-row">
+                    <div class="col-sm-7 col-12 mb-1">
+                        <div class="input-group">
+                            <input id="slip_timer_started" name="slip_timer_started" class="form-control timepicker" value="<?php echo @$slip_timer_started; ?>">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fa fa-clock"></i></span>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-1"></div>
-                <div class="col-md-4">
-                    <button type="button" class="btn btn-info set-current-time"><?php echo lang('Timeslips.set_current_time');?></button>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group col-md-3">
-                    <?php echo lang('Timeslips.slip_end_date'); //readableFieldName('slip_end_date'); ?>
-                </div>
-                <div class="form-group col-md-4">
-                    <div class="input-group">
-                        <input id="slip_end_date" name="slip_end_date" class="form-control datepicker" value="<?php echo render_date(@$timeslips['slip_end_date']); ?>">
-                        <div class="input-group-append">
-                            <span class="input-group-text"><i class="fa fa-calendar"></i></span>
-                        </div>
+                    <div class="col-sm-5 col-12">
+                        <button type="button" class="btn btn-block btn-info set-current-time"><?php echo lang('Timeslips.set_current_time');?></button>
                     </div>
-                    <span class="form-control-feedback" id="end_date_error"></span>
                 </div>
             </div>
 
-            <div class="form-row">
-                <div class="form-group col-md-3">
-                    <?php echo lang('Timeslips.slip_timer_end'); //readableFieldName('slip_timer_end'); ?>
-                </div>
-                <div class="form-group col-md-4">
-                    <div class="input-group">
-                        <input id="slip_timer_end" name="slip_timer_end" class="form-control timepicker" value="<?php echo @$timeslips['slip_timer_end']; ?>">
-                        <div class="input-group-append">
-                            <span class="input-group-text"><i class="fa fa-clock"></i></span>
-                        </div>
+            <div class="form-group">
+                <label for="slip_end_date" class="font-weight-bolder"> <?=lang('Timeslips.slip_end_date');?> </label>
+                <div class="input-group">
+                    <input id="slip_end_date" name="slip_end_date" class="form-control datepicker" value="<?php echo render_date(@$timeslips['slip_end_date']); ?>">
+                    <div class="input-group-append">
+                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                     </div>
-                    <span class="form-control-feedback" id="end_timer_error"></span>
                 </div>
-                <div class="col-md-1"></div>
-                <div class="col-md-4">
-                    <button type="button" class="btn btn-info set-current-time"><?php echo lang('Timeslips.set_current_time');?></button>
+                <span class="form-control-feedback" id="end_date_error"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="slip_end_date" class="font-weight-bolder"> <?=lang('Timeslips.slip_timer_end');?> </label>
+                <div class="form-row">
+                    <div class="col-sm-7 col-12 mb-1">
+                        <div class="input-group">
+                            <input id="slip_timer_end" name="slip_timer_end" class="form-control timepicker" value="<?php echo @$timeslips['slip_timer_end']; ?>">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fa fa-clock"></i></span>
+                            </div>
+                        </div>
+                        <span class="form-control-feedback" id="end_timer_error"></span>
+                    </div>
+                    <div class="col-sm-5 col-12">
+                        <button type="button" class="btn btn-block btn-info set-current-time"><?php echo lang('Timeslips.set_current_time');?></button>
+                    </div>
                 </div>
             </div>
 
-            <div class="form-row">
-                <div class="form-group col-md-3">
-                    <?php echo lang('Timeslips.break_time'); //readableFieldName('break_time'); ?>
-                </div>
-                <div class="form-group col-md-4">
+            <div class="form-group">
+                <label for="slip_description" class="font-weight-bolder"> <?=lang('Timeslips.slip_description');?><span class="redstar">*</span> </label>
+                <textarea required id="slip_description" name="slip_description" class="form-control" rows="5"><?php echo @$timeslips['slip_description']; ?></textarea>
+            </div>
+
+
+            <div class="form-group">
+                <label for="billing_status" class="font-weight-bolder"> <?=lang('Timeslips.billing_status');?> <span class="redstar">*</span></label>
+                <select id="billing_status" name="billing_status" class="form-control dashboard-dropdown">
+                    <!-- <option value="">--Select--</option> -->
+                    <option value="SLA" <?= ('SLA' == @$timeslips['billing_status']) ? 'selected' : '' ?>>SLA</option>
+                    <option value="chargeable" <?= ('chargeable' == @$timeslips['billing_status']) ? 'selected' : '' ?>>Chargeable</option>
+                    <option value="Billed" <?= ('Billed' == @$timeslips['billing_status']) ? 'selected' : '' ?>>Billed</option>
+                </select>
+            </div>
+
+            <div class="advance-input" style="display: none;">
+                <div class="form-group">
+                    <label for="break_time" class="font-weight-bolder"> <?=lang('Timeslips.break_time');?> </label> <br/>
                     <input type="checkbox" id="break_time" name="break_time" <?php echo @$timeslips['break_time'] == '1' ? 'checked' : ''; ?>>
-                    <span><?php echo lang('Timeslips.exclude_time');?></span>
+                    <label for="break_time"><?php echo lang('Timeslips.exclude_time');?></label>
                 </div>
 
-            </div>
-            <?php
-            $showBreakStartAndEndTimer = 'display: none;';
-            if (@$timeslips['break_time'] == 1) {
-                $showBreakStartAndEndTimer = '';
-            } ?>
-            <div class="form-row" style="<?php echo $showBreakStartAndEndTimer; ?>">
-                <div class="form-group col-md-3">
-                    <?php echo lang('Timeslips.break_time_start'); //readableFieldName('break_time_start'); ?>
-                </div>
-                <div class="form-group col-md-3">
-                    <div class="input-group">
+                <?php
+                $showBreakStartAndEndTimer = 'display: none;';
+                if (@$timeslips['break_time'] == 1) {
+                    $showBreakStartAndEndTimer = '';
+                } ?>
+                <div class="break_time_detail form-row" style="<?php echo $showBreakStartAndEndTimer; ?>">
+                    <div class="form-group col-md-6 col-12">
+                        <label for="break_time_start" class="font-weight-bolder"> <?=lang('Timeslips.break_time_start');?> </label>
                         <input id="break_time_start" name="break_time_start" class="form-control timepicker" value="<?php echo @$timeslips['break_time_start']; ?>">
                     </div>
-                </div>
-
-                <div class="form-group col-md-1"></div>
-                <div class="form-group col-md-2">
-                    <?php echo lang('Timeslips.break_time_end'); //readableFieldName('break_time_end'); ?>
-                </div>
-                <div class="form-group col-md-3">
-                    <div class="input-group">
+                    <div class="form-group col-md-6 col-12">
+                        <label for="break_time_end" class="font-weight-bolder"> <?=lang('Timeslips.break_time_end');?> </label>
                         <input id="break_time_end" name="break_time_end" class="form-control timepicker" value="<?php echo @$timeslips['break_time_end']; ?>">
+                        <span class="form-control-feedback" id="break_end_timer_error"></span>
                     </div>
-                    <span class="form-control-feedback" id="break_end_timer_error"></span>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group col-md-3">
-                    <?php echo lang('Timeslips.slip_hours'); //readableFieldName('slip_hours'); ?>
-                </div>
-                <div class="form-group col-md-4">
-                    <input id="slip_hours" name="slip_hours" class="form-control" value="<?php echo @$timeslips['slip_hours']; ?>">
                 </div>
 
-                <div class="col-md-1"></div>
-                <div class="col-md-4">
-                    <button type="button" class="btn btn-info calculate-time"><?php echo lang('Timeslips.calculate_time');?></button>
+                <div class="form-group">
+                    <label for="slip_hours" class="font-weight-bolder"> <?=lang('Timeslips.slip_hours');?> </label>
+                    <div class="form-row">
+                        <div class="col-sm-7 col-12 mb-1">
+                            <div class="input-group">
+                                <input id="slip_hours" name="slip_hours" class="form-control timepicker" value="<?php echo @$timeslips['slip_hours']; ?>">
+                                <div class="input-group-append">
+                                    <span class="input-group-text"><i class="fa fa-clock"></i></span>
+                                </div>
+                            </div>
+                            <span class="form-control-feedback" id="slip_hours_error"></span>
+                        </div>
+                        <div class="col-sm-5 col-12">
+                            <button type="button" class="btn btn-block btn-info calculate-time"><?php echo lang('Timeslips.calculate_time');?></button>
+                        </div>
+                    </div>
                 </div>
 
-            </div>
-
-            <div class="form-row">
-                <div class="form-group col-md-3">
-                    <?php echo lang('Timeslips.slip_description'); //readableFieldName('slip_description'); ?>
-                    <span class="redstar">*</span>
-                </div>
-                <div class="form-group col-md-4">
-                    <textarea required id="slip_description" name="slip_description" class="form-control" rows="16"><?php echo @$timeslips['slip_description']; ?></textarea>
-                </div>
-
-            </div>
-
-            <div class="form-row">
-                <div class="form-group col-md-3">
-                    <?php echo lang('Timeslips.slip_rate'); //readableFieldName('slip_rate'); ?>
-                </div>
-                <div class="form-group col-md-4">
+                <div class="form-group">
+                    <label for="slip_rate" class="font-weight-bolder"> <?=lang('Timeslips.slip_rate');?></label>
                     <input id="slip_rate" name="slip_rate" class="form-control" value="<?php echo @$timeslips['slip_rate']; ?>">
                 </div>
 
-            </div>
-
-            <div class="form-row">
-                <div class="form-group col-md-3">
-                    <?php echo lang('Timeslips.slip_timer_accumulated_seconds'); //readableFieldName('slip_timer_accumulated_seconds'); ?>
-                </div>
-                <div class="form-group col-md-4">
+                <div class="form-group">
+                    <label for="slip_timer_accumulated_seconds" class="font-weight-bolder"> <?=lang('Timeslips.slip_timer_accumulated_seconds');?></label>
                     <input id="slip_timer_accumulated_seconds" name="slip_timer_accumulated_seconds" class="form-control" value="<?php echo @$timeslips['slip_timer_accumulated_seconds']; ?>">
                 </div>
-
+            </div>
+            
+            <div class="d-flex justify-content-end mb-4">
+                <button type="button" class="btn btn-sm btn-light btn-advance btn-advance-down">Advance <i class="fa fa-chevron-down"></i></button>
+                <button type="button" class="btn btn-sm btn-light btn-advance btn-advance-up" style="display: none;">Advance <i class="fa fa-chevron-up"></i></button>
             </div>
 
-            <div class="form-row">
-                <div class="form-group col-md-3">
-                    <?php echo lang('Timeslips.charge_code'); //readableFieldName('Charge Code'); ?>
-                </div>
-                <div class="form-group required col-md-4">
-                    <select id="billing_status" name="billing_status" class="form-control dashboard-dropdown">
-                        <!-- <option value="">--Select--</option> -->
-                        <option value="SLA" <?= ('SLA' == @$timeslips['billing_status']) ? 'selected' : '' ?>>SLA</option>
-                        <option value="chargeable" <?= ('chargeable' == @$timeslips['billing_status']) ? 'selected' : '' ?>>Chargeable</option>
-                        <option value="Billed" <?= ('Billed' == @$timeslips['billing_status']) ? 'selected' : '' ?>>Billed</option>
-                    </select>
-                </div>
-
-            </div>
-
-            <div class="form-row">
-                <div class="col-md-3"></div>
-                <div class="col-md-4">
-                    <button type="submit" class="btn btn-primary timeslip-submit-btn"><?php echo lang('Common.submit');?></button>
-                    <a href="/<?php echo strtolower($tableName).(!empty($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''); ?>" type="button" class="btn btn-secondary"><?php echo lang('Common.cancel');?></a>
-                </div>
+            <div class="d-flex justify-content-end">
+                <a href="/<?php echo strtolower($tableName).(!empty($_SERVER['QUERY_STRING'])?'?'.$_SERVER['QUERY_STRING']:''); ?>" type="button" class="btn btn-secondary"><?php echo lang('Common.cancel');?></a>
+                <button type="submit" class="btn btn-primary timeslip-submit-btn ml-2"><?php echo lang('Common.submit');?></button>
             </div>
         </form>
     </div>
@@ -241,9 +217,9 @@ if (empty(@$timeslips['slip_timer_started'])) {
         $("#break_time").change(function() {
             var el = $(this);
             if (el.is(':checked')) {
-                el.closest('.form-row').next().slideDown('slow');
+                $('.break_time_detail').slideDown('slow');
             } else {
-                el.closest('.form-row').next().slideUp('slow');
+                $('.break_time_detail').slideUp('slow');
             }
         });
 
@@ -456,5 +432,11 @@ if (empty(@$timeslips['slip_timer_started'])) {
         var week_no = Math.ceil(dayOfYear / 7);
         week_no = week_no > 52 ? 52 : week_no;
         $("#week_no").val(week_no);
+    });
+
+    $(".btn-advance").click(function() {
+        $(".btn-advance-down").toggle();
+        $(".btn-advance-up").toggle();
+        $(".advance-input").slideToggle("slow");
     });
 </script>

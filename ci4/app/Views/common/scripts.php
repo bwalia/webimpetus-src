@@ -83,7 +83,7 @@
 					var td = $(row).find(".truncate");
 					td.attr("title", td.html());
 				},
-				scrollX: true,
+				scrollX: false,
 				order: [
 					[0, 'desc']
 				],
