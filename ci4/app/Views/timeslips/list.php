@@ -1,56 +1,62 @@
 <?php require_once(APPPATH . 'Views/timeslips/list-title.php'); ?>
 <div class="white_card_body ">
-    <div class="QA_table ">
-        <div class="page_title_right" style="float:right;">Total Records: <span id="total">0</span> </div>
-        <!-- table-responsive -->
-        <table id="myTable" class="table table-listing-items tableDocument table-striped table-bordered">
-            <thead>
-                <tr>
-                    <th scope="col" width="30"></th>
-                    <th scope="col">Week No.</th>
-                    <th scope="col">Task</th>
-                    <th scope="col">Employee</th>
-                    <th scope="col">Start Date</th>
-                    <th scope="col">Start Time</th>
-                    <?php /* foreach ($fields as $field) { ?>
-              <th scope="col"><?php echo lang('Timeslips.'.$field); ?></th>
-          <?php } */?>
-                    <th scope="col" width="50">
-                        <?php echo lang('Common.action'); ?>
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php /* foreach (${$tableName} as $row) { ?>
-          <tr data-link="/<?php echo $tableName; ?>/edit/<?= $row[$identifierKey]; ?>">
-              <td class="f_s_12 f_w_400"><input type="checkbox" value="<?= $row['uuid'] ?>" class="check_all" onclick="setExportItem(this);"></td>
-              <?php foreach ($fields as $field) { ?>
-                  <td class="f_s_12 f_w_400"><?= $row[$field]; ?></td>
-              <?php } ?>
-              <td class="f_s_12 f_w_400 text-right">
-                  <div class="header_more_tool">
-                      <div class="dropdown">
-                          <span class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown">
-                              <i class="ti-more-alt"></i>
-                          </span>
-                          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+    <div class="QA_table">
+        <div class="row">
+            <div class="col-12 col-md-12 col-xl-8">
+                <div class="table-responsive py-3">
+                    <div class="page_title_right" style="float:right;">Total Records: <span id="total">0</span> </div>
+                    <!-- table-responsive -->
+                    <table id="myTable" class="table table-listing-items tableDocument table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col" width="5%"></th>
+                                <th scope="col" width="10%">Week No.</th>
+                                <th scope="col" width="30%">Task</th>
+                                <th scope="col" width="20%">Employee</th>
+                                <th scope="col" width="10%">Start Date</th>
+                                <th scope="col" width="10%">Start Time</th>
+                                <?php /* foreach ($fields as $field) { ?>
+                        <th scope="col"><?php echo lang('Timeslips.'.$field); ?></th>
+                    <?php } */?>
+                                <th scope="col" width="10%">
+                                    <?php echo lang('Common.action'); ?>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php /* foreach (${$tableName} as $row) { ?>
+                    <tr data-link="/<?php echo $tableName; ?>/edit/<?= $row[$identifierKey]; ?>">
+                        <td class="f_s_12 f_w_400"><input type="checkbox" value="<?= $row['uuid'] ?>" class="check_all" onclick="setExportItem(this);"></td>
+                        <?php foreach ($fields as $field) { ?>
+                            <td class="f_s_12 f_w_400"><?= $row[$field]; ?></td>
+                        <?php } ?>
+                        <td class="f_s_12 f_w_400 text-right">
+                            <div class="header_more_tool">
+                                <div class="dropdown">
+                                    <span class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown">
+                                        <i class="ti-more-alt"></i>
+                                    </span>
+                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
 
-                              <a class="dropdown-item" onclick="return confirm('Are you sure want to delete?');" href="/<?php echo $tableName; ?>/delete/<?= $row[$identifierKey]; ?>"> <i class="ti-trash"></i> Delete</a>
-                              <a class="dropdown-item" href="/<?php echo $tableName; ?>/edit/<?= $row[$identifierKey]; ?>"> <i class="fas fa-edit"></i> Edit</a>
-                              <a class="dropdown-item" href="/<?php echo $tableName; ?>/clone/<?= $row[$identifierKey]; ?>"> <i class="fas fa-copy"></i> Clone</a>
-                          </div>
-                      </div>
-                  </div>
-              </td>
-          </tr>
-      <?php } */?>
+                                        <a class="dropdown-item" onclick="return confirm('Are you sure want to delete?');" href="/<?php echo $tableName; ?>/delete/<?= $row[$identifierKey]; ?>"> <i class="ti-trash"></i> Delete</a>
+                                        <a class="dropdown-item" href="/<?php echo $tableName; ?>/edit/<?= $row[$identifierKey]; ?>"> <i class="fas fa-edit"></i> Edit</a>
+                                        <a class="dropdown-item" href="/<?php echo $tableName; ?>/clone/<?= $row[$identifierKey]; ?>"> <i class="fas fa-copy"></i> Clone</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                <?php } */?>
 
-            </tbody>
-        </table>
+                        </tbody>
+                    </table>
 
-        <nav aria-label="Page navigation">
-            <ul class="pagination" id="myPager"></ul>
-        </nav>
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination" id="myPager"></ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -160,7 +166,7 @@
             var dateString = ('0' + (d.getMonth() + 1)).slice(-2) + '/' + ('0' + (d.getDate())).slice(-2) + '/' + d.getFullYear();
             var empRow = "<tr data-link='/<?= $tableName . "/edit/" ?>" + data[emp].uuid + "'>";
             empRow += "<td class='f_s_12 f_w_400'><input type='checkbox' value=" + data[emp].uuid + " class='check_all' onclick='setExportItem(this);'></td><td>" + data[emp].week_no + "</td>";
-            empRow += "<td>" + data[emp].taskName.substr(0, 20) + (data[emp].taskName.length > 20 ? '...' : '') + "</td>";
+            empRow += "<td>" + data[emp].taskName + "</td>";
             empRow += "<td>" + data[emp].employeeName.substr(0, 20) + (data[emp].employeeName.length > 20 ? '...' : '') + "</td>"
             empRow += "<td>" + dateString + "</td>"
             empRow += "<td>" + data[emp].slip_timer_started + "</td>"

@@ -14,287 +14,290 @@ $sprints = getResultArray("sprints");
             enctype="multipart/form-data">
             <input type="hidden" class="form-control" name="uuid" placeholder="" value="<?= @$task->uuid ?>" />
             <div class="row">
-
-                <div class=" col-md-6">
-                    <div class="form-group   required col-md-12">
-                        <label for="inputEmail4">Project Name </label>
-                        <select id="projects_id" name="projects_id" class="form-control required dashboard-dropdown">
-                            <option value="" selected="">--Select--</option>
-                            <?php foreach ($projects as $row): ?>
-                                <option customer_id="<?= $row['customers_id']; ?>" value="<?= $row['id']; ?>" <?php if ($row['id'] == @$task->projects_id) {
-                                        echo "selected";
-                                    } ?>><?= $row['name']; ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    <div class="form-group  required col-md-12">
-                        <label for="inputEmail4">Customer Name </label>
-                        <select id="customers_id" name="customers_id" class="form-control required dashboard-dropdown">
-                            <option value="" selected="">--Select--</option>
-                            <?php foreach ($customers as $row): ?>
-                                <option value="<?= $row['id']; ?>" <?php if ($row['id'] == @$task->customers_id) {
-                                      echo "selected";
-                                  } ?>><?= $row['company_name']; ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    <div class="form-group  required col-md-12">
-                        <label for="inputEmail4">Contacts </label>
-                        <select id="contacts_id" name="contacts_id" class="form-control required dashboard-dropdown">
-                            <option value="" selected="">--Select--</option>
-                            <?php foreach ($contacts as $row): ?>
-                                <option value="<?= $row['id']; ?>" <?php if ($row['id'] == @$task->contacts_id) {
-                                      echo "selected";
-                                  } ?>><?= $row['first_name']; ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    <div class="form-group  col-md-12">
-                        <label for="inputEmail4">Task ID </label>
-                        <input readonly autocomplete="off" type="input" class="form-control " id="task_id"
-                            name="task_id" placeholder="" value="<?= @$task->task_id ?>">
-                    </div>
-                    <div class="form-group required col-md-12">
-                        <label for="inputEmail4">Task Name </label>
-                        <input autocomplete="off" type="input" class="form-control required" id="name" name="name"
-                            placeholder="" value="<?= @$task->name ?>">
-                    </div>
-
-                    <div class="form-group  required col-md-12">
-                        <label for="inputEmail4">Reported By </label>
-                        <select id="reported_by" name="reported_by" class="form-control required dashboard-dropdown">
-                            <option value="" selected="">--Select--</option>
-                            <?php foreach ($users as $row): ?>
-                                <option value="<?= $row['id']; ?>" <?php if ($row['id'] == @$task->reported_by) {
-                                      echo "selected";
-                                  } ?>><?= $row['name']; ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-
-                    <div class="form-group required col-md-12 ">
-                        <label for="inputEmail4">Task Start Date</label>
-                        <input type="text" autocomplete="off" class="form-control required datepicker" id="start_date"
-                            name="start_date" placeholder="" value="<?= render_date(@$task->start_date) ?>">
-                    </div>
-                    <div class="form-group required col-md-12 ">
-                        <label for="inputEmail4">Task End Date</label>
-                        <input type="text" autocomplete="off" class="form-control required datepicker" id="end_date"
-                            name="end_date" placeholder="" value="<?= render_date(@$task->end_date) ?>">
-                        <span id="deadlineError" class="form-control-feedback"></span>
-                    </div>
-
-                </div>
-                <div class="form-group col-md-6">
-
-                    <div class="form-group col-md-12 ">
-                        <label for="inputEmail4"> Task Estimated Hour</label>
-                        <input type="number" class="form-control" id="estimated_hour" name="estimated_hour"
-                            placeholder="" value="<?= @$task->estimated_hour ?>">
-                    </div>
-
-                    <div class="form-group  col-md-12">
-                        <label for="inputEmail4"> Rate</label>
-                        <input type="number" class="form-control" id="rate" name="rate" placeholder=""
-                            value="<?= @$task->rate ?>">
-                    </div>
-
-                    <div class="form-group  col-md-12 ">
-                        <label for="inputEmail4">Status</label>
-                        <select id="status" name="status" class="form-control  dashboard-dropdown">
-                            <option value="" selected="">--Select--</option>
-                            <option value="assigned" <?= ("assigned" == @$task->status ? 'selected' : '') ?>>
-                                Assigned
-                            </option>
-                            <option value="open" <?= ("open" == @$task->status ? 'selected' : '') ?>>
-                                Open
-                            </option>
-                            <option value="inReview" <?= ("inReview" == @$task->status ? 'selected' : '') ?>>
-                                In Review
-                            </option>
-                            <option value="completed" <?= ("completed" == @$task->status ? 'selected' : '') ?>>
-                                Completed
-                            </option>
-                            <option value="blocked" <?= ("blocked" == @$task->status ? 'selected' : '') ?>>
-                                Blocked
-                            </option>
-                        </select>
-                    </div>
-
-                    <div class="form-group col-md-12">
-                        <label for="inputEmail4">Assigned To </label>
-                        <select id="assigned_to" name="assigned_to" class="form-control dashboard-dropdown">
-                            <option value="" selected="">--Select--</option>
-                            <?php foreach ($employees as $row): ?>
-                                <option value="<?= $row['id']; ?>" <?php if ($row['id'] == @$task->assigned_to) {
-                                      echo "selected";
-                                  } ?>><?= $row['first_name']; ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-
-
-                    <div class="form-group col-md-12 ">
-                        <label for="inputEmail4">Task Active</label>
-                        <select name="active" id="active" class="form-control select2">
-                            <option value="1" <?php if (@$task->active == 1)
-                                echo "selected" ?>>Active</option>
-                                <option value="2" <?php if (@$task->active == 2)
-                                echo "selected" ?>>Completed</option>
-                            </select>
-                        </div>
-                        <div class="form-group required col-md-12 ">
-                            <label for="category">Category</label>
-                            <select name="category" class="form-control required dashboard-dropdown">
-                                <option value="" selected="">--Select--</option>
-                                <option value="todo" <?= ("todo" == @$task->category ? 'selected' : '') ?>>
-                                Todo
-                            </option>
-                            <option value="in-progress" <?= ("in-progress" == @$task->category ? 'selected' : '') ?>>
-                                In-progress
-                            </option>
-                            <option value="review" <?= ("review" == @$task->category ? 'selected' : '') ?>>
-                                Review
-                            </option>
-                            <option value="done" <?= ("done" == @$task->category ? 'selected' : '') ?>>
-                                Done
-                            </option>
-                        </select>
-                    </div>
-                    <div class="form-group required  col-md-12 ">
-                        <label for="priority">Priority</label>
-                        <select name="priority" class="form-control required  dashboard-dropdown">
-                            <option value="" selected="">--Select--</option>
-                            <option value="low" <?= ("low" == @$task->priority ? 'selected' : '') ?>>
-                                Low
-                            </option>
-                            <option value="medium" <?= ("medium" == @$task->priority ? 'selected' : '') ?>>
-                                Medium
-                            </option>
-                            <option value="high" <?= ("high" == @$task->priority ? 'selected' : '') ?>>
-                                High
-                            </option>
-                        </select>
-                    </div>
-                    <div class="form-group  required col-md-12">
-                        <label for="sprint_id">Sprint </label>
-                        <select name="sprint_id" class="form-control required dashboard-dropdown">
-                            <option value="" selected="">--Select--</option>
-                            <?php foreach ($sprints as $row): ?>
-                                <option value="<?= $row['id'] ?>" <?= ($row['id'] == @$task->sprint_id ? 'selected' : '') ?>>
-                                    <?= $row['sprint_name'] ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-
-
-                </div>
-
-
-
                 <div class="col-md-12">
-                    <div class="form-group   required col-md-12">
-                        <label for="description">Task Description</label>
+                    <nav>
+                        <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+                            <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home"
+                                role="tab" aria-controls="nav-home" aria-selected="true">Main</a>
+                            <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile"
+                                role="tab" aria-controls="nav-profile" aria-selected="false">Additional Info</a>
+                        </div>
+                    </nav>
+                    <div class="tab-content py-3 px-3 px-sm-0 col-md-12" id="nav-tabContent">
+                        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                                <div class="form-group required col-md-12">
+                                    <label for="inputEmail4">Task Title </label>
+                                    <input autocomplete="off" type="input" class="form-control required" id="name" name="name"
+                                        placeholder="" value="<?= @$task->name ?>">
+                                </div>
+                                <div class="form-group   required col-md-12">
+                                    <label for="description">Task Description</label>
 
-                        <textarea class="form-control" required name="description"
-                            id="content"><?= @$task->description ?></textarea>
+                                    <textarea class="form-control" required name="description"
+                                        id="content"><?= @$task->description ?></textarea>
 
+                                </div>
+                                <hr/>
+                                <div class="row">
+                                        <div class="form-group   required col-md-6">
+                                            <label for="inputEmail4">Project Name </label>
+                                            <select id="projects_id" name="projects_id" class="form-control required dashboard-dropdown">
+                                                <option value="" selected="">--Select--</option>
+                                                <?php foreach ($projects as $row): ?>
+                                                    <option customer_id="<?= $row['customers_id']; ?>" value="<?= $row['id']; ?>" <?php if ($row['id'] == @$task->projects_id) {
+                                                            echo "selected";
+                                                        } ?>><?= $row['name']; ?></option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </div>
+                                        <div class="form-group  required col-md-6">
+                                            <label for="inputEmail4">Customer Name </label>
+                                            <select id="customers_id" name="customers_id" class="form-control required dashboard-dropdown">
+                                                <option value="" selected="">--Select--</option>
+                                                <?php foreach ($customers as $row): ?>
+                                                    <option value="<?= $row['id']; ?>" <?php if ($row['id'] == @$task->customers_id) {
+                                                        echo "selected";
+                                                    } ?>><?= $row['company_name']; ?>
+                                                    </option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </div>
+                                        <div class="form-group  required col-md-6">
+                                            <label for="inputEmail4">Contacts </label>
+                                            <select id="contacts_id" name="contacts_id" class="form-control required dashboard-dropdown">
+                                                <option value="" selected="">--Select--</option>
+                                                <?php foreach ($contacts as $row): ?>
+                                                    <option value="<?= $row['id']; ?>" <?php if ($row['id'] == @$task->contacts_id) {
+                                                        echo "selected";
+                                                    } ?>><?= $row['first_name']; ?>
+                                                    </option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </div>
+                                        <div class="form-group  required col-md-6">
+                                            <label for="inputEmail4">Reported By </label>
+                                            <select id="reported_by" name="reported_by" class="form-control required dashboard-dropdown">
+                                                <option value="" selected="">--Select--</option>
+                                                <?php foreach ($users as $row): ?>
+                                                    <option value="<?= $row['id']; ?>" <?php if ($row['id'] == @$task->reported_by) {
+                                                        echo "selected";
+                                                    } ?>><?= $row['name']; ?>
+                                                    </option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </div>
+                                        <div class="form-group required col-md-6 ">
+                                            <label for="inputEmail4">Task Start Date</label>
+                                            <input type="text" autocomplete="off" class="form-control required datepicker" id="start_date"
+                                                name="start_date" placeholder="" value="<?= render_date(@$task->start_date) ?>">
+                                        </div>
+                                        <div class="form-group required col-md-6 ">
+                                            <label for="inputEmail4">Task End Date</label>
+                                            <input type="text" autocomplete="off" class="form-control required datepicker" id="end_date"
+                                                name="end_date" placeholder="" value="<?= render_date(@$task->end_date) ?>">
+                                            <span id="deadlineError" class="form-control-feedback"></span>
+                                        </div>
+                                        <div class="form-group required col-md-6 ">
+                                            <label for="category">Category</label>
+                                            <select name="category" class="form-control required dashboard-dropdown">
+                                                <option value="" selected="">--Select--</option>
+                                                <option value="todo" <?= ("todo" == @$task->category ? 'selected' : '') ?>>
+                                                    Todo
+                                                </option>
+                                                <option value="in-progress" <?= ("in-progress" == @$task->category ? 'selected' : '') ?>>
+                                                    In-progress
+                                                </option>
+                                                <option value="review" <?= ("review" == @$task->category ? 'selected' : '') ?>>
+                                                    Review
+                                                </option>
+                                                <option value="done" <?= ("done" == @$task->category ? 'selected' : '') ?>>
+                                                    Done
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group required  col-md-6 ">
+                                            <label for="priority">Priority</label>
+                                            <select name="priority" class="form-control required  dashboard-dropdown">
+                                                <option value="" selected="">--Select--</option>
+                                                <option value="low" <?= ("low" == @$task->priority ? 'selected' : '') ?>>
+                                                    Low
+                                                </option>
+                                                <option value="medium" <?= ("medium" == @$task->priority ? 'selected' : '') ?>>
+                                                    Medium
+                                                </option>
+                                                <option value="high" <?= ("high" == @$task->priority ? 'selected' : '') ?>>
+                                                    High
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group  required col-md-6">
+                                            <label for="sprint_id">Sprint </label>
+                                            <select name="sprint_id" class="form-control required dashboard-dropdown">
+                                                <option value="" selected="">--Select--</option>
+                                                <?php foreach ($sprints as $row): ?>
+                                                    <option value="<?= $row['id'] ?>" <?= ($row['id'] == @$task->sprint_id ? 'selected' : '') ?>>
+                                                        <?= $row['sprint_name'] ?>
+                                                    </option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </div>
+                                </div>
+                        </div>
+                        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                            <div class="row">
+                                <div class="form-group  col-md-6">
+                                    <label for="inputEmail4">Task ID </label>
+                                    <input readonly autocomplete="off" type="input" class="form-control " id="task_id"
+                                        name="task_id" placeholder="" value="<?= @$task->task_id ?>">
+                                </div>
+                                <div class="form-group col-md-6 ">
+                                    <label for="inputEmail4"> Task Estimated Hour</label>
+                                    <input type="number" class="form-control" id="estimated_hour" name="estimated_hour"
+                                        placeholder="" value="<?= @$task->estimated_hour ?>">
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label for="inputEmail4">Assigned To </label>
+                                    <select id="assigned_to" name="assigned_to" class="form-control dashboard-dropdown">
+                                        <option value="" selected="">--Select--</option>
+                                        <?php foreach ($employees as $row): ?>
+                                            <option value="<?= $row['id']; ?>" <?php if ($row['id'] == @$task->assigned_to) {
+                                                echo "selected";
+                                            } ?>><?= $row['first_name']; ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+
+                                <div class="form-group  col-md-6">
+                                    <label for="inputEmail4"> Rate</label>
+                                    <input type="number" class="form-control" id="rate" name="rate" placeholder=""
+                                        value="<?= @$task->rate ?>">
+                                </div>
+
+                                <div class="form-group col-md-6 ">
+                                    <label for="inputEmail4">Task Active</label>
+                                    <select name="active" id="active" class="form-control dashboard-dropdown">
+                                        <option value="1" <?php if (@$task->active == 1)
+                                            echo "selected" ?>>Active</option>
+                                            <option value="2" <?php if (@$task->active == 2)
+                                            echo "selected" ?>>Completed</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group  col-md-6 ">
+                                    <label for="inputEmail4">Status</label>
+                                    <select id="status" name="status" class="form-control  dashboard-dropdown">
+                                        <option value="" selected="">--Select--</option>
+                                        <option value="assigned" <?= ("assigned" == @$task->status ? 'selected' : '') ?>>
+                                            Assigned
+                                        </option>
+                                        <option value="open" <?= ("open" == @$task->status ? 'selected' : '') ?>>
+                                            Open
+                                        </option>
+                                        <option value="inReview" <?= ("inReview" == @$task->status ? 'selected' : '') ?>>
+                                            In Review
+                                        </option>
+                                        <option value="completed" <?= ("completed" == @$task->status ? 'selected' : '') ?>>
+                                            Completed
+                                        </option>
+                                        <option value="blocked" <?= ("blocked" == @$task->status ? 'selected' : '') ?>>
+                                            Blocked
+                                        </option>
+                                    </select>
+                                </div>
+                                <?php if (!empty($task->id)) { ?>
+                                    <div class="col-1212">
+
+                                        <div class="form-group col-1212">
+                                            <span class="">
+                                                <?php if (!empty(@$media_list)) {
+
+                                                    foreach ($media_list as $name) {
+
+                                                        $tokens = explode('.', $name['name']);
+                                                        $extension = $tokens[count($tokens) - 1];
+
+                                                        $varray = ['webm', 'wmv', 'ogg', 'mp4', 'mov', 'flv', 'avi', 'mkv'];
+
+                                                        if (in_array(trim($extension), $varray)) {
+                                                            ?>
+                                                            <video width="320" height="240" controls>
+                                                                <?php foreach ($varray as $val) { ?>
+                                                                    <source src="<?= @$name['name'] ?>" type=video/<?= $val ?>>
+                                                                <?php } ?>
+                                                            </video>
+
+                                                            <a href="/gallery/delete_task/<?= $name['id'] ?>/<?= base64_encode('/tasks/editrow/' . @$task->uuid) ?>"
+                                                                onclick="return confirm('Are you sure?')" id="" class="btn btn-danger"><i
+                                                                    class="fa fa-trash"></i></a>
+
+                                                            <br>
+
+                                                        <?php } else { ?>
+                                                            <img src="<?= @$name['name'] ?>" width="140px">
+                                                            <a href="/gallery/delete_task/<?= $name['id'] ?>/<?= base64_encode('/tasks/editrow/' . @$task->uuid) ?>"
+                                                                onclick="return confirm('Are you sure?')" id="" class="btn btn-danger"><i
+                                                                    class="fa fa-trash"></i></a>
+
+                                                            <br>
+                                                        <?php }
+                                                    }
+                                                } ?>
+                                            </span>
+                                        </div>
+
+
+                                        <div class="form-group col-1212">
+                                            <span class="">
+                                                <?php if (!empty(@$documents)) {
+
+                                                    foreach ($documents as $doc) { ?>
+                                                        <iframe
+                                                            src="https://drive.google.com/viewerng/viewer?embedded=true&url=<?= @$doc['file'] ?>"
+                                                            width="560" height="700"></iframe>
+                                                        <a href="/documents/delete_task/<?= $doc['id'] ?>/<?= base64_encode('/tasks/editrow/' . @$task->uuid) ?>"
+                                                            onclick="return confirm('Are you sure?')" id="" class="btn btn-danger"><i
+                                                                class="fa fa-trash"></i></a>
+                                                        <br>
+                                                        <?php
+                                                    }
+                                                } ?>
+                                            </span>
+                                        </div>
+                                    </div>
+                                <?php } ?>
+                                <div class="col-12">
+                                    <div class="form-group col-12 imageUploadForm">
+                                        <label for="inputAddress">Upload</label>
+                                        <span class="all-media-image-files">
+
+                                        </span>
+                                        <div class="uplogInrDiv" id="drop_file_doc_zone">
+                                            <input type="file" name="file" class="fileUpload" id="customFile">
+                                            <div class="uploadBlkInr">
+                                                <div class="uplogImg">
+                                                    <img src="/assets/img/fileupload.png" />
+                                                </div>
+                                                <div class="uploadFileCnt">
+                                                    <p>
+                                                        <a href="#">Upload a file </a> file chosen or drag
+                                                        and drop
+                                                    </p>
+                                                    <p>
+                                                        <span>Video, PNG, JPG, GIF up to 10MB</span>
+                                                    </p>
+                                                    <p class="image-name"></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                    
+                            </div>
+                        </div>
                     </div>
                 </div>
-
-
-
-                <?php if (!empty($task->id)) { ?>
-                    <div class="col-md-12">
-
-                        <div class="form-group col-md-12">
-                            <span class="">
-                                <?php if (!empty(@$media_list)) {
-
-                                    foreach ($media_list as $name) {
-
-                                        $tokens = explode('.', $name['name']);
-                                        $extension = $tokens[count($tokens) - 1];
-
-                                        $varray = ['webm', 'wmv', 'ogg', 'mp4', 'mov', 'flv', 'avi', 'mkv'];
-
-                                        if (in_array(trim($extension), $varray)) {
-                                            ?>
-                                            <video width="320" height="240" controls>
-                                                <?php foreach ($varray as $val) { ?>
-                                                    <source src="<?= @$name['name'] ?>" type=video/<?= $val ?>>
-                                                <?php } ?>
-                                            </video>
-
-                                            <a href="/gallery/delete_task/<?= $name['id'] ?>/<?= base64_encode('/tasks/editrow/' . @$task->uuid) ?>"
-                                                onclick="return confirm('Are you sure?')" id="" class="btn btn-danger"><i
-                                                    class="fa fa-trash"></i></a>
-
-                                            <br>
-
-                                        <?php } else { ?>
-                                            <img src="<?= @$name['name'] ?>" width="140px">
-                                            <a href="/gallery/delete_task/<?= $name['id'] ?>/<?= base64_encode('/tasks/editrow/' . @$task->uuid) ?>"
-                                                onclick="return confirm('Are you sure?')" id="" class="btn btn-danger"><i
-                                                    class="fa fa-trash"></i></a>
-
-                                            <br>
-                                        <?php }
-                                    }
-                                } ?>
-                            </span>
-                        </div>
-
-
-                        <div class="form-group col-md-12">
-                            <span class="">
-                                <?php if (!empty(@$documents)) {
-
-                                    foreach ($documents as $doc) { ?>
-                                        <iframe
-                                            src="https://drive.google.com/viewerng/viewer?embedded=true&url=<?= @$doc['file'] ?>"
-                                            width="560" height="700"></iframe>
-                                        <a href="/documents/delete_task/<?= $doc['id'] ?>/<?= base64_encode('/tasks/editrow/' . @$task->uuid) ?>"
-                                            onclick="return confirm('Are you sure?')" id="" class="btn btn-danger"><i
-                                                class="fa fa-trash"></i></a>
-                                        <br>
-                                        <?php
-                                    }
-                                } ?>
-                            </span>
-                        </div>
-                    </div>
-                <?php } ?>
-            </div>
-            <div class="form-group col-md-12">
-                <label for="inputAddress">Upload</label>
-                <span class="all-media-image-files">
-
-                </span>
-                <div class="uplogInrDiv" id="drop_file_doc_zone">
-                    <input type="file" name="file" class="fileUpload" id="customFile">
-                    <div class="uploadBlkInr">
-                        <div class="uplogImg">
-                            <img src="/assets/img/fileupload.png" />
-                        </div>
-                        <div class="uploadFileCnt">
-                            <p>
-                                <a href="#">Upload a file </a> file chosen or drag
-                                and drop
-                            </p>
-                            <p>
-                                <span>Video, PNG, JPG, GIF up to 10MB</span>
-                            </p>
-                            <p class="image-name"></p>
-                        </div>
-                    </div>
-                </div>
-
             </div>
             <br>
             <button type="submit" class="btn btn-primary">Submit</button>

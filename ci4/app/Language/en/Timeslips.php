@@ -11,7 +11,7 @@ return [
     'slip_end_date' => "Slip End Date",
     'slip_timer_end' => "Slip Timer End",
     'break_time' => "Break Time",
-    'slip_hours' => "Slip Hours",
+    'slip_hours' => "Total Hours",
     'slip_description' => "Slip Description",
     'slip_rate' => "Slip Rate",
     'slip_timer_accumulated_seconds' => "Slip Timer Accumulated Seconds",

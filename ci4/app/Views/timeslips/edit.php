@@ -58,11 +58,6 @@ if (empty(@$timeslips['slip_timer_started'])) {
             </div>
 
             <div class="form-group">
-                <label for="week_no" class="font-weight-bolder"><?=lang('Timeslips.week_no');?> </label>
-                <input id="week_no" readonly name="week_no" class="form-control" value="<?= empty($timeslips['week_no']) ? date("W") : $timeslips['week_no'] ?>">
-            </div>
-
-            <div class="form-group">
                 <label for="employee_name" class="font-weight-bolder"> <?=lang('Timeslips.employee_name');?> <span class="redstar">*</span></label>
                 <select id="employee_name" name="employee_name" class="form-control required dashboard-dropdown">
                     <option value="">--Select--</option>
@@ -101,7 +96,7 @@ if (empty(@$timeslips['slip_timer_started'])) {
             <div class="form-group">
                 <label for="slip_end_date" class="font-weight-bolder"> <?=lang('Timeslips.slip_end_date');?> </label>
                 <div class="input-group">
-                    <input id="slip_end_date" name="slip_end_date" class="form-control datepicker" value="<?php echo render_date(@$timeslips['slip_end_date']); ?>">
+                    <input id="slip_end_date" name="slip_end_date" class="form-control datepicker" value="<?php echo render_date(@$timeslips['slip_end_date'] ?? $startDate); ?>">
                     <div class="input-group-append">
                         <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                     </div>
@@ -114,7 +109,7 @@ if (empty(@$timeslips['slip_timer_started'])) {
                 <div class="form-row">
                     <div class="col-sm-7 col-12 mb-1">
                         <div class="input-group">
-                            <input id="slip_timer_end" name="slip_timer_end" class="form-control timepicker" value="<?php echo @$timeslips['slip_timer_end']; ?>">
+                            <input id="slip_timer_end" name="slip_timer_end" class="form-control timepicker" value="<?php echo @$timeslips['slip_timer_end'] ?? @$slip_timer_started; ?>">
                             <div class="input-group-append">
                                 <span class="input-group-text"><i class="fa fa-clock"></i></span>
                             </div>
@@ -143,7 +138,23 @@ if (empty(@$timeslips['slip_timer_started'])) {
                 </select>
             </div>
 
+            <!-- Total Hours -->
+            <div class="form-group">
+                <label for="slip_hours" class="font-weight-bolder"> <?=lang('Timeslips.slip_hours');?> </label>
+                <div class="input-group">
+                    <input id="slip_hours" name="slip_hours" class="form-control timepicker" value="<?php echo @$timeslips['slip_hours']; ?>">
+                    <div class="input-group-append">
+                        <span class="input-group-text"><i class="fa fa-clock"></i></span>
+                    </div>
+                </div>
+                <span class="form-control-feedback" id="slip_hours_error"></span>
+            </div>
+
             <div class="advance-input" style="display: none;">
+                <div class="form-group">
+                    <label for="week_no" class="font-weight-bolder"><?=lang('Timeslips.week_no');?> </label>
+                    <input id="week_no" readonly name="week_no" class="form-control" value="<?= empty($timeslips['week_no']) ? date("W") : $timeslips['week_no'] ?>">
+                </div>
                 <div class="form-group">
                     <label for="break_time" class="font-weight-bolder"> <?=lang('Timeslips.break_time');?> </label> <br/>
                     <input type="checkbox" id="break_time" name="break_time" <?php echo @$timeslips['break_time'] == '1' ? 'checked' : ''; ?>>
@@ -164,24 +175,6 @@ if (empty(@$timeslips['slip_timer_started'])) {
                         <label for="break_time_end" class="font-weight-bolder"> <?=lang('Timeslips.break_time_end');?> </label>
                         <input id="break_time_end" name="break_time_end" class="form-control timepicker" value="<?php echo @$timeslips['break_time_end']; ?>">
                         <span class="form-control-feedback" id="break_end_timer_error"></span>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="slip_hours" class="font-weight-bolder"> <?=lang('Timeslips.slip_hours');?> </label>
-                    <div class="form-row">
-                        <div class="col-sm-7 col-12 mb-1">
-                            <div class="input-group">
-                                <input id="slip_hours" name="slip_hours" class="form-control timepicker" value="<?php echo @$timeslips['slip_hours']; ?>">
-                                <div class="input-group-append">
-                                    <span class="input-group-text"><i class="fa fa-clock"></i></span>
-                                </div>
-                            </div>
-                            <span class="form-control-feedback" id="slip_hours_error"></span>
-                        </div>
-                        <div class="col-sm-5 col-12">
-                            <button type="button" class="btn btn-block btn-info calculate-time"><?php echo lang('Timeslips.calculate_time');?></button>
-                        </div>
                     </div>
                 </div>
 
@@ -212,6 +205,11 @@ if (empty(@$timeslips['slip_timer_started'])) {
 
 <?php require_once(APPPATH . 'Views/common/footer.php'); ?>
 <script>
+    $(document).ready(function() {
+        setInterval(function() {
+            calculateTime();
+        }, 1000);
+    })
     $(function() {
         const breakTime =  $("#break_time").is(":checked");
         $("#break_time").change(function() {
@@ -227,10 +225,6 @@ if (empty(@$timeslips['slip_timer_started'])) {
             var el = $(this);
             console.dir({element: el[0]});
             setCurrentTime(el, calculateTime)
-        });
-
-        $(".calculate-time").click(function() {
-            calculateTime();
         });
 
         $("#slip_end_date").change(function (evt) {
