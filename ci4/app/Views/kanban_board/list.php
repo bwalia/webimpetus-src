@@ -1,6 +1,6 @@
 <?php require_once(APPPATH . 'Views/kanban_board/list-title.php'); ?>
 
-<div class="row flex-row flex-sm-nowrap py-3">
+<div class="row flex-row flex-sm-nowrap py-3" style="overflow-x: scroll;">
 
 
 
@@ -18,12 +18,9 @@
                             <?php foreach ($values as $row) { ?>
                                 <div class="card draggable shadow-sm add-dropzone" data-id="<?= $row['id'] ?>"
                                     id="cd<?= $row['id'] ?>" draggable="true" ondragstart="drag(event)">
-                                    <div class="card-body card-body-custom p-2">
+                                    <div class="card-body card-body-custom p-2" onclick="gotoTask('<?=$row['uuid']?>')">
                                         <div class="card-title">
-                                            <a href="<?= "/" . $tableName . "/edit/" . $row['uuid']; ?>"
-                                                class="lead font-weight-light">TSK-
-                                                <?= $row['task_id'] ?>
-                                            </a>
+                                            <div class="font-weight-bold text-dark">TSK-<?= $row['task_id'] ?></div>
                                         </div>
                                         <p>
                                             <?= $row['name'] ?>
@@ -33,8 +30,6 @@
                                             <?= ucfirst($row['priority']) ?>
                                         </div>
                                         <span class="text-secondary">(<?= ucfirst($row['project_name'] ?? "") ?>)</span>
-                                        <a href="<?= "/" . $tableName . "/edit/" . $row['uuid']; ?>"
-                                            class="btn btn-success btn-sm mt-3">View</a>
                                     </div>
                                 </div>
                                 <div class="dropzone rounded" ondrop="drop(event)" ondragover="allowDrop(event)"
@@ -161,4 +156,8 @@
             window.location.replace(redirect_to);
         });
     });
+
+    function gotoTask(task_id) {
+        window.location.href = '<?= "/" . $tableName . "/edit/" ?>'+task_id
+    }
 </script>

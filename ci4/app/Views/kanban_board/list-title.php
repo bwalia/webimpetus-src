@@ -101,4 +101,4 @@
                         </div>
                     <?php } ?>
 
-                    <div class="social_media_card card_height_100 mb_20 " style="padding: 26px 26px 36px 26px;">
+                    <div class="social_media_card card_height_100 mb_20 " style="padding: 26px 26px 36px 26px; background:#FFF !important;">
