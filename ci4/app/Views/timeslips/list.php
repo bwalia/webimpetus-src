@@ -3,8 +3,7 @@
     <div class="QA_table">
         <div class="row">
             <div class="col-12 col-md-12 col-xl-8">
-                <div class="table-responsive py-3">
-                    <div class="page_title_right" style="float:right;">Total Records: <span id="total">0</span> </div>
+                <div class="table-responsive">
                     <!-- table-responsive -->
                     <table id="myTable" class="table table-listing-items tableDocument table-striped table-bordered">
                         <thead>

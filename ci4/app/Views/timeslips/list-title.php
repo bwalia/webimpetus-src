@@ -76,7 +76,7 @@
                         <div class="white_card_header">
                             <div class="box_header m-0">
                                 <div method="GET">
-                                    <div class="row">
+                                    <div class="row" style="padding-left: 15px;">
                                         <div class="form-group mr-3">
                                             <input type="text" class="form-control"
                                                 placeholder="Filter by task name, employee" name="filter" id="filter"
@@ -121,6 +121,9 @@
 
 
                                             </select>
+                                        </div>
+                                        <div class="d-flex align-items-center form-group">
+                                            <div class="page_title_right font-weight-bold">Total Records: <span id="total">0</span> </div>
                                         </div>
                                         <!-- <div class="form-group">
                                             <button type="button" onclick="window.searchTimeslips()" class="btn btn-outline-secondary"><i class="ti-search"></i> <?php echo lang('Common.search'); ?></button>
