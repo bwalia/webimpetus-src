@@ -63,8 +63,11 @@ class Webpages extends ResourceController
         $_GET['category_id'] = !empty($params['filter']) && !empty($params['filter']['category_id']) ? $params['filter']['category_id'] : $catId;
         $_GET['uuid_business_id'] = !empty($params['filter']) && !empty($params['filter']['uuid_business_id']) ? $params['filter']['uuid_business_id'] : $_GET['uuid_business_id'] ?? false;
 
-        echo '<pre>'; print_r($_GET); echo '</pre>'; die;
-        
+        echo '<pre>';
+        print_r($_GET);
+        echo '</pre>';
+        die;
+
         if (empty($_GET['uuid_business_id']) || !isset($_GET['uuid_business_id']) || !$_GET['uuid_business_id']) {
             $data['data'] = 'You must need to specify the User Business ID';
             return $this->respond($data, 403);
@@ -81,7 +84,7 @@ class Webpages extends ResourceController
      * @return mixed
      */
     public function show($id = null)
-    {   
+    {
         $api =  new Api_v2();
         return $this->respond($api->webpagesEdit($id));
     }
@@ -138,7 +141,8 @@ class Webpages extends ResourceController
         //
     }
 
-    public function getWebPages ($bId, $contactId) {
+    public function getWebPages($bId, $contactId)
+    {
         $customerModel = new Customers_model();
         $contentListModel = new Content_model();
         $blockModel = new Blocks_model();
@@ -176,7 +180,8 @@ class Webpages extends ResourceController
         ]);
     }
 
-    public function getBlogsByCategory($bId, $contactId) {
+    public function getBlogsByCategory($bId, $contactId)
+    {
         $categoryModel = new Cat_model();
         $contentListModel = new Content_model();
         $data = [];
@@ -211,25 +216,26 @@ class Webpages extends ResourceController
         ]);
     }
 
-    public function getPublicBlogs($bCode) {
+    public function getPublicBlogs($bCode)
+    {
         $commonModel = new Common_model();
         $contentListModel = new Content_model();
         $data = [];
         $businessInfo = $commonModel->getSingleRowWhere("businesses", $bCode, "business_code");
         if (!empty($businessInfo) && $businessInfo) {
-            $content = $contentListModel->getPublicDataWhere($businessInfo['uuid'], "uuid_business_id");
+            $content = $contentListModel->getPublicDataWhere($businessInfo['uuid'], "uuid_business_id", 1);
             if (empty($content) && !$content) {
                 return $this->respond([
                     'error' => 'No Public Blog Found.',
                     'status' => 401
-                ]);                
+                ]);
             }
             $data['content'] = $content;
         } else {
             return $this->respond([
                 'error' => 'No Business Found.',
                 'status' => 401
-            ]);    
+            ]);
         }
         return $this->respond([
             'data' => $data,
@@ -237,7 +243,8 @@ class Webpages extends ResourceController
         ]);
     }
 
-    public function getPublicBlog($bCode, $contentId) {
+    public function getPublicBlog($bCode, $contentId)
+    {
         $commonModel = new Common_model();
         $contentListModel = new Content_model();
         $data = [];
@@ -248,15 +255,34 @@ class Webpages extends ResourceController
                 return $this->respond([
                     'error' => 'No Public Blog Found.',
                     'status' => 404
-                ]);                
+                ]);
             }
             $data['content'] = $content;
         } else {
             return $this->respond([
                 'error' => 'No Business Found.',
                 'status' => 404
-            ]);    
+            ]);
         }
+        return $this->respond([
+            'data' => $data,
+            'status' => 200
+        ]);
+    }
+
+    public function getBlogsByCode($bCode, $contactId, $blogUuid)
+    {
+        $commonModel = new Common_model();
+        $contentListModel = new Content_model();
+        $data = [];
+        $content = $contentListModel->getPublicDataWhere($blogUuid, "uuid", "");
+        if (empty($content) && !$content) {
+            return $this->respond([
+                'error' => 'No Public Blog Found.',
+                'status' => 401
+            ]);
+        }
+        $data['content'] = $content;
         return $this->respond([
             'data' => $data,
             'status' => 200

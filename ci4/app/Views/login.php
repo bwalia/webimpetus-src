@@ -60,7 +60,7 @@
                       ?>
                       <div class="logo  text-center">
                         <a class="large_logo" href="/"><img
-                            src="<?= $logo->meta_value ? 'data:image/jpeg;base64,' . $logo->meta_value : '/assets/img/logo.jpg' ?>"
+                            src="<?= ($logo && $logo->meta_value) ? 'data:image/jpeg;base64,' . $logo->meta_value : '/assets/img/logo.jpg' ?>"
                             style="width: 100%;" alt=""></a>
                       </div>
 
