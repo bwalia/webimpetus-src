@@ -74,56 +74,60 @@
 
                     <div class="white_card card_height_100 mb_20 ">
                         <div class="white_card_header">
-                            <div class="box_header m-0">
+                            <div class="d-block m-0">
                                 <div method="GET">
                                     <div class="row" style="padding-left: 15px;">
-                                        <div class="form-group mr-3">
-                                            <input type="text" class="form-control"
-                                                placeholder="Filter by task name, employee" name="filter" id="filter"
-                                                aria-controls="example" value="<?= @$_GET['filter'] ?>">
-                                        </div>
-                                        <div class="form-group mr-3">
-                                            <select class="form-control" id="list_week" name="list_week"
-                                                onchange="window.searchTimeslips()">
-                                                <option value="none">--
-                                                    <?php echo lang('Common.select_week'); ?>--
-                                                </option>
-                                                <?php foreach ($weeks as $row): ?>
-                                                    <option <?= (($list_week ?? "") == $row["week_no"] ? "selected" : "") ?>
-                                                        value="<?php echo ($row["week_no"]) ?>"><?= $row["week_no"] ?>
+                                        <div class="col-lg-10 form-row pl-0">
+                                            <div class="form-group mr-3">
+                                                <input type="text" class="form-control"
+                                                    placeholder="Filter by task name, employee" name="filter" id="filter"
+                                                    aria-controls="example" value="<?= @$_GET['filter'] ?>">
+                                            </div>
+                                            <div class="form-group mr-3">
+                                                <select class="form-control" id="list_week" name="list_week"
+                                                    onchange="window.searchTimeslips()">
+                                                    <option value="none">--
+                                                        <?php echo lang('Common.select_week'); ?>--
                                                     </option>
-                                                <?php endforeach; ?>
-                                            </select>
-                                        </div>
-                                        <div class="form-group mr-3">
-                                            <select class="form-control" id="list_monthpicker2" name="list_monthpicker"
-                                                onchange="window.searchTimeslips()">
-                                                <option value="none">--
-                                                    <?php echo lang('Common.select_month'); ?>--
-                                                </option>
-                                                <?php for ($iM = 1; $iM <= 12; $iM++) { ?>
-                                                    <option <?= (($list_monthpicker ?? "") == $iM ? "selected" : "") ?>
-                                                        value="<?php echo ($iM) ?>"><?php echo date('F', mktime(0, 0, 0, $iM, 10)); ?></option>
-                                                <?php } ?>
-                                            </select>
-                                        </div>
-                                        <div class="form-group mr-3">
-                                            <select class="form-control" id="list_yearpicker2" name="list_yearpicker"
-                                                onchange="window.searchTimeslips()">
-                                                <option value="none">--
-                                                    <?php echo lang('Common.select_year'); ?>--
-                                                </option>
+                                                    <?php foreach ($weeks as $row): ?>
+                                                        <option <?= (($list_week ?? "") == $row["week_no"] ? "selected" : "") ?>
+                                                            value="<?php echo ($row["week_no"]) ?>"><?= $row["week_no"] ?>
+                                                        </option>
+                                                    <?php endforeach; ?>
+                                                </select>
+                                            </div>
+                                            <div class="form-group mr-3">
+                                                <select class="form-control" id="list_monthpicker2" name="list_monthpicker"
+                                                    onchange="window.searchTimeslips()">
+                                                    <option value="none">--
+                                                        <?php echo lang('Common.select_month'); ?>--
+                                                    </option>
+                                                    <?php for ($iM = 1; $iM <= 12; $iM++) { ?>
+                                                        <option <?= (($list_monthpicker ?? "") == $iM ? "selected" : "") ?>
+                                                            value="<?php echo ($iM) ?>"><?php echo date('F', mktime(0, 0, 0, $iM, 10)); ?></option>
+                                                    <?php } ?>
+                                                </select>
+                                            </div>
+                                            <div class="form-group mr-3">
+                                                <select class="form-control" id="list_yearpicker2" name="list_yearpicker"
+                                                    onchange="window.searchTimeslips()">
+                                                    <option value="none">--
+                                                        <?php echo lang('Common.select_year'); ?>--
+                                                    </option>
 
-                                                <?php for ($iM = 0; $iM <= 4; $iM++) { ?>
-                                                    <option <?= (($list_yearpicker ?? "") == date("Y", strtotime("-" . $iM . " year")) ? "selected" : "") ?>
-                                                        value="<?php echo date("Y", strtotime("-" . $iM . " year")) ?>"><?php echo date("Y", strtotime("-" . $iM . " year")); ?></option>
-                                                <?php } ?>
+                                                    <?php for ($iM = 0; $iM <= 4; $iM++) { ?>
+                                                        <option <?= (($list_yearpicker ?? "") == date("Y", strtotime("-" . $iM . " year")) ? "selected" : "") ?>
+                                                            value="<?php echo date("Y", strtotime("-" . $iM . " year")) ?>"><?php echo date("Y", strtotime("-" . $iM . " year")); ?></option>
+                                                    <?php } ?>
 
 
-                                            </select>
+                                                </select>
+                                            </div>
                                         </div>
-                                        <div class="d-flex align-items-center form-group">
-                                            <div class="page_title_right font-weight-bold">Total Records: <span id="total">0</span> </div>
+                                        <div class="col-lg-2 d-flex justify-content-end">
+                                            <div class="d-flex align-items-center form-group">
+                                                <div class="page_title_right font-weight-bold">Total Records: <span id="total">0</span> </div>
+                                            </div>
                                         </div>
                                         <!-- <div class="form-group">
                                             <button type="button" onclick="window.searchTimeslips()" class="btn btn-outline-secondary"><i class="ti-search"></i> <?php echo lang('Common.search'); ?></button>

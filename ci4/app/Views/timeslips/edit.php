@@ -142,10 +142,7 @@ if (empty(@$timeslips['slip_timer_started'])) {
             <div class="form-group">
                 <label for="slip_hours" class="font-weight-bolder"> <?=lang('Timeslips.slip_hours');?> </label>
                 <div class="input-group">
-                    <input id="slip_hours" name="slip_hours" class="form-control timepicker" value="<?php echo @$timeslips['slip_hours']; ?>">
-                    <div class="input-group-append">
-                        <span class="input-group-text"><i class="fa fa-clock"></i></span>
-                    </div>
+                    <input id="slip_hours" name="slip_hours" class="form-control" value="<?php echo @$timeslips['slip_hours']; ?>">
                 </div>
                 <span class="form-control-feedback" id="slip_hours_error"></span>
             </div>

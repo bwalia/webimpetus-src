@@ -14310,7 +14310,7 @@ p.dashTitle {
 }
 
 .social_media_card .col-md-4 .bg-light {
-  background: #eeeeee !important;
+  background: #fff !important;
   /* box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.4); */
 }
 
@@ -14335,7 +14335,7 @@ p.dashTitle {
 }
 
 .social_media_card .col-md-4 .card-body.card-body-custom .items.add-dropzone .card.draggable {
-    background-color: #eeeeee !important;
+    background-color: #fff !important;
     margin: 0;
     box-shadow: none !important;
 }
