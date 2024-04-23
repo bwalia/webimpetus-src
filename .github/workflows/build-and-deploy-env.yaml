@@ -111,7 +111,7 @@ jobs:
           env:
             KUBE_CONFIG: ${{ env.KUBE_CONFIG_K3S }}
           with:
-            args: delete ing wsl-ingress-${{ env.TARGET_ENV }} -n ${{ env.TARGET_ENV }}        
+            args: delete ing wsl-ingress-int -n int        
 
         - name: Install API Gateway Ingress overriding the ingress from the chart            
           uses: actions-hub/kubectl@master
