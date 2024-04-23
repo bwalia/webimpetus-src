@@ -1,7 +1,15 @@
-<?php require_once(APPPATH . 'Views/common/edit-title.php'); ?>
+<?php
+
+use App\Models\Customers_model;
+
+require_once(APPPATH . 'Views/common/edit-title.php'); ?>
+
 <?php
 $projects = getResultArray("projects");
-$customers = getResultArray("customers");
+$customers = (new Customers_model())->limit(1)
+    ->where("uuid_business_id", session('uuid_business'))
+    ->get()
+    ->getResultArray();
 $users = getResultArray("users");
 $contacts = getResultArray("contacts");
 $employees = getResultArray("employees");
@@ -52,7 +60,7 @@ $sprints = getResultArray("sprints");
                                         </div>
                                         <div class="form-group  required col-md-6">
                                             <label for="inputEmail4">Customer Name </label>
-                                            <select id="customers_id" name="customers_id" class="form-control required dashboard-dropdown">
+                                            <select id="customers_id" name="customers_id" class="form-control required select-customer-ajax">
                                                 <option value="" selected="">--Select--</option>
                                                 <?php foreach ($customers as $row): ?>
                                                     <option value="<?= $row['id']; ?>" <?php if ($row['id'] == @$task->customers_id) {
@@ -425,4 +433,34 @@ $sprints = getResultArray("sprints");
             $("#deadlineError").text("");
         }
     }
+
+    $(document).ready(function() {
+        $(".select-customer-ajax").select2({
+            ajax: {
+                url: "/tasks/companyCustomerAjax",
+                dataType: 'json',
+                delay: 250,
+                data: function(params) {
+                    return {
+                        q: params.term // search term
+                    };
+                },
+                processResults: function(data, params) {
+                    // parse the results into the format expected by Select2
+                    // since we are using custom formatting functions we do not need to
+                    // alter the remote JSON data, except to indicate that infinite
+                    // scrolling can be used
+                    return {
+                        results: $.map(data, function(item) {
+                            return {
+                                text: item.company_name,
+                                id: item.id
+                            }
+                        })
+                    };
+                },
+            },
+            minimumInputLength: 2
+        })
+    });
 </script>

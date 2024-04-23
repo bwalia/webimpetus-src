@@ -5,17 +5,25 @@ use App\Models\Projects_model;
 use App\Models\Tasks_model;
 use App\Models\Core\Common_model;
 use App\Libraries\UUID;
- 
+use App\Models\Customers_model;
+use CodeIgniter\API\ResponseTrait;
+
+
 class Projects extends CommonController
 {	
+    use ResponseTrait;
+
 	protected $projects_model;
 	protected $tasks_model;
+    protected $customers_model;
+
     function __construct()
     {
         parent::__construct();
 
         $this->projects_model = new Projects_model();
         $this->tasks_model = new Tasks_model;
+        $this->customers_model = new Customers_model();
 
 	}
     
@@ -39,6 +47,20 @@ class Projects extends CommonController
 		$data[$this->rawTblName] = $projectData;
 		// if there any special cause we can overried this function and pass data to add or edit view
 		$data['additional_data'] = $projectData ? $projectData->id : $uuid;
+        
+        if(!empty($data[$this->rawTblName]->customer_id)) {
+            $data['customers'] = $this->customers_model
+                ->where('id', $data[$this->rawTblName]->customer_id)
+                ->where("uuid_business_id", session('uuid_business'))
+                ->get()
+                ->getResultArray();
+        } else {
+            $data['customers'] = $this->customers_model
+                ->where("uuid_business_id", session('uuid_business'))
+                ->limit(1)
+                ->get()
+                ->getResultArray();
+        }
 
         echo view($this->table."/edit",$data);
     }
@@ -69,5 +91,18 @@ class Projects extends CommonController
 		}
 
         return redirect()->to('/'.$this->table);
+    }
+
+    public function companyCustomerAjax()
+    {
+        $q = $this->request->getVar('q');
+        $data = $this->customers_model;
+        if(!empty($q)) {
+            $data = $data->like('company_name', $q);
+        }
+        
+        $data = $data->limit(500)->get()->getResult();
+
+        return $this->respond($data);
     }
 }
