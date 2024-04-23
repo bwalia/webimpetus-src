@@ -105,7 +105,21 @@ jobs:
           with:
             command: |
               helm upgrade -i wsl-${{ env.TARGET_ENV }} ./devops/webimpetus-chart -f devops/webimpetus-chart/values-${{ env.TARGET_ENV }}-${{ env.TARGET_CLUSTER }}.yaml --set-string targetImage="${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}" --set-string targetImageTag="${{ env.IMAGE_TAG }}" --namespace ${{ env.TARGET_ENV }} --create-namespace
-                    
+              
+        - name: Delete default ingress from the chart, Deploy API Gateway Ingress overriding the ingress from the chart            
+          uses: actions-hub/kubectl@master
+          env:
+            KUBE_CONFIG: ${{ env.KUBE_CONFIG_K3S }}
+          with:
+            args: delete ing wsl-ingress-${{ env.TARGET_ENV }} -n ${{ env.TARGET_ENV }}        
+
+        - name: Install API Gateway Ingress overriding the ingress from the chart            
+          uses: actions-hub/kubectl@master
+          env:
+            KUBE_CONFIG: ${{ env.KUBE_CONFIG_K3S }}
+          with:
+            args: apply -f devops/kubernetes/ingress-override-manifests.yaml
+
         - name: Restart Workstation CRM Pods using Kubectl            
           uses: actions-hub/kubectl@master
           env:
@@ -133,7 +147,7 @@ jobs:
             SLACK_CHANNEL: general
             SLACK_COLOR: ${{ job.status }}
             SLACK_ICON: https://github.com/rtCamp.png?size=48
-            SLACK_MESSAGE: 'Workstation CRM deployed to ${{ env.TARGET_ENV }} env :rocket:'
+            SLACK_MESSAGE: 'Workstation CRM deployed to https://${{ env.TARGET_ENV }}-my.workstation.co.uk/ (${{ env.TARGET_ENV }}) env :rocket:'
             SLACK_TITLE: Workstation CRM deployment status
             SLACK_USERNAME: rtCamp
             SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
