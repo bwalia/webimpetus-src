@@ -161,7 +161,7 @@
                         </div>
                         <div class="form-group col-md-12">
                            <label for="inputState">Publish Date</label>
-                           <input id="publish_date" class="form-control" name="publish_date" width="250" type="datepicker"  value="<?=render_date(@$content->publish_date)?>" />
+                           <input id="publish_date" class="form-control datepicker" name="publish_date" width="250" type="datepicker"  value="<?=render_date(@$content->publish_date)?>" />
                         </div>
                      </div>
                   </div>
