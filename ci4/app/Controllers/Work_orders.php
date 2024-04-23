@@ -14,9 +14,9 @@ class Work_orders extends CommonController
     function __construct()
     {
         parent::__construct();
-        $this->work_orders_model = new Work_orders_model();
-        $this->work_order_items = "work_order_items";
-        $this->work_orders = "work_orders";
+        @$this->work_orders_model = new Work_orders_model();
+        @$this->work_order_items = "work_order_items";
+        @$this->work_orders = "work_orders";
     }
 
     public function index()
@@ -218,7 +218,7 @@ class Work_orders extends CommonController
         $res = $this->model->deleteTableData($this->work_orders_notes, $id);
 
         $response['id'] = $id;
-        if ($res) {
+        if (isset($res)) {
 
             $response['status'] = true;
             $response['msg'] = "Data deleted successfully";

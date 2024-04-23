@@ -53,9 +53,15 @@ $months = ["January", "February", "March", "April", "May", "June", "July", "Augu
                                           <div class="form-group">
                                               <label><?php echo lang('Purchase_invoice.choose_template'); ?></label>
                                               <select name="template_id" class="form-control">
-                                                  <?php foreach (@$templates as $template) { ?>
+                                                  <?php
+                                                  if (empty($templates)) {
+                                                      echo '<option value="">' . lang('Common.no_data') . '</option>';
+                                                  } else {
+                                                  foreach (@$templates as $template) { ?>
                                                       <option value="<?php echo $template["id"]; ?>" <?php $template["is_default"] == '1' ? 'selected' : '' ?>><?php echo $template["code"]; ?></option>
-                                                  <?php } ?>
+                                                  <?php }
+                                                  }
+                                                  ?>
                                               </select>
                                           </div>
 

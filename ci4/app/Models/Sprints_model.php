@@ -11,9 +11,10 @@ class Sprints_model extends Model
     public function __construct()
     {
         parent::__construct();
-
-        $this->businessUuid = session('uuid_business');
-    }
+        if(property_exists($this, 'businessUuid') && session()->has('uuid_business')) {
+            $this->businessUuid = session('uuid_business');
+            }
+        }
     public function getRows($id = false)
     {
         if ($id === false) {

@@ -17,9 +17,10 @@ class Sales_invoices extends CommonController
         parent::__construct();
 
         $this->si_model = new Sales_invoice_model();
-        $this->sales_invoice_items = "sales_invoice_items";
-        $this->sales_invoice_notes = "sales_invoice_notes";
-        $this->sales_invoices = "sales_invoices";
+        $this->model = new Common_model();
+        @$this->sales_invoice_items = "sales_invoice_items";
+        @$this->sales_invoice_notes = "sales_invoice_notes";
+        @$this->sales_invoices = "sales_invoices";
     }
 
     public function index()
