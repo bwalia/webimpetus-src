@@ -1,5 +1,4 @@
 <?php require_once(APPPATH . 'Views/common/edit-title.php'); ?>
-<?php $customers = getResultArray("customers"); ?>
 <div class="white_card_body">
     <div class="card-body">
 
@@ -8,7 +7,7 @@
             <div class="form-row">
                 <div class="form-group required col-md-6">
                     <label for="inputEmail4">Customer Name</label>
-                    <select id="customers_id" name="customers_id" class="form-control required dashboard-dropdown">
+                    <select id="customers_id" name="customers_id" class="form-control required select-customer-ajax">
                         <option value="" selected="">--Select--</option>
                         <?php foreach ($customers as $row): ?>
                             <option value="<?= $row['id']; ?>" <?php if ($row['id'] == @$project->customers_id) {
@@ -18,6 +17,7 @@
                         <?php endforeach; ?>
                     </select>
                 </div>
+                
 
                 <div class="form-group required col-md-6">
                     <label for="inputEmail4">Project Name</label>
@@ -139,4 +139,34 @@
             $("#deadlineError").text("");
         }
     }
+
+    $(document).ready(function() {
+        $(".select-customer-ajax").select2({
+            ajax: {
+                url: "/projects/companyCustomerAjax",
+                dataType: 'json',
+                delay: 250,
+                data: function(params) {
+                    return {
+                        q: params.term // search term
+                    };
+                },
+                processResults: function(data, params) {
+                    // parse the results into the format expected by Select2
+                    // since we are using custom formatting functions we do not need to
+                    // alter the remote JSON data, except to indicate that infinite
+                    // scrolling can be used
+                    return {
+                        results: $.map(data, function(item) {
+                            return {
+                                text: item.company_name,
+                                id: item.id
+                            }
+                        })
+                    };
+                },
+            },
+            minimumInputLength: 2
+        })
+    });
 </script>

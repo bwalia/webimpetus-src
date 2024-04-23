@@ -10,13 +10,19 @@ use App\Models\Tasks_model;
 use App\Models\Users_model;
 use App\Models\Email_model;
 use App\Models\Sprints_model;
+use App\Models\Customers_model;
+use CodeIgniter\API\ResponseTrait;
 
 class Tasks extends CommonController
 {
+    use ResponseTrait;
+
     public $Tasks_model;
     public $Users_model;
     public $Email_model;
     public $sprintModel;
+    protected $customers_model;
+
     function __construct()
     {
         parent::__construct();
@@ -25,6 +31,7 @@ class Tasks extends CommonController
         $this->Users_model = new Users_model();
         $this->Email_model = new Email_model();
         $this->sprintModel = new Sprints_model();
+        $this->customers_model = new Customers_model();
     }
 
     public function index()
@@ -145,5 +152,18 @@ class Tasks extends CommonController
         }
 
         return redirect()->to('/' . $this->table);
+    }
+
+    public function companyCustomerAjax()
+    {
+        $q = $this->request->getVar('q');
+        $data = $this->customers_model;
+        if(!empty($q)) {
+            $data = $data->like('company_name', $q);
+        }
+        
+        $data = $data->limit(500)->get()->getResult();
+
+        return $this->respond($data);
     }
 }
