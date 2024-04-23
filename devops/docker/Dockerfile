@@ -23,8 +23,9 @@ RUN wget ${BASE_URL}/helm-v${VERSION}-linux-${ARCH}.tar.gz -O - | tar -xz && \
     chmod +x /usr/bin/helm && \
     rm -rf linux-${ARCH}
 
-RUN apk add mysql-client curl && \
-    wget https://dl.min.io/client/mc/release/linux-amd64/mc -O /usr/local/bin/mc \
+RUN apk add mysql-client
+RUN apk add curl
+RUN wget https://dl.min.io/client/mc/release/linux-amd64/mc -O /usr/local/bin/mc \
     --tries=3 --timeout=30 && \
     chmod +x /usr/local/bin/mc
 #   Install kubectl and helmchart binaries
