@@ -1,12 +1,16 @@
 <?php
 
 use App\Models\Customers_model;
+use CodeIgniter\Database\BaseBuilder;
 
 require_once(APPPATH . 'Views/common/edit-title.php'); ?>
 
 <?php
 $projects = getResultArray("projects");
-$customers = (new Customers_model())->limit(1)
+$customers = (new Customers_model())
+    ->whereIn("id", function (BaseBuilder $subqueryBuilder) {
+        return $subqueryBuilder->select("customers_id")->from("projects")->groupBy("customers_id");
+    })
     ->where("uuid_business_id", session('uuid_business'))
     ->get()
     ->getResultArray();
@@ -400,7 +404,7 @@ $sprints = getResultArray("sprints");
     $(document).on("change", "#projects_id", function () {
         var customerId = $('option:selected', this).attr('customer_id');
         $("#customers_id").val(customerId);
-        $("#customers_id").select2();
+        $("#customers_id").trigger("change");
     })
     $(document).on("click", ".form-check-input", function () {
         if ($(this).prop("checked") == false) {
