@@ -1,15 +1,21 @@
 <?php require_once(APPPATH . 'Views/timeslips/list-title.php'); ?>
+<style>
+    .column-wrap {
+        width: 1%;
+        white-space: nowrap;
+    }
+</style>
 <div class="white_card_body ">
     <div class="QA_table">
         <div class="row">
-            <div class="col-12 col-md-12 col-xl-8">
+            <div class="col-12">
                 <div class="table-responsive">
                     <!-- table-responsive -->
                     <table id="myTable" class="table table-listing-items tableDocument table-striped table-bordered">
                         <thead>
                             <tr>
-                                <th scope="col" width="5%"></th>
-                                <th scope="col" width="10%">Week No.</th>
+                                <th scope="col" class="column-wrap" ></th>
+                                <th scope="col" class="column-wrap">Week No.</th>
                                 <th scope="col" width="30%">Task</th>
                                 <th scope="col" width="20%">Employee</th>
                                 <th scope="col" width="10%">Start Date</th>
