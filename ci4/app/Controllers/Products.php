@@ -18,8 +18,8 @@ class Products extends CommonController
 	public function __construct()
 	{
 		parent::__construct();
-		$this->productModel = new Product();
-		$this->content_model = new Content_model();
+		@$this->productModel = new Product();
+		@$this->content_model = new Content_model();
 	}
 	public function index()
 	{
