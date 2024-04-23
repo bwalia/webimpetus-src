@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: prod-ing-int-wsl
+  namespace: prod
+  labels:
+    helm.sh/chart: whitefalcon-0.1.1
+    app.kubernetes.io/name: whitefalcon-live
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-production
+    kubernetes.io/ingress.class: traefik
+spec:
+  ingressClassName: traefik
+  tls:
+    - secretName: prod-tls-secret-int-wsl
+      hosts:
+        - "int-my.workstation.co.uk"
+  rules:
+    - host: "int-my.workstation.co.uk"
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: wf-front-svc-prod
+                port:
+                  number: 80
