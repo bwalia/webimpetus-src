@@ -514,9 +514,18 @@ class Api_v2 extends BaseController
 
     public function addCustomer()
     {
-        if (!empty($this->request->getPost('company_name')) && !empty($this->request->getPost('acc_no')) && !empty($this->request->getPost('uuid_business'))) {
+        $post = $this->request->getPost();
+        if (!$post) {
+            $post = $this->request->getJSON();
+            $post = (array) $post;
+        }
+        // $response_data['status'] = 400;
+        // $response_data['message']    = @$post["company_name"];
+        // echo json_encode($response_data);
+        // die;
 
-            $post = $this->request->getPost();
+        if (!empty(@$post["company_name"]) && !empty(@$post["acc_no"]) && !empty(@$post["uuid_business"])) {
+
             $data["company_name"] = @$post["company_name"];
             $data["acc_no"] = @$post["acc_no"];
             $data["status"] = @$post["status"];
@@ -539,7 +548,7 @@ class Api_v2 extends BaseController
             $response = $this->customer_model->insertOrUpdate('', $data);
             if (!$response) {
                 $response_data['status'] = 400;
-                $response_data['message']    = 'something wrong!!';
+                $response_data['message']    = 'Unknown error occurred!';
                 echo json_encode($response_data);
                 die;
             } else {
@@ -577,7 +586,7 @@ class Api_v2 extends BaseController
             }
         } else {
             $response_data['status'] = 400;
-            $response_data['message']    = 'business uuid, Company name and account number cannot be empty!!';
+            $response_data['message']    = $this->request->getPost('company_name') . 'Company name and Account number cannot be empty!';
             echo json_encode($response_data);
             die;
         }

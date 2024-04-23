@@ -46,12 +46,12 @@ class Common_model extends Model
                 return $this->findAll();
             } else {
 
-                return $this->getWhere($whereCond)->getResultArray();
+                return $this->getWhere($whereCond, 1000, 0)->getResultArray();
             }
         } else {
 
             $whereCond = array_merge(array('id' => $id), $whereCond);
-            return $this->getWhere($whereCond);
+            return $this->getWhere($whereCond, 1000, 0);
         }
     }
 
