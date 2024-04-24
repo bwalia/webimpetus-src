@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use CodeIgniter\Model;
-
+use Exception;
 class Companies extends Model
 {
     protected $DBGroup          = 'default';
@@ -131,5 +131,29 @@ class Companies extends Model
         return $contact;
     }
 
+    public function getContacts($companyUUID)
+    {
+        $query = [];
+        if ($companyUUID) {
+            $query = $this->db->table("company__contact")
+                    ->select("contact_uuid")
+                    ->where("company_uuid", $companyUUID)
+                    ->get()
+                    ->getRowArray();
+        }
+        return $query;
+    }
+
+    public function deleteRelationData($companyUUID)
+    {
+        $query = $this->db->table("company__contact")->delete(array('company_uuid' => $companyUUID));
+        return $query;
+    }
+
+    public function insertRelationData(array $data)
+    {
+        $query = $this->db->table("company__contact")->insert($data);
+        return $this->db->insertID();
+    }
 
 }

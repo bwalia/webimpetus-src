@@ -1,5 +1,5 @@
-<?php require_once(APPPATH . 'Views/common/edit-title.php');
-$categories = getResultArray("categories");
+<?php require_once (APPPATH . 'Views/common/edit-title.php');
+$allContacts = getResultArray("contacts");
 ?>
 
 <div class="white_card_body">
@@ -30,12 +30,11 @@ $categories = getResultArray("categories");
                                         value="<?= @$company->company_name ?>">
                                 </div>
 
-
-
                                 <div class="form-group required col-md-4">
                                     <label for="inputEmail4">Company Number</label>
                                     <input autocomplete="off" type="text" class="form-control required"
-                                        id="acc_no" name="acc_no" placeholder="" value="<?= @$company->company_number ?>">
+                                        id="company_number" name="company_number" placeholder=""
+                                        value="<?= @$company->company_number ?>">
                                 </div>
                                 <div class="form-check col-md-1">
                                 </div>
@@ -46,141 +45,137 @@ $categories = getResultArray("categories");
                                             echo
                                                 "checked";
                                         } ?>   value="<?php echo @$company->status; ?>">
-                                        <label class="form-check-label" for="flexCheckIndeterminate">
-                                            <?php 
+                                        <label class="form-check-label" for="status">
+                                            <?php
                                             echo "Active";
                                             ?>
                                         </label>
                                     </div>
                                 </div>
-                                <div class="form-check checkbox-section col-md-1">
-                                    <div class="checkbox-label">
+                            </div>
 
-                                        <input class="form-check-input" name="supplier" id="supplier"
-                                            value="<?php echo @$company->company_type; ?>" type="checkbox" <?php if (@$company->company_type == "1") {
-                                                   echo
-                                                       "checked";
-                                               } ?>>
-                                        <label class="form-check-label" for="flexCheckIndeterminate">
-                                            UK Supplier
-                                        </label>
-                                    </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="address_1"> Address 1</label>
+                                    <input autocomplete="off" type="text" class="form-control" id="address_1"
+                                        name="address_1" placeholder="" value="<?= @$company->address_1 ?>">
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label for="address_2">Address 2</label>
+                                    <input autocomplete="off" type="text" class="form-control" id="address_2"
+                                        name="address_2" placeholder="" value="<?= @$company->address_2 ?>">
                                 </div>
                             </div>
 
                             <div class="form-row">
                                 <div class="form-group col-md-6">
-                                    <label for="inputEmail4"> Contact First Name</label>
-                                    <input autocomplete="off" type="text" class="form-control" id="contact_firstname"
-                                        name="contact_firstname" placeholder=""
-                                        value="<?= @$company->contact_firstname ?>">
+                                    <label for="address_3"> Address 3</label>
+                                    <input autocomplete="off" type="text" class="form-control" id="address_3"
+                                        name="address_3" placeholder=""
+                                        value="<?= @$company->address_3 ?>">
                                 </div>
 
                                 <div class="form-group col-md-6">
-                                    <label for="inputEmail4">Contact Last Name</label>
-                                    <input autocomplete="off" type="text" class="form-control" id="contact_lastname"
-                                        name="contact_lastname" placeholder=""
-                                        value="<?= @$company->contact_lastname ?>">
+                                    <label for="town_or_city">Town or City</label>
+                                    <input autocomplete="off" type="text" class="form-control" id="town_or_city"
+                                        name="town_or_city" placeholder=""
+                                        value="<?= @$company->town_or_city ?>">
                                 </div>
                             </div>
 
                             <div class="form-row">
                                 <div class="form-group col-md-6">
-                                    <label for="inputEmail4"> Address 1</label>
-                                    <input autocomplete="off" type="text" class="form-control" id="address1"
-                                        name="address1" placeholder="" value="<?= @$company->address1 ?>">
+                                    <label for="state_or_county">State or Country</label>
+                                    <input autocomplete="off" type="text" class="form-control" id="state_or_county" name="state_or_county"
+                                        placeholder="" value="<?= @$company->state_or_county ?>">
                                 </div>
 
                                 <div class="form-group col-md-6">
-                                    <label for="inputEmail4">Address 2</label>
-                                    <input autocomplete="off" type="text" class="form-control" id="address2"
-                                        name="address2" placeholder="" value="<?= @$company->address2 ?>">
+                                    <label for="post_zip_code">Post Zip Code</label>
+                                    <input autocomplete="off" type="text" class="form-control" id="post_zip_code"
+                                        name="post_zip_code" placeholder="" value="<?= @$company->post_zip_code ?>">
                                 </div>
                             </div>
 
                             <div class="form-row">
                                 <div class="form-group col-md-6">
-                                    <label for="inputEmail4">City</label>
-                                    <input autocomplete="off" type="text" class="form-control" id="city" name="city"
-                                        placeholder="" value="<?= @$company->city ?>">
+                                    <label for="region_area">Region Area</label>
+                                    <input autocomplete="off" type="text" class="form-control" id="region_area"
+                                        name="region_area" placeholder="" value="<?= @$company->region_area ?>">
                                 </div>
 
                                 <div class="form-group col-md-6">
-                                    <label for="inputEmail4">Country</label>
-                                    <input autocomplete="off" type="text" class="form-control" id="country"
-                                        name="country" placeholder="" value="<?= @$company->country ?>">
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    <label for="inputEmail4"> Postal Code</label>
-                                    <input autocomplete="off" type="text" class="form-control" id="postal_code"
-                                        name="postal_code" placeholder="" value="<?= @$company->postal_code ?>">
-                                </div>
-
-                                <div class="form-group col-md-6">
-                                    <label for="inputEmail4">Telephone</label>
-                                    <input autocomplete="off" type="text" class="form-control phone" id="phone"
-                                        name="phone" placeholder="" value="<?= @$company->telephone ?>">
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    <label for="inputEmail4">Website</label>
+                                    <label for="website">Website</label>
                                     <input autocomplete="off" type="text" class="form-control" id="website"
                                         name="website" placeholder="" value="<?= @$company->website ?>">
                                 </div>
-
-
-
+                            </div>
+                            <div class="form-row">
                                 <div class="form-group col-md-6">
-                                    <label for="inputEmail4">Categories</label>
-                                    <select id="categories" name="categories[]" multiple class="form-control select2">
-                                        <?php
-                                        if (isset($company) && (!empty($company->categories))) {
-                                            $arr = json_decode(@$company->categories);
-                                            foreach ($categories as $row): ?>
-                                                <option value="<?= $row['id']; ?>" <?php if ($arr)
-                                                      echo
-                                                          in_array($row['id'], $arr) ? 'selected="selected"' : '' ?>><?= $row['name']; ?>
-                                                </option>
-                                            <?php endforeach; ?>
-                                        <?php } ?>
-                                    </select>
+                                    <label for="email">Email</label>
+                                    <input autocomplete="off" type="text" class="form-control" id="email"
+                                        name="email" placeholder="" value="<?= @$company->email ?>">
                                 </div>
 
+                                <div class="form-group col-md-6">
+                                    <label for="premises_type">Premises Type</label>
+                                    <input autocomplete="off" type="text" class="form-control" id="premises_type"
+                                        name="premises_type" placeholder="" value="<?= @$company->premises_type ?>">
+                                </div>
                             </div>
 
-                            <div class="form-group required col-md-12 px-0">
-                                <label for="email">Email</label>
-                                <input autocomplete="off" type="text" class="form-control email required" id="email"
-                                    name="email" placeholder="" value="<?= @$company->email ?>">
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="no_of_employees">No. of Employees</label>
+                                    <input autocomplete="off" type="text" class="form-control" id="no_of_employees"
+                                        name="no_of_employees" placeholder="" value="<?= @$company->no_of_employees ?>">
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label for="company_type">Company Type</label>
+                                    <input autocomplete="off" type="text" class="form-control" id="company_type"
+                                        name="company_type" placeholder="" value="<?= @$company->company_type ?>">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="sic_code">SIC Code</label>
+                                    <input autocomplete="off" type="text" class="form-control" id="sic_code"
+                                        name="sic_code" placeholder="" value="<?= @$company->sic_code ?>">
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label for="turnover">Turnover</label>
+                                    <input autocomplete="off" type="text" class="form-control" id="turnover"
+                                        name="turnover" placeholder="" value="<?= @$company->turnover ?>">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="company_telephone">Company Telephone</label>
+                                    <input autocomplete="off" type="text" class="form-control" id="company_telephone"
+                                        name="company_telephone" placeholder="" value="<?= @$company->company_telephone ?>">
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label for="company_fax">Company Fax</label>
+                                    <input autocomplete="off" type="text" class="form-control" id="company_fax"
+                                        name="company_fax" placeholder="" value="<?= @$company->company_fax ?>">
+                                </div>
                             </div>
                             <input type="hidden" name="uuid" value="<?= @$company->uuid ?>" />
                             <input type="hidden" name="id" value="<?= @$company->id ?>" />
-
-                            <div class="form-row">
-                                <div class="form-group col-md-12">
-                                    <label for="inputPassword4">Notes</label>
-                                    <textarea class="form-control" name="notes"><?= @$company->notes ?></textarea>
-                                </div>
-                            </div>
                         </div>
-                        <?php
-                        $contactUUIDs = [];
-                        foreach ($selectedContacts as $key => $selectedContact) {
-                            array_push($contactUUIDs, $selectedContact['contact_uuid']);
-                        }
-                        ?>
                         <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-                            <div class="form-group col-md-12">
+                        <div class="form-group col-md-12">
                                 <label for="contacts-option">Choose Contacts</label>
-                                <select id="contacts-option" name="cnId[]" multiple class="form-control select2">
+                                <select id="contacts-option" name="contactID" class="form-control select2 w-100">
                                     <option value="">--Select--</option>
-                                    <?php foreach (@$contacts as $row): ?>
-                                        <option value="<?= $row['uuid']; ?>" <?= (in_array($row['uuid'], $contactUUIDs)) ? 'selected' : '' ?>>
-                                            <?= $row['first_name'] . ' ' . $row['surname']; ?>
+                                    <?php foreach (@$allContacts as $allContact): ?>
+                                        <option value="<?= $allContact['uuid']; ?>" <?= ($allContact['uuid'] == @$contacts['contact_uuid']) ? 'selected' : '' ?>>
+                                            <?= $allContact['first_name'] . ' ' . $allContact['surname']; ?>
                                         </option>
                                     <?php endforeach; ?>
                                 </select>
@@ -204,7 +199,7 @@ $categories = getResultArray("categories");
     </div>
 </div>
 
-<?php require_once(APPPATH . 'Views/common/footer.php'); ?>
+<?php require_once (APPPATH . 'Views/common/footer.php'); ?>
 <!-- main content part end -->
 
 
@@ -241,7 +236,7 @@ $categories = getResultArray("categories");
                     }
                 }
             })
-        } 
+        }
     });
 
     $(":submit").click(function (e) {
