@@ -11,10 +11,10 @@ class Sprints extends CommonController
     function __construct()
     {
         parent::__construct();
-
+        if(property_exists($this, 'sprints_model'))  {
         $this->sprints_model = new Sprints_model();
     }
-
+    }
 
     public function update()
     {

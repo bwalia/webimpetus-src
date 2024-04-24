@@ -13,7 +13,7 @@ class Product extends Model
     function __construct()
     {
         parent::__construct();
-        $this->session = session();
+        @$this->session = session();
     }
 
     protected $DBGroup          = 'default';

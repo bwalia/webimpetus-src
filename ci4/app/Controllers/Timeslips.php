@@ -14,9 +14,15 @@ class Timeslips extends CommonController
     public function __construct()
     {
         parent::__construct();
-        $this->session = \Config\Services::session();
-        $this->timeSlipsModel = new TimeslipsModel();
-        $this->templateModel = new Template_model();
+        if(property_exists($this, 'session')) {
+            $this->session = \Config\Services::session();
+        }
+        if(property_exists($this, 'timeSlipsModel')) {
+            $this->timeSlipsModel = new TimeslipsModel();
+        }
+        if(property_exists($this, 'templateModel')) {
+            $this->templateModel = new Template_model();
+        }
     }
 
     public function index()
@@ -68,7 +74,9 @@ class Timeslips extends CommonController
         $data['is_add_permission'] = 1;
         $data['identifierKey'] = 'uuid';
         $data["employees"] = $this->timeSlipsModel->getEmployeesData();
-        $data['templates'] = $this->templateModel->getMatchRows(['module_name' => $this->table]);
+        if(property_exists($this, 'templateModel')) {
+            $data['templates'] = $this->templateModel->getMatchRows(['module_name' => $this->table]);
+        }
         $data['weeks'] = $this->timeSlipsModel->getDistinctWeeks();
         $data['uuid_business'] = $this->session->get('uuid_business');
         $data['token'] = $this->session->get('jwt_token');

@@ -12,7 +12,7 @@ class Templates extends CommonController
     function __construct()
     {
         parent::__construct();
-        $this->blocks_model = new Blocks_model();
+        @$this->blocks_model = new Blocks_model();
     }
 
     public function edit($id = '')
