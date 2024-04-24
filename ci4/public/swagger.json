@@ -96,14 +96,14 @@
                 ]
             }
         },
-        "/api/v2/businesss": {
+        "/api/v2/Business": {
             "get": {
                 "tags": [
-                    "businesss"
+                    "Business"
                 ],
                 "responses": {
                     "200": {
-                        "description": "Get the businesss data"
+                        "description": "Get the Business data"
                     }
                 },
                 "security": [
@@ -114,7 +114,7 @@
             },
             "post": {
                 "tags": [
-                    "businesss"
+                    "Business"
                 ],
                 "responses": {
                     "200": {
@@ -128,10 +128,10 @@
                 ]
             }
         },
-        "/api/v2/businesss/{uuid}": {
+        "/api/v2/Business/{uuid}": {
             "get": {
                 "tags": [
-                    "businesss"
+                    "Business"
                 ],
                 "responses": {
                     "200": {
@@ -146,7 +146,7 @@
             },
             "put": {
                 "tags": [
-                    "businesss"
+                    "Business"
                 ],
                 "parameters": [
                     {
@@ -172,7 +172,7 @@
             },
             "delete": {
                 "tags": [
-                    "businesss"
+                    "Business"
                 ],
                 "responses": {
                     "200": {
