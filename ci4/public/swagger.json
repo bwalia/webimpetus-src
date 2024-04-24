@@ -3,7 +3,48 @@
     "info": {
         "title": "WebImpetus API v2",
         "description": "API reference for performing CRUD operations for WebImpetus CRM, ERP and CMS Database Applications",
-        "version": "1.0"
+        "version": "1.0",
+        "tags" : [
+            {
+                "name": "Companies"
+            },
+            {
+                "name": "Businesses"
+            },
+            {
+                "name": "Categories"
+            },
+            {
+                "name": "Contacts"
+            },
+            {
+                "name": "Customers"
+            },
+            {
+                "name": "Employee"
+            },
+            {
+                "name": "Menu"
+            },
+            {
+                "name": "Projects"
+            },
+            {
+                "name": "Sprints"
+            },
+            {
+                "name": "Tasks"
+            },
+            {
+                "name": "Timeslips"
+            },
+            {
+                "name": "User"
+            },
+            {
+                "name": "Webpages"
+            }
+        ]
     },
     "paths": {
         "/api/v2/companies": {
