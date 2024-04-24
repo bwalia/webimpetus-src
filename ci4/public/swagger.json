@@ -2,17 +2,18 @@
     "openapi": "3.0.0",
     "info": {
         "title": "WebImpetus API V2",
-        "version": "2.0"
+        "description": "API reference for performing CRUD operations for WebImpetus CRM, ERP and CMS Database Applications v1",
+        "version": "1.0"
     },
     "paths": {
-        "/api/v2/businesses": {
+        "/api/v2/companies": {
             "get": {
                 "tags": [
-                    "Businesses"
+                    "Companies"
                 ],
                 "responses": {
                     "200": {
-                        "description": "Get the businesses data"
+                        "description": "Get the companies data"
                     }
                 },
                 "security": [
@@ -23,7 +24,97 @@
             },
             "post": {
                 "tags": [
-                    "Businesses"
+                    "Companies"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Created a company data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/companies/{uuid}": {
+            "get": {
+                "tags": [
+                    "Companies"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get the single company data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Companies"
+                ],
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "query",
+                        "description": "The company uuid",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated a company data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Companies"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Delete a company data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/businesss": {
+            "get": {
+                "tags": [
+                    "businesss"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get the businesss data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "businesss"
                 ],
                 "responses": {
                     "200": {
@@ -37,10 +128,10 @@
                 ]
             }
         },
-        "/api/v2/businesses/{uuid}": {
+        "/api/v2/businesss/{uuid}": {
             "get": {
                 "tags": [
-                    "Businesses"
+                    "businesss"
                 ],
                 "responses": {
                     "200": {
@@ -55,13 +146,13 @@
             },
             "put": {
                 "tags": [
-                    "Businesses"
+                    "businesss"
                 ],
                 "parameters": [
                     {
                         "name": "uuid",
                         "in": "query",
-                        "description": "The businesse uuid",
+                        "description": "The business uuid",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -70,7 +161,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Updated a businesse data"
+                        "description": "Updated a business data"
                     }
                 },
                 "security": [
@@ -81,11 +172,11 @@
             },
             "delete": {
                 "tags": [
-                    "Businesses"
+                    "businesss"
                 ],
                 "responses": {
                     "200": {
-                        "description": "Delete a businesse"
+                        "description": "Delete a business"
                     }
                 },
                 "security": [
