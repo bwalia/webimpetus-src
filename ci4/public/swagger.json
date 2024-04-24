@@ -1,8 +1,8 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "WebImpetus API v1",
-        "description": "API reference for performing CRUD operations for WebImpetus CRM, ERP and CMS Database Applications v1",
+        "title": "WebImpetus API v2",
+        "description": "API reference for performing CRUD operations for WebImpetus CRM, ERP and CMS Database Applications",
         "version": "1.0"
     },
     "paths": {
@@ -96,10 +96,10 @@
                 ]
             }
         },
-        "/api/v2/Business": {
+        "/api/v2/businesses": {
             "get": {
                 "tags": [
-                    "Business"
+                    "Businesses"
                 ],
                 "responses": {
                     "200": {
@@ -114,7 +114,7 @@
             },
             "post": {
                 "tags": [
-                    "Business"
+                    "Businesses"
                 ],
                 "responses": {
                     "200": {
@@ -128,10 +128,10 @@
                 ]
             }
         },
-        "/api/v2/Business/{uuid}": {
+        "/api/v2/businesses/{uuid}": {
             "get": {
                 "tags": [
-                    "Business"
+                    "Businesses"
                 ],
                 "responses": {
                     "200": {
@@ -146,7 +146,7 @@
             },
             "put": {
                 "tags": [
-                    "Business"
+                    "Businesses"
                 ],
                 "parameters": [
                     {
@@ -172,7 +172,7 @@
             },
             "delete": {
                 "tags": [
-                    "Business"
+                    "Businesses"
                 ],
                 "responses": {
                     "200": {
