@@ -1,7 +1,7 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "WebImpetus API V1",
+        "title": "WebImpetus API v1",
         "description": "API reference for performing CRUD operations for WebImpetus CRM, ERP and CMS Database Applications v1",
         "version": "1.0"
     },
