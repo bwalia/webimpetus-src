@@ -6,43 +6,68 @@
         "version": "1.0",
         "tags" : [
             {
-                "name": "Companies"
+                "name": "Companies",
+                "description": "Companies CRUD operations"
             },
             {
-                "name": "Businesses"
+                "name": "Businesses",
+                "description": "Businesses CRUD operations"
+
             },
             {
-                "name": "Categories"
+                "name": "Categories",
+                "description": "Categories CRUD operations"
+
             },
             {
-                "name": "Contacts"
+                "name": "Contacts",
+                "description": "Contacts CRUD operations"
+
             },
             {
-                "name": "Customers"
+                "name": "Customers",
+                "description": "Customers CRUD operations"
+
             },
             {
-                "name": "Employee"
+                "name": "Employee",
+                "description": "Employee CRUD operations"
+
             },
             {
-                "name": "Menu"
+                "name": "Menu",
+                "description": "Menu CRUD operations"
+
             },
             {
-                "name": "Projects"
+                "name": "Projects",
+                "description": "Projects CRUD operations"
+
             },
             {
-                "name": "Sprints"
+                "name": "Sprints",
+                "description": "Sprints CRUD operations"
+
             },
             {
-                "name": "Tasks"
+                "name": "Tasks",
+                "description": "Tasks CRUD operations"
+
             },
             {
-                "name": "Timeslips"
+                "name": "Timeslips",
+                "description": "Timeslips CRUD operations"
+
             },
             {
-                "name": "User"
+                "name": "User",
+                "description": "User CRUD operations"
+
             },
             {
-                "name": "Webpages"
+                "name": "Webpages",
+                "description": "Webpages CRUD operations"
+
             }
         ]
     },
