@@ -7,16 +7,18 @@
             <thead>
                 <tr>
                     <th scope="col">Id</th>
-                    <th scope="col">Customer Name</th>
-                    <th scope="col">Account Number</th>
+                    <th scope="col">Company Name</th>
+                    <th scope="col">Company Number</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">SIC</th>
                     <th scope="col">Status</th>
                     <th scope="col">Email</th>
                     <th scope="col" width="50">Action</th>
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($customers as $row) : ?>
-                    <tr data-link="customers/edit/<?= $row['uuid']; ?>">
+                <?php foreach ($companies as $row) : ?>
+                    <tr data-link="companies/edit/<?= $row['uuid']; ?>">
                         <td class="f_s_12 f_w_400"><?= $row['id']; ?>
                         </td>
                         <td class="f_s_12 f_w_400"><?= $row['company_name']; ?>
@@ -40,8 +42,8 @@
                                         <i class="ti-more-alt"></i>
                                     </span>
                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                                        <a class="dropdown-item" onclick="return confirm('Are you sure want to delete?');" href="/customers/deleterow/<?= $row['uuid']; ?>"> <i class="ti-trash"></i> Delete</a>
-                                        <a class="dropdown-item" href="/customers/edit/<?= $row['uuid']; ?>"> <i class="fas fa-edit"></i> Edit</a>
+                                        <a class="dropdown-item" onclick="return confirm('Are you sure want to delete?');" href="/companies/deleterow/<?= $row['uuid']; ?>"> <i class="ti-trash"></i> Delete</a>
+                                        <a class="dropdown-item" href="/companies/edit/<?= $row['uuid']; ?>"> <i class="fas fa-edit"></i> Edit</a>
                                     </div>
                                 </div>
                             </div>

@@ -7,7 +7,7 @@
                 <tr>
 
                     <th scope="col">Id</th>
-                    <th scope="col">Name</th>
+                    <th scope="col">Menu Name</th>
                     <th scope="col">Link</th>
                     <th scope="col">Icon</th>
 
