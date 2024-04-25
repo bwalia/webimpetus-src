@@ -1676,7 +1676,7 @@
       "/api/v2/webpages": {
         "get": {
           "tags": [
-            "webpage"
+            "Webpage"
           ],
           "responses": {
             "200": {
@@ -1691,7 +1691,7 @@
         },
         "post": {
           "tags": [
-            "webpage"
+            "Webpage"
           ],
           "parameters": [
             {
@@ -1719,7 +1719,7 @@
       "/api/v2/webpages/{uuid}": {
         "get": {
           "tags": [
-            "webpage"
+            "Webpage"
           ],
           "parameters": [
             {
@@ -1745,7 +1745,7 @@
         },
         "put": {
           "tags": [
-            "webpage"
+            "Webpage"
           ],
           "parameters": [
             {
@@ -1771,7 +1771,7 @@
         },
         "delete": {
           "tags": [
-            "webpage"
+            "Webpage"
           ],
           "parameters": [
             {
