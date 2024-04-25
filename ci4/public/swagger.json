@@ -139,6 +139,142 @@
           ]
         }
       },
+
+      "/api/v2/addresses": {
+        "get": {
+          "tags": [
+            "addresses"
+          ],
+          "responses": {
+            "200": {
+              "description": "Get the addresses"
+            }
+          },
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ]
+        },
+        "post": {
+          "tags": [
+            "addresses"
+          ],
+          "summary": "Create a new Address",
+          "operationId": "createAddress",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/addresses"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Created a Address data"
+            }
+          },
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ]
+        }
+      },
+      "/api/v2/addresses/{uuid}": {
+        "get": {
+          "tags": [
+            "addresses"
+          ],
+          "parameters": [
+            {
+              "name": "uuid",
+              "in": "path",
+              "description": "The addresses uuid",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Created a addresses data"
+            }
+          },
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ]
+        },
+        "put": {
+          "tags": [
+            "addresses"
+          ],
+          "parameters": [
+            {
+              "name": "uuid",
+              "in": "path",
+              "description": "The addresses uuid",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/addresses"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Updated a addresses data"
+            }
+          },
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ]
+        },
+        "delete": {
+          "tags": [
+            "addresses"
+          ],
+          "parameters": [
+            {
+              "name": "uuid",
+              "in": "path",
+              "description": "The addresses uuid",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Delete a addresses"
+            }
+          },
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ]
+        }
+      },
+
       "/api/v2/companies": {
         "get": {
           "tags": [
@@ -1536,14 +1672,41 @@
           ]
         }
       },
+
       "/api/v2/webpages": {
         "get": {
           "tags": [
-            "Webpages"
+            "webpage"
           ],
           "responses": {
             "200": {
-              "description": "Get the webpage data"
+              "description": "Get the webpages data"
+            }
+          },
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ]
+        },
+        "post": {
+          "tags": [
+            "webpage"
+          ],
+          "parameters": [
+            {
+              "name": "uuid_business_id",
+              "in": "query",
+              "description": "business uuid required",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Updated a webpage data"
             }
           },
           "security": [
@@ -1556,13 +1719,13 @@
       "/api/v2/webpages/{uuid}": {
         "get": {
           "tags": [
-            "Webpages"
+            "webpage"
           ],
           "parameters": [
             {
               "name": "uuid",
               "in": "path",
-              "description": "The webpages uuid",
+              "description": "The webpage uuid",
               "required": true,
               "schema": {
                 "type": "string"
@@ -1579,9 +1742,64 @@
               "bearerAuth": []
             }
           ]
+        },
+        "put": {
+          "tags": [
+            "webpage"
+          ],
+          "parameters": [
+            {
+              "name": "uuid",
+              "in": "path",
+              "description": "The webpage uuid",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Updated a webpage data"
+            }
+          },
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ]
+        },
+        "delete": {
+          "tags": [
+            "webpage"
+          ],
+          "parameters": [
+            {
+              "name": "uuid",
+              "in": "path",
+              "description": "The webpage uuid",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Delete a webpage"
+            }
+          },
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ]
         }
       }
+      
+
     },
+
     "components": {
       "securitySchemes": {
         "bearerAuth": {
@@ -1648,6 +1866,73 @@
             }
           }
         },
+
+                "Addresses": {
+          "type": "object",
+          "properties": {
+            "address_line_1": {
+              "type": "string",
+              "default": "Address line 1"
+            },
+            "address_line_2": {
+              "type": "string",
+              "default": "Address line 2"
+            },
+            "address_line_3": {
+              "type": "string",
+              "default": "Address line 3"
+            },
+            "address_line_4": {
+              "type": "string",
+              "default": "Address line 4"
+            },
+            "city": {
+              "type": "string",
+              "default": "City"
+            },
+            "state": {
+              "type": "string",
+              "default": "State"
+            },
+            "country": {
+              "type": "string",
+              "default": "Country"
+            },
+            "post_code": {
+              "type": "string",
+              "default": "Post code"
+            },
+            "uuid_contact": {
+              "type": "string",
+              "default": "uuid contact"
+            },
+            "uuid_user": {
+              "type": "string",
+              "default": "uuid user"
+            },
+            "uuid_customer": {
+              "type": "string",
+              "default": "uuid customer"
+            },
+            "address_type": {
+              "type": "string",
+              "default": "address type"
+            },
+            "created_at": {
+              "type": "datetime",
+              "default": "2019-01-01 00:00:00"
+            },
+            "modified_at": {
+              "type": "timestamp",
+              "default": "2019-01-01 00:00:00"
+            },
+            "uuid_business_id": {
+              "type": "string",
+              "default": "test"
+            }
+          }
+        },
+
         "Companies": {
           "type": "object",
           "properties": {
@@ -1725,7 +2010,7 @@
             },
             "uuid_business_id": {
               "type": "string",
-              "default": "test"
+              "default": "UUID of business"
             }
           }
         },
@@ -1888,7 +2173,7 @@
             },
             "website": {
               "type": "string",
-              "default": "https://wesite.com"
+              "default": "https://website.com"
             },
             "uuid_business_id": {
               "type": "string",
@@ -1961,7 +2246,7 @@
             },
             "website": {
               "type": "string",
-              "default": "https://wesite.com"
+              "default": "https://website.com"
             },
             "uuid_business_id": {
               "type": "string",
