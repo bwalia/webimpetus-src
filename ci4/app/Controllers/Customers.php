@@ -7,17 +7,24 @@ use App\Models\Core\Common_model;
 use App\Models\Contact;
 use App\Libraries\UUID;
 use App\Models\CustomerContactModel;
+use App\Models\Customers_model;
 
 class Customers extends CommonController
 {
     protected $contactModel;
     protected $customerContactModel;
+    protected $customerModel;
+    protected $table;
+    protected $rawTblName;
     function __construct()
     {
         parent::__construct();
         $this->db = \Config\Database::connect();
         $this->contactModel = new Contact();
+        $this->customerModel = new Customers_model();
         $this->customerContactModel = new CustomerContactModel();
+        $this->table = "customers";
+        $this->rawTblName = "customers";
     }
 
     public function getAdditionalData($id)
@@ -34,14 +41,27 @@ class Customers extends CommonController
         return  $data;
     }
 
+    public function index()
+    {
+        $pager = \Config\Services::pager();
+        $data = [
+            'rawTblName' => $this->rawTblName,
+            'tableName' => $this->table,
+            'customers' => $this->customerModel->where('uuid_business_id', session('uuid_business'))->paginate(2), // Adjust the number as needed
+            'pager'     => $this->customerModel->pager,
+        ];
+
+        return view($this->table . '/list', $data);
+    }
+
     public function edit($uuid = 0)
 	{
 		$tableData =  $uuid ? $this->model->getExistsRowsByUUID($uuid)->getRow() : '';
-		
+        
 		$data['tableName'] = $this->table;
 		$data['rawTblName'] = $this->rawTblName;
 		$data["users"] = $this->model->getUser();
-		$data[$this->rawTblName] = $tableData;
+		$data["customer"] = $tableData;
 		// if there any special cause we can overried this function and pass data to add or edit view
 		$data['contacts'] = $this->contactModel->getRowsByUUID();
         $data['selectedContacts'] = $this->customerContactModel->getRowsByCustomerUUID();
