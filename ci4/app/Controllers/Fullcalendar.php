@@ -14,7 +14,10 @@ class Fullcalendar extends CommonController
     {
         parent::__construct();
         $this->timeSlipsModel = new TimeslipsModel();
-        $this->taskModel = new Tasks_model();
+        if (property_exists($this, 'taskModel'))
+        {
+            $this->taskModel = new Tasks_model();
+        }
     }
 
     public function index()
