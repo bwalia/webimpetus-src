@@ -43,11 +43,12 @@ class Customers extends CommonController
 
     public function index()
     {
+        $keyword = $this->request->getVar('query');
         $pager = \Config\Services::pager();
         $data = [
             'rawTblName' => $this->rawTblName,
             'tableName' => $this->table,
-            'customers' => $this->customerModel->where('uuid_business_id', session('uuid_business'))->paginate(2), // Adjust the number as needed
+            'customers' => $this->customerModel->where('uuid_business_id', session('uuid_business'))->search($keyword)->paginate(2),
             'pager'     => $this->customerModel->pager,
         ];
 

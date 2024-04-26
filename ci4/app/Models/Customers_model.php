@@ -5,6 +5,15 @@ class Customers_model extends Model
 {
     protected $table = 'customers';
 
+
+    public function search($keyword)
+    {
+        if (!empty($keyword)) {
+            return $this->like('company_name', $keyword);
+        }
+        return $this;
+    }
+
     public function getRows($id = false)
     {
         if($id === false){
