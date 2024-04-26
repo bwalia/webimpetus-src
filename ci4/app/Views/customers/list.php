@@ -3,7 +3,7 @@
 <div class="white_card_body ">
     <div class="QA_table ">
         <!-- table-responsive -->
-        <table id="example" class="table table-listing-items table-listing-items tableDocument table-striped table-bordered">
+        <table id="customersTable" class="table table-listing-items table-listing-items tableDocument table-striped table-bordered">
             <thead>
                 <tr>
                     <th scope="col">Id</th>
@@ -50,6 +50,7 @@
                 <?php endforeach; ?>
             </tbody>
         </table>
+        <?php echo $pager->links(); ?>
     </div>
 </div>
 
