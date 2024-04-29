@@ -51,6 +51,14 @@ class Contact extends Model
         }
     }
 
+    public function search($keyword)
+    {
+        if (!empty($keyword)) {
+            return $this->like('first_name', $keyword)->orLike('surname', $keyword)->orLike('email', $keyword);
+        }
+        return $this;
+    }
+
     public function getRows($id = false)
     {
         if($id === false){

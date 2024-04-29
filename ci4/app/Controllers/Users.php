@@ -16,6 +16,8 @@ class Users extends CommonController
 	public $menu_model;
 	public $userBusinessModel;
 	public $rolesModel;
+	public $table;
+	public $rawTblName;
 	function __construct()
 	{
 		parent::__construct();
@@ -24,6 +26,23 @@ class Users extends CommonController
 		$this->menu_model = new Menu_model();
 		$this->userBusinessModel = new User_business_model();
 		$this->rolesModel = new RolesModel();
+		$this->table = "users";
+		$this->rawTblName = "users";
+	}
+
+	public function index()
+	{
+		$keyword = $this->request->getVar('query');
+        $pager = \Config\Services::pager();
+        $data = [
+            'rawTblName' => $this->rawTblName,
+            'tableName' => $this->table,
+			'is_add_permission' => 1,
+            $this->table => $this->userModel->where(["uuid_business_id" => $this->businessUuid])->search($keyword)->paginate(10),
+            'pager'     => $this->userModel->pager,
+        ];
+
+		echo view($this->table . "/list", $data);
 	}
 
 

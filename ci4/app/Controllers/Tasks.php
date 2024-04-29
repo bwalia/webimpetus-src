@@ -40,6 +40,9 @@ class Tasks extends CommonController
         $data['rawTblName'] = $this->rawTblName;
 
         $taskStatusList = $this->Tasks_model->allTaskStatus();
+        $keyword = $this->request->getVar('query');
+        $page = $this->request->getVar('page') ?? 1;
+        $perPage = 10;
 
         $blank_item = array("key" => "", "value" => "--Choose Status--");
         array_unshift($taskStatusList, $blank_item);
@@ -60,10 +63,14 @@ class Tasks extends CommonController
         } else {
             $condition = [$this->table . ".status" => $status];
         }
-
-        $data[$this->table] = $this->Tasks_model->getTaskList($condition);
+        $taskListData = $this->Tasks_model->getTaskList($condition, $page, $perPage, $keyword);
+        
+        $data[$this->table] = $taskListData['data'];
+        $pager = \Config\Services::pager();
         $data['is_add_permission'] = 1;
-
+        $data['pager'] = $pager->makeLinks($page, $perPage, $taskListData['count']);
+        $data['count'] = $taskListData['count'];
+        
         echo view($this->table . "/list", $data);
     }
 

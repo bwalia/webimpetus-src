@@ -19,6 +19,14 @@ class Content_model extends Model
 		$this->whereCond['uuid_business_id'] = $this->businessUuid;
 	}
 
+	public function search($keyword)
+    {
+        if (!empty($keyword)) {
+            return $this->like('title', $keyword);
+        }
+        return $this;
+    }
+
 	public function getRows($id = false)
 	{
 		if ($id === false) {

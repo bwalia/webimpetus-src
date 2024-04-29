@@ -4,13 +4,34 @@ use App\Controllers\Core\CommonController;
 use App\Models\Users_model;
 use App\Models\Core\Common_model;
 use App\Libraries\UUID;
+use App\Models\Contact;
+
 class Contacts extends CommonController
 {	
-	
+	protected $contactModel;
+	protected $table;
+	protected $rawTblName;
     function __construct()
     {
         parent::__construct();
+        $this->contactModel = new Contact();
+        $this->table = "contacts";
+        $this->rawTblName = "contacts";
+	}
 
+    public function index()
+	{
+		$keyword = $this->request->getVar('query');
+        $pager = \Config\Services::pager();
+        $data = [
+            'rawTblName' => $this->rawTblName,
+            'tableName' => $this->table,
+			'is_add_permission' => 1,
+            $this->table => $this->contactModel->where(["uuid_business_id" => $this->businessUuid])->search($keyword)->paginate(10),
+            'pager'     => $this->contactModel->pager,
+        ];
+
+		echo view($this->table . "/list", $data);
 	}
     
     public function getAdditionalData($id)

@@ -9,6 +9,7 @@ use App\Models\TimeslipsModel;
 class Fullcalendar extends CommonController
 {
     protected $timeSlipsModel;
+    protected $taskModel;
 
     public function __construct()
     {
@@ -28,7 +29,7 @@ class Fullcalendar extends CommonController
             $table = 'tasks';
             $data['columns'] = $this->db->getFieldNames($table);
             $data['fields'] = array_diff($data['columns'], $this->notAllowedFields);
-            $data[$table] = $this->taskModel->getTaskList();
+            $data[$table] = $this->taskModel->getTaskList()['data'];
             $data['tableName'] = $table;
 
             $viewPath = "common/list";
