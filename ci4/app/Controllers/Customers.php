@@ -55,6 +55,41 @@ class Customers extends CommonController
         return view($this->table . '/list', $data);
     }
 
+    public function customersList()
+    {
+        $limit = $this->request->getVar('limit');
+        $offset = $this->request->getVar('offset');
+        $query = $this->request->getVar('query');
+        // echo $query; die;
+        $sqlQuery = $this->customerModel
+                    ->where(['uuid_business_id' => session('uuid_business')])
+                    ->limit($limit, $offset)
+                    ->get()
+                    ->getResultArray();
+        if ($query) {
+            $sqlQuery = $this->customerModel
+                        ->where(['uuid_business_id' => session('uuid_business')])
+                        ->like("company_name", $query)
+                        ->limit($limit, $offset)
+                        ->get()
+                        ->getResultArray();
+        }
+
+        $countQuery = $this->customerModel->where(["uuid_business_id"=> session("uuid_business")])->countAllResults();
+        if ($query) {
+            $countQuery = $this->customerModel->where(["uuid_business_id"=> session("uuid_business")])->like("company_name", $query)->countAllResults();
+        }
+        
+        $data = [
+            'rawTblName' => $this->rawTblName,
+            'tableName' => $this->table,
+            'data' => $sqlQuery,
+            'recordsTotal' => $countQuery,
+        ];
+        return $this->response->setJSON($data);
+        // return view($this->table . '/list', $data);
+    }
+
     public function edit($uuid = 0)
 	{
 		$tableData =  $uuid ? $this->model->getExistsRowsByUUID($uuid)->getRow() : '';

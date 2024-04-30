@@ -22,6 +22,14 @@ class Customers_model extends Model
             return $this->getWhere(['id' => $id]);
         }   
     }
+    public function getBusinessRows($uuid = false)
+    {
+        if($uuid === false){
+            return $this->getWhere(['uuid_business_id' => session('uuid_business')]);
+        }else{
+            return $this->getWhere(['uuid' => $uuid]);
+        }   
+    }
 
     public function getCustomers($id = false)
     {
