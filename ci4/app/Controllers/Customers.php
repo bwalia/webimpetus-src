@@ -60,10 +60,13 @@ class Customers extends CommonController
         $limit = $this->request->getVar('limit');
         $offset = $this->request->getVar('offset');
         $query = $this->request->getVar('query');
-        // echo $query; die;
+        $order = $this->request->getVar('order') ?? "company_name";
+        $dir = $this->request->getVar('dir') ?? "asc";
+
         $sqlQuery = $this->customerModel
                     ->where(['uuid_business_id' => session('uuid_business')])
                     ->limit($limit, $offset)
+                    ->orderBy($order, $dir)
                     ->get()
                     ->getResultArray();
         if ($query) {
@@ -71,13 +74,19 @@ class Customers extends CommonController
                         ->where(['uuid_business_id' => session('uuid_business')])
                         ->like("company_name", $query)
                         ->limit($limit, $offset)
+                        ->orderBy($order, $dir)
                         ->get()
                         ->getResultArray();
         }
 
-        $countQuery = $this->customerModel->where(["uuid_business_id"=> session("uuid_business")])->countAllResults();
+        $countQuery = $this->customerModel
+                        ->where(["uuid_business_id"=> session("uuid_business")])
+                        ->countAllResults();
         if ($query) {
-            $countQuery = $this->customerModel->where(["uuid_business_id"=> session("uuid_business")])->like("company_name", $query)->countAllResults();
+            $countQuery = $this->customerModel
+                            ->where(["uuid_business_id"=> session("uuid_business")])
+                            ->like("company_name", $query)
+                            ->countAllResults();
         }
         
         $data = [
@@ -87,7 +96,6 @@ class Customers extends CommonController
             'recordsTotal' => $countQuery,
         ];
         return $this->response->setJSON($data);
-        // return view($this->table . '/list', $data);
     }
 
     public function edit($uuid = 0)
