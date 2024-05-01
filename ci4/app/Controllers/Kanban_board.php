@@ -40,13 +40,13 @@ class Kanban_board extends CommonController
                     $data['tasks'][$category] = [];
                 } else {
                     $sprintCondition = $current_sprint > 0 ? "sprint_id < $current_sprint AND" : "sprint_id < $next_sprint AND";
-                    $data['tasks'][$category] = $this->taskModel->getTaskList("category = '$category' AND (sprint_id = null OR (" . $sprintCondition . " tasks.status != 'done'))");
+                    $data['tasks'][$category] = $this->taskModel->getTaskList("category = '$category' AND (sprint_id = null OR (" . $sprintCondition . " tasks.status != 'done'))")['data'];
                 }
             } else {
                 if ($sprint && is_numeric($sprint)) {
-                    $data['tasks'][$category] = $this->taskModel->getTaskList(['category' => $category, 'sprint_id' => $sprint]);
+                    $data['tasks'][$category] = $this->taskModel->getTaskList(['category' => $category, 'sprint_id' => $sprint])['data'];
                 } else {
-                    $data['tasks'][$category] = $this->taskModel->getTaskList(['category' => $category]);
+                    $data['tasks'][$category] = $this->taskModel->getTaskList(['category' => $category])['data'];
                 }
             }
         }

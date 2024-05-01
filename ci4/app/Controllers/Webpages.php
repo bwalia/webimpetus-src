@@ -24,14 +24,20 @@ class Webpages extends CommonController
 	}
 	public function index()
 	{
-		$data[$this->table] = $this->content_model->where(['type' => 1, "uuid_business_id" => $this->businessUuid])->findAll();
-
+		$menuName = '';
 		if (isset($_GET['cat']) && $_GET['cat'] == 'strategies') {
-			$data['menuName'] = $_GET['cat'];
+			$menuName = $_GET['cat'];
 		}
-		$data['tableName'] = $this->table;
-		$data['rawTblName'] = $this->rawTblName;
-		$data['is_add_permission'] = 1;
+		$keyword = $this->request->getVar('query');
+        $pager = \Config\Services::pager();
+        $data = [
+            'rawTblName' => $this->rawTblName,
+            'tableName' => $this->table,
+			'menuName' => $menuName,
+			'is_add_permission' => 1,
+            $this->table => $this->content_model->where(['type' => 1, "uuid_business_id" => $this->businessUuid])->search($keyword)->paginate(10),
+            'pager'     => $this->content_model->pager,
+        ];
 
 		echo view($this->table . "/list", $data);
 	}

@@ -20,7 +20,20 @@ class Categories extends CommonController
 		$this->rawTblName =  "category"; 
 	}
 
+	public function index()
+	{
+		$keyword = $this->request->getVar('query');
+        $pager = \Config\Services::pager();
+        $data = [
+            'rawTblName' => $this->rawTblName,
+            'tableName' => $this->table,
+			'is_add_permission' => 1,
+            $this->table => $this->catModel->where(["uuid_business_id" => session('uuid_business')])->search($keyword)->paginate(10),
+            'pager'     => $this->catModel->pager,
+        ];
 
+		echo view($this->table . "/list", $data);
+	}
 
 	
     public function update()

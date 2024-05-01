@@ -5,12 +5,29 @@ class Customers_model extends Model
 {
     protected $table = 'customers';
 
+
+    public function search($keyword)
+    {
+        if (!empty($keyword)) {
+            return $this->like('company_name', $keyword);
+        }
+        return $this;
+    }
+
     public function getRows($id = false)
     {
         if($id === false){
             return $this->findAll();
         }else{
             return $this->getWhere(['id' => $id]);
+        }   
+    }
+    public function getBusinessRows($uuid = false)
+    {
+        if($uuid === false){
+            return $this->getWhere(['uuid_business_id' => session('uuid_business')]);
+        }else{
+            return $this->getWhere(['uuid' => $uuid]);
         }   
     }
 

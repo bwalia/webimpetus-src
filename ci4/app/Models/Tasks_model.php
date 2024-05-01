@@ -27,7 +27,7 @@ class Tasks_model extends Model
         }
     }
 
-    public function getTaskList($whereConditions = null)
+    public function getTaskList($whereConditions = null, $page = 1, $perPage = 10, $keyword = '')
     {
         $builder = $this->db->table($this->table);
         $builder->select($this->table . ".*, customers.company_name, projects.name as project_name");
@@ -37,10 +37,29 @@ class Tasks_model extends Model
         if (!empty($whereConditions)) {
             $builder->where($whereConditions);
         }
+        if ($keyword && $keyword !== '') {
+            $builder->like($this->table. '.name', $keyword);
+        } else {
+            $currentPage = $page == 1 ? 0 : $page - 1;
+            $offset = $currentPage * $perPage;
+            $builder->limit($perPage);
+            $builder->offset($offset);
+        }
+        
 
-        // echo $this->db->getLastQuery();
-
-        return $builder->get()->getResultArray();
+        $countBuilder = $this->db->table($this->table);
+        $countBuilder->select($this->table . ".*, customers.company_name, projects.name as project_name");
+        $countBuilder->join('customers', 'customers.id = ' . $this->table . '.reported_by', 'left');
+        $countBuilder->join('projects', 'projects.id = ' . $this->table . '.projects_id', 'left');
+        $countBuilder->where($this->table . ".uuid_business_id",  $this->businessUuid);
+        if (!empty($whereConditions)) {
+            $countBuilder->where($whereConditions);
+        }
+        $count = $countBuilder->countAllResults();
+        return [
+            'data' => $builder->get()->getResultArray(),
+            'count' => $count
+        ];
     }
 
     public function updateData($id = null, $data = null)

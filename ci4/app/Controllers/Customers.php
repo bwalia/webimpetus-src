@@ -43,15 +43,59 @@ class Customers extends CommonController
 
     public function index()
     {
+        $keyword = $this->request->getVar('query');
         $pager = \Config\Services::pager();
         $data = [
             'rawTblName' => $this->rawTblName,
             'tableName' => $this->table,
-            'customers' => $this->customerModel->where('uuid_business_id', session('uuid_business'))->paginate(2), // Adjust the number as needed
+            'customers' => $this->customerModel->where('uuid_business_id', session('uuid_business'))->search($keyword)->paginate(2),
             'pager'     => $this->customerModel->pager,
         ];
 
         return view($this->table . '/list', $data);
+    }
+
+    public function customersList()
+    {
+        $limit = $this->request->getVar('limit');
+        $offset = $this->request->getVar('offset');
+        $query = $this->request->getVar('query');
+        $order = $this->request->getVar('order') ?? "company_name";
+        $dir = $this->request->getVar('dir') ?? "asc";
+
+        $sqlQuery = $this->customerModel
+                    ->where(['uuid_business_id' => session('uuid_business')])
+                    ->limit($limit, $offset)
+                    ->orderBy($order, $dir)
+                    ->get()
+                    ->getResultArray();
+        if ($query) {
+            $sqlQuery = $this->customerModel
+                        ->where(['uuid_business_id' => session('uuid_business')])
+                        ->like("company_name", $query)
+                        ->limit($limit, $offset)
+                        ->orderBy($order, $dir)
+                        ->get()
+                        ->getResultArray();
+        }
+
+        $countQuery = $this->customerModel
+                        ->where(["uuid_business_id"=> session("uuid_business")])
+                        ->countAllResults();
+        if ($query) {
+            $countQuery = $this->customerModel
+                            ->where(["uuid_business_id"=> session("uuid_business")])
+                            ->like("company_name", $query)
+                            ->countAllResults();
+        }
+        
+        $data = [
+            'rawTblName' => $this->rawTblName,
+            'tableName' => $this->table,
+            'data' => $sqlQuery,
+            'recordsTotal' => $countQuery,
+        ];
+        return $this->response->setJSON($data);
     }
 
     public function edit($uuid = 0)

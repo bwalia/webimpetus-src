@@ -2,6 +2,10 @@
 <!-- main content part here -->
 <div class="white_card_body ">
     <div class="QA_table ">
+        <input type="text" id="searchInput" placeholder="Search for names.." onkeyup="updateURL(this.value)"
+            value="<?php echo $_GET['query'] ?? "" ?>">
+        <button class="btn btn-primary" onclick="window.location.reload()">Search</button>
+        <button class="btn btn-primary" onclick="resetSearch()">Reset</button>
         <!-- table-responsive -->
         <table id="example123"
             class="table table-listing-items table-listing-items tableDocument table-striped table-bordered">
@@ -65,3 +69,25 @@
 </div>
 
 <?php require_once (APPPATH . 'Views/common/scripts.php'); ?>
+<script>
+    function updateURL(searchQuery) {
+        // Get the current URL
+        var currentURL = window.location.href;
+
+        // Remove existing search query parameter, if any
+        var updatedURL = currentURL.split('?')[0];
+
+        // If search query is not empty, add it to the URL
+        if (searchQuery.trim() !== "") {
+            updatedURL += "?query=" + encodeURIComponent(searchQuery);
+        }
+
+        // Replace the current URL with the updated one
+        history.replaceState(null, null, updatedURL);
+    }
+
+    function resetSearch() {
+        history.replaceState(null, null, "/companies");
+        window.location.reload();
+    }
+</script>

@@ -18,6 +18,14 @@ class Users_model extends Model
         }
     }
 
+    public function search($keyword)
+    {
+        if (!empty($keyword)) {
+            return $this->like('name', $keyword);
+        }
+        return $this;
+    }
+
     public function getUser($id = false, $all = false)
     {
         $whereCond = $this->whereCond;
