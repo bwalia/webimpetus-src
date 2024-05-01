@@ -85,8 +85,7 @@
     }).render(document.getElementById("customersTable"));
     grid.on('cellClick',
         (...args) =>
-            console.log({args})
-            // args[2].id !== "actions" &&
-            // (window.location.href = `/customers/edit/${args[3]._cells[0].data}`)
+            args[2].id !== "actions" &&
+            (window.location.href = `/customers/edit/${args[3]._cells[0].data}`)
     );
 </script>
