@@ -1,6 +1,9 @@
-<?php namespace App\Models;
+<?php
+
+namespace App\Models;
+
 use CodeIgniter\Model;
- 
+
 class Domain_model extends Model
 {
     protected $table = 'domains';
@@ -10,40 +13,74 @@ class Domain_model extends Model
     {
         parent::__construct();
 
-        $this->whereCond[$this->table.'.uuid_business_id'] = session('uuid_business');
+        $this->whereCond[$this->table . '.uuid_business_id'] = session('uuid_business');
     }
 
     public function getRows($id = false)
     {
         $whereCond = $this->whereCond;
-        if($id === false){
-			$this->select('domains.*');
+        if ($id === false) {
+            $this->select('domains.*');
             $this->join('service__domains', 'domains.uuid = service__domains.domain_uuid', 'LEFT');
-			$this->select('services.name as sname');
-			$this->join('services', 'service__domains.service_uuid = services.uuid', 'LEFT');
+            $this->select('services.name as sname');
+            $this->join('services', 'service__domains.service_uuid = services.uuid', 'LEFT');
             $this->where($whereCond);
             return $this->findAll();
-        }else{
+        } else {
             $whereCond = array_merge(['uuid' => $id], $whereCond);
             return $this->getWhere($whereCond);
-        }   
+        }
     }
-	
-	public function saveData($data)
+    public function getFilteredRows($query = false, $limit = 10, $offset = 0, $order = "name", $dir = "ASC", $count = false)
+    {
+        $data = [];
+        if ($count) {
+            $whereCond = $this->whereCond;
+            $this->select('domains.*');
+            $this->join('service__domains', 'domains.uuid = service__domains.domain_uuid', 'LEFT');
+            $this->select('services.name as sname');
+            $this->join('services', 'service__domains.service_uuid = services.uuid', 'LEFT');
+            $this->where($whereCond);
+
+            if ($query) {
+                $this->like("domains.name", $query);
+            }
+            $total = $this->countAllResults();
+            $data['count'] = $total;
+        } else {
+            $whereCond = $this->whereCond;
+            $this->select('domains.*');
+            $this->join('service__domains', 'domains.uuid = service__domains.domain_uuid', 'LEFT');
+            $this->select('services.name as sname');
+            $this->join('services', 'service__domains.service_uuid = services.uuid', 'LEFT');
+            $this->where($whereCond);
+
+            if ($query) {
+                $this->like("domains.name", $query);
+            }
+            $this->limit($limit, $offset);
+            $this->orderBy($order, $dir);
+            $results = $this->get()->getResultArray();
+            $data['data'] = $results;
+        }
+        return $data;
+    }
+
+    public function saveData($data)
     {
         $query = $this->db->table($this->table)->insert($data);
         return $query;
     }
-	
-	public function deleteData($id)
+
+    public function deleteData($id)
     {
         $query = $this->db->table($this->table)->delete(array('uuid' => $id));
         return $query;
     }
-	
-	public function updateData($id = null, $data = null)
-	{
-		$query = $this->db->table($this->table)->update($data, array('uuid' => $id));
-		return $query;
-	}
+
+    public function updateData($id = null, $data = null)
+    {
+        $query = $this->db->table($this->table)->update($data, array('uuid' => $id));
+        return $query;
+    }
 }

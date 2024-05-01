@@ -36,10 +36,12 @@
 <script src="/assets/ckeditor/ckeditor.js"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript"
+	src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/gridjs/dist/gridjs.umd.js"></script>
+<script src="/assets/js/gridjs.js"></script>
 
 
 <script type="text/javascript">
@@ -47,7 +49,7 @@
 	var class_name = "<?php echo @$tableName; ?>";
 	var ajaxBaseUrl = baseUrl + class_name;
 	var moduleName = '<?php echo @$tableName; ?>';
-	$(document).ready(function() {
+	$(document).ready(function () {
 
 		if ($(".js-example-basic-multiple").length > 0) {
 			$('.js-example-basic-multiple').select2();
@@ -73,15 +75,15 @@
 
 	});
 
-	$(document).ready(function() {
+	$(document).ready(function () {
 		if ($("#example").length > 0) {
 			$('#example').DataTable({
 				columnDefs: [{
-						targets: 1,
-						className: "truncate"
-					},
+					targets: 1,
+					className: "truncate"
+				},
 				],
-				createdRow: function(row) {
+				createdRow: function (row) {
 					var td = $(row).find(".truncate");
 					td.attr("title", td.html());
 				},
@@ -95,7 +97,7 @@
 		}
 
 		if ($(".checkb").length > 0) {
-			$('body .checkb').change(function() {
+			$('body .checkb').change(function () {
 				if (this.checked) {
 					//alert($(this).data('url'));
 					var status = 1;
@@ -108,7 +110,7 @@
 					url: $(this).data('url'),
 					type: "post",
 					data: formData,
-					success: function(d) {
+					success: function (d) {
 						alert('status changed successfully!!');
 					}
 				});
@@ -127,7 +129,7 @@
 
 		<?php } else { ?>
 			/* $("table tr").click(function(){
-				
+		
 			}); */
 
 
@@ -136,7 +138,7 @@
 		$(".dashboard-dropdown").select2({
 			width: '100%'
 		});
-		$('#uuidBusinessIdSwitcher').change(function() {
+		$('#uuidBusinessIdSwitcher').change(function () {
 			var bid = $(this).val();
 			$.ajax({
 				url: baseURL + 'home/switchbusiness',
@@ -144,26 +146,106 @@
 					bid: bid
 				},
 				method: 'POST',
-			}).done(function(response) {
+			}).done(function (response) {
 
 				location.reload();
-			}).fail(function(x, y, z) {
+			}).fail(function (x, y, z) {
 
 				console.log(x, y, z);
 			});
 		});
 	});
 
-	setTimeout(function() {
+	setTimeout(function () {
 		$('#example_length select').select2();
 	}, 300)
 
 
 	// Add the following code if you want the name of the file appear on select
-	$(".custom-file-input").on("change", function() {
+	$(".custom-file-input").on("change", function () {
 		var fileName = $(this).val().split("\\").pop();
 		$(this).siblings(".custom-file-label").addClass("selected").html(fileName);
 	});
+
+	function initializeGridTable({...params}) {
+		const { columnsTitle, tableName, apiPath, selector, columnsMachineName } = params;
+		let allColumns = ['uuid'].concat(columnsMachineName);
+		allColumns = allColumns.concat([null]);
+
+		const grid = new gridjs.Grid({
+			columns: [
+				{
+					name: "uuid",
+					hidden: true
+				},
+				...columnsTitle,
+				{
+					name: 'Actions',
+					sort: false,
+					formatter: (cell, row) => {
+						return gridjs.html(
+							`<div class="header_more_tool">
+							<div class="dropdown">
+								<span class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown">
+									<i class="ti-more-alt"></i>
+								</span>
+								<div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+									<a class="dropdown-item" onclick="return confirm('Are you sure want to delete?');"
+										href="/${tableName}/deleterow/${row.cells[0].data}"> <i class="ti-trash"></i>
+										Delete
+									</a>
+									<a class="dropdown-item" href="/${tableName}/edit/${row.cells[0].data}"> <i
+										class="fas fa-edit"></i>
+										Edit
+									</a>
+								</div>
+							</div>
+						</div>`
+						);
+					}
+				},
+			],
+			pagination: {
+				limit: 2,
+				server: {
+					url: (prev, page, limit) => `${prev}${prev.includes("?") ? "&" : "?"}limit=${limit}&offset=${page * limit}`
+				}
+			},
+			search: {
+				server: {
+					url: (prev, keyword) => `${prev}?query=${keyword}`
+				}
+			},
+			sort: {
+				multiColumn: false,
+				server: {
+					url: (prev, columns) => {
+						if (!columns.length) return prev;
+						const col = columns[0];
+						const dir = col.direction === 1 ? 'asc' : 'desc';
+						let colNames = columnsMachineName;
+						let colName = colNames[col.index];
+
+						return `${prev}${prev.includes("?") ? "&" : "?"}order=${colName}&dir=${dir}`;
+					}
+				}
+			},
+			server: {
+				url: apiPath,
+				then: data => data.data.map(customer =>
+					allColumns.map((fields, idx) => [
+						fields === "status" ? (customer[fields] == 1 ? "Active" : "Inactive") : customer[fields]
+					])
+				),
+				total: data => data.recordsTotal
+			}
+		}).render(document.getElementById(selector));
+		grid.on('cellClick',
+			(...args) =>
+				args[2].id !== "actions" &&
+				(window.location.href = `/${tableName}/edit/${args[3]._cells[0].data}`)
+		);
+	}
 </script>
 
 
@@ -177,7 +259,7 @@
 					required: true,
 				},
 				content: {
-					required: function(textarea) {
+					required: function (textarea) {
 						CKEDITOR.instances[textarea.id].updateElement();
 						var editorcontent = textarea.value.replace(/<[^>]*>/gi, '');
 						return editorcontent.length === 0;
@@ -195,7 +277,7 @@
 
 
 	if ($("#chk_manual").length > 0) {
-		$("#chk_manual").click(function() {
+		$("#chk_manual").click(function () {
 			if ($(this).is(':checked')) {
 				$('#code').attr("readonly", false);
 				$('#code').val("");
@@ -208,7 +290,7 @@
 	}
 
 	var sr = 0;
-	$(document).on('change', '.filee', function() {
+	$(document).on('change', '.filee', function () {
 		//alert($(this).val()); 
 		$('#' + $(this).attr('id')).after($(this).val())
 
@@ -233,13 +315,13 @@
 			},
 			dataType: 'JSON',
 			method: 'POST',
-		}).done(function(response) {
+		}).done(function (response) {
 
 			if (response.status) {
 
 				$('textarea[name="bill_to"]').val(response.value);
 			}
-		}).fail(function(x, y, z) {
+		}).fail(function (x, y, z) {
 
 			console.log(x, y, z);
 			alert(y + ': ' + z);
@@ -257,13 +339,13 @@
 			},
 			dataType: 'JSON',
 			method: 'POST',
-		}).done(function(response) {
+		}).done(function (response) {
 
 			if (response.status) {
 
 				$('#due_date').datepicker('setDate', response.value);
 			}
-		}).fail(function(x, y, z) {
+		}).fail(function (x, y, z) {
 
 			console.log(x, y, z);
 			alert(y + ': ' + z);

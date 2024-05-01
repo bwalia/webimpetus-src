@@ -1,4 +1,4 @@
-<?php require_once(APPPATH . 'Views/common/list-title.php'); ?>
+<?php require_once (APPPATH . 'Views/common/list-title.php'); ?>
 <div class="white_card_body ">
     <div class="QA_table ">
         <!-- table-responsive -->
@@ -14,7 +14,7 @@
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($employees as $row) : ?>
+                <?php foreach ($employees as $row): ?>
                     <tr data-link=<?= "/" . $tableName . "/editrow/" . $row['uuid']; ?>>
                         <td class="f_s_12 f_w_400"><?= $row['id']; ?>
                         </td>
@@ -34,8 +34,12 @@
                                         <i class="ti-more-alt"></i>
                                     </span>
                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                                        <a class="dropdown-item" onclick="return confirm('Are you sure want to delete?');" href=<?= "/" . $tableName . "/deleterow/" . $row['uuid']; ?>> <i class="ti-trash"></i> Delete</a>
-                                        <a class="dropdown-item" href="<?= "/" . $tableName . "/editrow/" . $row['uuid']; ?>"> <i class="fas fa-edit"></i> Edit</a>
+                                        <a class="dropdown-item" onclick="return confirm('Are you sure want to delete?');"
+                                            href=<?= "/" . $tableName . "/deleterow/" . $row['uuid']; ?>> <i
+                                                class="ti-trash"></i> Delete</a>
+                                        <a class="dropdown-item"
+                                            href="<?= "/" . $tableName . "/editrow/" . $row['uuid']; ?>"> <i
+                                                class="fas fa-edit"></i> Edit</a>
                                     </div>
                                 </div>
                             </div>
@@ -47,4 +51,17 @@
     </div>
 </div>
 
-<?php require_once(APPPATH . 'Views/common/footer.php'); ?>
+<?php require_once (APPPATH . 'Views/common/footer.php'); ?>
+<script>
+    // let columnsTitle = ['Id', 'First Name', 'Surname', 'Email', 'Mobile', 'Web Access'];
+    // let columnsMachineName = ['id', 'first_name', 'surname', 'email', 'mobile', 'allow_web_access'];
+    // initializeGridTable(
+    //     {
+    //         columnsTitle,
+    //         columnsMachineName,
+    //         tableName: "contacts",
+    //         apiPath: "contacts/contactsList",
+    //         selector: "contactsTable"
+    //     }
+    // );
+</script>
