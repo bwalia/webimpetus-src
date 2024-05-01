@@ -39,6 +39,25 @@ class Domains extends CommonController
 		echo view('domains/list', $data);
 	}
 
+	public function domainList()
+    {
+        $limit = $this->request->getVar('limit');
+        $offset = $this->request->getVar('offset');
+        $query = $this->request->getVar('query');
+        $order = $this->request->getVar('order') ?? "name";
+        $dir = $this->request->getVar('dir') ?? "asc";
+
+        $sqlQuery = $this->domainModel->getFilteredRows($query, $limit, $offset, $order, $dir);
+        $countQuery = $this->domainModel->getFilteredRows($query, $limit, $offset, $order, $dir, "count");
+        
+        $data = [
+            'rawTblName' => $this->rawTblName,
+            'tableName' => $this->table,
+            'data' => $sqlQuery['data'],
+            'recordsTotal' => $countQuery['count'],
+        ];
+        return $this->response->setJSON($data);
+    }
 
 	public function edit($id = '')
 	{
@@ -67,7 +86,7 @@ class Domains extends CommonController
 			'domain_path_type' => $post['domain_path_type'],
 			'domain_service_name' => $post['domain_service_name'],
 			'domain_service_port' => $post['domain_service_port'],
-			'sid' => json_encode($post['sid']),
+			'sid' => isset($post['sid']) ? json_encode($post['sid']) : null,
 			'uuid_business_id' => session('uuid_business'),
 		);
 		if (empty($id)) {
@@ -80,7 +99,7 @@ class Domains extends CommonController
 		}
 		
 		$response = $this->model->insertOrUpdateByUUID($id, $data);
-		$sids = $post['sid'];
+		$sids = isset($post['sid']) ? $post['sid'] : false;
 		$this->serviceDomainModel->deleteDataByDomain($domainUUID);
 		if ($sids && !empty($sids)) {
 			foreach ($sids as $key => $sid) {

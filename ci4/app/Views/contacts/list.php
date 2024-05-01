@@ -1,89 +1,19 @@
 <?php require_once (APPPATH . 'Views/common/list-title.php'); ?>
 <div class="white_card_body ">
-    <div class="QA_table ">
-        <input type="text" id="searchInput" placeholder="Search for names.." onkeyup="updateURL(this.value)"
-            value="<?php echo $_GET['query'] ?? "" ?>">
-        <button class="btn btn-primary" onclick="window.location.reload()">Search</button>
-        <button class="btn btn-primary" onclick="resetSearch()">Reset</button>
-        <!-- table-responsive -->
-        <table id="contactTable" class="table table-listing-items tableDocument table-striped table-bordered">
-            <thead>
-                <tr>
-
-                    <th scope="col">Id</th>
-                    <th scope="col">First Name</th>
-                    <th scope="col">Surname</th>
-                    <th scope="col">Title</th>
-                    <th scope="col">Email</th>
-                    <th scope="col" width="50">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-
-                <?php foreach ($contacts as $row): ?>
-                    <tr data-link="contacts/edit/<?= $row['uuid']; ?>">
-
-                        <td class="f_s_12 f_w_400"><?= $row['id']; ?>
-                        </td>
-                        <td class="f_s_12 f_w_400"><?= $row['first_name']; ?>
-                        </td>
-                        <td class="f_s_12 f_w_400  "><?= $row['surname']; ?>
-                        </td>
-                        <td class="f_s_12 f_w_400  "><?= $row['title']; ?>
-                        </td>
-                        <td class="f_s_12 f_w_400  ">
-                            <p class="pd10"> <?= $row['email']; ?></p>
-                        </td>
-                        <td class="f_s_12 f_w_400 text-right">
-                            <div class="header_more_tool">
-                                <div class="dropdown">
-                                    <span class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown">
-                                        <i class="ti-more-alt"></i>
-                                    </span>
-                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-
-                                        <a class="dropdown-item" onclick="return confirm('Are you sure want to delete?');"
-                                            href="/contacts/delete/<?= $row['id']; ?>"> <i class="ti-trash"></i> Delete</a>
-                                        <a class="dropdown-item" href="/contacts/edit/<?= $row['id']; ?>"> <i
-                                                class="fas fa-edit"></i> Edit</a>
-
-
-                                    </div>
-                                </div>
-                            </div>
-                        </td>
-
-                    </tr>
-
-                <?php endforeach; ?>
-
-
-            </tbody>
-        </table>
-        <?php echo $pager->links(); ?>
-    </div>
+    <div class="QA_table" id="contactsTable"></div>
 </div>
 
 <?php require_once (APPPATH . 'Views/common/footer.php'); ?>
 <script>
-    function updateURL(searchQuery) {
-        // Get the current URL
-        var currentURL = window.location.href;
-
-        // Remove existing search query parameter, if any
-        var updatedURL = currentURL.split('?')[0];
-
-        // If search query is not empty, add it to the URL
-        if (searchQuery.trim() !== "") {
-            updatedURL += "?query=" + encodeURIComponent(searchQuery);
+    let columnsTitle = ['Id', 'First Name', 'Email', 'Mobile', 'Web Access'];
+    let columnsMachineName = ['id', 'first_name', 'email', 'mobile', 'allow_web_access'];
+    initializeGridTable(
+        {
+            columnsTitle, 
+            columnsMachineName, 
+            tableName: "contacts", 
+            apiPath: "contacts/contactsList", 
+            selector: "contactsTable"
         }
-
-        // Replace the current URL with the updated one
-        history.replaceState(null, null, updatedURL);
-    }
-
-    function resetSearch() {
-        history.replaceState(null, null, "/contacts");
-        window.location.reload();
-    }
+    );
 </script>

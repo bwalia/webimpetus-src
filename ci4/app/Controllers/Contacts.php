@@ -33,6 +33,49 @@ class Contacts extends CommonController
 
 		echo view($this->table . "/list", $data);
 	}
+
+    public function contactsList()
+    {
+        $limit = $this->request->getVar('limit');
+        $offset = $this->request->getVar('offset');
+        $query = $this->request->getVar('query');
+        $order = $this->request->getVar('order') ?? "first_name";
+        $dir = $this->request->getVar('dir') ?? "asc";
+
+        $sqlQuery = $this->contactModel
+            ->where(['uuid_business_id' => session('uuid_business')])
+            ->limit($limit, $offset)
+            ->orderBy($order, $dir)
+            ->get()
+            ->getResultArray();
+        if ($query) {
+            $sqlQuery = $this->contactModel
+                ->where(['uuid_business_id' => session('uuid_business')])
+                ->like("first_name", $query)
+                ->limit($limit, $offset)
+                ->orderBy($order, $dir)
+                ->get()
+                ->getResultArray();
+        }
+
+        $countQuery = $this->contactModel
+            ->where(["uuid_business_id"=> session("uuid_business")])
+            ->countAllResults();
+        if ($query) {
+            $countQuery = $this->contactModel
+                ->where(["uuid_business_id"=> session("uuid_business")])
+                ->like("first_name", $query)
+                ->countAllResults();
+        }
+        
+        $data = [
+            'rawTblName' => $this->rawTblName,
+            'tableName' => $this->table,
+            'data' => $sqlQuery,
+            'recordsTotal' => $countQuery,
+        ];
+        return $this->response->setJSON($data);
+    }
     
     public function getAdditionalData($id)
     {
@@ -49,7 +92,7 @@ class Contacts extends CommonController
         $data['rawTblName'] = $this->rawTblName;
 		$data["users"] = $this->model->getUser();
         $data["categories"] = $this->model->getCategories();
-		$data[$this->rawTblName] = $uuid ? $this->model->getRowsByUUID($uuid)->getRow() : "";
+		$data["contact"] = $uuid ? $this->model->getRowsByUUID($uuid)->getRow() : "";
 		// if there any special cause we can overried this function and pass data to add or edit view
 		$data['additional_data'] = $this->getAdditionalData($uuid);
 

@@ -35,6 +35,49 @@ class Categories extends CommonController
 		echo view($this->table . "/list", $data);
 	}
 
+	public function categoriesList()
+    {
+        $limit = $this->request->getVar('limit');
+        $offset = $this->request->getVar('offset');
+        $query = $this->request->getVar('query');
+        $order = $this->request->getVar('order') ?? "name";
+        $dir = $this->request->getVar('dir') ?? "asc";
+
+        $sqlQuery = $this->catModel
+                    ->where(['uuid_business_id' => session('uuid_business')])
+                    ->limit($limit, $offset)
+                    ->orderBy($order, $dir)
+                    ->get()
+                    ->getResultArray();
+        if ($query) {
+            $sqlQuery = $this->catModel
+                        ->where(['uuid_business_id' => session('uuid_business')])
+                        ->like("name", $query)
+                        ->limit($limit, $offset)
+                        ->orderBy($order, $dir)
+                        ->get()
+                        ->getResultArray();
+        }
+
+        $countQuery = $this->catModel
+                        ->where(["uuid_business_id"=> session("uuid_business")])
+                        ->countAllResults();
+        if ($query) {
+            $countQuery = $this->catModel
+                            ->where(["uuid_business_id"=> session("uuid_business")])
+                            ->like("name", $query)
+                            ->countAllResults();
+        }
+        
+        $data = [
+            'rawTblName' => $this->rawTblName,
+            'tableName' => $this->table,
+            'data' => $sqlQuery,
+            'recordsTotal' => $countQuery,
+        ];
+        return $this->response->setJSON($data);
+    }
+
 	
     public function update()
     {        

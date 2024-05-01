@@ -66,6 +66,7 @@ $routes->resource('api/v2/blocks');
 $routes->resource('api/v2/secrets');
 $routes->resource('api/v2/create_domain');
 $routes->resource('api/v2/services');
+$routes->resource('api/v2/companies');
 
 // List project by business Id
 $routes->get('api/v2/business/(:segment)/projects', 'Api\V2\Projects::projectsByBId/$1');
