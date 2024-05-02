@@ -206,7 +206,7 @@
 				},
 			],
 			pagination: {
-				limit: 2,
+				limit: 20,
 				server: {
 					url: (prev, page, limit) => `${prev}${prev.includes("?") ? "&" : "?"}limit=${limit}&offset=${page * limit}`
 				}
