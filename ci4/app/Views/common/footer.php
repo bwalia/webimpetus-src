@@ -75,7 +75,7 @@
     function validateName(name, event) {
         let nameVal = name.val();
         var nameRegex = /^[a-zA-Z ]{2,64}$/;
-        if (nameRegex.test(nameVal)) {
+        if (nameVal.length > 2) {
             $("#nameError").text("");
             $("#nameError").remove();
         } else {
