@@ -166,16 +166,18 @@ function getWithOutUuidResultArray($tableName, $where = array(), $returnArr = tr
 
 function totalRows($tableName, $where = array(), $returnArr = true)
 {
-
     $db = \Config\Database::connect();
 
-    $buseness = array("uuid_business_id" =>  session('uuid_business'));
-    $where = array_merge($buseness, $where);
+    $count = 0;
 
-    $builder = $db->table($tableName);
-    $builder->getWhere($where);
+    if (session('uuid_business') !== null) {
+        $builder = $db->table($tableName);
+        $builder->like('uuid_business_id', session('uuid_business'));
+        $count = $builder->countAllResults();
+    } else {
+        $count = $db->table($tableName)->countAllResults();
+    }
 
-    $count = $builder->countAllResults();
     return $count;
 }
 
