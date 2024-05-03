@@ -10,7 +10,10 @@ use App\Libraries\UUID;
 
 class Purchase_orders extends CommonController
 {
-
+    public $purchase_orders_model;
+    public $purchase_order_items;
+    public $purchase_order_notes;
+    public $purchase_orders;
     function __construct()
     {
         parent::__construct();

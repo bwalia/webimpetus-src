@@ -61,6 +61,41 @@ class Tasks_model extends Model
             'count' => $count
         ];
     }
+    public function getTaskRows($whereConditions = null, $limit = 20, $offset = 0, $order = "name", $dir = "asc", $query = null)
+    {
+        $builder = $this->db->table($this->table);
+        $builder->select($this->table . ".*, customers.company_name, projects.name as project_name");
+        $builder->join('customers', 'customers.id = ' . $this->table . '.reported_by', 'left');
+        $builder->join('projects', 'projects.id = ' . $this->table . '.projects_id', 'left');
+        $builder->where($this->table . ".uuid_business_id",  $this->businessUuid);
+        if (!empty($whereConditions)) {
+            $builder->where($whereConditions);
+        }
+        if ($query && $query !== '') {
+            $builder->like($this->table. '.name', $query);
+        }
+
+        $builder->limit($limit, $offset);
+        $builder->orderBy($order, $dir);
+        
+
+        $countBuilder = $this->db->table($this->table);
+        $countBuilder->select($this->table . ".*, customers.company_name, projects.name as project_name");
+        $countBuilder->join('customers', 'customers.id = ' . $this->table . '.reported_by', 'left');
+        $countBuilder->join('projects', 'projects.id = ' . $this->table . '.projects_id', 'left');
+        $countBuilder->where($this->table . ".uuid_business_id",  $this->businessUuid);
+        if (!empty($whereConditions)) {
+            $countBuilder->where($whereConditions);
+        }
+        if ($query && $query !== '') {
+            $countBuilder->like($this->table. '.name', $query);
+        }
+        $count = $countBuilder->countAllResults();
+        return [
+            'data' => $builder->get()->getResultArray(),
+            'count' => $count
+        ];
+    }
 
     public function updateData($id = null, $data = null)
     {

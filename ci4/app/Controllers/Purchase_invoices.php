@@ -11,6 +11,9 @@ use stdClass;
 class Purchase_invoices extends CommonController
 {
     private $purchase_invoice_model;
+    private $purchase_invoice_items;
+    private $purchase_invoice_notes;
+    private $purchase_invoices;
 
     function __construct()
     {
@@ -33,6 +36,25 @@ class Purchase_invoices extends CommonController
 
         echo view($this->table . "/list", $data);
     }
+
+    public function purchaseInvoicesList()
+	{
+		$limit = $this->request->getVar('limit');
+		$offset = $this->request->getVar('offset');
+		$query = $this->request->getVar('query');
+		$order = $this->request->getVar('order') ?? "invoice_number";
+		$dir = $this->request->getVar('dir') ?? "asc";
+
+        $invoices = $this->purchase_invoice_model->getInvoiceRows($limit, $offset, $order, $dir, $query);
+
+		$data = [
+			'rawTblName' => $this->rawTblName,
+			'tableName' => $this->table,
+			'data' => $invoices['data'],
+			'recordsTotal' => $invoices['total'],
+		];
+		return $this->response->setJSON($data);
+	}
 
     public function clone($uuid = null)
     {

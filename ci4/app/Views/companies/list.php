@@ -8,5 +8,13 @@
 <script>
     let columnsTitle = ['Id', 'Company Name', 'Company Number', 'Status', 'Type', 'SIC', 'Email'];
     let columnsMachineName = ['id', 'company_name', 'company_number', 'status', 'company_type', 'sic_code', 'email'];
-    initializeGridTable({columnsTitle, columnsMachineName, tableName: "companies", apiPath: "companies/companiesList", selector: "companiesTable"});
+    initializeGridTable(
+        {
+            columnsTitle, 
+            columnsMachineName, 
+            tableName: "companies", 
+            apiPath: "/api/v2/companies", 
+            selector: "companiesTable"
+        }
+    );
 </script>

@@ -15,6 +15,8 @@ ini_set('display_errors', 1);
 
 class Products extends CommonController
 {
+	public $productModel;
+	public $content_model;
 	public function __construct()
 	{
 		parent::__construct();
@@ -29,6 +31,50 @@ class Products extends CommonController
 		$data['is_add_permission'] = 1;
 		echo view($this->table . "/list", $data);
 	}
+
+	public function productsList()
+	{
+		$limit = $this->request->getVar('limit');
+		$offset = $this->request->getVar('offset');
+		$query = $this->request->getVar('query');
+		$order = $this->request->getVar('order') ?? "product_name";
+		$dir = $this->request->getVar('dir') ?? "asc";
+
+		$sqlQuery = $this->productModel
+			->where(['uuid_business_id' => session('uuid_business')])
+			->limit($limit, $offset)
+			->orderBy($order, $dir)
+			->get()
+			->getResultArray();
+		if ($query) {
+			$sqlQuery = $this->productModel
+				->where(['uuid_business_id' => session('uuid_business')])
+				->like("product_name", $query)
+				->limit($limit, $offset)
+				->orderBy($order, $dir)
+				->get()
+				->getResultArray();
+		}
+
+		$countQuery = $this->productModel
+			->where(["uuid_business_id" => session("uuid_business")])
+			->countAllResults();
+		if ($query) {
+			$countQuery = $this->productModel
+				->where(["uuid_business_id" => session("uuid_business")])
+				->like("product_name", $query)
+				->countAllResults();
+		}
+
+		$data = [
+			'rawTblName' => $this->rawTblName,
+			'tableName' => $this->table,
+			'data' => $sqlQuery,
+			'recordsTotal' => $countQuery,
+		];
+		return $this->response->setJSON($data);
+	}
+
 	public function edit($id = 0)
 	{
 		$data['tableName'] = $this->table;
