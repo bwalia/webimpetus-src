@@ -169,20 +169,14 @@ function totalRows($tableName, $where = array(), $returnArr = true)
 
     $db = \Config\Database::connect();
 
-
     $buseness = array("uuid_business_id" =>  session('uuid_business'));
     $where = array_merge($buseness, $where);
 
-
     $builder = $db->table($tableName);
-    $builder->select("id");
-    $query = $builder->getWhere($where);
+    $builder->getWhere($where);
 
-    $res = $query->getResult();
-
-    // echo $db->getLastQuery();
-
-    return count($res);
+    $count = $builder->countAllResults();
+    return $count;
 }
 
 function isUUID($value) {

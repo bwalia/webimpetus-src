@@ -42,15 +42,9 @@ class Companies extends BaseController
             $query = $this->request->getVar('query');
             $order = $this->request->getVar('order') ?? "company_name";
             $dir = $this->request->getVar('dir') ?? "asc";
-        } else {
-            $limit = $_GET['limit'] ?? 20;
-            $offset = $_GET['offset'] ?? 0;
-            $query = $_GET['query'] ?? false;
-            $order = $_GET['order'] ?? "company_name";
-            $dir = $_GET['dir'] ?? "asc";
         }
 
-        $uuidBusineess = session('uuid_business') ?? $_GET['uuid_business_id'];
+        $uuidBusineess = session('uuid_business');
 
         $sqlQuery = $this->companyModel
                     ->where(['uuid_business_id' => $uuidBusineess])
@@ -103,32 +97,20 @@ class Companies extends BaseController
 
     public function update()
 	{   
-        if ($this->request) {
-            $uuid = $this->request->getPost('uuid');
-            $postData = $this->request->getPost();
-        } else {
-            $uuid = $_POST['uuid'] ?? false;
-            $postData = $_POST;
-        }
+        $uuid = $this->request->getPost('uuid');
+        $postData = $this->request->getPost();
         if (!$uuid || empty($uuid) || !isset($uuid)) {
             $postData['uuid'] = UUID::v5(UUID::v4(), 'roles');
         }
-        if ($this->request) {
-            $postData['uuid_business_id'] = session('uuid_business');
-        } else {
-            $postData['uuid_business_id'] = $_POST['uuid_business_id'];
-        }
+        
+        $postData['uuid_business_id'] = session('uuid_business');
         
         unset($postData['contactID']);
         $id = $this->companyModel->insertOrUpdateByUUID($uuid, $postData);
 
         if ($id) {
             $this->companyModel->deleteRelationData($postData['uuid']);
-            if ($this->request) {
-                $contactID = $this->request->getPost('contactID');
-            } else {
-                $contactID = $_POST['contactID'];
-            }
+            $contactID = $this->request->getPost('contactID');
             $relationData = [
                 'company_uuid' => $postData['uuid'],
                 'contact_uuid' => $contactID,
@@ -136,10 +118,6 @@ class Companies extends BaseController
             ];
             $this->companyModel->insertRelationData($relationData);
         }
-        if ($this->request) {
-            return redirect()->to($this->table);
-        } else {
-            return $postData;
-        }
+        return redirect()->to($this->table);
     }
 }

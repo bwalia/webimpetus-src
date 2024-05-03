@@ -4,6 +4,8 @@ namespace App\Controllers\Api\V2;
 
 use CodeIgniter\RESTful\ResourceController;
 use App\Controllers\Companies as CompaniesController;
+use App\Models\Companies as CompaniesModel;
+use App\Libraries\UUID;
 
 class Companies extends ResourceController
 {
@@ -14,10 +16,44 @@ class Companies extends ResourceController
      */
     public function index()
     {
-        $companiesController = new CompaniesController();
-        $companies = $companiesController->companiesList();
-        
-        return $this->respond($companies);
+        $companiesModel = new CompaniesModel();
+        $limit = $_GET['limit'] ?? 20;
+        $offset = $_GET['offset'] ?? 0;
+        $query = $_GET['query'] ?? false;
+        $order = $_GET['order'] ?? "company_name";
+        $dir = $_GET['dir'] ?? "asc";
+        $uuidBusineess = $_GET['uuid_business_id'];
+
+        $sqlQuery = $companiesModel
+            ->where(['uuid_business_id' => $uuidBusineess])
+            ->limit($limit, $offset)
+            ->orderBy($order, $dir)
+            ->get()
+            ->getResultArray();
+        if ($query) {
+            $sqlQuery = $companiesModel
+                ->where(['uuid_business_id' => $uuidBusineess])
+                ->like("company_name", $query)
+                ->limit($limit, $offset)
+                ->orderBy($order, $dir)
+                ->get()
+                ->getResultArray();
+        }
+
+        $countQuery = $companiesModel
+            ->where(["uuid_business_id" => $uuidBusineess])
+            ->countAllResults();
+        if ($query) {
+            $countQuery = $companiesModel
+                ->where(["uuid_business_id" => $uuidBusineess])
+                ->like("company_name", $query)
+                ->countAllResults();
+        }
+
+        return $this->respond([
+            'data' => $sqlQuery,
+            'total' => $countQuery
+        ]);
     }
 
     /**
@@ -27,7 +63,9 @@ class Companies extends ResourceController
      */
     public function show($id = null)
     {
-        //
+        $company = new CompaniesModel();
+        $company = $company->where('uuid', $id)->get()->getRowArray();
+        return $this->respond(['data' => $company]);
     }
 
     /**
@@ -47,10 +85,30 @@ class Companies extends ResourceController
      */
     public function create()
     {
-        $companiesController = new CompaniesController();
-        $companies = $companiesController->update();
-        return $this->respond($companies);
-        
+        $companiesModel = new CompaniesModel();
+        $uuid = $_POST['uuid'] ?? false;
+        $postData = $_POST;
+
+        if (!$uuid || empty($uuid) || !isset($uuid)) {
+            $postData['uuid'] = UUID::v5(UUID::v4(), 'roles');
+        }
+        $postData['uuid_business_id'] = $_POST['uuid_business_id'];
+
+        unset($postData['contactID']);
+        $id = $companiesModel->insertOrUpdateByUUID($uuid, $postData);
+
+        if ($id) {
+            $companiesModel->deleteRelationData($postData['uuid']);
+            $contactID = $_POST['contactID'];
+            $relationData = [
+                'company_uuid' => $postData['uuid'],
+                'contact_uuid' => $contactID,
+                'uuid' => UUID::v5(UUID::v4(), 'company__contact')
+            ];
+            $companiesModel->insertRelationData($relationData);
+        }
+
+        return $this->respond(['data' => $postData]);
     }
 
     /**
@@ -70,7 +128,30 @@ class Companies extends ResourceController
      */
     public function update($id = null)
     {
-        //
+        $companiesModel = new CompaniesModel();
+        $uuid = $_POST['uuid'] ?? false;
+        $postData = $_POST;
+
+        if (!$uuid || empty($uuid) || !isset($uuid)) {
+            return $this->respond(['data'=> ['message' => 'UUID is must be present while updating records']], 400);
+        }
+        $postData['uuid_business_id'] = $_POST['uuid_business_id'];
+
+        unset($postData['contactID']);
+        $id = $companiesModel->insertOrUpdateByUUID($uuid, $postData);
+
+        if ($id) {
+            $companiesModel->deleteRelationData($postData['uuid']);
+            $contactID = $_POST['contactID'];
+            $relationData = [
+                'company_uuid' => $postData['uuid'],
+                'contact_uuid' => $contactID,
+                'uuid' => UUID::v5(UUID::v4(), 'company__contact')
+            ];
+            $companiesModel->insertRelationData($relationData);
+        }
+
+        return $this->respond(['data' => $postData]);
     }
 
     /**
@@ -80,6 +161,14 @@ class Companies extends ResourceController
      */
     public function delete($id = null)
     {
-        //
+        $companiesModel = new CompaniesModel();
+        if ($id) {
+            $companiesModel->delete(['uuid' => $id ]);
+            $isDeleted = $companiesModel->deleteRelationData($id);
+            if ($isDeleted) {
+                $this->respond(['data'=> ['message'=> 'Deleted Successfully']], 200);
+            }
+        }
+        $this->respond(['data'=> ['message'=> 'Something is wrong here']], 400);
     }
 }

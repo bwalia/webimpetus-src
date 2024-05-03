@@ -129,7 +129,7 @@
 
 		<?php } else { ?>
 			/* $("table tr").click(function(){
-		
+	
 			}); */
 
 
@@ -167,10 +167,12 @@
 		$(this).siblings(".custom-file-label").addClass("selected").html(fileName);
 	});
 
-	function initializeGridTable({...params}) {
+	function initializeGridTable({ ...params }) {
 		const { columnsTitle, tableName, apiPath, selector, columnsMachineName } = params;
 		let allColumns = ['uuid'].concat(columnsMachineName);
 		allColumns = allColumns.concat([null]);
+		let token = "<?php echo session("jwt_token"); ?>";
+		let businessUUID = "<?php echo session("uuid_business"); ?>";
 
 		const grid = new gridjs.Grid({
 			columns: [
@@ -216,7 +218,7 @@
             },
 			search: {
 				server: {
-					url: (prev, keyword) => `${prev}?query=${keyword}`
+					url: (prev, keyword) => `${prev}${prev.includes("?") ? "&" : "?"}query=${keyword}`
 				}
 			},
 			sort: {
@@ -234,10 +236,15 @@
 				}
 			},
 			server: {
-				url: apiPath,
+				url: `${apiPath}?uuid_business_id=${businessUUID}`,
+				headers: {Authorization: `Bearer ${token}`},
 				then: data => data.data.map(customer =>
 					allColumns.map((fields, idx) => [
-						fields === "status" ? (customer[fields] == 1 ? "Active" : "Inactive") : customer[fields]
+						fields === "status" ?
+							(customer[fields] == 1 ? "Active" : "Inactive") :
+							fields === "allow_web_access" ?
+								(customer[fields] == 1 ? "Allowed" : "Not Allowed")
+								: customer[fields]
 					])
 				),
 				total: data => data.recordsTotal

@@ -37,6 +37,48 @@ class Menu extends CommonController
 
         return view($viewPath, $data);
     }
+
+    public function menusList()
+    {
+        $limit = $this->request->getVar('limit');
+        $offset = $this->request->getVar('offset');
+        $query = $this->request->getVar('query');
+        $order = $this->request->getVar('order') ?? "name";
+        $dir = $this->request->getVar('dir') ?? "asc";
+
+        $model = new Common_model();
+
+        $sqlQuery = $model->builder("menu")
+            ->limit($limit, $offset)
+            ->orderBy($order, $dir)
+            ->get()
+            ->getResultArray();
+        if ($query) {
+            $sqlQuery = $model->builder("menu")
+                ->like("name", $query)
+                ->limit($limit, $offset)
+                ->orderBy($order, $dir)
+                ->get()
+                ->getResultArray();
+        }
+
+        $countQuery = $model->builder("menu")
+            ->countAllResults();
+        if ($query) {
+            $countQuery = $model->builder("menu")
+                ->like("name", $query)
+                ->countAllResults();
+        }
+
+        $data = [
+            'rawTblName' => $this->rawTblName,
+            'tableName' => $this->table,
+            'data' => $sqlQuery,
+            'recordsTotal' => $countQuery,
+        ];
+        return $this->response->setJSON($data);
+    }
+
     public function edit($uuid = 0)
     { 
         $menuData = $uuid ? getRowArray($this->table, ['uuid' => $uuid]) : [];

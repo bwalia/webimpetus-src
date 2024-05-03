@@ -17,6 +17,10 @@ ini_set('display_errors', 1);
 
 class Jobs extends CommonController
 {
+	public $content_model;
+	public $user_model;
+	public $cat_model;
+	public $contentImage;
 	public function __construct()
 	{
 		parent::__construct();
@@ -33,6 +37,50 @@ class Jobs extends CommonController
 		$data['is_add_permission'] = 1;
 		echo view($this->table . "/list", $data);
 	}
+
+	public function jobsList()
+	{
+		$limit = $this->request->getVar('limit');
+		$offset = $this->request->getVar('offset');
+		$query = $this->request->getVar('query');
+		$order = $this->request->getVar('order') ?? "title";
+		$dir = $this->request->getVar('dir') ?? "asc";
+
+		$sqlQuery = $this->content_model
+			->where(['type' => 4, "uuid_business_id" => $this->businessUuid])
+			->limit($limit, $offset)
+			->orderBy($order, $dir)
+			->get()
+			->getResultArray();
+		if ($query) {
+			$sqlQuery = $this->content_model
+				->where(['type' => 4, "uuid_business_id" => $this->businessUuid])
+				->like("title", $query)
+				->limit($limit, $offset)
+				->orderBy($order, $dir)
+				->get()
+				->getResultArray();
+		}
+
+		$countQuery = $this->content_model
+			->where(['type' => 4, "uuid_business_id" => $this->businessUuid])
+			->countAllResults();
+		if ($query) {
+			$countQuery = $this->content_model
+				->where(['type' => 4, "uuid_business_id" => $this->businessUuid])
+				->like("title", $query)
+				->countAllResults();
+		}
+
+		$data = [
+			'rawTblName' => $this->rawTblName,
+			'tableName' => $this->table,
+			'data' => $sqlQuery,
+			'recordsTotal' => $countQuery,
+		];
+		return $this->response->setJSON($data);
+	}
+
 	public function edit($id = 0)
 	{
 		$data['tableName'] = $this->table;
@@ -111,7 +159,7 @@ class Jobs extends CommonController
 			'meta_title' => $this->request->getPost('meta_title'),
 			'meta_description' => $this->request->getPost('meta_description'),
 			'status' => $this->request->getPost('status'),
-			'publish_date' => ($this->request->getPost('publish_date') ? strtotime($this->request->getPost('publish_date')) : strtotime(date('Y-m-d H:i:s'))),
+			'publish_date' => ($this->request->getPost('publish_date') ? strtotime($this->request->getPost('publish_date') ?? "") : strtotime(date('Y-m-d H:i:s'))),
 			'custom_fields' => json_encode($cus_fields),
 			'type' => ($this->request->getPost('type') ? $this->request->getPost('type') : 1),
 			'user_uuid' => $this->request->getPost('user_uuid'),

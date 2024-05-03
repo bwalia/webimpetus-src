@@ -74,6 +74,47 @@ class Tasks extends CommonController
         echo view($this->table . "/list", $data);
     }
 
+    public function tasksList()
+	{
+		$limit = $this->request->getVar('limit');
+		$offset = $this->request->getVar('offset');
+		$query = $this->request->getVar('query');
+		$order = $this->request->getVar('order') ?? "name";
+		$dir = $this->request->getVar('dir') ?? "asc";
+
+        $taskStatusList = $this->Tasks_model->allTaskStatus();
+
+        $blank_item = array("key" => "", "value" => "--Choose Status--");
+        array_unshift($taskStatusList, $blank_item);
+        $backlog_item = array("key" => "backlog", "value" => "Backlog");
+        array_push($taskStatusList, $backlog_item);
+
+        $data['taskStatusList'] = $taskStatusList;
+        $status = $_GET['status'] ?? "";
+
+        $condition = array();
+        if ($status === "") {
+        } elseif ($status === "backlog") {
+            $current_sprint = $this->sprintModel->getCurrentSprint();
+            $next_sprint = $this->sprintModel->getNextSprint($current_sprint);
+
+            $sprintCondition = $current_sprint > 0 ? "sprint_id < $current_sprint AND" : "sprint_id < $next_sprint AND";
+            $condition = "(sprint_id = null OR (" . $sprintCondition . " tasks.status != 'done'))";
+        } else {
+            $condition = [$this->table . ".status" => $status];
+        }
+        $taskListData = $this->Tasks_model->getTaskRows($condition, $limit, $offset, $order, $dir, $query);
+
+		$data = [
+			'rawTblName' => $this->rawTblName,
+			'tableName' => $this->table,
+			'data' => $taskListData['data'],
+            'is_add_permission' => 1,
+			'recordsTotal' => $taskListData['count'],
+		];
+		return $this->response->setJSON($data);
+	}
+
     public function clone($uuid = null)
     {
         $data = $this->model->getRowsByUUID($uuid)->getRowArray();
