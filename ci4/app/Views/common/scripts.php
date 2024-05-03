@@ -211,6 +211,9 @@
 					url: (prev, page, limit) => `${prev}${prev.includes("?") ? "&" : "?"}limit=${limit}&offset=${page * limit}`
 				}
 			},
+			className: {
+                table: 'table table-striped'
+            },
 			search: {
 				server: {
 					url: (prev, keyword) => `${prev}?query=${keyword}`

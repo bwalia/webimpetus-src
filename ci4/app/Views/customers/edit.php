@@ -13,7 +13,9 @@ $categories = getResultArray("categories");
                         <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
                             <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home"
                                 role="tab" aria-controls="nav-home" aria-selected="true">Customer detail</a>
-                            <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile"
+                                <a class="nav-item nav-link" id="nav-map-tab" data-toggle="tab" href="#nav-map"
+                                role="tab" aria-controls="nav-map" aria-selected="false">Google Map</a>
+                                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile"
                                 role="tab" aria-controls="nav-profile" aria-selected="false">Contacts</a>
                         </div>
                     </nav>
@@ -176,7 +178,8 @@ $categories = getResultArray("categories");
                             array_push($contactUUIDs, $selectedContact['contact_uuid']);
                         }
                         ?>
-                        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+
+<div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
                             <div class="form-group col-md-12">
                                 <label for="contacts-option">Choose Contacts</label>
                                 <select id="contacts-option" name="cnId[]" multiple class="form-control select2">
@@ -187,6 +190,15 @@ $categories = getResultArray("categories");
                                         </option>
                                     <?php endforeach; ?>
                                 </select>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane fade" id="nav-map" role="tabpanel" aria-labelledby="nav-map-tab">
+                            <div class="form-group col-md-12">
+                            <label for="contacts-option">Google Map</label>
+                            <div id="company-address-google-map" style="height: 800px;">
+                            <iframe id="company-address-google-map-frame" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.0000000000005!2d-73.9854286845947!3d40.74881797932569!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c2598f5f1b6f75%3A0x8e0b7e6f3f1b8b1d!2sEmpire%20State%20Building!5e0!3m2!1sen!2sbd!4v1632213660006!5m2!1sen!2sbd" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                            </div>
                             </div>
                         </div>
                     </div>
