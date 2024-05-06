@@ -84,8 +84,7 @@
                                                     aria-controls="example" value="<?= @$_GET['filter'] ?>">
                                             </div>
                                             <div class="form-group mr-3">
-                                                <select class="form-control" id="list_week" name="list_week"
-                                                    onchange="window.searchTimeslips()">
+                                                <select class="form-control" id="list_week" name="list_week">
                                                     <option value="none">--
                                                         <?php echo lang('Common.select_week'); ?>--
                                                     </option>
