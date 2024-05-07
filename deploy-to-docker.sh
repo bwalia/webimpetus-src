@@ -13,6 +13,14 @@ else
    targetEnv=$1
 fi
 
+if [ -z "$2" ]; then
+   echo "dev machine name is empty, so setting machineName to default"
+   machineName=$(whoami)
+else
+   echo "machineName is NOT empty, so setting machineName to $2"
+   machineName=$2
+fi
+
 clear
 DEBUG=false
 
@@ -22,8 +30,11 @@ echo "Running docker-compose up -d."
 
 docker-compose down
 
-if [ $targetEnv == "docker" ] || [ $targetEnv == "int2" ]; then
-    sed -i -e 's/localhost:8080/int2-my.workstation.co.uk/g' .env
+if [ $targetEnv == "docker" ] || [ $targetEnv == "balinderwalia" ]; then
+    sed -i -e 's/localhost:8080/dev-bsw-my.workstation.co.uk/g' .env
+else
+    rm -Rf .env
+    cp .env.$machineName .env
 fi
 
 docker-compose up -d --build
