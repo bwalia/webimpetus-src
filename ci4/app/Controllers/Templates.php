@@ -5,15 +5,61 @@ namespace App\Controllers;
 use App\Controllers\Core\CommonController;
 use App\Libraries\UUID;
 use App\Models\Blocks_model;
+use App\Models\Template_model;
 
 class Templates extends CommonController
 {
-
+    public $blocks_model;
+    public $templateModel;
     function __construct()
     {
         parent::__construct();
         @$this->blocks_model = new Blocks_model();
+        @$this->templateModel = new Template_model();
     }
+
+    public function templateList()
+	{
+		$limit = $this->request->getVar('limit');
+		$offset = $this->request->getVar('offset');
+		$query = $this->request->getVar('query');
+		$order = $this->request->getVar('order') ?? "code";
+		$dir = $this->request->getVar('dir') ?? "asc";
+
+		$sqlQuery = $this->templateModel
+			->where(['uuid_business_id' => session('uuid_business')])
+			->limit($limit, $offset)
+			->orderBy($order, $dir)
+			->get()
+			->getResultArray();
+		if ($query) {
+			$sqlQuery = $this->templateModel
+				->where(['uuid_business_id' => session('uuid_business')])
+				->like("code", $query)
+				->limit($limit, $offset)
+				->orderBy($order, $dir)
+				->get()
+				->getResultArray();
+		}
+
+		$countQuery = $this->templateModel
+			->where(["uuid_business_id" => session("uuid_business")])
+			->countAllResults();
+		if ($query) {
+			$countQuery = $this->templateModel
+				->where(["uuid_business_id" => session("uuid_business")])
+				->like("code", $query)
+				->countAllResults();
+		}
+
+		$data = [
+			'rawTblName' => $this->rawTblName,
+			'tableName' => $this->table,
+			'data' => $sqlQuery,
+			'recordsTotal' => $countQuery,
+		];
+		return $this->response->setJSON($data);
+	}
 
     public function edit($id = '')
     {

@@ -2214,7 +2214,11 @@
             "type": "number",
             "default": 332233444
           },
-          "uuid_business_id": {
+          "contactID": {
+            "type": "string",
+            "default": "UUID of contact"
+          },
+          "uuid_business": {
             "type": "string",
             "default": "UUID of business"
           }

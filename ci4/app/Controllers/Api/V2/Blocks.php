@@ -4,6 +4,7 @@ namespace App\Controllers\Api\V2;
 
 use App\Controllers\Api_v2;
 
+use App\Models\Blocks_model;
 use CodeIgniter\RESTful\ResourceController;
 
 class Blocks extends ResourceController
@@ -18,29 +19,69 @@ class Blocks extends ResourceController
         $api =  new Api_v2();
         $params = !empty($_GET['params']) ? json_decode($_GET['params'], true) : [];
 
-        //Pagination Params
-        $_GET['page'] = !empty($params['pagination']) && !empty($params['pagination']['page']) ? $params['pagination']['page'] : 1;
-        $_GET['perPage'] = !empty($params['pagination']) && !empty($params['pagination']['perPage']) ? $params['pagination']['perPage'] : 10;
+        if ($params) {
+            $_GET['page'] = !empty($params['pagination']) && !empty($params['pagination']['page']) ? $params['pagination']['page'] : 1;
+            $_GET['perPage'] = !empty($params['pagination']) && !empty($params['pagination']['perPage']) ? $params['pagination']['perPage'] : 10;
 
-        //Sorting params
-        $_GET['field'] = !empty($params['sort']) && !empty($params['sort']['field']) ? $params['sort']['field'] : '';
-        $_GET['order'] = !empty($params['sort']) && !empty($params['sort']['order']) ? $params['sort']['order'] : '';
+            //Sorting params
+            $_GET['field'] = !empty($params['sort']) && !empty($params['sort']['field']) ? $params['sort']['field'] : '';
+            $_GET['order'] = !empty($params['sort']) && !empty($params['sort']['order']) ? $params['sort']['order'] : '';
 
-        //filter by business uuid
-        $_GET['q'] = !empty($params['filter']) && !empty($params['filter']['q']) ? $params['filter']['q'] : '';
+            //filter by business uuid
+            $_GET['q'] = !empty($params['filter']) && !empty($params['filter']['q']) ? $params['filter']['q'] : '';
 
-        $_GET['uuid_business_id'] = !empty($params['filter']) && !empty($params['filter']['uuid_business_id']) ? $params['filter']['uuid_business_id'] : $_GET['uuid_business_id'] ?? false;
-        $arr = [];
-        if (!empty($_GET['uuid_business_id'])) {
-            $arr['uuid_business_id'] = $_GET['uuid_business_id'];
+            $_GET['uuid_business_id'] = !empty($params['filter']) && !empty($params['filter']['uuid_business_id']) ? $params['filter']['uuid_business_id'] : $_GET['uuid_business_id'] ?? false;
+            $arr = [];
+            if (!empty($_GET['uuid_business_id'])) {
+                $arr['uuid_business_id'] = $_GET['uuid_business_id'];
+            } else {
+                $data['data'] = 'You must need to specify the User Business ID';
+                return $this->respond($data, 403);
+            }
+            $data['data'] = $api->common_model->getApiData('blocks_list', $arr);
+            $data['total'] = $api->common_model->getCount('blocks_list', $arr);
+            $data['message'] = 200;
+            return $this->respond($data, $data['message']);
         } else {
-            $data['data'] = 'You must need to specify the User Business ID';
-            return $this->respond($data, 403);
+            $blockModel = new Blocks_model();
+            $limit = $_GET['limit'] ?? 20;
+            $offset = $_GET['offset'] ?? 0;
+            $query = $_GET['query'] ?? false;
+            $order = $_GET['order'] ?? "title";
+            $dir = $_GET['dir'] ?? "asc";
+            $uuidBusineess = $_GET['uuid_business_id'];
+
+            $sqlQuery = $blockModel
+                ->where(['uuid_business_id' => $uuidBusineess])
+                ->limit($limit, $offset)
+                ->orderBy($order, $dir)
+                ->get()
+                ->getResultArray();
+            if ($query) {
+                $sqlQuery = $blockModel
+                    ->where(['uuid_business_id' => $uuidBusineess])
+                    ->like("title", $query)
+                    ->limit($limit, $offset)
+                    ->orderBy($order, $dir)
+                    ->get()
+                    ->getResultArray();
+            }
+
+            $countQuery = $blockModel
+                ->where(["uuid_business_id" => $uuidBusineess])
+                ->countAllResults();
+            if ($query) {
+                $countQuery = $blockModel
+                    ->where(["uuid_business_id" => $uuidBusineess])
+                    ->like("title", $query)
+                    ->countAllResults();
+            }
+
+            return $this->respond([
+                'data' => $sqlQuery,
+                'recordsTotal' => $countQuery,
+            ]);
         }
-        $data['data'] = $api->common_model->getApiData('blocks_list', $arr);
-        $data['total'] = $api->common_model->getCount('blocks_list', $arr);
-        $data['message'] = 200;
-        return $this->respond($data, $data['message']);
     }
 
     /**

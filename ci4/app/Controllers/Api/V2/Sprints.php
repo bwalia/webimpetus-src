@@ -4,6 +4,7 @@ namespace App\Controllers\Api\V2;
 
 use App\Controllers\Api_v2;
 
+use App\Models\Sprints_model;
 use CodeIgniter\RESTful\ResourceController;
 
 /**
@@ -97,30 +98,70 @@ class Sprints extends ResourceController
     {
         $api =  new Api_v2();
         $params = !empty($_GET['params']) ? json_decode($_GET['params'], true) : [];
-
-        //Pagination Params
-        $_GET['page'] = !empty($params['pagination']) && !empty($params['pagination']['page']) ? $params['pagination']['page'] : 1;
-        $_GET['perPage'] = !empty($params['pagination']) && !empty($params['pagination']['perPage']) ? $params['pagination']['perPage'] : 10;
-
-        //Sorting params
-        $_GET['field'] = !empty($params['sort']) && !empty($params['sort']['field']) ? $params['sort']['field'] : '';
-        $_GET['order'] = !empty($params['sort']) && !empty($params['sort']['order']) ? $params['sort']['order'] : '';
-
-        //filter by business uuid
-        $_GET['q'] = !empty($params['filter']) && !empty($params['filter']['q']) ? $params['filter']['q'] : '';
-
-        $_GET['uuid_business_id'] = !empty($params['filter']) && !empty($params['filter']['uuid_business_id']) ? $params['filter']['uuid_business_id'] : $_GET['uuid_business_id'] ?? false;
-        $arr = [];
-        if (!empty($_GET['uuid_business_id'])) {
-            $arr['uuid_business_id'] = $_GET['uuid_business_id'];
+        if ($params) {
+            //Pagination Params
+            $_GET['page'] = !empty($params['pagination']) && !empty($params['pagination']['page']) ? $params['pagination']['page'] : 1;
+            $_GET['perPage'] = !empty($params['pagination']) && !empty($params['pagination']['perPage']) ? $params['pagination']['perPage'] : 10;
+    
+            //Sorting params
+            $_GET['field'] = !empty($params['sort']) && !empty($params['sort']['field']) ? $params['sort']['field'] : '';
+            $_GET['order'] = !empty($params['sort']) && !empty($params['sort']['order']) ? $params['sort']['order'] : '';
+    
+            //filter by business uuid
+            $_GET['q'] = !empty($params['filter']) && !empty($params['filter']['q']) ? $params['filter']['q'] : '';
+    
+            $_GET['uuid_business_id'] = !empty($params['filter']) && !empty($params['filter']['uuid_business_id']) ? $params['filter']['uuid_business_id'] : $_GET['uuid_business_id'] ?? false;
+            $arr = [];
+            if (!empty($_GET['uuid_business_id'])) {
+                $arr['uuid_business_id'] = $_GET['uuid_business_id'];
+            } else {
+                $data['data'] = 'You must need to specify the User Business ID';
+                return $this->respond($data, 403);
+            }
+            $data['data'] = $api->common_model->getApiData('sprints', $arr, 'sprint_name as name');
+            $data['total'] = $api->common_model->getCount('sprints', $arr);
+            $data['message'] = 200;
+            return $this->respond($data);
         } else {
-            $data['data'] = 'You must need to specify the User Business ID';
-            return $this->respond($data, 403);
+            $sprintsModel = new Sprints_model();
+            $limit = $_GET['limit'] ?? 20;
+            $offset = $_GET['offset'] ?? 0;
+            $query = $_GET['query'] ?? false;
+            $order = $_GET['order'] ?? "sprint_name";
+            $dir = $_GET['dir'] ?? "asc";
+            $uuidBusineess = $_GET['uuid_business_id'];
+
+            $sqlQuery = $sprintsModel
+                ->where(['uuid_business_id' => $uuidBusineess])
+                ->limit($limit, $offset)
+                ->orderBy($order, $dir)
+                ->get()
+                ->getResultArray();
+            if ($query) {
+                $sqlQuery = $sprintsModel
+                    ->where(['uuid_business_id' => $uuidBusineess])
+                    ->like("sprint_name", $query)
+                    ->limit($limit, $offset)
+                    ->orderBy($order, $dir)
+                    ->get()
+                    ->getResultArray();
+            }
+
+            $countQuery = $sprintsModel
+                ->where(["uuid_business_id" => $uuidBusineess])
+                ->countAllResults();
+            if ($query) {
+                $countQuery = $sprintsModel
+                    ->where(["uuid_business_id" => $uuidBusineess])
+                    ->like("sprint_name", $query)
+                    ->countAllResults();
+            }
+
+            return $this->respond([
+                'data' => $sqlQuery,
+                'recordsTotal' => $countQuery,
+            ]);
         }
-        $data['data'] = $api->common_model->getApiData('sprints', $arr, 'sprint_name as name');
-        $data['total'] = $api->common_model->getCount('sprints', $arr);
-        $data['message'] = 200;
-        return $this->respond($data);
     }
 
     /**

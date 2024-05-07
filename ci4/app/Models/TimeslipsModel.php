@@ -139,6 +139,90 @@ class TimeslipsModel extends Model
         return $db->table($this->table)->select('week_no')->orderBy('week_no', 'ASC')->distinct()->getWhere(array('uuid_business_id' => $this->businessUuid, 'week_no !=' => NULL))->getResultArray();
     }
 
+    public function getTimeslipsRows($limit, $offset, $order, $dir, $query, $listMonth, $listWeek, $listYear, $uuidBusineess)
+    {
+        $table = $this->table;
+        $selectFields = array(
+            $table . '.uuid',
+            $table . '.id as ci4_internal_id',
+            $table . '.uuid as id',
+            'tasks.name as taskName',
+            $table . '.week_no',
+            'CONCAT_WS(" ", employees.saludation, employees.first_name, employees.surname) as employeeName',
+            $table . '.slip_start_date',
+            $table . '.slip_timer_started',
+            $table . '.slip_end_date',
+            $table . '.slip_timer_end',
+            '(CASE ' . $table . '.break_time WHEN 1 THEN "Yes" WHEN 0 THEN "No" ELSE NULL END) as break_time',
+            $table . '.break_time_start',
+            $table . '.break_time_end',
+            $table . '.slip_hours',
+            $table . '.slip_description',
+            $table . '.slip_rate',
+            $table . '.slip_timer_accumulated_seconds',
+            $table . '.billing_status',
+            $table . '.created_at',
+            $table . '.modified_at',
+            $table . '.task_name as task_id',
+            $table . '.employee_name as employee_id',
+            $table . '.*',
+        );
+        $whereCond = [];
+        $whereCond[$table .'.uuid_business_id'] = $uuidBusineess;
+        $this->select($selectFields);
+        $this->join('tasks', 'tasks.id = ' . $table . '.task_name');
+        $this->join('employees', 'employees.id = ' . $table . '.employee_name');
+
+        if ($query) {
+            $this->like('tasks.name', $query);
+            $this->orLike('employees.first_name', $query);
+            $this->orLike('employees.surname', $query);
+        }
+        if ($listWeek) {
+            $whereCond[$table.'.week_no'] = $listWeek;
+        }
+        if ($listMonth && $listYear) {
+            $lmonth = "{$listYear}-{$listMonth}-01";
+            $submitted_time = strtotime($lmonth);
+            $submitted_time2 = strtotime("{$listYear}-{$listMonth}-" . date("t", strtotime($lmonth)));
+            $whereCond[$table .'.slip_start_date >='] = $submitted_time;
+            $whereCond[$table .'.slip_start_date <='] = $submitted_time2;
+        }
+        $this->where($whereCond);
+        $this->limit($limit, $offset);
+        $this->orderBy($order, $dir);
+
+        $data = $this->get()->getResultArray();
+        
+        $this->select($selectFields);
+        $this->join('tasks', 'tasks.id = ' . $table . '.task_name');
+        $this->join('employees', 'employees.id = ' . $table . '.employee_name');
+
+        if ($query) {
+            $this->like('tasks.name', $query);
+            $this->orLike('employees.first_name', $query);
+            $this->orLike('employees.surname', $query);
+        }
+        if ($listWeek) {
+            $whereCond[$table.'.week_no'] = $listWeek;
+        }
+        if ($listMonth && $listYear) {
+            $lmonth = "{$listYear}-{$listMonth}-01";
+            $submitted_time = strtotime($lmonth);
+            $submitted_time2 = strtotime("{$listYear}-{$listMonth}-" . date("t", strtotime($lmonth)));
+            $whereCond[$table .'.slip_start_date >='] = $submitted_time;
+            $whereCond[$table .'.slip_start_date <='] = $submitted_time2;
+        }
+        $this->where($whereCond);
+
+        $count = $this->countAllResults();
+
+        return [
+            'data' => $data,
+            'total' => $count
+        ];
+    }
+
     public function getApiRows($id = false, $timeslip_where = array(), $search = '', $secondSearch = null)
     {
         $table = $this->table;

@@ -214,8 +214,8 @@
 				}
 			},
 			className: {
-                table: 'table table-striped'
-            },
+				table: 'table table-striped'
+			},
 			search: {
 				server: {
 					url: (prev, keyword) => `${prev}${prev.includes("?") ? "&" : "?"}query=${keyword}`
@@ -237,7 +237,7 @@
 			},
 			server: {
 				url: `${apiPath}?uuid_business_id=${businessUUID}`,
-				headers: {Authorization: `Bearer ${token}`},
+				headers: { Authorization: `Bearer ${token}` },
 				then: data => data.data.map(customer =>
 					allColumns.map((fields, idx) => [
 						fields === "status" ?

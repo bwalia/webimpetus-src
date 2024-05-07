@@ -85,6 +85,109 @@ $months = ["January", "February", "March", "April", "May", "June", "July", "Augu
 
                       </section>
                       <script type="text/javascript">
+
+                        function initializeGridTable({ ...params }) {
+                            const { columnsTitle, tableName, apiPath, selector, columnsMachineName, listWeek, listMonth, listYear } = params;
+                            console.log({listWeek});
+                            let allColumns = ['uuid'].concat(columnsMachineName);
+                            allColumns = allColumns.concat([null]);
+                            let token = "<?php echo session("jwt_token"); ?>";
+                            let businessUUID = "<?php echo session("uuid_business"); ?>";
+
+                            let sessionWeek = window.sessionStorage.getItem("listWeek");
+                            let sessionMonth = window.sessionStorage.getItem("listMonth");
+                            let sessionYear = window.sessionStorage.getItem("listYear");
+
+                            let currentDate = new Date();
+                            let currentYear = listYear ? listYear : sessionYear ? sessionYear : currentDate.getFullYear();
+                            let currentMonth = listMonth ? listMonth : sessionMonth ? sessionMonth : currentDate.getMonth() + 1;
+
+                            const grid = new gridjs.Grid({
+                                columns: [
+                                    {
+                                        name: "uuid",
+                                        hidden: true
+                                    },
+                                    ...columnsTitle,
+                                    {
+                                        name: 'Actions',
+                                        sort: false,
+                                        formatter: (cell, row) => {
+                                            return gridjs.html(
+                                                `<div class="header_more_tool">
+                                                <div class="dropdown">
+                                                    <span class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown">
+                                                        <i class="ti-more-alt"></i>
+                                                    </span>
+                                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                                                        <a class="dropdown-item" onclick="return confirm('Are you sure want to delete?');"
+                                                            href="/${tableName}/deleterow/${row.cells[0].data}"> <i class="ti-trash"></i>
+                                                            Delete
+                                                        </a>
+                                                        <a class="dropdown-item" href="/${tableName}/edit/${row.cells[0].data}"> <i
+                                                            class="fas fa-edit"></i>
+                                                            Edit
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>`
+                                            );
+                                        }
+                                    },
+                                ],
+                                pagination: {
+                                    limit: 20,
+                                    server: {
+                                        url: (prev, page, limit) => `${prev}${prev.includes("?") ? "&" : "?"}limit=${limit}&offset=${page * limit}`
+                                    }
+                                },
+                                className: {
+                                    table: 'table table-striped'
+                                },
+                                search: {
+                                    server: {
+                                        url: (prev, keyword) => `${prev}${prev.includes("?") ? "&" : "?"}query=${keyword}`
+                                    }
+                                },
+                                sort: {
+                                    multiColumn: false,
+                                    server: {
+                                        url: (prev, columns) => {
+                                            if (!columns.length) return prev;
+                                            const col = columns[0];
+                                            const dir = col.direction === 1 ? 'asc' : 'desc';
+                                            let colNames = columnsMachineName;
+                                            let colName = colNames[col.index];
+
+                                            return `${prev}${prev.includes("?") ? "&" : "?"}order=${colName}&dir=${dir}`;
+                                        }
+                                    }
+                                },
+                                server: {
+                                    url: `${apiPath}?uuid_business_id=${businessUUID}&list_week=${(listWeek && listWeek != "none") ? listWeek : ""}&list_month=${currentMonth}&list_year=${currentYear}`,
+                                    headers: { Authorization: `Bearer ${token}` },
+                                    then: data => data.data.map(customer =>
+                                        allColumns.map((fields, idx) => [
+                                            fields === "status" ?
+                                                (customer[fields] == 1 ? "Active" : "Inactive") :
+                                            fields === "allow_web_access" ?
+                                                (customer[fields] == 1 ? "Allowed" : "Not Allowed") :
+                                            fields === "slip_start_date" ?
+                                                (new Date(customer[fields] * 1000).toDateString())
+                                            : customer[fields]
+                                        ])
+                                    ),
+                                    total: data => data.recordsTotal
+                                }
+                            }).render(document.getElementById(selector));
+                            grid.on('cellClick',
+                                (...args) =>
+                                    args[2].id !== "actions" &&
+                                    (window.location.href = `/${tableName}/edit/${args[3]._cells[0].data}`)
+                            );
+                        }
+
+
                           let startYear = 2020;
                           let endYear = new Date().getFullYear();
                           for (i = endYear; i > startYear; i--) {

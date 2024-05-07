@@ -10,6 +10,7 @@ use App\Models\TimeslipsModel;
 class Timeslips extends CommonController
 {
     protected $timeSlipsModel;
+    protected $templateModel;
 
     public function __construct()
     {
@@ -124,9 +125,9 @@ class Timeslips extends CommonController
         if (empty($uuid)) {
             $uuidVal = UUID::v5(UUID::v4(), 'timeslips_saving');
         }
-        $slipStartDate = strtotime($this->request->getPost('slip_start_date'));
+        $slipStartDate = strtotime($this->request->getPost('slip_start_date') ?? date("Y/m/d"));
         $slipStartDate = $slipStartDate ? $slipStartDate : null;
-        $slipEndDate = strtotime($this->request->getPost('slip_end_date'));
+        $slipEndDate = strtotime($this->request->getPost('slip_end_date') ?? date("Y/m/d"));
         $slipEndDate = $slipEndDate ? $slipEndDate : null;
         $data = array(
             'task_name' => $this->request->getPost('task_name'),

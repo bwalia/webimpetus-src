@@ -86,20 +86,29 @@ class Companies extends ResourceController
     public function create()
     {
         $companiesModel = new CompaniesModel();
-        $uuid = $_POST['uuid'] ?? false;
+        
         $postData = $_POST;
-
+        if (!$postData || !isset($postData) || empty($postData)) {
+            $postData = $this->request->getJSON();
+            $postData = (array) $postData;
+        }
+        $uuid = $postData['uuid'] ?? false;
+        
         if (!$uuid || empty($uuid) || !isset($uuid)) {
             $postData['uuid'] = UUID::v5(UUID::v4(), 'roles');
         }
-        $postData['uuid_business_id'] = $_POST['uuid_business_id'];
+
+        $postData['uuid_business_id'] = $postData['uuid_business'];
 
         unset($postData['contactID']);
+        unset($postData['uuid_business']);
         $id = $companiesModel->insertOrUpdateByUUID($uuid, $postData);
 
         if ($id) {
             $companiesModel->deleteRelationData($postData['uuid']);
-            $contactID = $_POST['contactID'];
+            $jsonData = $this->request->getJSON();
+            $jsonData = (array) $jsonData;
+            $contactID = $jsonData['contactID'];
             $relationData = [
                 'company_uuid' => $postData['uuid'],
                 'contact_uuid' => $contactID,
