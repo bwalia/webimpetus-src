@@ -79,11 +79,6 @@
                                     <div class="row" style="padding-left: 15px;">
                                         <div class="col-lg-10 form-row pl-0">
                                             <div class="form-group mr-3">
-                                                <input type="text" class="form-control"
-                                                    placeholder="Filter by task name, employee" name="filter" id="filter"
-                                                    aria-controls="example" value="<?= @$_GET['filter'] ?>">
-                                            </div>
-                                            <div class="form-group mr-3">
                                                 <select class="form-control" id="list_week" name="list_week">
                                                     <option value="none">--
                                                         <?php echo lang('Common.select_week'); ?>--
@@ -96,8 +91,7 @@
                                                 </select>
                                             </div>
                                             <div class="form-group mr-3">
-                                                <select class="form-control" id="list_monthpicker2" name="list_monthpicker"
-                                                    onchange="window.searchTimeslips()">
+                                                <select class="form-control" id="list_monthpicker2" name="list_monthpicker">
                                                     <option value="none">--
                                                         <?php echo lang('Common.select_month'); ?>--
                                                     </option>
@@ -108,8 +102,7 @@
                                                 </select>
                                             </div>
                                             <div class="form-group mr-3">
-                                                <select class="form-control" id="list_yearpicker2" name="list_yearpicker"
-                                                    onchange="window.searchTimeslips()">
+                                                <select class="form-control" id="list_yearpicker2" name="list_yearpicker">
                                                     <option value="none">--
                                                         <?php echo lang('Common.select_year'); ?>--
                                                     </option>

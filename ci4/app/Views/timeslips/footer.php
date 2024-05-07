@@ -87,12 +87,20 @@ $months = ["January", "February", "March", "April", "May", "June", "July", "Augu
                       <script type="text/javascript">
 
                         function initializeGridTable({ ...params }) {
-                            const { columnsTitle, tableName, apiPath, selector, columnsMachineName, listWeek } = params;
+                            const { columnsTitle, tableName, apiPath, selector, columnsMachineName, listWeek, listMonth, listYear } = params;
                             console.log({listWeek});
                             let allColumns = ['uuid'].concat(columnsMachineName);
                             allColumns = allColumns.concat([null]);
                             let token = "<?php echo session("jwt_token"); ?>";
                             let businessUUID = "<?php echo session("uuid_business"); ?>";
+
+                            let sessionWeek = window.sessionStorage.getItem("listWeek");
+                            let sessionMonth = window.sessionStorage.getItem("listMonth");
+                            let sessionYear = window.sessionStorage.getItem("listYear");
+
+                            let currentDate = new Date();
+                            let currentYear = listYear ? listYear : sessionYear ? sessionYear : currentDate.getFullYear();
+                            let currentMonth = listMonth ? listMonth : sessionMonth ? sessionMonth : currentDate.getMonth() + 1;
 
                             const grid = new gridjs.Grid({
                                 columns: [
@@ -130,7 +138,7 @@ $months = ["January", "February", "March", "April", "May", "June", "July", "Augu
                                 pagination: {
                                     limit: 20,
                                     server: {
-                                        url: (prev, page, limit, rest) => `${prev}${prev.includes("?") ? "&" : "?"}limit=${limit}&offset=${page * limit}`
+                                        url: (prev, page, limit) => `${prev}${prev.includes("?") ? "&" : "?"}limit=${limit}&offset=${page * limit}`
                                     }
                                 },
                                 className: {
@@ -156,15 +164,17 @@ $months = ["January", "February", "March", "April", "May", "June", "July", "Augu
                                     }
                                 },
                                 server: {
-                                    url: `${apiPath}?uuid_business_id=${businessUUID}`,
+                                    url: `${apiPath}?uuid_business_id=${businessUUID}&list_week=${(listWeek && listWeek != "none") ? listWeek : ""}&list_month=${currentMonth}&list_year=${currentYear}`,
                                     headers: { Authorization: `Bearer ${token}` },
                                     then: data => data.data.map(customer =>
                                         allColumns.map((fields, idx) => [
                                             fields === "status" ?
                                                 (customer[fields] == 1 ? "Active" : "Inactive") :
-                                                fields === "allow_web_access" ?
-                                                    (customer[fields] == 1 ? "Allowed" : "Not Allowed")
-                                                    : customer[fields]
+                                            fields === "allow_web_access" ?
+                                                (customer[fields] == 1 ? "Allowed" : "Not Allowed") :
+                                            fields === "slip_start_date" ?
+                                                (new Date(customer[fields] * 1000).toDateString())
+                                            : customer[fields]
                                         ])
                                     ),
                                     total: data => data.recordsTotal

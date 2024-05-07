@@ -3,7 +3,7 @@
 namespace App\Controllers\Api\V2;
 
 use App\Controllers\Api_v2;
-
+use App\Models\Service_model;
 use CodeIgniter\RESTful\ResourceController;
 
 class Services extends ResourceController
@@ -17,30 +17,47 @@ class Services extends ResourceController
     {
         $api =  new Api_v2();
         $params = !empty($_GET['params']) ? json_decode($_GET['params'], true) : [];
-
-        //Pagination Params
-        $_GET['page'] = !empty($params['pagination']) && !empty($params['pagination']['page']) ? $params['pagination']['page'] : 1;
-        $_GET['perPage'] = !empty($params['pagination']) && !empty($params['pagination']['perPage']) ? $params['pagination']['perPage'] : 10;
-
-        //Sorting params
-        $_GET['field'] = !empty($params['sort']) && !empty($params['sort']['field']) ? $params['sort']['field'] : '';
-        $_GET['order'] = !empty($params['sort']) && !empty($params['sort']['order']) ? $params['sort']['order'] : '';
-
-        //filter by business uuid
-        $_GET['q'] = !empty($params['filter']) && !empty($params['filter']['q']) ? $params['filter']['q'] : '';
-
-        $_GET['uuid_business_id'] = !empty($params['filter']) && !empty($params['filter']['uuid_business_id']) ? $params['filter']['uuid_business_id'] : $_GET['uuid_business_id'] ?? false;
-        $arr = [];
-        if (!empty($_GET['uuid_business_id'])) {
-            $arr['uuid_business_id'] = $_GET['uuid_business_id'];
+        if ($params) {
+            //Pagination Params
+            $_GET['page'] = !empty($params['pagination']) && !empty($params['pagination']['page']) ? $params['pagination']['page'] : 1;
+            $_GET['perPage'] = !empty($params['pagination']) && !empty($params['pagination']['perPage']) ? $params['pagination']['perPage'] : 10;
+    
+            //Sorting params
+            $_GET['field'] = !empty($params['sort']) && !empty($params['sort']['field']) ? $params['sort']['field'] : '';
+            $_GET['order'] = !empty($params['sort']) && !empty($params['sort']['order']) ? $params['sort']['order'] : '';
+    
+            //filter by business uuid
+            $_GET['q'] = !empty($params['filter']) && !empty($params['filter']['q']) ? $params['filter']['q'] : '';
+    
+            $_GET['uuid_business_id'] = !empty($params['filter']) && !empty($params['filter']['uuid_business_id']) ? $params['filter']['uuid_business_id'] : $_GET['uuid_business_id'] ?? false;
+            $arr = [];
+            if (!empty($_GET['uuid_business_id'])) {
+                $arr['uuid_business_id'] = $_GET['uuid_business_id'];
+            } else {
+                $data['data'] = 'You must need to specify the User Business ID';
+                return $this->respond($data, 403);
+            }
+            $data['data'] = $api->common_model->getApiData('services', $arr);
+            $data['total'] = $api->common_model->getCount('services', $arr);
+            $data['message'] = 200;
+            return $this->respond($data);
         } else {
-            $data['data'] = 'You must need to specify the User Business ID';
-            return $this->respond($data, 403);
+            $servicesModel = new Service_model();
+            $limit = $_GET['limit'] ?? 20;
+            $offset = $_GET['offset'] ?? 0;
+            $query = $_GET['query'] ?? false;
+            $order = $_GET['order'] ?? "name";
+            $dir = $_GET['dir'] ?? "asc";
+            $uuidBusineess = $_GET['uuid_business_id'];
+
+            $servicesData = $servicesModel->getServciesRows($limit, $offset, $order, $dir, $query, $uuidBusineess);
+
+            return $this->respond([
+                'data' => $servicesData['data'],
+                'recordsTotal' => $servicesData['total'],
+            ]);
+            
         }
-        $data['data'] = $api->common_model->getApiData('services', $arr);
-        $data['total'] = $api->common_model->getCount('services', $arr);
-        $data['message'] = 200;
-        return $this->respond($data);
     }
 
     /**

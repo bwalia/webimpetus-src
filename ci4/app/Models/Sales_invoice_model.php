@@ -6,6 +6,7 @@ use CodeIgniter\Model;
 class Sales_invoice_model extends Model
 {
     protected $sales_invoices = 'sales_invoices';
+    protected $table = 'sales_invoices';
      
     public function getRows($id = false)
     {

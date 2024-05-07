@@ -49,33 +49,69 @@ class Webpages extends ResourceController
     {
         $api =  new Api_v2();
         $params = !empty($_GET['params']) ? json_decode($_GET['params'], true) : [];
-        $catId = $_GET['category_id'];
-        //Pagination Params
-        $_GET['page'] = !empty($params['pagination']) && !empty($params['pagination']['page']) ? $params['pagination']['page'] : 1;
-        $_GET['perPage'] = !empty($params['pagination']) && !empty($params['pagination']['perPage']) ? $params['pagination']['perPage'] : 10;
+        if ($params) {
+            $catId = $_GET['category_id'];
+            //Pagination Params
+            $_GET['page'] = !empty($params['pagination']) && !empty($params['pagination']['page']) ? $params['pagination']['page'] : 1;
+            $_GET['perPage'] = !empty($params['pagination']) && !empty($params['pagination']['perPage']) ? $params['pagination']['perPage'] : 10;
 
-        //Sorting params
-        $_GET['field'] = !empty($params['sort']) && !empty($params['sort']['field']) ? $params['sort']['field'] : '';
-        $_GET['order'] = !empty($params['sort']) && !empty($params['sort']['order']) ? $params['sort']['order'] : '';
+            //Sorting params
+            $_GET['field'] = !empty($params['sort']) && !empty($params['sort']['field']) ? $params['sort']['field'] : '';
+            $_GET['order'] = !empty($params['sort']) && !empty($params['sort']['order']) ? $params['sort']['order'] : '';
 
-        //filter by business uuid
-        $_GET['q'] = !empty($params['filter']) && !empty($params['filter']['q']) ? $params['filter']['q'] : $_GET['q'] ?? '';
-        $_GET['category_id'] = !empty($params['filter']) && !empty($params['filter']['category_id']) ? $params['filter']['category_id'] : $catId;
-        $_GET['uuid_business_id'] = !empty($params['filter']) && !empty($params['filter']['uuid_business_id']) ? $params['filter']['uuid_business_id'] : $_GET['uuid_business_id'] ?? false;
+            //filter by business uuid
+            $_GET['q'] = !empty($params['filter']) && !empty($params['filter']['q']) ? $params['filter']['q'] : $_GET['q'] ?? '';
+            $_GET['category_id'] = !empty($params['filter']) && !empty($params['filter']['category_id']) ? $params['filter']['category_id'] : $catId;
+            $_GET['uuid_business_id'] = !empty($params['filter']) && !empty($params['filter']['uuid_business_id']) ? $params['filter']['uuid_business_id'] : $_GET['uuid_business_id'] ?? false;
 
-        echo '<pre>';
-        print_r($_GET);
-        echo '</pre>';
-        die;
+            if (empty($_GET['uuid_business_id']) || !isset($_GET['uuid_business_id']) || !$_GET['uuid_business_id']) {
+                $data['data'] = 'You must need to specify the User Business ID';
+                return $this->respond($data, 403);
+            }
+            // $data['data'] = $api->webpages($category_id);
+            // $data['total'] = $api->userModel->getApiV2UsersCount();
+            // $data['message'] = 200;
+            return $this->respond($api->webpages($_GET['category_id'] ?? $catId, $_GET['q']));
+        } else {
+            $webModel = new Content_model();
+            $limit = $_GET['limit'] ?? 20;
+            $offset = $_GET['offset'] ?? 0;
+            $query = $_GET['query'] ?? false;
+            $order = $_GET['order'] ?? "title";
+            $dir = $_GET['dir'] ?? "asc";
+            $uuidBusineess = $_GET['uuid_business_id'];
 
-        if (empty($_GET['uuid_business_id']) || !isset($_GET['uuid_business_id']) || !$_GET['uuid_business_id']) {
-            $data['data'] = 'You must need to specify the User Business ID';
-            return $this->respond($data, 403);
+            $sqlQuery = $webModel
+                ->where(['type' => 1, 'uuid_business_id' => $uuidBusineess])
+                ->limit($limit, $offset)
+                ->orderBy($order, $dir)
+                ->get()
+                ->getResultArray();
+            if ($query) {
+                $sqlQuery = $webModel
+                    ->where(['type' => 1, 'uuid_business_id' => $uuidBusineess])
+                    ->like("title", $query)
+                    ->limit($limit, $offset)
+                    ->orderBy($order, $dir)
+                    ->get()
+                    ->getResultArray();
+            }
+
+            $countQuery = $webModel
+                ->where(['type' => 1, "uuid_business_id" => $uuidBusineess])
+                ->countAllResults();
+            if ($query) {
+                $countQuery = $webModel
+                    ->where(['type' => 1, "uuid_business_id" => $uuidBusineess])
+                    ->like("title", $query)
+                    ->countAllResults();
+            }
+
+            return $this->respond([
+                'data' => $sqlQuery,
+                'recordsTotal' => $countQuery,
+            ]);
         }
-        // $data['data'] = $api->webpages($category_id);
-        // $data['total'] = $api->userModel->getApiV2UsersCount();
-        // $data['message'] = 200;
-        return $this->respond($api->webpages($_GET['category_id'] ?? $catId, $_GET['q']));
     }
 
     /**
