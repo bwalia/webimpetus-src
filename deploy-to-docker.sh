@@ -33,8 +33,23 @@ docker-compose down
 if [ $targetEnv == "docker" ] || [ $targetEnv == "balinderwalia" ]; then
     sed -i -e 's/localhost:8080/dev-bsw-my.workstation.co.uk/g' .env
 else
-    rm -Rf .env
-    cp .env.$machineName .env
+    ENV_FILE_ACTIVE=$(pwd)/.env
+    FILE_DEVELOPER_PERSONAL_ENV=$(pwd)/.env.$machineName
+    if [ -f "$FILE_DEVELOPER_PERSONAL_ENV" ];then
+        echo "$FILE_DEVELOPER_PERSONAL_ENV exists."
+        
+        if [ -f "$ENV_FILE_ACTIVE" ];then
+        rm -Rf $ENV_FILE_ACTIVE
+        fi
+        cp $FILE_DEVELOPER_PERSONAL_ENV $ENV_FILE_ACTIVE
+    else
+        echo "$FILE does not exist."
+        if [ -f "$ENV_FILE_ACTIVE" ];then
+        echo "Please create a $ENV_FILE_ACTIVE file to run Webimpetus Dev env in Docker."
+        exit 1
+        fi
+
+    fi
 fi
 
 docker-compose up -d --build
