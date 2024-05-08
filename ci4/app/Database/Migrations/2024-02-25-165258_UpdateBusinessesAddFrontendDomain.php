@@ -8,10 +8,13 @@ class UpdateBusinessesAddFrontendDomain extends Migration
 {
     public function up()
     {
-        $fields = [
-            'frontend_domain' => ['type' => 'VARCHAR', 'constraint' => '124',],
-        ];
-        $this->forge->addColumn('businesses', $fields);
+        $db = \Config\Database::connect();
+        if (!$db->fieldExists('frontend_domain', 'businesses')) {
+            $fields = [
+                'frontend_domain' => ['type' => 'VARCHAR', 'constraint' => '124',],
+            ];
+            $this->forge->addColumn('businesses', $fields);
+        }
     }
 
     public function down()
