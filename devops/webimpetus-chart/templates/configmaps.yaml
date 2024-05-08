@@ -233,8 +233,8 @@ data:
         if [ -f $DUMP_FILE_TAR ]; then
             echo "Dump file renamed to wsl_{{ .Values.targetEnv }}_db_dump_latest.tar.gz"
             mc cp $DUMP_FILE_TAR myminio/$MINIO_BUCKET/hourly/      # Copy the latest dump to hourly folder
-            # Remove old dump files older than 30 days
-            mc rm -r --force --versions --older-than 60d10h30s myminio/$MINIO_BUCKET/hourly/
+            # Remove old dump files older than 60 days
+            mc rm -r --force --versions --older-than 30d10h30s myminio/$MINIO_BUCKET/hourly/
         else
             echo "Error renaming dump file wsl_{{ .Values.targetEnv }}_db_dump_latest.tar.gz."
         fi
