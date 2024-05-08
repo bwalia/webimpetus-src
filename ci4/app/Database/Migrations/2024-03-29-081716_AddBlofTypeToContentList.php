@@ -8,13 +8,16 @@ class AddBlofTypeToContentList extends Migration
 {
     public function up()
     {
-        $this->forge->addColumn('content_list', [
-            'blog_type' => [
-                'type' => 'BOOLEAN',
-                'default' => false,
-                'null' => true,
-            ],
-        ]);
+        $db = \Config\Database::connect();
+        if (!$db->fieldExists('blog_type', 'content_list')) {
+            $this->forge->addColumn('content_list', [
+                'blog_type' => [
+                    'type' => 'BOOLEAN',
+                    'default' => false,
+                    'null' => true,
+                ],
+            ]);
+        }
     }
 
     public function down()

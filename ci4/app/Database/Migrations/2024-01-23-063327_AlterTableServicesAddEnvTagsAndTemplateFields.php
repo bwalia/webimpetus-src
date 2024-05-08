@@ -8,10 +8,13 @@ class AlterTableServicesAddEnvTagsAndTemplateFields extends Migration
 {
     public function up()
     {
-        $fields = [
-            'env_tags' => ['type' => 'TEXT'],
-        ];
-        $this->forge->addColumn('services', $fields);
+        $db = \Config\Database::connect();
+        if (!$db->fieldExists('env_tags', 'services')) {
+            $fields = [
+                'env_tags' => ['type' => 'TEXT'],
+            ];
+            $this->forge->addColumn('services', $fields);
+        }
     }
 
     public function down()

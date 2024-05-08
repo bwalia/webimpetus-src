@@ -8,10 +8,13 @@ class UpdateMenuAddMenuFts extends Migration
 {
     public function up()
     {
-        $fields = [
-            'menu_fts' => ['type' => 'VARCHAR', 'constraint' => '255',],
-        ];
-        $this->forge->addColumn('menu', $fields);
+        $db = \Config\Database::connect();
+        if (!$db->fieldExists('menu_fts', 'menu')) {
+            $fields = [
+                'menu_fts' => ['type' => 'VARCHAR', 'constraint' => '255',],
+            ];
+            $this->forge->addColumn('menu', $fields);
+        }
     }
 
     public function down()

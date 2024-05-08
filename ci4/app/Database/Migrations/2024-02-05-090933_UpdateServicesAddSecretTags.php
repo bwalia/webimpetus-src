@@ -8,10 +8,13 @@ class UpdateServicesAddSecretTags extends Migration
 {
     public function up()
     {
-        $fields = [
-            'secret_tags' => ['type' => 'TEXT'],
-        ];
-        $this->forge->addColumn('secrets', $fields);
+        $db = \Config\Database::connect();
+        if (!$db->fieldExists('secret_tags', 'secrets')) {
+            $fields = [
+                'secret_tags' => ['type' => 'TEXT'],
+            ];
+            $this->forge->addColumn('secrets', $fields);
+        }
     }
 
     public function down()

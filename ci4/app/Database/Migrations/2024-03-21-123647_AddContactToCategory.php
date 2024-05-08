@@ -8,10 +8,13 @@ class AddContactToCategory extends Migration
 {
     public function up()
     {
-        $fields = [
-            'contact_uuid' => ['type' => 'VARCHAR', 'constraint' => 36,],
-        ];
-        $this->forge->addColumn('categories', $fields);
+        $db = \Config\Database::connect();
+        if (!$db->fieldExists('contact_uuid', 'categories')) {
+            $fields = [
+                'contact_uuid' => ['type' => 'VARCHAR', 'constraint' => 36,],
+            ];
+            $this->forge->addColumn('categories', $fields);
+        }
     }
 
     public function down()
