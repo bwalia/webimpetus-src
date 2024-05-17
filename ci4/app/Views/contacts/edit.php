@@ -1,12 +1,18 @@
+
 <?php require_once(APPPATH . 'Views/common/edit-title.php'); ?>
 <?php
-$row = getRowArray("blocks_list", ["code" => "contact_types_list_json"]);
-if (isset($row)) {
-    $contact_type = json_decode(@$row->text);
-    $customers = getResultArray("customers");
-} else {
-    $customers = getResultArray("customers");
-}
+
+//  $row = getRowArray("blocks_list", ["code" => "contact_types_list_json"]);
+//  echo "<pre>";
+// print_r($customers);
+// print_r("hello");
+// die();
+// if (isset($row)) {
+    // $contact_type = json_decode(@$row->text);
+    // $customers = getResultArray("customers");
+// } else {
+//     $customers = getResultArray("customers");
+// }
 ?>
 <div class="white_card_body">
     <div class="card-body">
@@ -31,9 +37,10 @@ if (isset($row)) {
                                 <div class="form-group required col-md-6">
                                     <label for="inputEmail4">Customer Name</label>
                                     <select id="client_id" name="client_id"
-                                        class="form-control required dashboard-dropdown">
+                                        class="form-control required dashboard-dropdown  select-customer-contacts-ajax">
                                         <option value="" selected="">--Select--</option>
-                                        <?php if (isset($customers)) {
+                                         <?php 
+                                         if (isset($customers)) {
                                             foreach ($customers as $row): ?>
                                                 <option value="<?= $row['id']; ?>" <?php if ($row['id'] == @$contact->client_id) {
                                                      echo "selected";
@@ -41,8 +48,8 @@ if (isset($row)) {
                                                     <?= $row['company_name']; ?>
                                                 </option>
                                             <?php endforeach;
-                                        } ?>
-                                    </select>
+                                        } ?>                                  
+                                        </select>
                                 </div>
 
                                 <div class="form-group required col-md-6">
@@ -252,6 +259,8 @@ if (isset($row)) {
         }
     });
 
+    
+
     $(document).on("click", ".form-check-input", function () {
         if ($(this).prop("checked") == false) {
             $(this).val(0);
@@ -371,5 +380,34 @@ if (isset($row)) {
         renderAddress(uuid);
     })
 
+    $(document).ready(function() {
+        $(".select-customer-contacts-ajax").select2({
+            ajax: {
+                url: "/contacts/contactsCustomerAjax",
+                dataType: 'json',
+                delay: 250,
+                data: function(params) {
+                    return {
+                        q: params.term // search term
+                    };
+                },
+                processResults: function(data, params) {
+                    // parse the results into the format expected by Select2
+                    // since we are using custom formatting functions we do not need to
+                    // alter the remote JSON data, except to indicate that infinite
+                    // scrolling can be used
+                    return {
+                        results: $.map(data, function(item) {
+                            return {
+                                text: item.company_name,
+                                id: item.id
+                            }
+                        })
+                    };
+                },
+            },
+            minimumInputLength: 2
+        })
+    });
 
 </script>

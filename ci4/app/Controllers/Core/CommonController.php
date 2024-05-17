@@ -3,9 +3,11 @@
 namespace App\Controllers\Core;
 
 use App\Controllers\BaseController;
+use CodeIgniter\Database\BaseBuilder;
 use CodeIgniter\Controller;
 use App\Models\Core\Common_model;
 use App\Models\Amazon_s3_model;
+use App\Models\Customers_model;
 
 use App\Models\Users_model;
 use PHPUnit\Framework\Constraint\FileExists;
@@ -123,11 +125,23 @@ class CommonController extends BaseController
 	{
 		$tableData =  $uuid ? $this->model->getExistsRowsByUUID($uuid)->getRow() : '';
 		
+		$customers = (new Customers_model())
+    ->whereIn("id", function (BaseBuilder $subqueryBuilder) {
+        return $subqueryBuilder->select("customers_id")->from("projects")->groupBy("customers_id");
+    })
+    ->where("uuid_business_id", session('uuid_business'))
+    ->get()
+    ->getResultArray();
+
 		$data['tableName'] = $this->table;
 		$data['rawTblName'] = $this->rawTblName;
 		$data["users"] = $this->model->getUser();
 		$data["contacts"] = $this->model->getContacts();
+		$data["projects"] = $this->model->getProjects();
+		$data["employees"] = $this->model->getEmployees();
+		$data["sprints"] = $this->model->getSprints();
 		$data[$this->rawTblName] = $tableData;
+		$data["customers"] = $customers;
 		// if there any special cause we can overried this function and pass data to add or edit view
 		$data['additional_data'] = $this->getAdditionalData($uuid ? $tableData->id : '');
 		echo view($this->table . "/edit", $data);

@@ -183,7 +183,7 @@ class Common_model extends Model
         $whereCond = $this->whereCond;
         $builder = $this->db->table("contacts");
         if ($id === false) {
-            $whereCond = array_merge(['allow_web_access' => 1], $whereCond);
+            
             return $builder->where($whereCond)->get()->getResultArray();
         } else {
             $whereCond = array_merge(['id' => $id], $whereCond);
@@ -191,6 +191,41 @@ class Common_model extends Model
         }
     }
 
+    public function getProjects($id = false)
+    {
+        $whereCond = $this->whereCond;
+        $builder = $this->db->table("projects");
+        if ($id === false) {
+            return $builder->where($whereCond)->get()->getResultArray();
+        } else {
+            $whereCond = array_merge(['id' => $id], $whereCond);
+            return $builder->getWhere($whereCond)->getRowArray();
+        }  
+    }
+
+    public function getEmployees($id = false)
+    {
+        $whereCond = $this->whereCond;
+        $builder = $this->db->table("employees");
+        if ($id === false) {
+            return $builder->where($whereCond)->get()->getResultArray();
+        } else {
+            $whereCond = array_merge(['id' => $id], $whereCond);
+            return $builder->getWhere($whereCond)->getRowArray();
+        }  
+    }
+
+    public function getSprints($id = false)
+    {
+        $whereCond = $this->whereCond;
+        $builder = $this->db->table("sprints");
+        if ($id === false) {
+            return $builder->where($whereCond)->get()->getResultArray();
+        } else {
+            $whereCond = array_merge(['id' => $id], $whereCond);
+            return $builder->getWhere($whereCond)->getRowArray();
+        }   
+    }
     public function updateColumn($tableName, $id = null, $data = null)
     {
         $query = $this->db->table($tableName, $this->table)->update($data, array('id' => $id));
