@@ -1,22 +1,29 @@
 <?php 
 namespace App\Controllers; 
-use App\Controllers\Core\CommonController; 
+use App\Controllers\Core\CommonController;
+use CodeIgniter\Database\BaseBuilder;
 use App\Models\Users_model;
 use App\Models\Core\Common_model;
 use App\Libraries\UUID;
 use App\Models\Contact;
+use App\Models\Customers_model;
+use CodeIgniter\API\ResponseTrait;
 
 class Contacts extends CommonController
 {	
+    use ResponseTrait;
 	protected $contactModel;
 	protected $table;
 	protected $rawTblName;
+    protected $customers_model;
+
     function __construct()
     {
         parent::__construct();
         $this->contactModel = new Contact();
         $this->table = "contacts";
         $this->rawTblName = "contacts";
+        $this->customers_model = new Customers_model();
 	}
 
     public function index()
@@ -81,22 +88,46 @@ class Contacts extends CommonController
     {
         $model = new Common_model();
         $data["customers"] = $model->getAllDataFromTable("customers");
-
+        
         return  $data;
 
     }
 
     public function edit($uuid = 0)
     {
+
+        $contactData = $this->model->getRowsByUUID($uuid)->getRow();
+        $customers = (new Customers_model());
+        if(!empty($contactData) && isset($contactData->client_id)) {
+            $customers = $customers->orWhere("id", $contactData->client_id);
+        } else {
+            $customers = $customers->orWhere("id", 0);
+        }
+        $customers = $customers->get()->getResultArray();
+
+
 		$data['tableName'] = $this->table;
         $data['rawTblName'] = $this->rawTblName;
 		$data["users"] = $this->model->getUser();
         $data["categories"] = $this->model->getCategories();
-		$data["contact"] = $uuid ? $this->model->getRowsByUUID($uuid)->getRow() : "";
+		$data["contact"] = $uuid ? $contactData : "";
+        $data["customers"] = $customers;
+        
 		// if there any special cause we can overried this function and pass data to add or edit view
 		$data['additional_data'] = $this->getAdditionalData($uuid);
 
         echo view($this->table."/edit",$data);
+    }
+
+    public function contactsCustomerAjax()
+    {
+        $q = $this->request->getVar('q');
+        $data = $this->customers_model;
+        if(!empty($q)) {
+            $data = $data->like('company_name', $q);
+        }
+        $data = $data->limit(500)->get()->getResult();
+        return $this->respond($data);
     }
     public function update()
     {        
@@ -104,6 +135,7 @@ class Contacts extends CommonController
         $uuid = $this->request->getPost('uuid');
 
 		$data = $this->request->getPost();
+       
 
         if(!isset($data['allow_web_access'])){
             $data['allow_web_access'] = 0;
@@ -117,6 +149,7 @@ class Contacts extends CommonController
         }
         
 		$response = $this->model->insertOrUpdateByUUID($uuid, $data);
+   
 		if(!$response){
 			session()->setFlashdata('message', 'Something wrong!');
 			session()->setFlashdata('alert-class', 'alert-danger');	

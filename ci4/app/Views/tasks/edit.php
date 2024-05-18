@@ -6,18 +6,20 @@ use CodeIgniter\Database\BaseBuilder;
 require_once(APPPATH . 'Views/common/edit-title.php'); ?>
 
 <?php
-$projects = getResultArray("projects");
-$customers = (new Customers_model());
-if(!empty($task->customers_id)) {
-    $customers = $customers->orWhere("id", $task->customers_id);
-} else {
-    $customers = $customers->orWhere("id", 0);
-}
-$customers = $customers->get()->getResultArray();
-$users = getResultArray("users");
-$contacts = getResultArray("contacts");
-$employees = getResultArray("employees");
-$sprints = getResultArray("sprints");
+// print_r($customers);
+// die();
+// $projects = getResultArray("projects");
+// $customers = (new Customers_model())
+//     ->whereIn("id", function (BaseBuilder $subqueryBuilder) {
+//         return $subqueryBuilder->select("customers_id")->from("projects")->groupBy("customers_id");
+//     })
+//     ->where("uuid_business_id", session('uuid_business'))
+//     ->get()
+//     ->getResultArray();
+// $users = getResultArray("users");
+// $contacts = getResultArray("contacts");
+// $employees = getResultArray("employees");
+// $sprints = getResultArray("sprints");
 ?>
 <div class="white_card_body">
     <div class="card-body">

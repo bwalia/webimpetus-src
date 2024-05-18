@@ -32,10 +32,10 @@ class Database extends Config
      */
     public $default = [
         'DSN'      => '',
-        'hostname' => 'database',
-        'username' => 'docker',
-        'password' => 'docker',
-        'database' => 'docker',
+        'hostname' => 'localhost',
+        'username' => 'root',
+        'password' => '',
+        'database' => 'myworkstation_dev',
         'DBDriver' => 'MySQLi',
         'DBPrefix' => '',
         'pConnect' => false,
