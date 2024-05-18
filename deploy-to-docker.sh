@@ -30,26 +30,31 @@ echo "Running docker-compose up -d."
 
 docker-compose down
 
-if [ $targetEnv == "docker" ] || [ $targetEnv == "balinderwalia" ]; then
-    sed -i -e 's/localhost:8080/dev-bsw-my.workstation.co.uk/g' .env
-else
-    ENV_FILE_ACTIVE=$(pwd)/.env
-    FILE_DEVELOPER_PERSONAL_ENV=$(pwd)/.env.$machineName
-    if [ -f "$FILE_DEVELOPER_PERSONAL_ENV" ];then
-        echo "$FILE_DEVELOPER_PERSONAL_ENV exists."
-        
-        if [ -f "$ENV_FILE_ACTIVE" ];then
-        rm -Rf $ENV_FILE_ACTIVE
-        fi
-        cp $FILE_DEVELOPER_PERSONAL_ENV $ENV_FILE_ACTIVE
-    else
-        echo "$FILE does not exist."
-        if [ -f "$ENV_FILE_ACTIVE" ];then
-        echo "Please create a $ENV_FILE_ACTIVE file to run Webimpetus Dev env in Docker."
-        exit 1
-        fi
+ENV_FILE_ACTIVE=$(pwd)/.env
 
+if [ $targetEnv == "balinderwalia" ]; then
+    echo "Setting up for balinderwalia"
+    sed -i -e 's/localhost:8080/dev-bsw-my.workstation.co.uk/g' .env
+    FILE_DEVELOPER_PERSONAL_ENV=$(pwd)/.env.$targetEnv
+
+        if [ -f "$FILE_DEVELOPER_PERSONAL_ENV" ];then
+                echo "$FILE_DEVELOPER_PERSONAL_ENV exists."
+            
+            if [ -f "$ENV_FILE_ACTIVE" ];then
+            rm -Rf $ENV_FILE_ACTIVE
+            fi
+            cp $FILE_DEVELOPER_PERSONAL_ENV $ENV_FILE_ACTIVE
+        else
+            echo "$FILE does not exist."
+            if [ -f "$ENV_FILE_ACTIVE" ];then
+                echo "Please create a $ENV_FILE_ACTIVE file to run Webimpetus Dev env in Docker."
+            exit 1
+        fi
     fi
+
+else
+    FILE_DEVELOPER_PERSONAL_ENV=$(pwd)/.env
+    echo "Checking if $FILE_DEVELOPER_PERSONAL_ENV exists."
 fi
 
 docker-compose up -d --build
