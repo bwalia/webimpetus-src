@@ -32,16 +32,19 @@ docker-compose down
 
 ENV_FILE_ACTIVE=$(pwd)/.env
 
-if [! -f "$ENV_FILE_ACTIVE" ];then
-echo "$ENV_FILE_ACTIVE does not exist."
-echo "Please create a $ENV_FILE_ACTIVE file to run Webimpetus Dev env in Docker."
-exit 1
+if [ -f "$ENV_FILE_ACTIVE" ];then
+    echo "$ENV_FILE_ACTIVE does exist."
+else
+    echo "$ENV_FILE_ACTIVE does not exist."
+    echo "Please create a $ENV_FILE_ACTIVE file to run Webimpetus Dev env in Docker."
+    exit 1
 fi
 
 if [ $targetEnv == "balinderwalia" ]; then
     echo "Setting up Dev env for balinderwalia"
     sed -i -e 's/localhost:8080/dev-bsw-my.workstation.co.uk/g' $ENV_FILE_ACTIVE
 else
+    echo "Setting up standard Dev env"
 fi
 
 docker-compose up -d --build
@@ -78,7 +81,7 @@ if [ -f "$SRC_ENV_FILE" ];then
     echo "==========================="
     #   sed '/"#----WEBIMPETUS-SYSTEM-INFO----"/q' $FILE
     echo "Workstation Src copy to /var/www/html Complete"
-    fi
+fi
 
 HOST_ENDPOINT_UNSECURE_URL="http://localhost:8080/dashboard"
 HOST_ENDPOINT_SECURE_URL="https://localhost:9093/dashboard"
