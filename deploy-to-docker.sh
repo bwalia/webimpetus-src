@@ -61,27 +61,27 @@ docker exec -it ${DOCKER_CONTAINER_NAME} bash /usr/local/bin/bootstrap-openresty
 
 rm Dockerfile
 
-SRC_ENV_FILE=$(pwd)/.env
-if [ -f "$SRC_ENV_FILE" ];then
-    FILE=$(pwd)/.env.dev
-    cp $SRC_ENV_FILE $FILE
-    
-        if [ -f "$FILE" ];then
-            echo "$FILE exists."
-            awk '/----WEBIMPETUS-SYSTEM-INFO----/{exit} 1' $FILE > $SRC_ENV_FILE
+        SRC_ENV_FILE=$(pwd)/.env
+        if [ -f "$SRC_ENV_FILE" ];then
+            FILE=$(pwd)/.env.dev
+            cp $SRC_ENV_FILE $FILE
+            
+                if [ -f "$FILE" ];then
+                    echo "$FILE exists."
+                    awk '/----WEBIMPETUS-SYSTEM-INFO----/{exit} 1' $FILE > $SRC_ENV_FILE
 
-            echo "#----WEBIMPETUS-SYSTEM-INFO----" >> $SRC_ENV_FILE
+                    echo "#----WEBIMPETUS-SYSTEM-INFO----" >> $SRC_ENV_FILE
 
+                    echo "==========================="
+                    echo "Workstation Bootstrap Script Copied"
+                    echo "==========================="
+                fi
+                echo "Starting Workstation"
+                echo "==========================="
             echo "==========================="
-            echo "Workstation Bootstrap Script Copied"
-            echo "==========================="
-        fi
-        echo "Starting Workstation"
-        echo "==========================="
-    echo "==========================="
-    #   sed '/"#----WEBIMPETUS-SYSTEM-INFO----"/q' $FILE
-    echo "Workstation Src copy to /var/www/html Complete"
-fi
+            #   sed '/"#----WEBIMPETUS-SYSTEM-INFO----"/q' $FILE
+            echo "Workstation Src copy to /var/www/html Complete"
+         fi
 
 HOST_ENDPOINT_UNSECURE_URL="http://localhost:8080/dashboard"
 HOST_ENDPOINT_SECURE_URL="https://localhost:9093/dashboard"
