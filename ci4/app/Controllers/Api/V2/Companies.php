@@ -52,7 +52,7 @@ class Companies extends ResourceController
 
         return $this->respond([
             'data' => $sqlQuery,
-            'total' => $countQuery
+            'recordsTotal' => $countQuery
         ]);
     }
 
