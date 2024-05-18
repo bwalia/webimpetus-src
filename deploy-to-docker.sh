@@ -32,29 +32,16 @@ docker-compose down
 
 ENV_FILE_ACTIVE=$(pwd)/.env
 
+if [! -f "$ENV_FILE_ACTIVE" ];then
+echo "$ENV_FILE_ACTIVE does not exist."
+echo "Please create a $ENV_FILE_ACTIVE file to run Webimpetus Dev env in Docker."
+exit 1
+fi
+
 if [ $targetEnv == "balinderwalia" ]; then
-    echo "Setting up for balinderwalia"
-    sed -i -e 's/localhost:8080/dev-bsw-my.workstation.co.uk/g' .env
-    FILE_DEVELOPER_PERSONAL_ENV=$(pwd)/.env.$targetEnv
-
-        if [ -f "$FILE_DEVELOPER_PERSONAL_ENV" ];then
-                echo "$FILE_DEVELOPER_PERSONAL_ENV exists."
-            
-            if [ -f "$ENV_FILE_ACTIVE" ];then
-            rm -Rf $ENV_FILE_ACTIVE
-            fi
-            cp $FILE_DEVELOPER_PERSONAL_ENV $ENV_FILE_ACTIVE
-        else
-            echo "$FILE does not exist."
-            if [ -f "$ENV_FILE_ACTIVE" ];then
-                echo "Please create a $ENV_FILE_ACTIVE file to run Webimpetus Dev env in Docker."
-            exit 1
-        fi
-    fi
-
+    echo "Setting up Dev env for balinderwalia"
+    sed -i -e 's/localhost:8080/dev-bsw-my.workstation.co.uk/g' $ENV_FILE_ACTIVE
 else
-    FILE_DEVELOPER_PERSONAL_ENV=$(pwd)/.env
-    echo "Checking if $FILE_DEVELOPER_PERSONAL_ENV exists."
 fi
 
 docker-compose up -d --build
@@ -71,27 +58,27 @@ docker exec -it ${DOCKER_CONTAINER_NAME} bash /usr/local/bin/bootstrap-openresty
 
 rm Dockerfile
 
-        SRC_ENV_FILE=$(pwd)/.env
-        if [ -f "$SRC_ENV_FILE" ];then
-            FILE=$(pwd)/.env.dev
-            cp $SRC_ENV_FILE $FILE
-            
-                if [ -f "$FILE" ];then
-                    echo "$FILE exists."
-                    awk '/----WEBIMPETUS-SYSTEM-INFO----/{exit} 1' $FILE > $SRC_ENV_FILE
+SRC_ENV_FILE=$(pwd)/.env
+if [ -f "$SRC_ENV_FILE" ];then
+    FILE=$(pwd)/.env.dev
+    cp $SRC_ENV_FILE $FILE
+    
+        if [ -f "$FILE" ];then
+            echo "$FILE exists."
+            awk '/----WEBIMPETUS-SYSTEM-INFO----/{exit} 1' $FILE > $SRC_ENV_FILE
 
-                    echo "#----WEBIMPETUS-SYSTEM-INFO----" >> $SRC_ENV_FILE
+            echo "#----WEBIMPETUS-SYSTEM-INFO----" >> $SRC_ENV_FILE
 
-                    echo "==========================="
-                    echo "Workstation Bootstrap Script Copied"
-                    echo "==========================="
-                fi
-                echo "Starting Workstation"
-                echo "==========================="
             echo "==========================="
-            #   sed '/"#----WEBIMPETUS-SYSTEM-INFO----"/q' $FILE
-            echo "Workstation Src copy to /var/www/html Complete"
-         fi
+            echo "Workstation Bootstrap Script Copied"
+            echo "==========================="
+        fi
+        echo "Starting Workstation"
+        echo "==========================="
+    echo "==========================="
+    #   sed '/"#----WEBIMPETUS-SYSTEM-INFO----"/q' $FILE
+    echo "Workstation Src copy to /var/www/html Complete"
+    fi
 
 HOST_ENDPOINT_UNSECURE_URL="http://localhost:8080/dashboard"
 HOST_ENDPOINT_SECURE_URL="https://localhost:9093/dashboard"
