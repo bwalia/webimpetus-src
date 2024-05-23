@@ -226,10 +226,11 @@
 				server: {
 					url: (prev, columns) => {
 						if (!columns.length) return prev;
+						console.log({columns});
 						const col = columns[0];
 						const dir = col.direction === 1 ? 'asc' : 'desc';
 						let colNames = columnsMachineName;
-						let colName = colNames[col.index];
+						let colName = colNames[col.index - 1];
 
 						return `${prev}${prev.includes("?") ? "&" : "?"}order=${colName}&dir=${dir}`;
 					}
