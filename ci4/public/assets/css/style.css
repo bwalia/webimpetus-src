@@ -14512,4 +14512,8 @@ p.dashTitle {
   background-color: transparent !important;
 }
 
+.gridjs-table {
+  height: 225px !important;
+}
+
 /* .profile_info:after { content: ' \f06e'; font-family: 'Font Awesome 5 Free'; }  */
