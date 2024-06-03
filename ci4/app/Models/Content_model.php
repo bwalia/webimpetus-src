@@ -20,12 +20,12 @@ class Content_model extends Model
 	}
 
 	public function search($keyword)
-    {
-        if (!empty($keyword)) {
-            return $this->like('title', $keyword);
-        }
-        return $this;
-    }
+	{
+		if (!empty($keyword)) {
+			return $this->like('title', $keyword);
+		}
+		return $this;
+	}
 
 	public function getRows($id = false)
 	{
@@ -186,21 +186,44 @@ class Content_model extends Model
 
 		return $results;
 	}
-	public function getPublicDataWhere($value, $field = "id", $blogType = null)
+	public function getPublicDataWhere($value, $field = "id", $blogType = null, $page = 1, $perPage = 10, $filters = [])
 	{
 		$results = $blogType ? $this->db->table("content_list")
 			->select(["content_list.*", "blog_images.image"])
 			->join("blog_images", "content_list.id = blog_images.blog_id", "left")
 			->where(["content_list." . $field => $value, 'blog_type' => $blogType])
-			->get()->getResultArray() :
+			:
+			$this->db->table("content_list")
+			->select(["content_list.*", "blog_images.image"])
+			->join("blog_images", "content_list.id = blog_images.blog_id", "left")
+			->where(["content_list." . $field => $value]);
+		if (!empty($filters)) {
+			$count = 0;
+			foreach ($filters as $field => $value) {
+				if ($count == 1) {
+					$results->where($field . ' <=', $value);
+				} else {
+					$results->where($field, $value);
+				}
+				$count++;
+			}
+		}
+		$results->limit($perPage, ($page - 1) * $perPage);
+		$data = $results->get()->getResultArray();
+
+		$count = $blogType ? $this->db->table("content_list")
+			->select(["content_list.*", "blog_images.image"])
+			->join("blog_images", "content_list.id = blog_images.blog_id", "left")
+			->where(["content_list." . $field => $value, 'blog_type' => $blogType])
+			->countAllResults() :
 			$this->db->table("content_list")
 			->select(["content_list.*", "blog_images.image"])
 			->join("blog_images", "content_list.id = blog_images.blog_id", "left")
 			->where(["content_list." . $field => $value])
-			->get()->getResultArray();
+			->countAllResults();
 
-		if (!empty($results)) {
-			foreach ($results as $key => $result) {
+		if (!empty($data)) {
+			foreach ($data as $key => $result) {
 				$cats =  $this->db->table("content_category")->select("categoryid as id")->where("contentid", $result['id'])->get()->getResultArray();
 				if (!empty($cats)) {
 					$catIds = array_map(function ($v, $k) {
@@ -208,11 +231,11 @@ class Content_model extends Model
 					}, $cats, array_keys($cats));
 
 					$categories = $this->db->table("categories")->select("name as cat_name")->whereIn("id", $catIds)->get()->getResultArray();
-					$results[$key]['cats'] =  $categories;
+					$data[$key]['cats'] =  $categories;
 				}
 			}
 		}
-		return $results;
+		return ["results" => $data, "total" => $count];
 	}
 
 	public function getContentByUUID($uuid = false)
