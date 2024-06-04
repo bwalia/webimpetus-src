@@ -198,14 +198,14 @@ class Content_model extends Model
 			->join("blog_images", "content_list.id = blog_images.blog_id", "left")
 			->where(["content_list." . $field => $value]);
 		if (!empty($filters)) {
-			$count = 0;
-			foreach ($filters as $field => $value) {
-				if ($count == 1) {
-					$results->where($field . ' <=', $value);
+			$loopCount = 0;
+			foreach ($filters as $key => $filter) {
+				if ($loopCount == 1) {
+					$results->where($key . ' <=', $filter);
 				} else {
-					$results->where($field, $value);
+					$results->where($key, $filter);
 				}
-				$count++;
+				$loopCount++;
 			}
 		}
 		$results->limit($perPage, ($page - 1) * $perPage);
@@ -215,12 +215,23 @@ class Content_model extends Model
 			->select(["content_list.*", "blog_images.image"])
 			->join("blog_images", "content_list.id = blog_images.blog_id", "left")
 			->where(["content_list." . $field => $value, 'blog_type' => $blogType])
-			->countAllResults() :
+			:
 			$this->db->table("content_list")
 			->select(["content_list.*", "blog_images.image"])
 			->join("blog_images", "content_list.id = blog_images.blog_id", "left")
-			->where(["content_list." . $field => $value])
-			->countAllResults();
+			->where(["content_list." . $field => $value]);
+			if (!empty($filters)) {
+				$loop = 0;
+				foreach ($filters as $key => $filter) {
+					if ($loop == 1) {
+						$count->where($key . ' <=', $filter);
+					} else {
+						$count->where($key, $filter);
+					}
+					$loop++;
+				}
+			}
+			$total = $count->countAllResults();
 
 		if (!empty($data)) {
 			foreach ($data as $key => $result) {
@@ -235,7 +246,7 @@ class Content_model extends Model
 				}
 			}
 		}
-		return ["results" => $data, "total" => $count];
+		return ["results" => $data, "total" => $total];
 	}
 
 	public function getContentByUUID($uuid = false)
