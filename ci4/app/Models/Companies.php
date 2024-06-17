@@ -14,7 +14,9 @@ class Companies extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = [];
+    protected $allowedFields    = [
+        'is_email_sent'
+    ];
 
     // Dates
     protected $useTimestamps        = true;
@@ -154,6 +156,29 @@ class Companies extends Model
     {
         $query = $this->db->table("company__contact")->insert($data);
         return $this->db->insertID();
+    }
+
+    public function deleteCategoriesRelation($companyId) {
+        $query = $this->db->table("companies__categories")->delete(array('company_id' => $companyId));
+        return $query;
+    }
+
+    public function insertCategoryData(array $data)
+    {
+        $this->db->table("companies__categories")->insert($data);
+        return $this->db->insertID();
+    }
+
+    public function selectedCategories($companyUUID)
+    {
+        $query = [];
+        if ($companyUUID) {
+            $query = $this->db->table("companies__categories")
+                    ->where("company_id", $companyUUID)
+                    ->get()
+                    ->getResultArray();
+        }
+        return $query;
     }
 
 }

@@ -13,8 +13,11 @@ use App\Models\Meta_model;
 use App\Models\Amazon_s3_model;
 use App\Models\Core\Common_model;
 use App\Libraries\UUID;
+use App\Models\Companies;
+use App\Models\Email_model;
 use App\Models\ServiceDomainsModel;
 use Symfony\Component\Yaml\Yaml;
+
 
 class Services extends Api
 {
@@ -26,8 +29,9 @@ class Services extends Api
 	public $Amazon_s3_model;
 	public $businessUuid;
 	public $whereCond;
-
 	public $serviceDomainModel;
+	public $emailModel;
+	public $compniesModel;
 
 	public function __construct()
 	{
@@ -42,6 +46,8 @@ class Services extends Api
 		$this->meta_model = new Meta_model();
 		$this->Amazon_s3_model = new Amazon_s3_model();
 		$this->db = \Config\Database::connect();
+		$this->emailModel = new Email_model();
+		$this->compniesModel = new Companies();
 		helper(["global"]);
 
 		$this->common_model = new Common_model();
@@ -95,7 +101,8 @@ class Services extends Api
 			'cid' => $this->request->getPost('cid'),
 			'tid' => $this->request->getPost('tid'),
 			'link' => $this->request->getPost('link'),
-			'env_tags' => implode(",", $this->request->getPost('env_tags')),
+			'service_type' => $this->request->getPost('service_type'),
+			'env_tags' => implode(",", $this->request->getPost('env_tags') ?? []),
 			'uuid_business_id' => $this->businessUuid,
 		);
 		if (empty($id)) {
@@ -167,12 +174,22 @@ class Services extends Api
 		$post = $this->request->getPost();
 		$secretTemplateId = $post['secret_template'];
 		$valuesTemplateId = $post['values_template'];
+		$marketingTemplate = $post['email_marketing_template'];
 
 		if ($secretTemplateId && $valuesTemplateId) {
 			$templateData = [
 				'uuid' => UUID::v5(UUID::v4(), 'templates__services'),
 				'secret_template_id' => $secretTemplateId,
 				'values_template_id' => $valuesTemplateId,
+				'service_id' => $data['uuid'],
+			];
+
+			$this->common_model->insertOrUpdateTableData($templateData, "templates__services", "service_id", $id);
+		}
+		if ($marketingTemplate) {
+			$templateData = [
+				'uuid' => UUID::v5(UUID::v4(), 'templates__services'),
+				'marketing_template_id' => $marketingTemplate,
 				'service_id' => $data['uuid']
 			];
 
@@ -231,27 +248,68 @@ class Services extends Api
 	{
 		if (!empty($uuid)) {
 			$post = $this->request->getPost();
-			$selectedTags = array_filter($post['data']['selectedTags'], 'filterFalseValues');
-			foreach ($selectedTags as $tk => $selectedTag) {
-				$selectedTag = array_keys($selectedTag);
+			if (isset($post['data']['serviceType']) && $post['data']['serviceType'] === "marketing") {
+				$this->create_marketing_template($uuid);
+				echo "Email has been sent to selected companies.";
+			} else {
+				$selectedTags = array_filter($post['data']['selectedTags'], 'filterFalseValues');
+				foreach ($selectedTags as $tk => $selectedTag) {
+					$selectedTag = array_keys($selectedTag);
 
-				if (empty($selectedTag[0])) {
-					echo "No environment selected";
-					die;
-				} else {
-					$this->create_templates($uuid, $selectedTag[0]);
-					$this->run_steps($uuid, $selectedTag[0]);
-					$installScript = '/bin/bash /var/www/html/writable/helm/' . $selectedTag[0] . '-install-' . $uuid . '.sh';
-					$output = shell_exec($installScript);
+					if (empty($selectedTag[0])) {
+						echo "No environment selected";
+						die;
+					} else {
+						$this->create_templates($uuid, $selectedTag[0]);
+						$this->run_steps($uuid, $selectedTag[0]);
+						$installScript = '/bin/bash /var/www/html/writable/helm/' . $selectedTag[0] . '-install-' . $uuid . '.sh';
+						$output = shell_exec($installScript);
+					}
 				}
+				// $this->push_service_env_vars($uuid);
+				// $this->gen_service_yaml_file($uuid);
+				// echo $output; die;
+				echo "Service deployment process started OK. Verify the deployment using kubectl get pods command";
 			}
-			// $this->push_service_env_vars($uuid);
-			// $this->gen_service_yaml_file($uuid);
-			// echo $output; die;
-			echo "Service deployment process started OK. Verify the deployment using kubectl get pods command";
 		} else {
 			echo "Uuid is empty!!";
 		}
+	}
+
+	public function create_marketing_template($uuid) {
+		$service = $this->common_model->getSingleRowWhere("templates__services", $uuid, "service_id");
+		$emailTemplate = $this->common_model->getSingleRowWhere("templates", $service['marketing_template_id'], "uuid");
+		$templateSecrets = $this->secret_model->getSecrets($uuid);
+
+		$blocks = $this->common_model->getDataWhere("blocks_list", $uuid, "uuid_linked_table");
+		$fromName = "Root Internet Team";
+		$fromEmail = "rootinternet@gmail.com";
+		$subject = "Moniter you Websites";
+		foreach ($blocks as $bKey => $block) {
+			if ($block['type'] === "database") {
+				$rawQuery = $this->db->query($block['text'])->getResultArray();
+				if ($rawQuery && !empty($rawQuery)) {
+					$emailMessage = $emailTemplate['template_content'];
+					$errors = [];
+					foreach ($rawQuery as $cKey => $company) {
+						foreach ($templateSecrets as $tKey => $templateSecret) {
+							$emailMessage = str_replace('{' . $templateSecret['key_name'] . '}', $company[$templateSecret['key_value']], $emailMessage);
+						}
+						$is_send = $this->emailModel->send_mail($company['email'], $fromName, $fromEmail, $emailMessage, $subject);
+						if (!$is_send) {
+							$this->compniesModel->set(['is_email_sent' => 1])->where('id', $company['id'])->update();
+							$errors[] = "Email not sent to " . $company['email'];
+						}
+					}
+					if (!empty($errors)) {
+						echo implode('<br>', $errors);
+						die;
+					}
+				}
+				
+			}
+		}
+		
 	}
 
 	public function delete_service($uuid = 0)
@@ -292,7 +350,7 @@ class Services extends Api
 				//	echo "TARGET_ENV secret found and is not empty"; die;
 			}
 		}
-		foreach($secretYamlArray as $templateKey => $secretYamlTemplate) {
+		foreach ($secretYamlArray as $templateKey => $secretYamlTemplate) {
 			$webSecrets = $this->common_model->getDataWhere("secrets_services", $uuid, "service_id");
 			foreach ($webSecrets as $key => $webSecret) {
 				$secrets = $this->common_model->getSingleRowWhere("secrets", $webSecret['secret_id'], "id");
@@ -348,7 +406,7 @@ class Services extends Api
 		$secretCommand = "#!/bin/bash\n";
 		$secretCommand .= "set -x\n";
 		$secretCommand .= "export KUBECONFIG=" . WRITEPATH . "secret/k3s.yaml\n";
-		foreach($secretYamlArray as $templateKey2 => $secretYamlTemplate2) {
+		foreach ($secretYamlArray as $templateKey2 => $secretYamlTemplate2) {
 			$secretCommand .= "kubeseal --format=yaml < " . WRITEPATH . "secret/" . $userSelectedENV . "-secret-" . $templateKey2 . "-" . $uuid . ".yaml" . " > " . WRITEPATH . "secret/" . $userSelectedENV . "-sealed-secret-" . $templateKey2 . "-" . $uuid . ".yaml\n";
 		}
 		$secretFileScript = fopen(WRITEPATH . "secret/" . $userSelectedENV . "-kubeseal-secret.sh", "w") or die("Unable to open file!");
@@ -358,7 +416,7 @@ class Services extends Api
 		shell_exec('/bin/bash /var/www/html/writable/secret/' . $userSelectedENV . '-kubeseal-secret.sh');
 
 		$secretsArray = [];
-		foreach($secretYamlArray as $templateKey3 => $secretYamlTemplate3) {
+		foreach ($secretYamlArray as $templateKey3 => $secretYamlTemplate3) {
 			$sealedSecretContent = file_get_contents(WRITEPATH . "secret/" . $userSelectedENV . "-sealed-secret-" . $templateKey3 . "-" . $uuid . ".yaml");
 			if (empty($sealedSecretContent)) {
 				echo "Kubeseal command failed. Please check kubernetes cluster connection is working and Kubeseal is setup.";
@@ -376,13 +434,13 @@ class Services extends Api
 			if (isset($sealedSecretContent["spec"]["encryptedData"]["hostname"])) {
 				$secret_hostname = $sealedSecretContent["spec"]["encryptedData"]["hostname"];
 				$secretsArray['hostname'] = $secret_hostname;
-			} 
+			}
 
 			if (isset($sealedSecretContent["spec"]["encryptedData"]["password"])) {
 				$secret_dbPassword = $sealedSecretContent["spec"]["encryptedData"]["password"];
 				$secretsArray['password'] = $secret_dbPassword;
 			}
-			
+
 			if (isset($sealedSecretContent["spec"]["encryptedData"]["rootPassword"])) {
 				$secret_dbRootPassword = $sealedSecretContent["spec"]["encryptedData"]["rootPassword"];
 				$secretsArray['rootPassword'] = $secret_dbRootPassword;
@@ -430,7 +488,7 @@ class Services extends Api
 				}
 			}
 		}
-		
+
 		$modifiedValuesString = Yaml::parse($valuesYaml);
 		$serviceDomains = $this->serviceDomainModel->getRowsByService($uuid);
 		$hostsArray = [];
@@ -451,15 +509,15 @@ class Services extends Api
 		if (isset($modifiedValuesString['ingress']['hosts']) && !empty($hostsArray)) {
 			array_push($modifiedValuesString['ingress']['hosts'], $hostsArray);
 		}
-		
+
 		if (isset($modifiedValuesString["secure_env_file"])) {
-            $modifiedValuesString["secure_env_file"] = $secretsArray['env_file'];
-        } elseif (isset($modifiedValuesString["safeSealedSecret"])) {
-            $modifiedValuesString["safeSealedSecret"] = $secretsArray['env_file'];
-        }
+			$modifiedValuesString["secure_env_file"] = $secretsArray['env_file'];
+		} elseif (isset($modifiedValuesString["safeSealedSecret"])) {
+			$modifiedValuesString["safeSealedSecret"] = $secretsArray['env_file'];
+		}
 
 		/*	$modifiedValuesString["secure_env_file"] = $envSecret; */
-		
+
 		isset($secretsArray['hostname']) ? $modifiedValuesString["db"]["hostname"] = $secretsArray['hostname'] : "";
 		isset($secretsArray['password']) ? $modifiedValuesString["db"]["password"] = $secretsArray['password'] : "";
 		isset($secretsArray['rootPassword']) ? $modifiedValuesString["db"]["rootPassword"] = $secretsArray['rootPassword'] : "";
