@@ -9,6 +9,7 @@ use App\Models\Content_model;
 use App\Models\Core\Common_model;
 use App\Models\Customers_model;
 use CodeIgniter\RESTful\ResourceController;
+use DateTime;
 
 /**
  * @OA\Get(
@@ -252,21 +253,46 @@ class Webpages extends ResourceController
         ]);
     }
 
+    public function getLastDayOfMonth($year, $month) {
+        $date = new DateTime("$year-$month-01");
+        $date->modify('last day of this month');
+        return (int)$date->format('d');
+    }
+
     public function getPublicBlogs($bCode)
     {
+        $page = $_GET['page'] ?? 1;
+        $perPage = $_GET['perPage'] ?? 10;
+        $month = $_GET['month'] ?? null;
+        $year = $_GET['year'] ?? null;
+        $starting = null;
+        $ending = null;
+        
+        if ($month && $year) {
+            $lastDay = $this->getLastDayOfMonth($year, $month);
+            $starting = strtotime("$year-$month-01");
+            $ending = strtotime("$year-$month-$lastDay");
+        }
+        $filters = [
+            'publish_date >=' => $starting,
+            'publish_date' => $ending
+        ];
+        
+        
         $commonModel = new Common_model();
         $contentListModel = new Content_model();
         $data = [];
         $businessInfo = $commonModel->getSingleRowWhere("businesses", $bCode, "business_code");
         if (!empty($businessInfo) && $businessInfo) {
-            $content = $contentListModel->getPublicDataWhere($businessInfo['uuid'], "uuid_business_id", 1);
+            $content = $contentListModel->getPublicDataWhere($businessInfo['uuid'], "uuid_business_id", 1, $page, $perPage, $filters);
             if (empty($content) && !$content) {
                 return $this->respond([
                     'error' => 'No Public Blog Found.',
                     'status' => 401
                 ]);
             }
-            $data['content'] = $content;
+            $data['content'] = $content['results'];
+            $data['total'] = $content['total'];
         } else {
             return $this->respond([
                 'error' => 'No Business Found.',
@@ -318,7 +344,8 @@ class Webpages extends ResourceController
                 'status' => 401
             ]);
         }
-        $data['content'] = $content;
+        $data['content'] = $content['results'];
+        $data['total'] = $content['total'];
         return $this->respond([
             'data' => $data,
             'status' => 200

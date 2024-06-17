@@ -5,18 +5,21 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use App\Models\Companies as ModelCompanies;
 use App\Libraries\UUID;
+use App\Models\Core\Common_model;
 
 class Companies extends BaseController
 {
     protected $companyModel;
     protected $table;
     protected $rawTblName;
+    protected $commonModel;
     public function __construct()
     {
         parent::__construct();
         $this->companyModel = new ModelCompanies();
         $this->table = "companies";
         $this->rawTblName = "companies";
+        $this->commonModel = new Common_model();
     }
     public function index()
     {
@@ -91,6 +94,8 @@ class Companies extends BaseController
 		$data['rawTblName'] = $this->rawTblName;
 		$data['company'] = $uuid ? $this->companyModel->getRowsByUUID($uuid)->getRow() : [];
 		$data['contacts'] = $this->companyModel->getContacts($uuid);
+        $data["categories"] = $this->commonModel->getCategories();
+        $data["selectedCategories"] = $this->companyModel->selectedCategories($uuid);
 
 		return view($this->table . '/edit', $data);
 	}
@@ -106,6 +111,7 @@ class Companies extends BaseController
         $postData['uuid_business_id'] = session('uuid_business');
         
         unset($postData['contactID']);
+        unset($postData['categories']);
         $id = $this->companyModel->insertOrUpdateByUUID($uuid, $postData);
 
         if ($id) {
@@ -117,6 +123,19 @@ class Companies extends BaseController
                 'uuid' => UUID::v5(UUID::v4(), 'company__contact')
             ];
             $this->companyModel->insertRelationData($relationData);
+
+            $this->companyModel->deleteCategoriesRelation($postData['uuid']);
+            $categories = $this->request->getPost('categories');
+            foreach ($categories as $category) {
+                $catData = [
+                    'company_id' => $postData['uuid'],
+                    'category_id' => $category,
+                    'uuid' => UUID::v5(UUID::v4(), 'companies__categories'),
+                    'uuid_business_id' => session('uuid_business')
+                ];
+                $this->companyModel->insertCategoryData($catData);
+            }
+
         }
         return redirect()->to($this->table);
     }

@@ -72,23 +72,21 @@ $allContacts = getResultArray("contacts");
                                 <div class="form-group col-md-6">
                                     <label for="address_3"> Address 3</label>
                                     <input autocomplete="off" type="text" class="form-control" id="address_3"
-                                        name="address_3" placeholder=""
-                                        value="<?= @$company->address_3 ?>">
+                                        name="address_3" placeholder="" value="<?= @$company->address_3 ?>">
                                 </div>
 
                                 <div class="form-group col-md-6">
                                     <label for="town_or_city">Town or City</label>
                                     <input autocomplete="off" type="text" class="form-control" id="town_or_city"
-                                        name="town_or_city" placeholder=""
-                                        value="<?= @$company->town_or_city ?>">
+                                        name="town_or_city" placeholder="" value="<?= @$company->town_or_city ?>">
                                 </div>
                             </div>
 
                             <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <label for="state_or_county">State or Country</label>
-                                    <input autocomplete="off" type="text" class="form-control" id="state_or_county" name="state_or_county"
-                                        placeholder="" value="<?= @$company->state_or_county ?>">
+                                    <input autocomplete="off" type="text" class="form-control" id="state_or_county"
+                                        name="state_or_county" placeholder="" value="<?= @$company->state_or_county ?>">
                                 </div>
 
                                 <div class="form-group col-md-6">
@@ -111,11 +109,36 @@ $allContacts = getResultArray("contacts");
                                         name="website" placeholder="" value="<?= @$company->website ?>">
                                 </div>
                             </div>
+                            <?php
+                            $catUUIDs = [];
+                            foreach ($selectedCategories as $key => $selectedCategorie) {
+                                array_push($catUUIDs, $selectedCategorie['category_id']);
+                            }
+                            ?>
+                            <div class="form-row">
+                                <div class="form-group col-md-12">
+                                    <label for="categories">Category</label>
+                                    <select id="categories" name="categories[]"
+                                        class="form-control dashboard-dropdown select2" multiple="multiple">
+                                        <option value="" disabled>--Select--</option>
+                                        <?php
+                                        if (isset($categories) && is_array($categories)) {
+                                            foreach (@$categories as $category): ?>
+                                                <option <?php if (in_array($category['uuid'], $catUUIDs)) {
+                                                    echo "selected";
+                                                } ?> value="<?php echo ($category["uuid"]) ?>">
+                                                    <?php echo ($category["name"]) ?>
+                                                </option>
+                                            <?php endforeach;
+                                        } ?>
+                                    </select>
+                                </div>
+                            </div>
                             <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <label for="email">Email</label>
-                                    <input autocomplete="off" type="text" class="form-control" id="email"
-                                        name="email" placeholder="" value="<?= @$company->email ?>">
+                                    <input autocomplete="off" type="text" class="form-control" id="email" name="email"
+                                        placeholder="" value="<?= @$company->email ?>">
                                 </div>
 
                                 <div class="form-group col-md-6">
@@ -156,7 +179,8 @@ $allContacts = getResultArray("contacts");
                                 <div class="form-group col-md-6">
                                     <label for="company_telephone">Company Telephone</label>
                                     <input autocomplete="off" type="text" class="form-control" id="company_telephone"
-                                        name="company_telephone" placeholder="" value="<?= @$company->company_telephone ?>">
+                                        name="company_telephone" placeholder=""
+                                        value="<?= @$company->company_telephone ?>">
                                 </div>
 
                                 <div class="form-group col-md-6">
@@ -169,12 +193,13 @@ $allContacts = getResultArray("contacts");
                             <input type="hidden" name="id" value="<?= @$company->id ?>" />
                         </div>
                         <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-                        <div class="form-group col-md-12">
+                            <div class="form-group col-md-12">
                                 <label for="contacts-option">Choose Contacts</label>
                                 <select id="contacts-option" name="contactID" class="form-control select2 w-100">
                                     <option value="">--Select--</option>
                                     <?php foreach (@$allContacts as $allContact): ?>
-                                        <option value="<?= $allContact['uuid']; ?>" <?= ($allContact['uuid'] == @$contacts['contact_uuid']) ? 'selected' : '' ?>>
+                                        <option value="<?= $allContact['uuid']; ?>"
+                                            <?= ($allContact['uuid'] == @$contacts['contact_uuid']) ? 'selected' : '' ?>>
                                             <?= $allContact['first_name'] . ' ' . $allContact['surname']; ?>
                                         </option>
                                     <?php endforeach; ?>

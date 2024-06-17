@@ -6,6 +6,11 @@ $uri = service('uri');
 $uriSegment = $uri->getSegment(3);
 // print_r($secret_values_templates); die;
 ?>
+<style>
+    .hidden {
+        display: none;
+    }
+</style>
 <div class="white_card_body">
     <div class="card-body">
         <form id="addservice" method="post" action="/services/update" enctype="multipart/form-data">
@@ -84,10 +89,10 @@ $uriSegment = $uri->getSegment(3);
                                     <label for="inputPassword4">Clone URL</label>
                                     <input type="text" class="form-control" id="clone-url" name="clone-url" placeholder="" value="<?= @$service->link ?>">
                                 </div>
-                                <div class="form-group required col-md-6">
+                                <div class="form-group col-md-6">
                                     <label for="inputEmail4">Environment Tags</label>
 
-                                    <select id="my-select2" data-select2-tags="true" name="env_tags[]" multiple="multiple" class="form-control select2 required">
+                                    <select id="my-select2" data-select2-tags="true" name="env_tags[]" multiple="multiple" class="form-control select2">
                                         <?php
                                         if (!empty($service->env_tags)) {
                                             $arr = explode(',', $service->env_tags);
@@ -100,32 +105,57 @@ $uriSegment = $uri->getSegment(3);
                                     </select>
                                 </div>
                             </div>
-
                             <div class="form-row">
-                                <div class="form-group required col-md-6">
-                                    <label for="inputPassword4">Secret Template</label>
-                                    <select id="secret_template" name="secret_template" class="form-control required">
-                                        <option value="" selected="">--Select--</option>
-                                        <?php foreach ($templates as $template) : ?>
-                                            <option value="<?= $template['uuid']; ?>" <?= ($template['uuid'] == @$secret_values_templates['secret_template_id']) ? 'selected' : '' ?>>
-                                                <?= $template['code']; ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </div>
-                                <div class="form-group required col-md-6">
-                                    <label for="inputPassword4">Values Template</label>
-                                    <select id="values_template" name="values_template" class="form-control required">
-                                        <option value="" selected="">--Select--</option>
-                                        <?php foreach ($templates as $template) : ?>
-                                            <option value="<?= $template['uuid']; ?>" <?= ($template['uuid'] == @$secret_values_templates['values_template_id']) ? 'selected' : '' ?>>
-                                                <?= $template['code']; ?>
-                                            </option>
-                                        <?php endforeach; ?>
+                                <div class="form-group col-md-6 required">
+                                    <label for="service_type">Service Type</label>
+                                    <select class="custom-select required" id="service_type" name="service_type">
+                                        <option selected>Please Select the Service Type</option>
+                                        <option value="workflows" <?=@$service->service_type == 'workflows' ? 'selected' : ''?> >Run Workflows</option>
+                                        <option value="marketing" <?=@$service->service_type == 'marketing' ? 'selected' : ''?>>Marketing</option>
                                     </select>
                                 </div>
                             </div>
-
+                            <div class="service-template-wrapper <?php echo @$service->service_type == 'workflows' ? 'show' : 'hidden'; ?>" id="service-template-wrapper">
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="inputPassword4">Secret Template</label>
+                                        <select id="secret_template" name="secret_template" class="form-control">
+                                            <option value="" selected="">--Select--</option>
+                                            <?php foreach ($templates as $template) : ?>
+                                                <option value="<?= $template['uuid']; ?>" <?= ($template['uuid'] == @$secret_values_templates['secret_template_id']) ? 'selected' : '' ?>>
+                                                    <?= $template['code']; ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="inputPassword4">Values Template</label>
+                                        <select id="values_template" name="values_template" class="form-control">
+                                            <option value="" selected="">--Select--</option>
+                                            <?php foreach ($templates as $template) : ?>
+                                                <option value="<?= $template['uuid']; ?>" <?= ($template['uuid'] == @$secret_values_templates['values_template_id']) ? 'selected' : '' ?>>
+                                                    <?= $template['code']; ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="marketing-wrapper <?php echo @$service->service_type == 'marketing' ? 'show' : 'hidden'; ?>" id="marketing-wrapper">
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="inputPassword4">Email Template</label>
+                                        <select id="email_marketing_template" name="email_marketing_template" class="form-control">
+                                            <option value="" selected="">--Select--</option>
+                                            <?php foreach ($templates as $template) : ?>
+                                                <option value="<?= $template['uuid']; ?>" <?= ($template['uuid'] == @$secret_values_templates['marketing_template_id']) ? 'selected' : '' ?>>
+                                                    <?= $template['code']; ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <label for="inputAddress">Logo Upload</label>
@@ -640,6 +670,18 @@ $uriSegment = $uri->getSegment(3);
 <script type="text/javascript">
     var id = "<?= @$service->uuid ?>";
 
+    $(document).ready(function() {
+        $('#service_type').change(function() {
+            if ($(this).val() === 'workflows') {
+                $('#service-template-wrapper').removeClass('hidden');
+                $('#marketing-wrapper').addClass('hidden');
+            } else if ($(this).val() === 'marketing') {
+                $('#service-template-wrapper').addClass('hidden');
+                $('#marketing-wrapper').removeClass('hidden');
+            }
+        });
+    });
+
     $(document).on('drop', '#drop_file_doc_zone', function(e) {
         // $("#ajax_load").show();
         if (e.originalEvent.dataTransfer) {
@@ -778,6 +820,7 @@ $uriSegment = $uri->getSegment(3);
         $("#helm-deploy").click(function() {
             selectedTags = [];
             var x = $(".select-env-tag"); 
+            const serviceType = $("#service_type").val();
             $.each(x, function(i, field) {
                 selectedTags.push({[field.name]: $(field).is(':checked')});
             }); 
@@ -787,7 +830,7 @@ $uriSegment = $uri->getSegment(3);
                 url: "/services/deploy_service/<?= @$service->uuid ?>",
                 type: "post",
                 data: {
-                    'data': { Status,  selectedTags}
+                    'data': { Status,  selectedTags, serviceType}
                 },
                 success: function(response) {
                     alert(response);
@@ -801,7 +844,12 @@ $uriSegment = $uri->getSegment(3);
     })
 
     $('#DeployService').on('click', function() {
-        $('#helmConfirmationModal').modal('toggle');
+        const serviceType = $("#service_type").val();
+        if (serviceType === "workflows") {
+            $('#helmConfirmationModal').modal('toggle');
+        } else if (serviceType === "marketing") {
+            $("#helm-deploy").click();
+        }
         return false;
         var Status = $(this).val();
         $.ajax({
