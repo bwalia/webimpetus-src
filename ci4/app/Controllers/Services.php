@@ -296,8 +296,9 @@ class Services extends Api
 							$emailMessage = str_replace('{' . $templateSecret['key_name'] . '}', $company[$templateSecret['key_value']], $emailMessage);
 						}
 						$is_send = $this->emailModel->send_mail($company['email'], $fromName, $fromEmail, $emailMessage, $subject);
-						if (!$is_send) {
+						if ($is_send) {
 							$this->compniesModel->set(['is_email_sent' => 1])->where('id', $company['id'])->update();
+						} else {
 							$errors[] = "Email not sent to " . $company['email'];
 						}
 					}
