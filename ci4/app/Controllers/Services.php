@@ -283,7 +283,7 @@ class Services extends Api
 
 		$blocks = $this->common_model->getDataWhere("blocks_list", $uuid, "uuid_linked_table");
 		$fromName = "Root Internet Team";
-		$fromEmail = "rootinternet@gmail.com";
+		$fromEmail = "tenthmatrix.mailer@gmail.com";
 		$subject = "Moniter you Websites";
 		foreach ($blocks as $bKey => $block) {
 			if ($block['type'] === "database") {
