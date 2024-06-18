@@ -115,14 +115,16 @@ class Companies extends BaseController
         $id = $this->companyModel->insertOrUpdateByUUID($uuid, $postData);
 
         if ($id) {
-            $this->companyModel->deleteRelationData($postData['uuid']);
             $contactID = $this->request->getPost('contactID');
-            $relationData = [
-                'company_uuid' => $postData['uuid'],
-                'contact_uuid' => $contactID,
-                'uuid' => UUID::v5(UUID::v4(), 'company__contact')
-            ];
-            $this->companyModel->insertRelationData($relationData);
+            if ($contactID && isset($contactID)) {
+                // $this->companyModel->deleteRelationData($postData['uuid']);
+                $relationData = [
+                    'company_uuid' => $postData['uuid'],
+                    'contact_uuid' => $contactID,
+                    'uuid' => UUID::v5(UUID::v4(), 'company__contact')
+                ];
+                $this->companyModel->insertRelationData($relationData);
+            }
 
             $categories = $this->request->getPost('categories');
             if ($categories && !empty($categories)) {
@@ -140,5 +142,12 @@ class Companies extends BaseController
 
         }
         return redirect()->to($this->table);
+    }
+
+    public function removeContact ()
+    {
+        $contactUuid = $this->request->getPost("contactUuid");
+        $removeContact = $this->companyModel->deleteRelationDataByContact($contactUuid);
+        echo json_encode($removeContact);
     }
 }

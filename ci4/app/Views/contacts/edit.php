@@ -13,12 +13,18 @@
 // } else {
 //     $customers = getResultArray("customers");
 // }
+$previousUrl = $_SERVER['HTTP_REFERER'];
+$companyUUID = null;
+$pattern = '/\/companies\/edit\/[a-f0-9\-]{36}$/';
+if (preg_match($pattern, $previousUrl)) {
+    $companyUUID = substr($previousUrl, strrpos($previousUrl, '/') + 1);
+}
 ?>
 <div class="white_card_body">
     <div class="card-body">
 
         <form id="addcustomer" method="post" action="/contacts/update" enctype="multipart/form-data">
-
+            <input type="hidden" name="companyUUID" value="<?php echo $companyUUID; ?>">
             <div class="row">
                 <div class="col-xs-12 col-md-12">
                     <nav>
@@ -202,7 +208,7 @@
                         </div>
 
                         <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-                            <button type="button" class="btn btn-primary" id="addContact">add</button>
+                            <button type="button" class="btn btn-primary" id="addContact">+ Add</button>
                             <br>
                             <br>
                             <div id="addressList"></div>

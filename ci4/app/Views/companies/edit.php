@@ -1,6 +1,4 @@
-<?php require_once (APPPATH . 'Views/common/edit-title.php');
-$allContacts = getResultArray("contacts");
-?>
+<?php require_once (APPPATH . 'Views/common/edit-title.php'); ?>
 
 <div class="white_card_body">
     <div class="card-body">
@@ -193,17 +191,13 @@ $allContacts = getResultArray("contacts");
                             <input type="hidden" name="id" value="<?= @$company->id ?>" />
                         </div>
                         <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-                            <div class="form-group col-md-12">
-                                <label for="contacts-option">Choose Contacts</label>
-                                <select id="contacts-option" name="contactID" class="form-control select2 w-100">
-                                    <option value="">--Select--</option>
-                                    <?php foreach (@$allContacts as $allContact): ?>
-                                        <option value="<?= $allContact['uuid']; ?>"
-                                            <?= ($allContact['uuid'] == @$contacts['contact_uuid']) ? 'selected' : '' ?>>
-                                            <?= $allContact['first_name'] . ' ' . $allContact['surname']; ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
+                            <div class="row">
+                                <div class="col-12 mb-3">
+                                    <a href="/contacts/edit" target="_blank" class="btn btn-primary" id="addContact">+ Add</a>
+                                </div>
+                                <div class="form-group col-md-12">
+                                    <div id="contactWrapper"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -226,9 +220,55 @@ $allContacts = getResultArray("contacts");
 
 <?php require_once (APPPATH . 'Views/common/footer.php'); ?>
 <!-- main content part end -->
-
-
+<?php 
+    $contactsValues = array_map(function($v, $k) {
+        $values = array_values($v);
+        array_push($values, "");
+        return $values;
+    }, $contacts, array_keys($contacts));
+?>
 <script>
+    $(document).ready(function() {
+        new gridjs.Grid({
+        columns: [
+            { name: "Unique ID" },
+            { name: "First Name" }, 
+            { name: "Surname" }, 
+            { name: "Email" }, 
+            { name: "Phone Number" },
+            { name: "Mobile" },
+            {
+                name: 'Actions',
+                formatter: (cell, row) => {
+                    return gridjs.html(
+                        `
+                            <div class='action-button-wrapper'>
+                                <button type='button' class='btn btn-primary' id='removeContact' data-contactId='${row.cells[0].data}'><i class="ti-trash"></i></button>
+                            </div?
+                        `
+                    );
+                }
+            },
+        ],
+        data: <?php echo json_encode($contactsValues) ?>
+        }).render(document.getElementById("contactWrapper"));
+    });
+    $(document).on("click", "#removeContact", function () {
+        const contactUuid = $(this).attr('data-contactId');
+        $.ajax({
+            url: baseUrl + "/companies/removeContact",
+            data: {
+                contactUuid
+            },
+            method: 'post',
+            success: function (res) {
+                if (res) {
+                    window.location.reload();
+                }
+            }
+        })
+    });
+
     $(document).on("click", ".form-check-input", function () {
         if ($(this).prop("checked") == false) {
             $(this).val(0);

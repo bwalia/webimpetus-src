@@ -1,6 +1,7 @@
 <?php 
 namespace App\Controllers; 
 use App\Controllers\Core\CommonController;
+use App\Models\Companies;
 use CodeIgniter\Database\BaseBuilder;
 use App\Models\Users_model;
 use App\Models\Core\Common_model;
@@ -16,6 +17,7 @@ class Contacts extends CommonController
 	protected $table;
 	protected $rawTblName;
     protected $customers_model;
+    protected $companyModel;
 
     function __construct()
     {
@@ -24,6 +26,7 @@ class Contacts extends CommonController
         $this->table = "contacts";
         $this->rawTblName = "contacts";
         $this->customers_model = new Customers_model();
+        $this->companyModel = new Companies();
 	}
 
     public function index()
@@ -130,13 +133,11 @@ class Contacts extends CommonController
         return $this->respond($data);
     }
     public function update()
-    {        
-       
+    {
         $uuid = $this->request->getPost('uuid');
 
 		$data = $this->request->getPost();
        
-
         if(!isset($data['allow_web_access'])){
             $data['allow_web_access'] = 0;
         }
@@ -147,8 +148,21 @@ class Contacts extends CommonController
         if(strlen($data['password']) > 0){
             $data['password'] = md5($data['password']);
         }
-        
+        unset($data['companyUUID']);
 		$response = $this->model->insertOrUpdateByUUID($uuid, $data);
+
+        if ($response) {
+            $companyUUID = $this->request->getPost('companyUUID');
+            if ($companyUUID && isset($companyUUID) && $companyUUID != "") {
+                // $this->companyModel->deleteRelationData($companyUUID);
+                $relationData = [
+                    'company_uuid' => $companyUUID,
+                    'contact_uuid' => $data['uuid'],
+                    'uuid' => UUID::v5(UUID::v4(), 'company__contact')
+                ];
+                $this->companyModel->insertRelationData($relationData);
+            }
+        }
    
 		if(!$response){
 			session()->setFlashdata('message', 'Something wrong!');
