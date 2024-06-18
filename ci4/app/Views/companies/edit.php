@@ -192,8 +192,9 @@
                         </div>
                         <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
                             <div class="row">
-                                <div class="col-12 mb-3">
+                                <div class="col-12 mb-3 d-flex justify-content-between">
                                     <a href="/contacts/edit" target="_blank" class="btn btn-primary" id="addContact">+ Add</a>
+                                    <button type="button" onclick="window.location.reload();"  class="btn btn-primary" id="refreshPage">Refresh</button>
                                 </div>
                                 <div class="form-group col-md-12">
                                     <div id="contactWrapper"></div>
