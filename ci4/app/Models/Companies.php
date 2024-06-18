@@ -139,9 +139,11 @@ class Companies extends Model
         if ($companyUUID) {
             $query = $this->db->table("company__contact")
                     ->select("contact_uuid")
+                    ->join("contacts", "company__contact.contact_uuid = contacts.uuid")
+                    ->select("contacts.first_name, contacts.surname, contacts.email, contacts.direct_phone, contacts.mobile")
                     ->where("company_uuid", $companyUUID)
                     ->get()
-                    ->getRowArray();
+                    ->getResultArray();
         }
         return $query;
     }
@@ -149,6 +151,11 @@ class Companies extends Model
     public function deleteRelationData($companyUUID)
     {
         $query = $this->db->table("company__contact")->delete(array('company_uuid' => $companyUUID));
+        return $query;
+    }
+    public function deleteRelationDataByContact($contactUUID)
+    {
+        $query = $this->db->table("company__contact")->delete(array('contact_uuid' => $contactUUID));
         return $query;
     }
 

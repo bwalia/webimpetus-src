@@ -115,28 +115,39 @@ class Companies extends BaseController
         $id = $this->companyModel->insertOrUpdateByUUID($uuid, $postData);
 
         if ($id) {
-            $this->companyModel->deleteRelationData($postData['uuid']);
             $contactID = $this->request->getPost('contactID');
-            $relationData = [
-                'company_uuid' => $postData['uuid'],
-                'contact_uuid' => $contactID,
-                'uuid' => UUID::v5(UUID::v4(), 'company__contact')
-            ];
-            $this->companyModel->insertRelationData($relationData);
-
-            $this->companyModel->deleteCategoriesRelation($postData['uuid']);
-            $categories = $this->request->getPost('categories');
-            foreach ($categories as $category) {
-                $catData = [
-                    'company_id' => $postData['uuid'],
-                    'category_id' => $category,
-                    'uuid' => UUID::v5(UUID::v4(), 'companies__categories'),
-                    'uuid_business_id' => session('uuid_business')
+            if ($contactID && isset($contactID)) {
+                // $this->companyModel->deleteRelationData($postData['uuid']);
+                $relationData = [
+                    'company_uuid' => $postData['uuid'],
+                    'contact_uuid' => $contactID,
+                    'uuid' => UUID::v5(UUID::v4(), 'company__contact')
                 ];
-                $this->companyModel->insertCategoryData($catData);
+                $this->companyModel->insertRelationData($relationData);
+            }
+
+            $categories = $this->request->getPost('categories');
+            if ($categories && !empty($categories)) {
+                $this->companyModel->deleteCategoriesRelation($postData['uuid']);
+                foreach ($categories as $category) {
+                    $catData = [
+                        'company_id' => $postData['uuid'],
+                        'category_id' => $category,
+                        'uuid' => UUID::v5(UUID::v4(), 'companies__categories'),
+                        'uuid_business_id' => session('uuid_business')
+                    ];
+                    $this->companyModel->insertCategoryData($catData);
+                }
             }
 
         }
         return redirect()->to($this->table);
+    }
+
+    public function removeContact ()
+    {
+        $contactUuid = $this->request->getPost("contactUuid");
+        $removeContact = $this->companyModel->deleteRelationDataByContact($contactUuid);
+        echo json_encode($removeContact);
     }
 }
