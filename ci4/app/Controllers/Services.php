@@ -304,6 +304,7 @@ class Services extends Api
 							$errors[] = $is_send ? $is_send : "Email not sent to " . $company['email'];
 						}
 					}
+					$errors = array_unique($errors);
 					if (!empty($errors)) {
 						echo implode('<br>', $errors);
 						die;

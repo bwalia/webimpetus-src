@@ -124,16 +124,18 @@ class Companies extends BaseController
             ];
             $this->companyModel->insertRelationData($relationData);
 
-            $this->companyModel->deleteCategoriesRelation($postData['uuid']);
             $categories = $this->request->getPost('categories');
-            foreach ($categories as $category) {
-                $catData = [
-                    'company_id' => $postData['uuid'],
-                    'category_id' => $category,
-                    'uuid' => UUID::v5(UUID::v4(), 'companies__categories'),
-                    'uuid_business_id' => session('uuid_business')
-                ];
-                $this->companyModel->insertCategoryData($catData);
+            if ($categories && !empty($categories)) {
+                $this->companyModel->deleteCategoriesRelation($postData['uuid']);
+                foreach ($categories as $category) {
+                    $catData = [
+                        'company_id' => $postData['uuid'],
+                        'category_id' => $category,
+                        'uuid' => UUID::v5(UUID::v4(), 'companies__categories'),
+                        'uuid_business_id' => session('uuid_business')
+                    ];
+                    $this->companyModel->insertCategoryData($catData);
+                }
             }
 
         }
