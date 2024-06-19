@@ -200,6 +200,12 @@
 										class="fas fa-edit"></i>
 										Edit
 									</a>
+									${tableName === 'companies' && `
+										<a class="dropdown-item" href="/${tableName}/clone/${row.cells[0].data}"> <i
+											class="fas fa-copy"></i>
+											Clone
+										</a>
+									`}
 								</div>
 							</div>
 						</div>`
