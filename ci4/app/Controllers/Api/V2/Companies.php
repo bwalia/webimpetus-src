@@ -26,9 +26,7 @@ class Companies extends ResourceController
 
         $sqlQuery = $companiesModel
             ->select('id, company_number, company_name, status, company_type, email, sic_code, uuid')
-            ->where(['uuid_business_id' => $uuidBusineess])
-            ->limit($limit, $offset)
-            ->orderBy($order, $dir);
+            ->where(['uuid_business_id' => $uuidBusineess]);
         if ($query) {
             $sqlQuery = $sqlQuery
                 ->like("company_name", $query);
@@ -36,6 +34,7 @@ class Companies extends ResourceController
 
         $countQuery = $sqlQuery->countAllResults(false);
 
+        $sqlQuery = $sqlQuery->limit($limit, $offset)->orderBy($order, $dir);
         return $this->respond([
             'data' => $sqlQuery->get()->getResultArray(),
             'recordsTotal' => $countQuery
