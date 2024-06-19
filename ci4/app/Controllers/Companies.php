@@ -150,4 +150,24 @@ class Companies extends BaseController
         $removeContact = $this->companyModel->deleteRelationDataByContact($contactUuid);
         echo json_encode($removeContact);
     }
+
+    public function clone($uuid = null)
+    {
+        $data = $this->companyModel->getRowsByUUID($uuid)->getRowArray();
+        $uuidVal = UUID::v5(UUID::v4(), 'companies');
+        unset($data['id'], $data['created_at'], $data['updated_at'], $data['is_email_sent']);
+        $data['uuid'] = $uuidVal;
+
+        $isCloned = $this->companyModel->insertOrUpdate(null, $data);
+
+        if ($isCloned) {
+            session()->setFlashdata('message', 'Data cloned Successfully!');
+            session()->setFlashdata('alert-class', 'alert-success');
+        } else {
+            session()->setFlashdata('message', 'Something went wrong while clone the data. Please try again.');
+            session()->setFlashdata('alert-class', 'alert-danger');
+        }
+
+        return redirect()->to($this->table . "/edit/" . $uuidVal);
+    }
 }
