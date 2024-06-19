@@ -25,33 +25,19 @@ class Companies extends ResourceController
         $uuidBusineess = $_GET['uuid_business_id'];
 
         $sqlQuery = $companiesModel
+            ->select('id, company_number, company_name, status, company_type, email, sic_code, uuid')
             ->where(['uuid_business_id' => $uuidBusineess])
             ->limit($limit, $offset)
-            ->orderBy($order, $dir)
-            ->get()
-            ->getResultArray();
+            ->orderBy($order, $dir);
         if ($query) {
-            $sqlQuery = $companiesModel
-                ->where(['uuid_business_id' => $uuidBusineess])
-                ->like("company_name", $query)
-                ->limit($limit, $offset)
-                ->orderBy($order, $dir)
-                ->get()
-                ->getResultArray();
+            $sqlQuery = $sqlQuery
+                ->like("company_name", $query);
         }
 
-        $countQuery = $companiesModel
-            ->where(["uuid_business_id" => $uuidBusineess])
-            ->countAllResults();
-        if ($query) {
-            $countQuery = $companiesModel
-                ->where(["uuid_business_id" => $uuidBusineess])
-                ->like("company_name", $query)
-                ->countAllResults();
-        }
+        $countQuery = $sqlQuery->countAllResults(false);
 
         return $this->respond([
-            'data' => $sqlQuery,
+            'data' => $sqlQuery->get()->getResultArray(),
             'recordsTotal' => $countQuery
         ]);
     }
