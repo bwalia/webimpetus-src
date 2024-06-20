@@ -2,6 +2,7 @@
 namespace App\Controllers; 
 use App\Controllers\Core\CommonController;
 use App\Models\Companies;
+use App\Models\CustomerContactModel;
 use CodeIgniter\Database\BaseBuilder;
 use App\Models\Users_model;
 use App\Models\Core\Common_model;
@@ -18,6 +19,7 @@ class Contacts extends CommonController
 	protected $rawTblName;
     protected $customers_model;
     protected $companyModel;
+    protected $customerContactModel;
 
     function __construct()
     {
@@ -27,6 +29,7 @@ class Contacts extends CommonController
         $this->rawTblName = "contacts";
         $this->customers_model = new Customers_model();
         $this->companyModel = new Companies();
+        $this->customerContactModel = new CustomerContactModel();
 	}
 
     public function index()
@@ -53,35 +56,18 @@ class Contacts extends CommonController
         $dir = $this->request->getVar('dir') ?? "asc";
 
         $sqlQuery = $this->contactModel
-            ->where(['uuid_business_id' => session('uuid_business')])
-            ->limit($limit, $offset)
-            ->orderBy($order, $dir)
-            ->get()
-            ->getResultArray();
+            ->select("uuid, id, first_name, email, mobile, allow_web_access")
+            ->where(['uuid_business_id' => session('uuid_business')]);
         if ($query) {
-            $sqlQuery = $this->contactModel
-                ->where(['uuid_business_id' => session('uuid_business')])
-                ->like("first_name", $query)
-                ->limit($limit, $offset)
-                ->orderBy($order, $dir)
-                ->get()
-                ->getResultArray();
+            $sqlQuery = $sqlQuery
+                ->like("first_name", $query);
         }
-
-        $countQuery = $this->contactModel
-            ->where(["uuid_business_id"=> session("uuid_business")])
-            ->countAllResults();
-        if ($query) {
-            $countQuery = $this->contactModel
-                ->where(["uuid_business_id"=> session("uuid_business")])
-                ->like("first_name", $query)
-                ->countAllResults();
-        }
-        
+        $countQuery = $sqlQuery->countAllResults(false);
+        $sqlQuery = $sqlQuery->limit($limit, $offset)->orderBy($order, $dir);
         $data = [
             'rawTblName' => $this->rawTblName,
             'tableName' => $this->table,
-            'data' => $sqlQuery,
+            'data' => $sqlQuery->get()->getResultArray(),
             'recordsTotal' => $countQuery,
         ];
         return $this->response->setJSON($data);
@@ -149,6 +135,7 @@ class Contacts extends CommonController
             $data['password'] = md5($data['password']);
         }
         unset($data['companyUUID']);
+        unset($data['customerUUID']);
 		$response = $this->model->insertOrUpdateByUUID($uuid, $data);
 
         if ($response) {
@@ -161,6 +148,15 @@ class Contacts extends CommonController
                     'uuid' => UUID::v5(UUID::v4(), 'company__contact')
                 ];
                 $this->companyModel->insertRelationData($relationData);
+            }
+            $customerUUID = $this->request->getPost('customerUUID');
+            if ($customerUUID && isset($customerUUID) && $customerUUID != "") {
+                $cusConData = [
+                    'customer_uuid' => $customerUUID,
+                    'contact_uuid' => $data['uuid'],
+                    'uuid' => UUID::v5(UUID::v4(), 'customer__contact')
+                ];
+                $this->customerContactModel->saveData($cusConData);
             }
         }
    
@@ -243,5 +239,25 @@ class Contacts extends CommonController
                 "message" => "Email is unique."
             ]);
         }
+    }
+
+    public function clone($uuid = null)
+    {
+        $data = $this->contactModel->getRowsByUUID($uuid)->getRowArray();
+        $uuidVal = UUID::v5(UUID::v4(), 'companies');
+        unset($data['id'], $data['client_id'], $data['email'], $data['password'], $data['created_at']);
+        $data['uuid'] = $uuidVal;
+
+        $isCloned = $this->contactModel->insertOrUpdate(null, $data);
+
+        if ($isCloned) {
+            session()->setFlashdata('message', 'Data cloned Successfully!');
+            session()->setFlashdata('alert-class', 'alert-success');
+        } else {
+            session()->setFlashdata('message', 'Something went wrong while clone the data. Please try again.');
+            session()->setFlashdata('alert-class', 'alert-danger');
+        }
+
+        return redirect()->to($this->table . "/edit/" . $uuidVal);
     }
 }

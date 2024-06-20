@@ -254,6 +254,8 @@
         data: <?php echo json_encode($contactsValues) ?>
         }).render(document.getElementById("contactWrapper"));
     });
+
+    
     $(document).on("click", "#removeContact", function () {
         const contactUuid = $(this).attr('data-contactId');
         $.ajax({
