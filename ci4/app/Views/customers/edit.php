@@ -1,4 +1,4 @@
-<?php require_once(APPPATH . 'Views/common/edit-title.php');
+<?php require_once (APPPATH . 'Views/common/edit-title.php');
 $categories = getResultArray("categories");
 ?>
 
@@ -13,9 +13,9 @@ $categories = getResultArray("categories");
                         <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
                             <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home"
                                 role="tab" aria-controls="nav-home" aria-selected="true">Customer detail</a>
-                                <a class="nav-item nav-link" id="nav-map-tab" data-toggle="tab" href="#nav-map"
-                                role="tab" aria-controls="nav-map" aria-selected="false">Google Map</a>
-                                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile"
+                            <a class="nav-item nav-link" id="nav-map-tab" data-toggle="tab" href="#nav-map" role="tab"
+                                aria-controls="nav-map" aria-selected="false">Google Map</a>
+                            <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile"
                                 role="tab" aria-controls="nav-profile" aria-selected="false">Contacts</a>
                         </div>
                     </nav>
@@ -36,8 +36,8 @@ $categories = getResultArray("categories");
 
                                 <div class="form-group required col-md-4">
                                     <label for="inputEmail4">Customer Account No</label>
-                                    <input autocomplete="off" type="text" class="form-control required"
-                                        id="acc_no" name="acc_no" placeholder="" value="<?= @$customer->acc_no ?>">
+                                    <input autocomplete="off" type="text" class="form-control required" id="acc_no"
+                                        name="acc_no" placeholder="" value="<?= @$customer->acc_no ?>">
                                 </div>
                                 <div class="form-check col-md-1">
                                 </div>
@@ -50,8 +50,8 @@ $categories = getResultArray("categories");
                                         } ?>   value="<?php echo @$customer->status; ?>">
                                         <label class="form-check-label" for="flexCheckIndeterminate">
                                             <?php /* if (@$customer->status == "1") {
-                                      echo "Inactive";
-                                  } else { */
+                       echo "Inactive";
+                   } else { */
                                             echo "Active";
                                             //} 
                                             ?>
@@ -172,33 +172,32 @@ $categories = getResultArray("categories");
                                 </div>
                             </div>
                         </div>
-                        <?php
-                        $contactUUIDs = [];
-                        foreach ($selectedContacts as $key => $selectedContact) {
-                            array_push($contactUUIDs, $selectedContact['contact_uuid']);
-                        }
-                        ?>
 
-<div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
                             <div class="form-group col-md-12">
-                                <label for="contacts-option">Choose Contacts</label>
-                                <select id="contacts-option" name="cnId[]" multiple class="form-control select2">
-                                    <option value="">--Select--</option>
-                                    <?php foreach (@$contacts as $row): ?>
-                                        <option value="<?= $row['uuid']; ?>" <?= (in_array($row['uuid'], $contactUUIDs)) ? 'selected' : '' ?>>
-                                            <?= $row['first_name'] . ' ' . $row['surname']; ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
+                                <div class="row">
+                                    <div class="col-12 mb-3 d-flex justify-content-between">
+                                        <a href="/contacts/edit" target="_blank" class="btn btn-primary"
+                                            id="addContact">+ Add</a>
+                                        <button type="button" onclick="window.location.reload();"
+                                            class="btn btn-primary" id="refreshPage">Refresh</button>
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                        <div id="contactWrapper"></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
                         <div class="tab-pane fade" id="nav-map" role="tabpanel" aria-labelledby="nav-map-tab">
                             <div class="form-group col-md-12">
-                            <label for="contacts-option">Google Map</label>
-                            <div id="company-address-google-map" style="height: 800px;">
-                            <iframe id="company-address-google-map-frame" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.0000000000005!2d-73.9854286845947!3d40.74881797932569!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c2598f5f1b6f75%3A0x8e0b7e6f3f1b8b1d!2sEmpire%20State%20Building!5e0!3m2!1sen!2sbd!4v1632213660006!5m2!1sen!2sbd" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
-                            </div>
+                                <label for="contacts-option">Google Map</label>
+                                <div id="company-address-google-map" style="height: 800px;">
+                                    <iframe id="company-address-google-map-frame"
+                                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.0000000000005!2d-73.9854286845947!3d40.74881797932569!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c2598f5f1b6f75%3A0x8e0b7e6f3f1b8b1d!2sEmpire%20State%20Building!5e0!3m2!1sen!2sbd!4v1632213660006!5m2!1sen!2sbd"
+                                        width="100%" height="100%" style="border:0;" allowfullscreen=""
+                                        loading="lazy"></iframe>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -219,11 +218,60 @@ $categories = getResultArray("categories");
     </div>
 </div>
 
-<?php require_once(APPPATH . 'Views/common/footer.php'); ?>
+<?php require_once (APPPATH . 'Views/common/footer.php'); ?>
 <!-- main content part end -->
-
+<?php
+$contactsValues = array_map(function ($v, $k) {
+    $values = array_values($v);
+    array_push($values, "");
+    return $values;
+}, $contacts, array_keys($contacts));
+?>
 
 <script>
+
+    $(document).ready(function () {
+        new gridjs.Grid({
+            columns: [
+                { name: "Unique ID" },
+                { name: "First Name" },
+                { name: "Surname" },
+                { name: "Email" },
+                { name: "Phone Number" },
+                { name: "Mobile" },
+                {
+                    name: 'Actions',
+                    formatter: (cell, row) => {
+                        return gridjs.html(
+                            `
+                            <div class='action-button-wrapper'>
+                                <button type='button' class='btn btn-primary' id='removeContact' data-contactId='${row.cells[0].data}'><i class="ti-trash"></i></button>
+                            </div?
+                        `
+                        );
+                    }
+                },
+            ],
+            data: <?php echo json_encode($contactsValues) ?>
+        }).render(document.getElementById("contactWrapper"));
+    });
+
+    $(document).on("click", "#removeContact", function () {
+        const contactUuid = $(this).attr('data-contactId');
+        $.ajax({
+            url: baseUrl + "/customers/removeContact",
+            data: {
+                contactUuid
+            },
+            method: 'post',
+            success: function (res) {
+                if (res) {
+                    window.location.reload();
+                }
+            }
+        })
+    });
+
     $(document).on("click", ".form-check-input", function () {
         if ($(this).prop("checked") == false) {
             $(this).val(0);
@@ -256,7 +304,7 @@ $categories = getResultArray("categories");
                     }
                 }
             })
-        } 
+        }
     });
 
     $(":submit").click(function (e) {

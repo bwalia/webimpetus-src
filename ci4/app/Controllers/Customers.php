@@ -64,35 +64,18 @@ class Customers extends CommonController
         $dir = $this->request->getVar('dir') ?? "asc";
 
         $sqlQuery = $this->customerModel
-                    ->where(['uuid_business_id' => session('uuid_business')])
-                    ->limit($limit, $offset)
-                    ->orderBy($order, $dir)
-                    ->get()
-                    ->getResultArray();
+            ->select("uuid, id, company_name, acc_no, status, email")
+            ->where(['uuid_business_id' => session('uuid_business')]);
         if ($query) {
-            $sqlQuery = $this->customerModel
-                        ->where(['uuid_business_id' => session('uuid_business')])
-                        ->like("company_name", $query)
-                        ->limit($limit, $offset)
-                        ->orderBy($order, $dir)
-                        ->get()
-                        ->getResultArray();
+            $sqlQuery = $sqlQuery->like("company_name", $query);
         }
 
-        $countQuery = $this->customerModel
-                        ->where(["uuid_business_id"=> session("uuid_business")])
-                        ->countAllResults();
-        if ($query) {
-            $countQuery = $this->customerModel
-                            ->where(["uuid_business_id"=> session("uuid_business")])
-                            ->like("company_name", $query)
-                            ->countAllResults();
-        }
-        
+        $countQuery = $sqlQuery->countAllResults(false);
+        $sqlQuery = $sqlQuery->limit($limit, $offset)->orderBy($order, $dir);
         $data = [
             'rawTblName' => $this->rawTblName,
             'tableName' => $this->table,
-            'data' => $sqlQuery,
+            'data' => $sqlQuery->get()->getResultArray(),
             'recordsTotal' => $countQuery,
         ];
         return $this->response->setJSON($data);
@@ -106,9 +89,7 @@ class Customers extends CommonController
 		$data['rawTblName'] = $this->rawTblName;
 		$data["users"] = $this->model->getUser();
 		$data["customer"] = $tableData;
-		// if there any special cause we can overried this function and pass data to add or edit view
-		$data['contacts'] = $this->contactModel->getRowsByUUID();
-        $data['selectedContacts'] = $this->customerContactModel->getRowsByCustomerUUID();
+        $data['contacts'] = $this->customerContactModel->getContacts($uuid);
 		echo view($this->table . "/edit", $data);
 	}
 
@@ -225,5 +206,32 @@ class Customers extends CommonController
                 "message" => "Email is unique."
             ]);
         }
+    }
+
+    public function removeContact ()
+    {
+        $contactUuid = $this->request->getPost("contactUuid");
+        $removeContact = $this->customerContactModel->deleteDataByContact($contactUuid);
+        echo json_encode($removeContact);
+    }
+
+    public function clone($uuid = null)
+    {
+        $data = $this->customerModel->getBusinessRows($uuid)->getRowArray();
+        $uuidVal = UUID::v5(UUID::v4(), 'customers');
+        unset($data['id'], $data['client_id'], $data['email'], $data['created_at']);
+        $data['uuid'] = $uuidVal;
+
+        $isCloned = $this->customerModel->insertOrUpdate(null, $data);
+
+        if ($isCloned) {
+            session()->setFlashdata('message', 'Data cloned Successfully!');
+            session()->setFlashdata('alert-class', 'alert-success');
+        } else {
+            session()->setFlashdata('message', 'Something went wrong while clone the data. Please try again.');
+            session()->setFlashdata('alert-class', 'alert-danger');
+        }
+
+        return redirect()->to($this->table . "/edit/" . $uuidVal);
     }
 }

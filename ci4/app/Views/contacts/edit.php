@@ -19,12 +19,18 @@ $pattern = '/\/companies\/edit\/[a-f0-9\-]{36}$/';
 if (preg_match($pattern, $previousUrl)) {
     $companyUUID = substr($previousUrl, strrpos($previousUrl, '/') + 1);
 }
+$customerUUID = null;
+$customerPatt = '/\/customers\/edit\/[a-f0-9\-]{36}$/';
+if (preg_match($customerPatt, $previousUrl)) {
+    $customerUUID = substr($previousUrl, strrpos($previousUrl, '/') + 1);
+}
 ?>
 <div class="white_card_body">
     <div class="card-body">
 
         <form id="addcustomer" method="post" action="/contacts/update" enctype="multipart/form-data">
             <input type="hidden" name="companyUUID" value="<?php echo $companyUUID; ?>">
+            <input type="hidden" name="customerUUID" value="<?php echo $customerUUID; ?>">
             <div class="row">
                 <div class="col-xs-12 col-md-12">
                     <nav>

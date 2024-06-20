@@ -162,4 +162,19 @@ class CustomerContactModel extends Model
         $this->join('services', 'service__domains.service_uuid = services.uuid', 'LEFT');
         return $this->findAll();
     }
+
+    public function getContacts($customerUUID)
+    {
+        $query = [];
+        if ($customerUUID) {
+            $query = $this->db->table("customer__contact")
+                    ->select("contact_uuid")
+                    ->join("contacts", "customer__contact.contact_uuid = contacts.uuid")
+                    ->select("contacts.first_name, contacts.surname, contacts.email, contacts.direct_phone, contacts.mobile")
+                    ->where("customer_uuid", $customerUUID)
+                    ->get()
+                    ->getResultArray();
+        }
+        return $query;
+    }
 }
