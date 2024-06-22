@@ -20,7 +20,7 @@ class Companies extends ResourceController
         $limit = $_GET['limit'] ?? 20;
         $offset = $_GET['offset'] ?? 0;
         $query = $_GET['query'] ?? false;
-        $order = $_GET['order'] ?? "company_name";
+        $order = $_GET['order'] ?? "id";
         $dir = $_GET['dir'] ?? "asc";
         $uuidBusineess = $_GET['uuid_business_id'];
 
