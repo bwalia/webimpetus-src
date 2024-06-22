@@ -84,7 +84,7 @@ class CommonController extends BaseController
 		if (!empty($udata) && !empty($udata['language_code'])) {
 			$language->setLocale($udata['language_code']);
 		} else {
-			$business = $this->db->table('businesses')->where("uuid", $this->businessUuid)->get()->getRowArray();
+			$business = $this->db->table('businesses')->select('language_code')->where("uuid", $this->businessUuid)->get()->getRowArray();
 			if (!empty($business['language_code'])) {
 				$language->setLocale($business['language_code']);
 			} else {

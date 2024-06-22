@@ -442,7 +442,7 @@ class Common_model extends Model
     public function getCategories($id = false)
     {
         $whereCond = $this->whereCond;
-        $builder = $this->db->table("categories");
+        $builder = $this->db->table("categories")->limit(10);
         if ($id === false) {
             //$whereCond = array_merge(['role!='=>1], $whereCond);
             return $builder->getWhere($whereCond)->getResultArray();

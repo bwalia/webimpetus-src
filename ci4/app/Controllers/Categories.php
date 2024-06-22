@@ -28,7 +28,7 @@ class Categories extends CommonController
             'rawTblName' => $this->rawTblName,
             'tableName' => $this->table,
 			'is_add_permission' => 1,
-            $this->table => $this->catModel->where(["uuid_business_id" => session('uuid_business')])->search($keyword)->paginate(10),
+            $this->table => $this->catModel->select('id,name,sort_order,notes')->where(["uuid_business_id" => session('uuid_business')])->search($keyword)->get(10),
             'pager'     => $this->catModel->pager,
         ];
 
@@ -40,10 +40,11 @@ class Categories extends CommonController
         $limit = $this->request->getVar('limit');
         $offset = $this->request->getVar('offset');
         $query = $this->request->getVar('query');
-        $order = $this->request->getVar('order') ?? "name";
+        $order = $this->request->getVar('order') ?? "id";
         $dir = $this->request->getVar('dir') ?? "asc";
 
         $sqlQuery = $this->catModel
+                    ->select('id,name,sort_order,notes')
                     ->where(['uuid_business_id' => session('uuid_business')])
                     ->limit($limit, $offset)
                     ->orderBy($order, $dir)
@@ -51,6 +52,7 @@ class Categories extends CommonController
                     ->getResultArray();
         if ($query) {
             $sqlQuery = $this->catModel
+                        ->select('id,name,sort_order,notes')
                         ->where(['uuid_business_id' => session('uuid_business')])
                         ->like("name", $query)
                         ->limit($limit, $offset)
@@ -60,20 +62,22 @@ class Categories extends CommonController
         }
 
         $countQuery = $this->catModel
+                        ->select('COUNT(id) as count')
                         ->where(["uuid_business_id"=> session("uuid_business")])
-                        ->countAllResults();
+                        ->first();
         if ($query) {
             $countQuery = $this->catModel
-                            ->where(["uuid_business_id"=> session("uuid_business")])
-                            ->like("name", $query)
-                            ->countAllResults();
+                ->select('COUNT(id) as count')
+                ->where(["uuid_business_id"=> session("uuid_business")])
+                ->like("name", $query)
+                ->first();
         }
         
         $data = [
             'rawTblName' => $this->rawTblName,
             'tableName' => $this->table,
             'data' => $sqlQuery,
-            'recordsTotal' => $countQuery,
+            'recordsTotal' => $countQuery['count'],
         ];
         return $this->response->setJSON($data);
     }

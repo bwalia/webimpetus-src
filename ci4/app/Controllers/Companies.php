@@ -30,7 +30,7 @@ class Companies extends BaseController
         $data = [
             'rawTblName' => $this->rawTblName,
             'tableName' => $this->table,
-            'companies' => $this->companyModel->where('uuid_business_id', session('uuid_business'))->paginate(10), // Adjust the number as needed
+            'companies' => $this->companyModel->select('id,company_number,company_name,company_type,sic_code,email,uuid')->where('uuid_business_id', session('uuid_business'))->get(10), // Adjust the number as needed
             'pager'     => $this->companyModel->pager,
         ];
 
@@ -43,24 +43,26 @@ class Companies extends BaseController
             $limit = $this->request->getVar('limit');
             $offset = $this->request->getVar('offset');
             $query = $this->request->getVar('query');
-            $order = $this->request->getVar('order') ?? "company_name";
+            $order = $this->request->getVar('order') ?? "id";
             $dir = $this->request->getVar('dir') ?? "asc";
         }
 
         $uuidBusineess = session('uuid_business');
 
         $sqlQuery = $this->companyModel
+                    ->select('id,company_number,company_name,company_type,sic_code,email,uuid')
                     ->where(['uuid_business_id' => $uuidBusineess])
                     ->limit($limit, $offset)
-                    ->orderBy($order, $dir)
+                    // ->orderBy($order, $dir)
                     ->get()
                     ->getResultArray();
         if ($query) {
             $sqlQuery = $this->companyModel
+                        ->select('id,company_number,company_name,company_type,sic_code,email,uuid')
                         ->where(['uuid_business_id' => $uuidBusineess])
                         ->like("company_name", $query)
                         ->limit($limit, $offset)
-                        ->orderBy($order, $dir)
+                        // ->orderBy($order, $dir)
                         ->get()
                         ->getResultArray();
         }

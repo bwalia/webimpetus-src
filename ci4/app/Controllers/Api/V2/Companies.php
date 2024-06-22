@@ -34,7 +34,7 @@ class Companies extends ResourceController
 
         $countQuery = $sqlQuery->countAllResults(false);
 
-        $sqlQuery = $sqlQuery->limit($limit, $offset)->orderBy($order, $dir);
+        $sqlQuery = $sqlQuery->limit($limit, $offset);
         return $this->respond([
             'data' => $sqlQuery->get()->getResultArray(),
             'recordsTotal' => $countQuery
