@@ -125,33 +125,17 @@ class Users extends ResourceController
             $uuidBusineess = $_GET['uuid_business_id'];
 
             $sqlQuery = $userModel
-                ->where(['uuid_business_id' => $uuidBusineess])
-                ->limit($limit, $offset)
-                ->orderBy($order, $dir)
-                ->get()
-                ->getResultArray();
+                ->select("uuid, id, name, email, address, status")
+                ->where(['uuid_business_id' => $uuidBusineess]);
             if ($query) {
-                $sqlQuery = $userModel
-                    ->where(['uuid_business_id' => $uuidBusineess])
-                    ->like("name", $query)
-                    ->limit($limit, $offset)
-                    ->orderBy($order, $dir)
-                    ->get()
-                    ->getResultArray();
+                $sqlQuery = $sqlQuery->like("name", $query);
             }
 
-            $countQuery = $userModel
-                ->where(["uuid_business_id" => $uuidBusineess])
-                ->countAllResults();
-            if ($query) {
-                $countQuery = $userModel
-                    ->where(["uuid_business_id" => $uuidBusineess])
-                    ->like("name", $query)
-                    ->countAllResults();
-            }
+            $countQuery = $sqlQuery->countAllResults(false);
+            $sqlQuery = $sqlQuery->limit($limit, $offset)->orderBy($order, $dir);
 
             return $this->respond([
-                'data' => $sqlQuery,
+                'data' => $sqlQuery->get()->getResultArray(),
                 'recordsTotal' => $countQuery,
             ]);
         }

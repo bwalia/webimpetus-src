@@ -27,6 +27,16 @@ class Template_model extends Model
         }
     }
 
+    public function getRowsByUUID($uuid = false)
+	{
+		if ($uuid === false) {
+			return $this->where($this->whereCond)->findAll();
+		} else {
+			$whereCond = array_merge(['uuid' => $uuid], $this->whereCond);
+			return $this->getWhere($whereCond);
+		}
+	}
+
     public function saveData($data)
     {
         $query = $this->db->table($this->table)->insert($data);

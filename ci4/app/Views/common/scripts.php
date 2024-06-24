@@ -203,7 +203,9 @@
 									${(
 										tableName === 'companies' || 
 										tableName === 'contacts' ||
-										tableName === 'customers'
+										tableName === 'customers' ||
+										tableName === 'blog' ||
+										tableName === 'templates'
 									) ? `
 										<a class="dropdown-item" href="/${tableName}/clone/${row.cells[0].data}"> <i
 											class="fas fa-copy"></i>

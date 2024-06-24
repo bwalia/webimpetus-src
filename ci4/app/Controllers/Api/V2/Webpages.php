@@ -83,33 +83,17 @@ class Webpages extends ResourceController
             $uuidBusineess = $_GET['uuid_business_id'];
 
             $sqlQuery = $webModel
-                ->where(['type' => 1, 'uuid_business_id' => $uuidBusineess])
-                ->limit($limit, $offset)
-                ->orderBy($order, $dir)
-                ->get()
-                ->getResultArray();
+                ->select("uuid, id, title, sub_title, status, code")
+                ->where(['type' => 1, 'uuid_business_id' => $uuidBusineess]);
             if ($query) {
-                $sqlQuery = $webModel
-                    ->where(['type' => 1, 'uuid_business_id' => $uuidBusineess])
-                    ->like("title", $query)
-                    ->limit($limit, $offset)
-                    ->orderBy($order, $dir)
-                    ->get()
-                    ->getResultArray();
+                $sqlQuery = $sqlQuery->like("title", $query);
             }
 
-            $countQuery = $webModel
-                ->where(['type' => 1, "uuid_business_id" => $uuidBusineess])
-                ->countAllResults();
-            if ($query) {
-                $countQuery = $webModel
-                    ->where(['type' => 1, "uuid_business_id" => $uuidBusineess])
-                    ->like("title", $query)
-                    ->countAllResults();
-            }
+            $countQuery = $sqlQuery->countAllResults(false);
+            $sqlQuery = $sqlQuery->limit($limit, $offset)->orderBy($order, $dir);
 
             return $this->respond([
-                'data' => $sqlQuery,
+                'data' => $sqlQuery->get()->getResultArray(),
                 'recordsTotal' => $countQuery,
             ]);
         }

@@ -52,33 +52,17 @@ class Blocks extends ResourceController
             $uuidBusineess = $_GET['uuid_business_id'];
 
             $sqlQuery = $blockModel
-                ->where(['uuid_business_id' => $uuidBusineess])
-                ->limit($limit, $offset)
-                ->orderBy($order, $dir)
-                ->get()
-                ->getResultArray();
+                ->select("uuid, id, title, status, code")
+                ->where(['uuid_business_id' => $uuidBusineess]);
             if ($query) {
-                $sqlQuery = $blockModel
-                    ->where(['uuid_business_id' => $uuidBusineess])
-                    ->like("title", $query)
-                    ->limit($limit, $offset)
-                    ->orderBy($order, $dir)
-                    ->get()
-                    ->getResultArray();
+                $sqlQuery = $sqlQuery->like("title", $query);
             }
 
-            $countQuery = $blockModel
-                ->where(["uuid_business_id" => $uuidBusineess])
-                ->countAllResults();
-            if ($query) {
-                $countQuery = $blockModel
-                    ->where(["uuid_business_id" => $uuidBusineess])
-                    ->like("title", $query)
-                    ->countAllResults();
-            }
+            $countQuery = $sqlQuery->countAllResults(false);
+            $sqlQuery = $sqlQuery->limit($limit, $offset)->orderBy($order, $dir);
 
             return $this->respond([
-                'data' => $sqlQuery,
+                'data' => $sqlQuery->get()->getResultArray(),
                 'recordsTotal' => $countQuery,
             ]);
         }
