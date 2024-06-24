@@ -31,6 +31,32 @@ class Blog extends CommonController
 		echo view($this->table . "/list", $data);
 	}
 
+	public function blogsList()
+    {
+        $limit = $this->request->getVar('limit');
+        $offset = $this->request->getVar('offset');
+        $query = $this->request->getVar('query');
+        $order = $this->request->getVar('order') ?? "title";
+        $dir = $this->request->getVar('dir') ?? "asc";
+
+        $sqlQuery = $this->content_model
+			->select("uuid, id, title, sub_title, status, publish_date, created")
+            ->where(['uuid_business_id' => session('uuid_business'), 'type' => 2]);
+        if ($query) {
+            $sqlQuery = $sqlQuery
+                ->like("title", $query);
+        }
+        $countQuery = $sqlQuery->countAllResults(false);
+        $sqlQuery = $sqlQuery->limit($limit, $offset)->orderBy($order, $dir);
+        $data = [
+            'rawTblName' => $this->rawTblName,
+            'tableName' => $this->table,
+            'data' => $sqlQuery->get()->getResultArray(),
+            'recordsTotal' => $countQuery,
+        ];
+        return $this->response->setJSON($data);
+    }
+
 	public function edit($uuid = 0)
 	{
 		$contentData = $uuid ? $this->content_model->getRowsByUUID($uuid)->getRow() : [];
@@ -198,4 +224,24 @@ class Blog extends CommonController
 
 		return redirect()->to('/' . $this->table);
 	}
+
+	public function clone($uuid = null)
+    {
+        $data = $this->content_model->getRowsByUUID($uuid)->getRowArray();
+        $uuidVal = UUID::v5(UUID::v4(), 'companies');
+        unset($data['id'], $data['publish_date'], $data['created'], $data['categories'], $data['published_date']);
+        $data['uuid'] = $uuidVal;
+
+        $isCloned = $this->content_model->saveData($data);
+
+        if ($isCloned) {
+            session()->setFlashdata('message', 'Data cloned Successfully!');
+            session()->setFlashdata('alert-class', 'alert-success');
+        } else {
+            session()->setFlashdata('message', 'Something went wrong while clone the data. Please try again.');
+            session()->setFlashdata('alert-class', 'alert-danger');
+        }
+
+        return redirect()->to($this->table . "/edit/" . $uuidVal);
+    }
 }

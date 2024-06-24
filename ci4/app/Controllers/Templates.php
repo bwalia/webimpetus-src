@@ -27,35 +27,19 @@ class Templates extends CommonController
 		$dir = $this->request->getVar('dir') ?? "asc";
 
 		$sqlQuery = $this->templateModel
-			->where(['uuid_business_id' => session('uuid_business')])
-			->limit($limit, $offset)
-			->orderBy($order, $dir)
-			->get()
-			->getResultArray();
+            ->select("uuid, id, code, subject")
+			->where(['uuid_business_id' => session('uuid_business')]);
 		if ($query) {
-			$sqlQuery = $this->templateModel
-				->where(['uuid_business_id' => session('uuid_business')])
-				->like("code", $query)
-				->limit($limit, $offset)
-				->orderBy($order, $dir)
-				->get()
-				->getResultArray();
+			$sqlQuery = $sqlQuery->like("code", $query);
 		}
 
-		$countQuery = $this->templateModel
-			->where(["uuid_business_id" => session("uuid_business")])
-			->countAllResults();
-		if ($query) {
-			$countQuery = $this->templateModel
-				->where(["uuid_business_id" => session("uuid_business")])
-				->like("code", $query)
-				->countAllResults();
-		}
+        $countQuery = $sqlQuery->countAllResults(false);
+        $sqlQuery = $sqlQuery->limit($limit, $offset)->orderBy($order, $dir);
 
 		$data = [
 			'rawTblName' => $this->rawTblName,
 			'tableName' => $this->table,
-			'data' => $sqlQuery,
+			'data' => $sqlQuery->get()->getResultArray(),
 			'recordsTotal' => $countQuery,
 		];
 		return $this->response->setJSON($data);
@@ -107,5 +91,25 @@ class Templates extends CommonController
         }
 
         return redirect()->to('/' . $this->table);
+    }
+
+    public function clone($uuid = null)
+    {
+        $data = $this->templateModel->getRowsByUUID($uuid)->getRowArray();
+        $uuidVal = UUID::v5(UUID::v4(), 'companies');
+        unset($data['id'], $data['created_at'], $data['modified_at'], $data['comment'], $data['module_name']);
+        $data['uuid'] = $uuidVal;
+
+        $isCloned = $this->templateModel->saveData($data);
+
+        if ($isCloned) {
+            session()->setFlashdata('message', 'Data cloned Successfully!');
+            session()->setFlashdata('alert-class', 'alert-success');
+        } else {
+            session()->setFlashdata('message', 'Something went wrong while clone the data. Please try again.');
+            session()->setFlashdata('alert-class', 'alert-danger');
+        }
+
+        return redirect()->to($this->table . "/edit/" . $uuidVal);
     }
 }
