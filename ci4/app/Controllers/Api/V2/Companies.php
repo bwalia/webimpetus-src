@@ -30,11 +30,15 @@ class Companies extends ResourceController
         if ($query) {
             $sqlQuery = $sqlQuery
                 ->like("company_name", $query);
+            
+            $order = "id"; //optimize load data
         }
 
         $countQuery = $sqlQuery->countAllResults(false);
 
-        $sqlQuery = $sqlQuery->limit($limit, $offset);
+        $sqlQuery = $sqlQuery
+            ->orderBy($order,$dir)
+            ->limit($limit, $offset);
         return $this->respond([
             'data' => $sqlQuery->get()->getResultArray(),
             'recordsTotal' => $countQuery
