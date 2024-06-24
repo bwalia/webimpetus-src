@@ -16,6 +16,7 @@ class Companies extends ResourceController
      */
     public function index()
     {
+        //get previous search
         $companiesModel = new CompaniesModel();
         $limit = $_GET['limit'] ?? 20;
         $offset = $_GET['offset'] ?? 0;
