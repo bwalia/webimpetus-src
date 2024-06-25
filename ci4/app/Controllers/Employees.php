@@ -33,35 +33,20 @@ class Employees extends CommonController
         $model = new Common_model();
 
         $sqlQuery = $model->builder("employees")
-            ->where(['uuid_business_id' => session('uuid_business')])
-            ->limit($limit, $offset)
-            ->orderBy($order, $dir)
-            ->get()
-            ->getResultArray();
+            ->select('uuid, id, first_name, surname, email, mobile, allow_web_access')
+            ->where(['uuid_business_id' => session('uuid_business')]);
         if ($query) {
-            $sqlQuery = $model->builder("employees")
-                ->where(['uuid_business_id' => session('uuid_business')])
-                ->like("first_name", $query)
-                ->limit($limit, $offset)
-                ->orderBy($order, $dir)
-                ->get()
-                ->getResultArray();
+            $sqlQuery = $sqlQuery
+                ->like("first_name", $query);
         }
 
-        $countQuery = $model->builder("employees")
-            ->where(["uuid_business_id" => session("uuid_business")])
-            ->countAllResults();
-        if ($query) {
-            $countQuery = $model->builder("employees")
-                ->where(["uuid_business_id" => session("uuid_business")])
-                ->like("first_name", $query)
-                ->countAllResults();
-        }
+        $countQuery = $sqlQuery->countAllResults(false);
+        $sqlQuery = $sqlQuery->limit($limit, $offset)->orderBy($order, $dir);
 
         $data = [
             'rawTblName' => $this->rawTblName,
             'tableName' => $this->table,
-            'data' => $sqlQuery,
+            'data' => $sqlQuery->get()->getResultArray(),
             'recordsTotal' => $countQuery,
         ];
         return $this->response->setJSON($data);

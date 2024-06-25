@@ -10,7 +10,10 @@ use stdClass;
 
 class Work_orders extends CommonController
 {
-
+    public $work_orders_model;
+    public $work_order_items;
+    public $work_orders;
+    public $work_orders_notes;
     function __construct()
     {
         parent::__construct();

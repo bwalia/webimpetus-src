@@ -47,7 +47,7 @@ class Purchase_orders extends CommonController
         } else {
             $data['order_number'] += 1;
         }
-        $data['custom_order_number'] = $data['custom_order_number'];
+
         $this->model->insertTableData($data, $this->purchase_orders);
 
         $order_items = $this->db->table($this->purchase_order_items)->where('purchase_orders_uuid', $uuid)->get()->getResultArray();

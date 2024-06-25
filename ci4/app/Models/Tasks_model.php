@@ -74,23 +74,10 @@ class Tasks_model extends Model
         if ($query && $query !== '') {
             $builder->like($this->table. '.name', $query);
         }
-
+        $count = $builder->countAllResults(false);
         $builder->limit($limit, $offset);
         $builder->orderBy($order, $dir);
         
-
-        $countBuilder = $this->db->table($this->table);
-        $countBuilder->select($this->table . ".*, customers.company_name, projects.name as project_name");
-        $countBuilder->join('customers', 'customers.id = ' . $this->table . '.reported_by', 'left');
-        $countBuilder->join('projects', 'projects.id = ' . $this->table . '.projects_id', 'left');
-        $countBuilder->where($this->table . ".uuid_business_id",  $this->businessUuid);
-        if (!empty($whereConditions)) {
-            $countBuilder->where($whereConditions);
-        }
-        if ($query && $query !== '') {
-            $countBuilder->like($this->table. '.name', $query);
-        }
-        $count = $countBuilder->countAllResults();
         return [
             'data' => $builder->get()->getResultArray(),
             'count' => $count

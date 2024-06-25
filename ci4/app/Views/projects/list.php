@@ -5,8 +5,8 @@
 
 <?php require_once (APPPATH . 'Views/common/footer.php'); ?>
 <script>
-    let columnsTitle = ['Id', 'Client', 'Project', 'Budget', 'Rate', 'Currency', 'Start Date', 'Active/Completed'];
-    let columnsMachineName = ['id', 'company_name', 'name', 'budget', 'rate', 'currency', 'start_date', 'active'];
+    let columnsTitle = ['Id', 'Project', 'Budget', 'Rate', 'Currency', 'Start Date', 'Active/Completed'];
+    let columnsMachineName = ['id', 'name', 'budget', 'rate', 'currency', 'start_date', 'active'];
     initializeGridTable(
         {
             columnsTitle,

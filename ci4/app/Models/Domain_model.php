@@ -34,35 +34,24 @@ class Domain_model extends Model
     public function getFilteredRows($query = false, $limit = 10, $offset = 0, $order = "name", $dir = "ASC", $count = false)
     {
         $data = [];
-        if ($count) {
-            $whereCond = $this->whereCond;
-            $this->select('domains.*');
-            $this->join('service__domains', 'domains.uuid = service__domains.domain_uuid', 'LEFT');
-            $this->select('services.name as sname');
-            $this->join('services', 'service__domains.service_uuid = services.uuid', 'LEFT');
-            $this->where($whereCond);
+        $whereCond = $this->whereCond;
+        $this->select('domains.*');
+        $this->join('service__domains', 'domains.uuid = service__domains.domain_uuid', 'LEFT');
+        $this->select('services.name as sname');
+        $this->join('services', 'service__domains.service_uuid = services.uuid', 'LEFT');
+        $this->where($whereCond);
 
-            if ($query) {
-                $this->like("domains.name", $query);
-            }
-            $total = $this->countAllResults();
-            $data['count'] = $total;
-        } else {
-            $whereCond = $this->whereCond;
-            $this->select('domains.*');
-            $this->join('service__domains', 'domains.uuid = service__domains.domain_uuid', 'LEFT');
-            $this->select('services.name as sname');
-            $this->join('services', 'service__domains.service_uuid = services.uuid', 'LEFT');
-            $this->where($whereCond);
-
-            if ($query) {
-                $this->like("domains.name", $query);
-            }
-            $this->limit($limit, $offset);
-            $this->orderBy($order, $dir);
-            $results = $this->get()->getResultArray();
-            $data['data'] = $results;
+        if ($query) {
+            $this->like("domains.name", $query);
         }
+
+        $total = $this->countAllResults(false);
+
+        $this->limit($limit, $offset);
+        $this->orderBy($order, $dir);
+        $results = $this->get()->getResultArray();
+        $data['count'] = $total;
+        $data['data'] = $results;
         return $data;
     }
 
