@@ -16,11 +16,12 @@ class Companies extends ResourceController
      */
     public function index()
     {
+        //get previous search
         $companiesModel = new CompaniesModel();
         $limit = $_GET['limit'] ?? 20;
         $offset = $_GET['offset'] ?? 0;
         $query = $_GET['query'] ?? false;
-        $order = $_GET['order'] ?? "company_name";
+        $order = $_GET['order'] ?? "id";
         $dir = $_GET['dir'] ?? "asc";
         $uuidBusineess = $_GET['uuid_business_id'];
 
@@ -30,11 +31,15 @@ class Companies extends ResourceController
         if ($query) {
             $sqlQuery = $sqlQuery
                 ->like("company_name", $query);
+            
+            $order = "id"; //optimize load data
         }
 
         $countQuery = $sqlQuery->countAllResults(false);
 
-        $sqlQuery = $sqlQuery->limit($limit, $offset)->orderBy($order, $dir);
+        $sqlQuery = $sqlQuery
+            ->orderBy($order,$dir)
+            ->limit($limit, $offset);
         return $this->respond([
             'data' => $sqlQuery->get()->getResultArray(),
             'recordsTotal' => $countQuery
