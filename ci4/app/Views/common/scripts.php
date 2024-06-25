@@ -167,6 +167,27 @@
 		$(this).siblings(".custom-file-label").addClass("selected").html(fileName);
 	});
 
+	function isValidTimestamp(timestamp) {
+		// Check if the value is a number
+		if (isNaN(timestamp)) {
+			return false;
+		}
+
+		// Check if the timestamp is within a valid range
+		// January 1, 2000 => 946684800
+		// December 31, 3000 => 32503680000
+		const minTimestamp = 946684800; 
+		const maxTimestamp = 32503680000; 
+
+		return timestamp >= minTimestamp && timestamp <= maxTimestamp;
+	}
+
+	function convertTimestamp(timestamp) {
+		const date = new Date(timestamp * 1000); // Multiply by 1000 to convert to milliseconds
+        const readableDate = date.toISOString().replace('T', ' ').substring(0, 19); // Format as 'YYYY-MM-DD HH:MM:SS'
+        return readableDate;
+	}
+
 	function initializeGridTable({ ...params }) {
 		const { columnsTitle, tableName, apiPath, selector, columnsMachineName } = params;
 		let allColumns = ['uuid'].concat(columnsMachineName);
@@ -201,7 +222,7 @@
 										Edit
 									</a>
 									${(
-										tableName === 'companies' || 
+										tableName === 'companies' ||
 										tableName === 'contacts' ||
 										tableName === 'customers' ||
 										tableName === 'blog' ||
@@ -238,7 +259,6 @@
 				server: {
 					url: (prev, columns) => {
 						if (!columns.length) return prev;
-						console.log({columns});
 						const col = columns[0];
 						const dir = col.direction === 1 ? 'asc' : 'desc';
 						let colNames = columnsMachineName;
@@ -255,9 +275,11 @@
 					allColumns.map((fields, idx) => [
 						fields === "status" ?
 							(customer[fields] == 1 ? "Active" : "Inactive") :
-							fields === "allow_web_access" ?
-								(customer[fields] == 1 ? "Allowed" : "Not Allowed")
-								: customer[fields]
+						fields === "allow_web_access" ?
+							(customer[fields] == 1 ? "Allowed" : "Not Allowed") :
+						isValidTimestamp(customer[fields]) ?
+							convertTimestamp(customer[fields])
+						: customer[fields]
 					])
 				),
 				total: data => data.recordsTotal

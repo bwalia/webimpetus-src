@@ -115,24 +115,11 @@ class Service_model extends Model
 
 			$this->where([$this->table . '.uuid_business_id' => $uuidBusineess]);
 
+            $count = $this->countAllResults(false);
             $this->limit($limit, $offset);
             $this->orderBy($order, $dir);
 
             $record = $this->get()->getResultArray();
-
-            $this->join('categories', 'services.cid = categories.id', 'LEFT');
-			$this->join('tenants', 'services.tid = tenants.id', 'LEFT');
-			$this->select('categories.name as category');			
-			$this->select('tenants.name as tenant');
-			$this->select('services.*');
-
-            if ($query) {
-                $this->like('services.name', $query);
-            }
-
-			$this->where([$this->table . '.uuid_business_id' => $uuidBusineess]);
-
-            $count = $this->countAllResults();
 
             return [
                 'data' => $record,

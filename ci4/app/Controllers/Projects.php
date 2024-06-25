@@ -48,35 +48,19 @@ class Projects extends CommonController
 		$dir = $this->request->getVar('dir') ?? "asc";
 
 		$sqlQuery = $this->projects_model
-			->where(['uuid_business_id' => session('uuid_business')])
-			->limit($limit, $offset)
-			->orderBy($order, $dir)
-			->get()
-			->getResultArray();
+            ->select("uuid, id, name, budget, rate, currency, start_date, active")
+			->where(['uuid_business_id' => session('uuid_business')]);
 		if ($query) {
-			$sqlQuery = $this->projects_model
-				->where(['uuid_business_id' => session('uuid_business')])
-				->like("name", $query)
-				->limit($limit, $offset)
-				->orderBy($order, $dir)
-				->get()
-				->getResultArray();
+			$sqlQuery = $sqlQuery->like("name", $query);
 		}
 
-		$countQuery = $this->projects_model
-			->where(["uuid_business_id" => session("uuid_business")])
-			->countAllResults();
-		if ($query) {
-			$countQuery = $this->projects_model
-				->where(["uuid_business_id" => session("uuid_business")])
-				->like("name", $query)
-				->countAllResults();
-		}
+        $countQuery = $sqlQuery->countAllResults(false);
+        $sqlQuery = $sqlQuery->limit($limit, $offset)->orderBy($order, $dir);
 
 		$data = [
 			'rawTblName' => $this->rawTblName,
 			'tableName' => $this->table,
-			'data' => $sqlQuery,
+			'data' => $sqlQuery->get()->getResultArray(),
 			'recordsTotal' => $countQuery,
 		];
 		return $this->response->setJSON($data);

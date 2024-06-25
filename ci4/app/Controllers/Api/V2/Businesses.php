@@ -88,29 +88,55 @@ class Businesses extends ResourceController
     {
         $api =  new Api_v2();
         $params = !empty($_GET['params']) ? json_decode($_GET['params'], true) : [];
+        if ($params) {
+            //Pagination Params
+            $_GET['page'] = !empty($params['pagination']) && !empty($params['pagination']['page']) ? $params['pagination']['page'] : 1;
+            $_GET['perPage'] = !empty($params['pagination']) && !empty($params['pagination']['perPage']) ? $params['pagination']['perPage'] : 10;
 
-        //Pagination Params
-        $_GET['page'] = !empty($params['pagination']) && !empty($params['pagination']['page']) ? $params['pagination']['page'] : 1;
-        $_GET['perPage'] = !empty($params['pagination']) && !empty($params['pagination']['perPage']) ? $params['pagination']['perPage'] : 10;
+            //Sorting params
+            $_GET['field'] = !empty($params['sort']) && !empty($params['sort']['field']) ? $params['sort']['field'] : '';
+            $_GET['order'] = !empty($params['sort']) && !empty($params['sort']['order']) ? $params['sort']['order'] : '';
 
-        //Sorting params
-        $_GET['field'] = !empty($params['sort']) && !empty($params['sort']['field']) ? $params['sort']['field'] : '';
-        $_GET['order'] = !empty($params['sort']) && !empty($params['sort']['order']) ? $params['sort']['order'] : '';
+            //filter by business uuid
+            $_GET['q'] = !empty($params['filter']) && !empty($params['filter']['q']) ? $params['filter']['q'] : '';
 
-        //filter by business uuid
-        $_GET['q'] = !empty($params['filter']) && !empty($params['filter']['q']) ? $params['filter']['q'] : '';
+            $_GET['uuid_business_id'] = !empty($params['filter']) && !empty($params['filter']['uuid_business_id']) ? $params['filter']['uuid_business_id'] : $_GET['uuid_business_id'] ?? false;
+            $arr = [];
 
-        $_GET['uuid_business_id'] = !empty($params['filter']) && !empty($params['filter']['uuid_business_id']) ? $params['filter']['uuid_business_id'] : $_GET['uuid_business_id'] ?? false;
-        $arr = [];
+            if(empty($_GET['uuid_business_id']) || !isset($_GET['uuid_business_id']) || !$_GET['uuid_business_id']){
+                $data['data'] = 'You must need to specify the User Business ID';
+                return $this->respond($data, 403);
+            }
+            $data['data'] = $api->common_model->getApiData('businesses', $arr);
+            $data['total'] = $api->common_model->getCount('businesses', $arr);
+            $data['message'] = 200;
+            return $this->respond($data);
+        } else {
+            $db = \Config\Database::connect();
+            $builder = $db->table('businesses');
 
-        if(empty($_GET['uuid_business_id']) || !isset($_GET['uuid_business_id']) || !$_GET['uuid_business_id']){
-            $data['data'] = 'You must need to specify the User Business ID';
-            return $this->respond($data, 403);
+            $limit = $_GET['limit'] ?? 20;
+            $offset = $_GET['offset'] ?? 0;
+            $query = $_GET['query'] ?? false;
+            $order = $_GET['order'] ?? "name";
+            $dir = $_GET['dir'] ?? "asc";
+            $uuidBusineess = $_GET['uuid_business_id'];
+
+            $sqlQuery = $builder->select('uuid, id, name, created_at');
+                // ->where('uuid_business_id', $uuidBusineess);
+            if ($query) {
+                $sqlQuery = $sqlQuery->like("name", $query);
+            }
+
+            $countQuery = $sqlQuery->countAllResults(false);
+            $sqlQuery = $sqlQuery->limit($limit, $offset)->orderBy($order, $dir);
+
+            return $this->respond([
+                'data' => $sqlQuery->get()->getResultArray(),
+                'recordsTotal' => $countQuery,
+            ]);
+            
         }
-        $data['data'] = $api->common_model->getApiData('businesses', $arr);
-        $data['total'] = $api->common_model->getCount('businesses', $arr);
-        $data['message'] = 200;
-        return $this->respond($data);
     }
 
     /**

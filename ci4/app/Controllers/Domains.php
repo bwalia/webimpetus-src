@@ -48,13 +48,12 @@ class Domains extends CommonController
         $dir = $this->request->getVar('dir') ?? "asc";
 
         $sqlQuery = $this->domainModel->getFilteredRows($query, $limit, $offset, $order, $dir);
-        $countQuery = $this->domainModel->getFilteredRows($query, $limit, $offset, $order, $dir, "count");
         
         $data = [
             'rawTblName' => $this->rawTblName,
             'tableName' => $this->table,
             'data' => $sqlQuery['data'],
-            'recordsTotal' => $countQuery['count'],
+            'recordsTotal' => $sqlQuery['count'],
         ];
         return $this->response->setJSON($data);
     }

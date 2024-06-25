@@ -6,6 +6,7 @@ use CodeIgniter\Model;
 class Work_orders_model extends Model
 {
     protected $work_orders = 'work_orders';
+    protected $table = 'work_orders';
      
     protected $businessUuid;
      

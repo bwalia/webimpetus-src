@@ -249,6 +249,7 @@ class CommonController extends BaseController
 	// only call if there additional data needed on edit view
 	public function getAdditionalData($id)
 	{
+		return [];
 	}
 
 	public function upload($filename = null)

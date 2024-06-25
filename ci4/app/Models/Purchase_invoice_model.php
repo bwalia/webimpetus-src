@@ -30,33 +30,15 @@ class Purchase_invoice_model extends Model
         $builder->select("sa.*, customers.company_name");
         $builder->join('customers', 'customers.id = sa.client_id', 'left');
         $builder->where('sa.uuid_business_id', session("uuid_business"));
+
+        if ($query) {
+            $builder = $builder->like('sa.invoice_number', $query);
+        }
+
+        $count = $builder->countAllResults(false);
+
         $builder->limit($limit, $offset);
         $builder->orderBy("sa." . $order, $dir);
-
-        if ($query) {
-            $builder = $this->db->table($this->purchase_invoices. " as sa");
-            $builder->select("sa.*, customers.company_name");
-            $builder->join('customers', 'customers.id = sa.client_id', 'left');
-            $builder->where('sa.uuid_business_id', session("uuid_business"));
-            $builder->like('sa.invoice_number', $query);
-            $builder->limit($limit, $offset);
-            $builder->orderBy("sa." . $order, $dir);
-        }
-
-        $countBuilder = $this->db->table($this->purchase_invoices. " as sa");
-        $countBuilder->select("sa.*, customers.company_name");
-        $countBuilder->join('customers', 'customers.id = sa.client_id', 'left');
-        $countBuilder->where('sa.uuid_business_id', session("uuid_business"));
-        $count = $countBuilder->countAllResults();
-
-        if ($query) {
-            $countBuilder = $this->db->table($this->purchase_invoices. " as sa");
-            $countBuilder->select("sa.*, customers.company_name");
-            $countBuilder->join('customers', 'customers.id = sa.client_id', 'left');
-            $countBuilder->where('sa.uuid_business_id', session("uuid_business"));
-            $countBuilder->like('sa.invoice_number', $query);
-            $count = $countBuilder->countAllResults();
-        }
         
         return [
             'data' => $builder->get()->getResultArray(),
