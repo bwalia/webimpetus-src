@@ -4,9 +4,8 @@
 </div>
 <?php require_once (APPPATH . 'Views/common/footer.php'); ?>
 <script>
-
-    let columnsTitle = ['Id', 'Name', 'Email', 'Message', 'Created at'];
-    let columnsMachineName = ['id', 'name', 'email', 'message', 'created'];
+    let columnsTitle = ['Id', 'Name', 'Email', 'Phone', 'Created at'];
+    let columnsMachineName = ['id', 'name', 'email', 'phone', 'created'];
     initializeGridTable(
         {
             columnsTitle,
@@ -16,5 +15,4 @@
             selector: "enquiriesTable"
         }
     );
-
 </script>

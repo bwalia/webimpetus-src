@@ -165,20 +165,10 @@ class Secret_model extends Model
             $this->orLike('services.name', $query);
         }
         $this->where($table . '.uuid_business_id', $uuidBusineess);
+        $count = $this->countAllResults(false);
         $this->limit($limit, $offset);
         $this->orderBy($order, $dir);
         $records = $this->get()->getResultArray();
-
-        $this->select($table . '.*,services.name');
-        $this->join('secrets_services', $table . '.id=secrets_services.secret_id', 'LEFT');
-        $this->join('services', 'services.uuid=secrets_services.service_id', 'LEFT');
-        if ($query != '' && $query) {
-            $this->like($table . '.key_name', $query);
-            $this->orLike('services.name', $query);
-        }
-        $this->where($table . '.uuid_business_id', $uuidBusineess);
-
-        $count = $this->countAllResults();
 
         return [
             'data' => $records,

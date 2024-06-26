@@ -47,35 +47,19 @@ class Jobs extends CommonController
 		$dir = $this->request->getVar('dir') ?? "asc";
 
 		$sqlQuery = $this->content_model
-			->where(['type' => 4, "uuid_business_id" => $this->businessUuid])
-			->limit($limit, $offset)
-			->orderBy($order, $dir)
-			->get()
-			->getResultArray();
+			->select("uuid, id, title, sub_title, status, publish_date, created")
+			->where(['type' => 4, "uuid_business_id" => $this->businessUuid]);
 		if ($query) {
-			$sqlQuery = $this->content_model
-				->where(['type' => 4, "uuid_business_id" => $this->businessUuid])
-				->like("title", $query)
-				->limit($limit, $offset)
-				->orderBy($order, $dir)
-				->get()
-				->getResultArray();
+			$sqlQuery = $this->content_model->like("title", $query);
 		}
 
-		$countQuery = $this->content_model
-			->where(['type' => 4, "uuid_business_id" => $this->businessUuid])
-			->countAllResults();
-		if ($query) {
-			$countQuery = $this->content_model
-				->where(['type' => 4, "uuid_business_id" => $this->businessUuid])
-				->like("title", $query)
-				->countAllResults();
-		}
+        $countQuery = $sqlQuery->countAllResults(false);
+        $sqlQuery = $sqlQuery->limit($limit, $offset)->orderBy($order, $dir);
 
 		$data = [
 			'rawTblName' => $this->rawTblName,
 			'tableName' => $this->table,
-			'data' => $sqlQuery,
+			'data' => $sqlQuery->get()->getResultArray(),
 			'recordsTotal' => $countQuery,
 		];
 		return $this->response->setJSON($data);
