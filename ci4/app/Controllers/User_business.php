@@ -55,6 +55,37 @@ class User_business extends CommonController
         return view($viewPath, $data);
     }
 
+    public function userBusinessList()
+	{
+		$limit = $this->request->getVar('limit');
+		$offset = $this->request->getVar('offset');
+		$query = $this->request->getVar('query');
+		$order = $this->request->getVar('order') ?? "name";
+		$dir = $this->request->getVar('dir') ?? "asc";
+
+		$sqlQuery = $this->User_business_model
+            ->select("user_business.*")
+            ->join('users', 'user_business.user_uuid = users.uuid', 'LEFT')
+            ->select("users.name as username")
+            ->join('businesses', 'user_business.primary_business_uuid = businesses.uuid', 'LEFT')
+            ->select("businesses.name as business_name");
+			// ->where(["businesses.uuid_business_id" => $this->businessUuid]);
+		if ($query) {
+			$sqlQuery = $sqlQuery->like("businesses.name", $query);
+		}
+
+        $countQuery = $sqlQuery->countAllResults(false);
+        $sqlQuery = $sqlQuery->limit($limit, $offset)->orderBy("businesses.".$order, "businesses.".$dir);
+
+		$data = [
+			'rawTblName' => $this->rawTblName,
+			'tableName' => $this->table,
+			'data' => $sqlQuery->get()->getResultArray(),
+			'recordsTotal' => $countQuery,
+		];
+		return $this->response->setJSON($data);
+	}
+
     public function edit($id = 0)
     {   
         $userBsResults = $this->User_business_model->getResultByUUID((string) $id);
@@ -96,7 +127,7 @@ class User_business extends CommonController
     {
         if (!empty($this->request->getPost('id')) && !empty($this->request->getPost('npassword')) && $this->request->getPost('npassword') == $this->request->getPost('cpassword')) {
             $data = array(
-                'password' => md5($this->request->getPost('npassword'))
+                'password' => md5($this->request->getPost('npassword') ?? "")
             );
             $this->userModel->updateUser($data, $this->request->getPost('id'));
             session()->setFlashdata('message', 'Password changed Successfully!');

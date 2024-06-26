@@ -14,6 +14,7 @@ class Purchase_orders extends CommonController
     public $purchase_order_items;
     public $purchase_order_notes;
     public $purchase_orders;
+    public $purchase_orders_notes;
     function __construct()
     {
         parent::__construct();

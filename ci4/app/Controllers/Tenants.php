@@ -34,6 +34,36 @@ class Tenants extends CommonController
 		echo view('tenants/list', $data);
 	}
 
+	public function tenantsList()
+    {
+        $limit = $this->request->getVar('limit');
+        $offset = $this->request->getVar('offset');
+        $query = $this->request->getVar('query');
+        $order = $this->request->getVar('order') ?? "name";
+        $dir = $this->request->getVar('dir') ?? "asc";
+
+        $sqlQuery = $this->tenantModel
+        	->join('tenants_services', 'tenants_services.tid = tenants.id', 'LEFT')
+        	->join('services', 'tenants_services.sid = services.id', 'LEFT')
+        	->groupBy('tenants.id')
+        	->select('GROUP_CONCAT(services.name) as service_name')
+        	->select('tenants.*')
+			->where(['tenants.uuid_business_id' => session('uuid_business')]);
+        if ($query) {
+            $sqlQuery = $sqlQuery
+                ->like("tenants.name", $query);
+        }
+        $countQuery = $sqlQuery->countAllResults(false);
+        $sqlQuery = $sqlQuery->limit($limit, $offset)->orderBy($order, $dir);
+        $data = [
+            'rawTblName' => $this->rawTblName,
+            'tableName' => $this->table,
+            'data' => $sqlQuery->get()->getResultArray(),
+            'recordsTotal' => $countQuery,
+        ];
+        return $this->response->setJSON($data);
+    }
+
 
 	public function save()
 	{

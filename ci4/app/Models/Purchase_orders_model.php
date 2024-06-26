@@ -6,6 +6,7 @@ use CodeIgniter\Model;
 class Purchase_orders_model extends Model
 {
     protected $purchase_orders = 'purchase_orders';
+    protected $table = 'purchase_orders';
      
     protected $businessUuid;
      
