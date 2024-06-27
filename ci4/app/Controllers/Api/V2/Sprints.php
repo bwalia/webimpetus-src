@@ -132,33 +132,17 @@ class Sprints extends ResourceController
             $uuidBusineess = $_GET['uuid_business_id'];
 
             $sqlQuery = $sprintsModel
-                ->where(['uuid_business_id' => $uuidBusineess])
-                ->limit($limit, $offset)
-                ->orderBy($order, $dir)
-                ->get()
-                ->getResultArray();
+                ->select("uuid, id, sprint_name, start_date, end_date, note")
+                ->where(['uuid_business_id' => $uuidBusineess]);
             if ($query) {
-                $sqlQuery = $sprintsModel
-                    ->where(['uuid_business_id' => $uuidBusineess])
-                    ->like("sprint_name", $query)
-                    ->limit($limit, $offset)
-                    ->orderBy($order, $dir)
-                    ->get()
-                    ->getResultArray();
+                $sqlQuery = $sqlQuery->like("sprint_name", $query);
             }
 
-            $countQuery = $sprintsModel
-                ->where(["uuid_business_id" => $uuidBusineess])
-                ->countAllResults();
-            if ($query) {
-                $countQuery = $sprintsModel
-                    ->where(["uuid_business_id" => $uuidBusineess])
-                    ->like("sprint_name", $query)
-                    ->countAllResults();
-            }
+            $countQuery = $sqlQuery->countAllResults(false);
+            $sqlQuery = $sqlQuery->limit($limit, $offset)->orderBy($order, $dir);
 
             return $this->respond([
-                'data' => $sqlQuery,
+                'data' => $sqlQuery->get()->getResultArray(),
                 'recordsTotal' => $countQuery,
             ]);
         }
