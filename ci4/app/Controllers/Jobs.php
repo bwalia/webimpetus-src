@@ -50,7 +50,7 @@ class Jobs extends CommonController
 			->select("uuid, id, title, sub_title, status, publish_date, created")
 			->where(['type' => 4, "uuid_business_id" => $this->businessUuid]);
 		if ($query) {
-			$sqlQuery = $this->content_model->like("title", $query);
+			$sqlQuery = $sqlQuery->like("title", $query);
 		}
 
         $countQuery = $sqlQuery->countAllResults(false);
