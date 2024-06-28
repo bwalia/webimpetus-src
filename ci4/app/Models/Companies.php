@@ -158,6 +158,11 @@ class Companies extends Model
         $query = $this->db->table("company__contact")->delete(array('contact_uuid' => $contactUUID));
         return $query;
     }
+    public function deleteRelationDataByContactCompany($contactUUID, $companyUUID)
+    {
+        $query = $this->db->table("company__contact")->delete(array('contact_uuid' => $contactUUID, 'company_uuid' => $companyUUID));
+        return $query;
+    }
 
     public function insertRelationData(array $data)
     {

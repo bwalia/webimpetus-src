@@ -121,6 +121,11 @@ class CustomerContactModel extends Model
         $query = $this->db->table($this->table)->delete(array('contact_uuid' => $id));
         return $query;
     }
+    public function deleteDataByContactCustomer($id, $customerId)
+    {
+        $query = $this->db->table($this->table)->delete(array('contact_uuid' => $id, 'customer_uuid' => $customerId));
+        return $query;
+    }
 
     public function updateData($id = null, $data = null)
     {
