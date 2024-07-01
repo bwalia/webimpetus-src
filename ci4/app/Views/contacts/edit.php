@@ -1,15 +1,13 @@
-
-<?php require_once(APPPATH . 'Views/common/edit-title.php'); ?>
+<?php require_once (APPPATH . 'Views/common/edit-title.php'); ?>
 <?php
-
 //  $row = getRowArray("blocks_list", ["code" => "contact_types_list_json"]);
 //  echo "<pre>";
 // print_r($customers);
 // print_r("hello");
 // die();
 // if (isset($row)) {
-    // $contact_type = json_decode(@$row->text);
-    // $customers = getResultArray("customers");
+// $contact_type = json_decode(@$row->text);
+// $customers = getResultArray("customers");
 // } else {
 //     $customers = getResultArray("customers");
 // }
@@ -25,6 +23,14 @@ if (preg_match($customerPatt, $previousUrl)) {
     $customerUUID = substr($previousUrl, strrpos($previousUrl, '/') + 1);
 }
 ?>
+<style>
+    .radio-button-label.active {
+        background-color: #a40032 !important;
+    }
+    .hidden {
+        display: none;
+    }
+</style>
 <div class="white_card_body">
     <div class="card-body">
 
@@ -45,23 +51,57 @@ if (preg_match($customerPatt, $previousUrl)) {
                     <div class="tab-content py-3 px-3 px-sm-0 col-md-12" id="nav-tabContent">
                         <div class="tab-pane fade show active" id="nav-home" role="tabpanel"
                             aria-labelledby="nav-home-tab">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="linked_module_types"
+                                            id="customers" value="customers"
+                                            <?= @$contact->linked_module_types == 'customers' ? 'checked="checked"' : '' ?> />
+                                        <label class="form-check-label" for="customers">Customers</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="linked_module_types"
+                                            id="companies" value="companies"
+                                            <?= @$contact->linked_module_types == 'companies' ? 'checked="checked"' : '' ?> />
+                                        <label class="form-check-label" for="companies">Companies</label>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="form-row">
-                                <div class="form-group required col-md-6">
+                                <div id="customersSelector" class="form-group col-md-6 <?= @$contact->linked_module_types == 'customers' ? 'show' : 'hidden' ?>">
                                     <label for="inputEmail4">Customer Name</label>
-                                    <select id="client_id" name="client_id"
-                                        class="form-control required dashboard-dropdown  select-customer-contacts-ajax">
+                                    <select id="customer_id" name="customer_id"
+                                        class="form-control dashboard-dropdown select-customer-contacts-ajax">
                                         <option value="" selected="">--Select--</option>
-                                         <?php 
-                                         if (isset($customers)) {
+                                        <?php
+                                        if (isset($customers)) {
                                             foreach ($customers as $row): ?>
-                                                <option value="<?= $row['id']; ?>" <?php if ($row['id'] == @$contact->client_id) {
-                                                     echo "selected";
-                                                 } ?>>
+                                                <option value="<?= $row['id']; ?>" <?php if ($row['id'] == @$contact->customer_id) {
+                                                      echo "selected";
+                                                  } ?>>
                                                     <?= $row['company_name']; ?>
                                                 </option>
                                             <?php endforeach;
-                                        } ?>                                  
-                                        </select>
+                                        } ?>
+                                    </select>
+                                </div>
+
+                                <div id="companiesSelector" class="form-group col-md-6 <?= @$contact->linked_module_types == 'companies' ? 'show' : 'hidden' ?>">
+                                    <label for="inputEmail4">Company Name</label>
+                                    <select id="company_id" name="company_id"
+                                        class="form-control dashboard-dropdown select-company-contacts-ajax">
+                                        <option value="" selected="">--Select--</option>
+                                        <?php
+                                        if (isset($companies)) {
+                                            foreach ($companies as $row): ?>
+                                                <option value="<?= $row['id']; ?>" <?php if ($row['id'] == @$contact->company_id) {
+                                                      echo "selected";
+                                                  } ?>>
+                                                    <?= $row['company_name']; ?>
+                                                </option>
+                                            <?php endforeach;
+                                        } ?>
+                                    </select>
                                 </div>
 
                                 <div class="form-group required col-md-6">
@@ -154,8 +194,8 @@ if (preg_match($customerPatt, $previousUrl)) {
                                         <?php if (isset($contact_type) && is_array($contact_type)) {
                                             foreach (@$contact_type as $key => $value): ?>
                                         <option value="<?= $value; ?>" <?php if ($value == @$contact->contact_type) {
-                                             echo "selected";
-                                         } ?>><?= $value; ?></option>
+                                              echo "selected";
+                                          } ?>><?= $value; ?></option>
                                         <?php endforeach;
                                         } ?>
                                 </select> -->
@@ -172,8 +212,7 @@ if (preg_match($customerPatt, $previousUrl)) {
                                             foreach (@$categories as $category): ?>
                                                 <option <?php if ($category["id"] == @$contact->contact_type) {
                                                     echo "selected";
-                                                } ?>
-                                                    value="<?php echo ($category["id"]) ?>">
+                                                } ?> value="<?php echo ($category["id"]) ?>">
                                                     <?php echo ($category["name"]) ?>
                                                 </option>
                                             <?php endforeach;
@@ -189,9 +228,9 @@ if (preg_match($customerPatt, $previousUrl)) {
                                     <div class="checkbox-label">
 
                                         <input class="form-check-input" name="allow_web_access" id="allow_web_access"
-                                            value="<?php echo @$contact->allow_web_access; ?>" type="checkbox" <?php if (@$contact->allow_web_access == "1") {
-                                                   echo
-                                                       "checked";
+                                            value="<?php echo @$contact->allow_web_access; ?>" type="checkbox" 
+                                            <?php if (@$contact->allow_web_access == "1") {
+                                                   echo "checked";
                                                } ?>>
                                         <label class="form-check-label" for="flexCheckIndeterminate">
                                             Allow WebAccess
@@ -228,15 +267,34 @@ if (preg_match($customerPatt, $previousUrl)) {
     </div>
 </div>
 
-<?php require_once(APPPATH . 'Views/common/footer.php'); ?>
+<?php require_once (APPPATH . 'Views/common/footer.php'); ?>
 <div class="modal fade" id="addAddressModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true"></div>
 <!-- main content part end -->
 
 <script>
 
-    var uuid = $('#uuid').val();
+    $(document).on('click', 'input[type=radio][name=linked_module_types]', function () {
+        var originalValue = $(this).data('original-value');
+        
+        if (originalValue === undefined) {
+          originalValue = $(this).val();
+          $(this).data('original-value', originalValue);
+        }
+        setTimeout(() => {
+          $(this).val(originalValue);
+            if (originalValue == "customers") {
+                $("#customersSelector").removeClass('hidden');
+                $("#companiesSelector").addClass('hidden');
+            }
+            if (originalValue == "companies") {
+                $("#companiesSelector").removeClass('hidden');
+                $("#customersSelector").addClass('hidden');
+            }
+        }, 0);
+    });
 
+    var uuid = $('#uuid').val();
     $("#email").blur(function (e) {
         var email = $("#email").val();
         var rowUuid = '<?php echo @$contact->uuid ?? ""; ?>';
@@ -261,7 +319,7 @@ if (preg_match($customerPatt, $previousUrl)) {
                     }
                 }
             })
-        } 
+        }
     });
 
     $(":submit").click(function (e) {
@@ -271,7 +329,7 @@ if (preg_match($customerPatt, $previousUrl)) {
         }
     });
 
-    
+
 
     $(document).on("click", ".form-check-input", function () {
         if ($(this).prop("checked") == false) {
@@ -392,24 +450,54 @@ if (preg_match($customerPatt, $previousUrl)) {
         renderAddress(uuid);
     })
 
-    $(document).ready(function() {
+    $(document).ready(function () {
         $(".select-customer-contacts-ajax").select2({
             ajax: {
                 url: "/contacts/contactsCustomerAjax",
                 dataType: 'json',
                 delay: 250,
-                data: function(params) {
+                data: function (params) {
                     return {
                         q: params.term // search term
                     };
                 },
-                processResults: function(data, params) {
+                processResults: function (data, params) {
                     // parse the results into the format expected by Select2
                     // since we are using custom formatting functions we do not need to
                     // alter the remote JSON data, except to indicate that infinite
                     // scrolling can be used
                     return {
-                        results: $.map(data, function(item) {
+                        results: $.map(data, function (item) {
+                            return {
+                                text: item.company_name,
+                                id: item.id
+                            }
+                        })
+                    };
+                },
+            },
+            minimumInputLength: 2
+        })
+    });
+
+    $(document).ready(function () {
+        $(".select-company-contacts-ajax").select2({
+            ajax: {
+                url: "/contacts/contactsCompanyAjax",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        q: params.term // search term
+                    };
+                },
+                processResults: function (data, params) {
+                    // parse the results into the format expected by Select2
+                    // since we are using custom formatting functions we do not need to
+                    // alter the remote JSON data, except to indicate that infinite
+                    // scrolling can be used
+                    return {
+                        results: $.map(data, function (item) {
                             return {
                                 text: item.company_name,
                                 id: item.id

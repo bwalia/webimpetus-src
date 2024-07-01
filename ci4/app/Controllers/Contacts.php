@@ -94,6 +94,20 @@ class Contacts extends CommonController
         }
         $customers = $customers->get()->getResultArray();
 
+        $companies = (new Companies());
+        if(!empty($contactData) && isset($contactData->client_id)) {
+            $companies = $companies->orWhere("id", $contactData->client_id);
+        } else {
+            $companies = $companies->orWhere("id", 0);
+        }
+        $companies = $companies->get()->getResultArray();
+
+        if (isset($contactData->linked_module_types) && $contactData->linked_module_types == "companies") {
+            $contactData->company_id = $contactData->client_id;
+        }
+        if (isset($contactData->linked_module_types) && $contactData->linked_module_types == "customers") {
+            $contactData->customer_id = $contactData->client_id;
+        }
 
 		$data['tableName'] = $this->table;
         $data['rawTblName'] = $this->rawTblName;
@@ -101,6 +115,7 @@ class Contacts extends CommonController
         $data["categories"] = $this->model->getCategories();
 		$data["contact"] = $uuid ? $contactData : "";
         $data["customers"] = $customers;
+        $data["companies"] = $companies;
         
 		// if there any special cause we can overried this function and pass data to add or edit view
 		$data['additional_data'] = $this->getAdditionalData($uuid);
@@ -111,12 +126,27 @@ class Contacts extends CommonController
     public function contactsCustomerAjax()
     {
         $q = $this->request->getVar('q');
-        $data = $this->customers_model;
+        $data = $this->customers_model->where('uuid_business_id', session('uuid_business'));
         if(!empty($q)) {
             $data = $data->like('company_name', $q);
         }
         $data = $data->limit(500)->get()->getResult();
         return $this->respond($data);
+    }
+    public function contactsCompanyAjax()
+    {
+        $q = $this->request->getVar('q');
+        $data = $this->companyModel->where('uuid_business_id', session('uuid_business'));
+        if(!empty($q)) {
+            $data = $data->like('company_name', $q);
+        }
+        $data = $data->limit(500)->get()->getResult();
+        return $this->respond($data);
+    }
+
+    public function isValidUUID($uuid) {
+        $pattern = '/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i';
+        return preg_match($pattern, $uuid) === 1;
     }
     public function update()
     {
@@ -134,14 +164,31 @@ class Contacts extends CommonController
         if(strlen($data['password']) > 0){
             $data['password'] = md5($data['password']);
         }
+        if ($data['linked_module_types'] == "customers") {
+            $data['client_id'] = $data['customer_id'];
+        }
+        if ($data['linked_module_types'] == "companies") {
+            $data['client_id'] = $data['company_id'];
+        }
+
         unset($data['companyUUID']);
         unset($data['customerUUID']);
+        unset($data['customer_id']);
+        unset($data['company_id']);
 		$response = $this->model->insertOrUpdateByUUID($uuid, $data);
 
         if ($response) {
             $companyUUID = $this->request->getPost('companyUUID');
-            if ($companyUUID && isset($companyUUID) && $companyUUID != "") {
-                // $this->companyModel->deleteRelationData($companyUUID);
+            if (($companyUUID && isset($companyUUID) && $companyUUID != "") || $data['linked_module_types'] == "companies") {
+                if (!isset($companyUUID) || !$companyUUID || $companyUUID == "") {
+                    $companyUUID = $this->request->getPost('company_id');
+                    if (!$this->isValidUUID($companyUUID)) {
+                        $companyData = $this->companyModel->select('uuid')->where('id', $companyUUID)->first();
+                        $companyUUID = $companyData['uuid'];
+                    }
+                }
+                $this->companyModel->deleteRelationDataByContactCompany($data['uuid'], $companyUUID);
+                $this->customerContactModel->deleteDataByContact($data['uuid']);
                 $relationData = [
                     'company_uuid' => $companyUUID,
                     'contact_uuid' => $data['uuid'],
@@ -150,7 +197,14 @@ class Contacts extends CommonController
                 $this->companyModel->insertRelationData($relationData);
             }
             $customerUUID = $this->request->getPost('customerUUID');
-            if ($customerUUID && isset($customerUUID) && $customerUUID != "") {
+            if (($customerUUID && isset($customerUUID) && $customerUUID != "") || $data['linked_module_types'] == "customers") {
+                $customerUUID = $this->request->getPost('customer_id');
+                if (!$this->isValidUUID($customerUUID)) {
+                    $customerData = $this->customers_model->select('uuid')->where('id', $customerUUID)->first();
+                    $customerUUID = $customerData['uuid'];
+                }
+                $this->customerContactModel->deleteDataByContactCustomer($data['uuid'], $customerUUID);
+                $this->companyModel->deleteRelationDataByContact($data['uuid']);
                 $cusConData = [
                     'customer_uuid' => $customerUUID,
                     'contact_uuid' => $data['uuid'],

@@ -9,7 +9,7 @@ class UpdateCompaniesAddIsEmailSent extends Migration
     public function up()
     {
         $db = \Config\Database::connect();
-        if (!$db->fieldExists('is_email_sent', 'services')) {
+        if (!$db->fieldExists('is_email_sent', 'companies')) {
             $fields = [
                 'is_email_sent' => ['type' => 'TINYINT']
             ];

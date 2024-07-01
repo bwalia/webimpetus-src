@@ -178,10 +178,12 @@
 
     //add class in radio buttons
     window.onload = function () {
-        $('[type="radio"]').addClass('radioInput');
-        $('[type="radio"]').parent().addClass('radioLabel');
-        $('[type="radio"]').parent().parent().addClass('radioGroup');
-        $('[type="radio"]:checked').parent().addClass('radioCheckedLabel');
+        if (!$('[type="radio"]').hasClass("radio-button")) {
+            $('[type="radio"]').addClass('radioInput');
+            $('[type="radio"]').parent().addClass('radioLabel');
+            $('[type="radio"]').parent().parent().addClass('radioGroup');
+            $('[type="radio"]:checked').parent().addClass('radioCheckedLabel');
+        }
     };
 
     $('input:radio').change(function () {
