@@ -48,7 +48,7 @@
   }
   ?>
 
-  <hr class="line-title" style="color:#ff004e; ">
+  <hr class="line-title" style="color:#65c46f; ">
 
   <div class="row" style="font-family: Mulish, sans-serif;">
     <div class="col1">

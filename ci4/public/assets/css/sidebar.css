@@ -407,21 +407,21 @@ nav.sidebar::-webkit-scrollbar {
 
 /* line 299, /scss/_sidebar.scss */
 .sidebar #sidebar_menu > li a:hover {
-  color: #ff004e !important;
+  color: #65c46f !important;
   background: #f2f2f2;
   border-radius: 0px;
-  box-shadow: inset -4px 0 0 0 #ff004e;
+  box-shadow: inset -4px 0 0 0 #65c46f;
 }
 
 /* line 303, /scss/_sidebar.scss */
 .sidebar #sidebar_menu > li a.active {
-  color: #ff004e;
+  color: #65c46f;
   border-radius: 0;
-  box-shadow: inset -4px 0 0 0 #ff004e;
+  box-shadow: inset -4px 0 0 0 #65c46f;
   font-weight: 700;
 }
 .sidebar #sidebar_menu > li a.active i {
-  color: #ff004e;
+  color: #65c46f;
 }
 
 /* line 308, /scss/_sidebar.scss */

@@ -40,7 +40,7 @@ var options = {
             }
         }
     },
-    colors:  ["#ff004e" ,"#E5ECFF" ],
+    colors:  ["#65c46f" ,"#E5ECFF" ],
     stroke: {
         lineCap: "round",
     },
@@ -120,7 +120,7 @@ var options = {
         curve: 'smooth',
         show: true,
         width: 3,
-        colors:  ["#ff004e" ,"#E5ECFF" ],
+        colors:  ["#65c46f" ,"#E5ECFF" ],
     },
     xaxis: {
         categories: ['Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
@@ -142,7 +142,7 @@ var options = {
             show: false,
             position: 'front',
             stroke: {
-                color:["#ff004e" ,"#E5ECFF" ],
+                color:["#65c46f" ,"#E5ECFF" ],
                 width: 1,
                 dashArray: 3
             }
@@ -201,10 +201,10 @@ var options = {
             }
         }
     },
-    colors:  ["#ff004e" ,"#ff004e" ],
+    colors:  ["#65c46f" ,"#65c46f" ],
     markers: {
-        colors:  ["#ff004e" ,"#E5ECFF" ],
-        strokeColor: ["#ff004e" ,"#E5ECFF" ],
+        colors:  ["#65c46f" ,"#E5ECFF" ],
+        strokeColor: ["#65c46f" ,"#E5ECFF" ],
         strokeWidth: 3
     }
 };
