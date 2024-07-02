@@ -4,6 +4,8 @@ namespace App\Controllers\Api\V2;
 
 use App\Models\VmModel;
 use CodeIgniter\RESTful\ResourceController;
+use App\Libraries\UUID;
+use App\Models\VmCategoryModel;
 
 class VmController extends ResourceController
 {
@@ -101,7 +103,35 @@ class VmController extends ResourceController
      */
     public function create()
     {
-        //
+        $vmModel = new VmModel();
+        $vmCategoryModel = new VmCategoryModel();
+        $data = $_POST;
+        $isSaved = false;
+        unset($data['id']);
+        unset($data['vm_categories']);
+        $data['vm_tags'] = implode(',', $data['vm_tags']);
+
+        if (!$data['uuid'] || !isset($data['uuid']) || empty($data['uuid'])) {
+            $data['uuid'] = UUID::v5(UUID::v4(), 'virtual_machines');
+            $isSaved = $vmModel->insert($data);
+        } else {
+            $isSaved = $vmModel->set($data)->where('uuid', $data['uuid'])->update();
+        }
+        if ($isSaved) {
+            $vmCategories = $_POST['vm_categories'];
+            if (!empty($vmCategories)) {
+                $vmCategoryModel->where('vm_id', $data['uuid'])->delete();
+                foreach ($vmCategories as $category) {
+                    $vmCategoryModel->insert([
+                        'vm_id' => $data['uuid'],
+                        'category_id' => $category,
+                        'uuid' => UUID::v5(UUID::v4(), 'vm__categories'),
+                        'uuid_business_id' => session('uuid_business')
+                    ]);
+                }
+            }
+        }
+        return $this->respond($data, 200);
     }
 
     /**

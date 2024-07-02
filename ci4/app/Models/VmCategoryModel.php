@@ -4,10 +4,10 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class VmModel extends Model
+class VmCategoryModel extends Model
 {
     protected $DBGroup          = 'default';
-    protected $table            = 'virtual_machines';
+    protected $table            = 'vm__categories';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $insertID         = 0;
@@ -16,16 +16,8 @@ class VmModel extends Model
     protected $protectFields    = true;
     protected $allowedFields    = [
         'uuid',
-        'vm_name',
-        'vm_code',
-        'vm_ram_bytes',
-        'vm_ram_display',
-        'vm_cpu_cores',
-        'vm_description',
-        'vm_ipv4',
-        'vm_ipv6',
-        'vm_tags',
-        'status',
+        'vm_id',
+        'category_id',
         'uuid_business_id'
     ];
 
@@ -52,4 +44,9 @@ class VmModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    public function categoriesByVmId($vmId)
+    {
+        return $this->where('vm_id', $vmId)->join('categories', 'vm__categories.category_id = categories.uuid');
+    }
 }
