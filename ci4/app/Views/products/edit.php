@@ -227,7 +227,7 @@
 	}
 
 	.btnMinus {
-		background-color: #65c46f;
+		background-color: var(--primaryColor);
 	}
 
 	.btnPlus::after,

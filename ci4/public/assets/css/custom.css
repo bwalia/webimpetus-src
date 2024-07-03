@@ -1,3 +1,6 @@
+:root {
+    --primaryColor: #65c46f;
+}
 .select2-container .select2-selection--single {
     height: 38px !important;
 }
@@ -7,15 +10,15 @@
 }
 
 /* .dashBrdIcon {
-    background: #65c46f !important;
+    background: var(--primaryColor) !important;
 } */
 
 .user_crm_wrapper .fa {
-    color: #65c46f !important;
+    color: var(--primaryColor) !important;
 }
 
 .text_color_red {
-    color: #65c46f !important;
+    color: var(--primaryColor) !important;
 }
 
 .dragtoken {

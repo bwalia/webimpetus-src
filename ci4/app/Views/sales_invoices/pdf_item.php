@@ -49,7 +49,7 @@
   }
   ?>
 
-  <hr class="line-title" style="color:#65c46f; ">
+  <hr class="line-title" style="color:var(--primaryColor); ">
 
   <div class="row" style="font-family: Mulish, sans-serif;">
     <div class="col1">

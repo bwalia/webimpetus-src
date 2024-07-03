@@ -1,3 +1,6 @@
+:root {
+  --primaryColor: #65c46f;
+}
 /************ sidebar css here ************/
 /* line 2, /scss/_sidebar.scss */
 .sidebar {
@@ -407,21 +410,21 @@ nav.sidebar::-webkit-scrollbar {
 
 /* line 299, /scss/_sidebar.scss */
 .sidebar #sidebar_menu > li a:hover {
-  color: #65c46f !important;
+  color: var(--primaryColor) !important;
   background: #f2f2f2;
   border-radius: 0px;
-  box-shadow: inset -4px 0 0 0 #65c46f;
+  box-shadow: inset -4px 0 0 0 var(--primaryColor);
 }
 
 /* line 303, /scss/_sidebar.scss */
 .sidebar #sidebar_menu > li a.active {
-  color: #65c46f;
+  color: var(--primaryColor);
   border-radius: 0;
-  box-shadow: inset -4px 0 0 0 #65c46f;
+  box-shadow: inset -4px 0 0 0 var(--primaryColor);
   font-weight: 700;
 }
 .sidebar #sidebar_menu > li a.active i {
-  color: #65c46f;
+  color: var(--primaryColor);
 }
 
 /* line 308, /scss/_sidebar.scss */
