@@ -56,7 +56,7 @@ if (preg_match($customerPatt, $previousUrl)) {
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="linked_module_types"
                                             id="customers" value="customers"
-                                            <?= @$contact->linked_module_types == 'customers' ? 'checked="checked"' : '' ?> />
+                                            <?= @$contact->linked_module_types == 'customers' ? 'checked="checked"' : (empty($contact) ? 'checked="checked"' : '') ?> />
                                         <label class="form-check-label" for="customers">Customers</label>
                                     </div>
                                     <div class="form-check form-check-inline">
@@ -68,7 +68,7 @@ if (preg_match($customerPatt, $previousUrl)) {
                                 </div>
                             </div>
                             <div class="form-row">
-                                <div id="customersSelector" class="form-group col-md-6 <?= @$contact->linked_module_types == 'customers' ? 'show' : 'hidden' ?>">
+                                <div id="customersSelector" class="form-group col-md-6 <?= @$contact->linked_module_types == 'customers' ? 'show' : (empty($contact) ? 'show' : 'hidden') ?>">
                                     <label for="inputEmail4">Customer Name</label>
                                     <select id="customer_id" name="customer_id"
                                         class="form-control dashboard-dropdown select-customer-contacts-ajax">

@@ -41,35 +41,19 @@ class Products extends CommonController
 		$dir = $this->request->getVar('dir') ?? "asc";
 
 		$sqlQuery = $this->productModel
-			->where(['uuid_business_id' => session('uuid_business')])
-			->limit($limit, $offset)
-			->orderBy($order, $dir)
-			->get()
-			->getResultArray();
+			->select("uuid, id, product_name, product_code, product_sku, stock_available, unit_price")
+			->where(['uuid_business_id' => session('uuid_business')]);
 		if ($query) {
-			$sqlQuery = $this->productModel
-				->where(['uuid_business_id' => session('uuid_business')])
-				->like("product_name", $query)
-				->limit($limit, $offset)
-				->orderBy($order, $dir)
-				->get()
-				->getResultArray();
+			$sqlQuery = $sqlQuery->like("product_name", $query);
 		}
 
-		$countQuery = $this->productModel
-			->where(["uuid_business_id" => session("uuid_business")])
-			->countAllResults();
-		if ($query) {
-			$countQuery = $this->productModel
-				->where(["uuid_business_id" => session("uuid_business")])
-				->like("product_name", $query)
-				->countAllResults();
-		}
+        $countQuery = $sqlQuery->countAllResults(false);
+        $sqlQuery = $sqlQuery->limit($limit, $offset)->orderBy($order, $dir);
 
 		$data = [
 			'rawTblName' => $this->rawTblName,
 			'tableName' => $this->table,
-			'data' => $sqlQuery,
+			'data' => $sqlQuery->get()->getResultArray(),
 			'recordsTotal' => $countQuery,
 		];
 		return $this->response->setJSON($data);
