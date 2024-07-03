@@ -809,6 +809,140 @@
         ]
       }
     },
+    "/api/v2/vm": {
+      "get": {
+        "tags": [
+          "Virtual Machines"
+        ],
+        "responses": {
+          "200": {
+            "description": "Get the Virtual Machines"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Virtual Machines"
+        ],
+        "summary": "Create a new Virtual Machines",
+        "operationId": "createVM",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VM"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Created a category data"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v2/vm/{uuid}": {
+      "get": {
+        "tags": [
+          "Virtual Machines"
+        ],
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "description": "The Virtual Machines uuid",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Created a Virtual Machines data"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Virtual Machines"
+        ],
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "description": "The Virtual Machines uuid",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VM"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated a companies data"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Companies"
+        ],
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "description": "The companies uuid",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Delete a companies"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
     "/api/v2/employees": {
       "get": {
         "tags": [
@@ -2260,9 +2394,17 @@
       "Contacts": {
         "type": "object",
         "properties": {
-          "client_id": {
+          "linked_module_types": {
             "type": "string",
-            "default": "id of Client"
+            "default": "customers or companies"
+          },
+          "customer_id": {
+            "type": "string",
+            "default": "id of customer if customers selected"
+          },
+          "company_id": {
+            "type": "string",
+            "default": "id of company if companies selected"
           },
           "first_name": {
             "type": "string",
@@ -2392,6 +2534,55 @@
           "categories": {
             "type": "string",
             "default": "ids of categories [\"14\", \"8\"]"
+          }
+        }
+      },
+      "VM": {
+        "type": "object",
+        "properties": {
+          "vm_name": {
+            "type": "string",
+            "default": "Name of VM"
+          },
+          "vm_code": {
+            "type": "string",
+            "default": "Unique code of VM"
+          },
+          "vm_cpu_cores": {
+            "type": "string",
+            "default": "VM CPU Cores"
+          },
+          "vm_ram_display": {
+            "type": "string",
+            "default": "VM Ram"
+          },
+          "vm_ipv4": {
+            "type": "string",
+            "default": "VM IPv4"
+          },
+          "vm_ipv6": {
+            "type": "string",
+            "default": "VM IPv6"
+          },
+          "vm_tags": {
+            "type": "array",
+            "items": {}
+          },
+          "vm_categories": {
+            "type": "array",
+            "items": {}
+          },
+          "vm_description": {
+            "type": "string",
+            "default": "description"
+          },
+          "status": {
+            "type": "number",
+            "default": "0/1"
+          },
+          "uuid_business_id": {
+            "type": "string",
+            "default": "UUID of business"
           }
         }
       },
