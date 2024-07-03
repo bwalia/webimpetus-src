@@ -3,7 +3,11 @@
 namespace App\Controllers\Api\V2;
 
 use App\Controllers\Api_v2;
-
+use App\Libraries\UUID;
+use App\Models\Companies;
+use App\Models\Contact;
+use App\Models\CustomerContactModel;
+use App\Models\Customers_model;
 use CodeIgniter\RESTful\ResourceController;
 
 /**
@@ -155,8 +159,86 @@ class Contacts extends ResourceController
      */
     public function create()
     {
-        $api =  new Api_v2();
-        return $this->respond($api->addContact());
+        // $api =  new Api_v2();
+        $companyModel = new Companies();
+        $customerContactModel = new CustomerContactModel();
+        $customers_model = new Customers_model();
+        $contactModel = new Contact();
+        $uuid = $_POST['uuid'] ?? false;
+		$data = $_POST;
+       
+        if(!isset($data['allow_web_access'])){
+            $data['allow_web_access'] = 0;
+        }
+        if(empty($uuid)){
+            $data['uuid'] = UUID::v5(UUID::v4(), 'contacts_saving');
+            $data['uuid_business_id'] = session('uuid_business');
+        }
+        if(strlen($data['password']) > 0){
+            $data['password'] = md5($data['password']);
+        }
+        if ($data['linked_module_types'] == "customers") {
+            $data['client_id'] = $data['customer_id'];
+        }
+        if ($data['linked_module_types'] == "companies") {
+            $data['client_id'] = $data['company_id'];
+        }
+
+        if (isset($data['uuid_business'])) {
+            $data["uuid_business_id"] = $data['uuid_business'];
+            unset($data['uuid_business']);
+        }
+
+        unset($data['companyUUID']);
+        unset($data['customerUUID']);
+        unset($data['customer_id']);
+        unset($data['company_id']);
+		$response = $contactModel->insertOrUpdateByUUID($uuid, $data);
+
+        if ($response) {
+            $companyUUID = $_POST['companyUUID'] ?? false;
+            if (($companyUUID && isset($companyUUID) && $companyUUID != "") || $data['linked_module_types'] == "companies") {
+                if (!isset($companyUUID) || !$companyUUID || $companyUUID == "") {
+                    $companyUUID = $_POST['company_id'];
+                    if (!$this->isValidUUID($companyUUID)) {
+                        $companyData = $companyModel->select('uuid')->where('id', $companyUUID)->first();
+                        $companyUUID = $companyData['uuid'];
+                    }
+                }
+                $companyModel->deleteRelationDataByContactCompany($data['uuid'], $companyUUID);
+                $customerContactModel->deleteDataByContact($data['uuid']);
+                $relationData = [
+                    'company_uuid' => $companyUUID,
+                    'contact_uuid' => $data['uuid'],
+                    'uuid' => UUID::v5(UUID::v4(), 'company__contact')
+                ];
+                $companyModel->insertRelationData($relationData);
+            }
+            $customerUUID = $_POST['customerUUID'] ?? false;
+            if (($customerUUID && isset($customerUUID) && $customerUUID != "") || $data['linked_module_types'] == "customers") {
+                $customerUUID = $_POST['customer_id'];
+                if (!$this->isValidUUID($customerUUID)) {
+                    $customerData = $customers_model->select('uuid')->where('id', $customerUUID)->first();
+                    $customerUUID = $customerData['uuid'];
+                }
+                $customerContactModel->deleteDataByContactCustomer($data['uuid'], $customerUUID);
+                $companyModel->deleteRelationDataByContact($data['uuid']);
+                $cusConData = [
+                    'customer_uuid' => $customerUUID,
+                    'contact_uuid' => $data['uuid'],
+                    'uuid' => UUID::v5(UUID::v4(), 'customer__contact')
+                ];
+                $customerContactModel->saveData($cusConData);
+            }
+        }
+        $response_data['data'] = $data;
+        $response_data['status'] = 200;
+        return $this->respond($response_data, 200);
+    }
+
+    public function isValidUUID($uuid) {
+        $pattern = '/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i';
+        return preg_match($pattern, $uuid) === 1;
     }
 
     /**
