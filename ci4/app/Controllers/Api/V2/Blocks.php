@@ -3,8 +3,9 @@
 namespace App\Controllers\Api\V2;
 
 use App\Controllers\Api_v2;
-
+use App\Controllers\Auth;
 use App\Models\Blocks_model;
+use App\Libraries\UUID;
 use CodeIgniter\RESTful\ResourceController;
 
 class Blocks extends ResourceController
@@ -98,8 +99,31 @@ class Blocks extends ResourceController
      */
     public function create()
     {
-        $api =  new Api_v2();
-        return $this->respond($api->addBlock());
+        // $api =  new Api_v2();
+        // return $this->respond($api->addBlock());
+        $blocksModel = new Blocks_model();
+		$data = array(
+			'code' => $_POST['code'],
+			'title' => $_POST['title'],
+			'status' => $_POST['status'],
+			'text' => $_POST['text'],
+			"uuid_business_id" => $_POST['uuid_business'],
+		);
+
+		$uuid = $_POST['uuid'] ?? false;
+		if (!$uuid) {
+			$isSaved = $blocksModel->saveData($data);
+            if ($isSaved) {
+                return $this->respond([
+                    'data' => $data,
+                    'message' => 'Data entered successfully'
+                ]);
+            }
+		} else {
+            return $this->respond([
+                'message' => 'You are sending uuid in payload. Please use PUT method to update the records.'
+            ]);
+		}
     }
 
     /**
@@ -119,8 +143,31 @@ class Blocks extends ResourceController
      */
     public function update($id = null)
     {
-        $api =  new Api_v2();
-        return $this->respond($api->updateBlock());
+        // $api =  new Api_v2();
+        // return $this->respond($api->updateBlock());
+        $blocksModel = new Blocks_model();
+		$data = array(
+			'code' => $_POST['code'],
+			'title' => $_POST['title'],
+			'status' => $_POST['status'],
+			'text' => $_POST['text'],
+			"uuid_business_id" => $_POST['uuid_business'],
+		);
+
+		$uuid = $_POST['uuid'] ?? false;
+		if ($uuid) {
+			$isSaved = $blocksModel->updateDataByUUID($uuid, $data);
+            if ($isSaved) {
+                return $this->respond([
+                    'data' => $data,
+                    'message' => 'Data Update successfully'
+                ]);
+            }
+		} else {
+            return $this->respond([
+                'message' => 'You are not sending uuid in payload. Please use POST method to create the records.'
+            ]);
+		}
     }
 
     /**
