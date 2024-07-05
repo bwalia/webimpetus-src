@@ -109,7 +109,7 @@ class VmController extends ResourceController
         $isSaved = false;
         unset($data['id']);
         unset($data['vm_categories']);
-        $data['vm_tags'] = implode(',', $data['vm_tags']);
+        $data['vm_tags'] = (isset($data['vm_tags']) && is_array($data['vm_tags'])) ? implode(',', $data['vm_tags']) : '';
 
         if (!$data['uuid'] || !isset($data['uuid']) || empty($data['uuid'])) {
             $data['uuid'] = UUID::v5(UUID::v4(), 'virtual_machines');
@@ -118,7 +118,7 @@ class VmController extends ResourceController
             $isSaved = $vmModel->set($data)->where('uuid', $data['uuid'])->update();
         }
         if ($isSaved) {
-            $vmCategories = $_POST['vm_categories'];
+            $vmCategories = $_POST['vm_categories'] ?? [];
             if (!empty($vmCategories)) {
                 $vmCategoryModel->where('vm_id', $data['uuid'])->delete();
                 foreach ($vmCategories as $category) {
