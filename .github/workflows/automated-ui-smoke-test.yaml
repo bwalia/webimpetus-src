@@ -36,14 +36,11 @@ jobs:
         run: |
             chmod +x ./bootstrap-cypress.sh && sh ./bootstrap-cypress.sh "${{ secrets.QA_LOGIN_EMAIL }}" "${{ secrets.QA_LOGIN_PASSWORD }}" "${{ env.TARGET_ENV }}"
 
-      - name: Slack Notification for Workstation CRM Smoke Login Test 
-        uses: rtCamp/action-slack-notify@v2
-        env:
-            SLACK_CHANNEL: general
-            SLACK_COLOR: ${{ job.status }}
-            SLACK_ICON: https://github.com/rtCamp.png?size=48
-            SLACK_MESSAGE: 'Workstation CRM Smoke Login Test using Cypress Test framework ${{ env.TARGET_ENV }} env :rocket:'
-            SLACK_TITLE: Workstation CRM Smoke Login Test on ${{ env.TARGET_ENV }}
-            SLACK_USERNAME: rtCamp
-            SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+      - name: 'Login Test Results Upload screenshots and videos to Slack'
+        uses: trymbill/cypress-slack-video-upload-action@v1.3.0
+        with:
+            token: ${{ secrets.SLACK_TOKEN_QA }}
+            channels: 'cypress-test-results'
+            workdir: qa/cypress_ui_test/cypress
+            message-text: 'A QA Cypress UI test just finished for Workstation CRM . The screenshots and videos are available in this thread. Good luck!.'
   
