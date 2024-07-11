@@ -145,8 +145,12 @@ class Services extends Api
 				} else {
 					$address_data['uuid'] = UUID::v5(UUID::v4(), 'secrets');
 				}
+				// print_r(strpos($key_value[$key], '********')); die;
 				if (strpos($key_value[$key], '********') === false) {
 					$address_data['key_value'] = $key_value[$key];
+					$secret_id = $this->secret_model->saveOrUpdateData($id, $address_data);
+				} elseif (strpos($key_value[$key], '********') >= 0) {
+					unset($address_data['key_value']);
 					$secret_id = $this->secret_model->saveOrUpdateData($id, $address_data);
 				} else {
 					$secret_id = $this->secret_model->getRowsByUUID($address_data['uuid'])->getRowArray();
