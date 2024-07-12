@@ -254,14 +254,20 @@ class Services extends Api
 			$post = $this->request->getPost();
 			if (isset($post['data']['serviceType']) && $post['data']['serviceType'] === "marketing") {
 				$this->create_marketing_template($uuid);
-				echo "Email has been sent to selected companies.";
+				echo json_encode([
+					"message" => "Email has been sent to selected companies.",
+					"status" => 200
+				]);
 			} else {
 				$selectedTags = array_filter($post['data']['selectedTags'], 'filterFalseValues');
 				foreach ($selectedTags as $tk => $selectedTag) {
 					$selectedTag = array_keys($selectedTag);
 
 					if (empty($selectedTag[0])) {
-						echo "No environment selected";
+						echo json_encode([
+							"message" => "No environment selected",
+							"status" => 403
+						]);
 						die;
 					} else {
 						$this->create_templates($uuid, $selectedTag[0]);
@@ -273,10 +279,16 @@ class Services extends Api
 				// $this->push_service_env_vars($uuid);
 				// $this->gen_service_yaml_file($uuid);
 				// echo $output; die;
-				echo "Service deployment process started OK. Verify the deployment using kubectl get pods command";
+				echo json_encode([
+					"message" => "Service deployment process started OK. Verify the deployment using kubectl get pods command",
+					"status" => 200
+				]);
 			}
 		} else {
-			echo "Uuid is empty!!";
+			echo json_encode([
+				"message" => "Uuid is empty!!",
+				"status" => 403
+			]);
 		}
 	}
 
@@ -367,7 +379,10 @@ class Services extends Api
 					if ($userSelectedENV == $isOverrided['secret_tags']) {
 						$secretYamlTemplate = str_replace($isOverrided['key_name'], $isOverrided['key_value'], $secretYamlTemplate);
 					} else {
-						echo "302: " . $secrets['key_name'] . " is not found in $userSelectedENV environment or empty";
+						echo json_encode([
+							"message" => "370: " . $secrets['key_name'] . " is not found in $userSelectedENV environment or empty",
+							"status" => 403
+						]);
 						die;
 					}
 				} else {
@@ -383,7 +398,10 @@ class Services extends Api
 						if (!empty($isNullOverrided)) {
 							$secretYamlTemplate = str_replace($isNullOverrided['key_name'], $isNullOverrided['key_value'], $secretYamlTemplate);
 						} else {
-							echo "323: " . $secrets['key_name'] . " is not found in $userSelectedENV environment or empty";
+							echo json_encode([
+								"message" => "388: " . $secrets['key_name'] . " is not found in $userSelectedENV environment or empty",
+								"status" => 403
+							]);
 							die;
 						}
 					}
@@ -400,7 +418,10 @@ class Services extends Api
 		if (empty($kubeConfigRow)) {
 			$kubeConfigRow = $this->common_model->getSecretByServiceUuid("KUBECONFIG", $uuid, NULL);
 			if (empty($kubeConfigRow)) {
-				echo "KUBECONFIG secret not found or is empty";
+				echo json_encode([
+					"message" => "KUBECONFIG secret not found or is empty",
+					"status" => 403
+				]);
 				die;
 			}
 		}
@@ -427,7 +448,10 @@ class Services extends Api
 		foreach ($secretYamlArray as $templateKey3 => $secretYamlTemplate3) {
 			$sealedSecretContent = file_get_contents(WRITEPATH . "secret/" . $userSelectedENV . "-sealed-secret-" . $templateKey3 . "-" . $uuid . ".yaml");
 			if (empty($sealedSecretContent)) {
-				echo "Kubeseal command failed. Please check kubernetes cluster connection is working and Kubeseal is setup.";
+				echo json_encode([
+					"message" => "Kubeseal command failed. Please check kubernetes cluster connection is working and Kubeseal is setup.",
+					"status" => 403
+				]);
 				die;
 			}
 			$sealedSecretContent = Yaml::parse($sealedSecretContent);
@@ -436,7 +460,10 @@ class Services extends Api
 				$envSecret = $sealedSecretContent["spec"]["encryptedData"]["env_file"];
 				$secretsArray['env_file'] = $envSecret;
 			} else {
-				echo "Env file not found in sealed secret. Kubeseal command failed\n";
+				echo json_encode([
+					"message" => "Env file not found in sealed secret. Kubeseal command failed\n",
+					"status" => 403
+				]);
 			}
 
 			if (isset($sealedSecretContent["spec"]["encryptedData"]["hostname"])) {
@@ -475,7 +502,10 @@ class Services extends Api
 				if ($userSelectedENV == $isOverrided['secret_tags']) {
 					$valuesYaml = str_replace($isOverrided['key_name'], $isOverrided['key_value'], $valuesYaml);
 				} else {
-					echo "302: " . $secrets['key_name'] . " is not found in $userSelectedENV environment or empty";
+					echo json_encode([
+						"message" => "488: " . $secrets['key_name'] . " is not found in $userSelectedENV environment or empty",
+						"status" => 403
+					]);
 					die;
 				}
 			} else {
@@ -490,7 +520,10 @@ class Services extends Api
 					if (!empty($isNullOverrided)) {
 						$valuesYaml = str_replace($isNullOverrided['key_name'], $isNullOverrided['key_value'], $valuesYaml);
 					} else {
-						echo "393: " . $secrets['key_name'] . " is not found in $userSelectedENV environment or empty";
+						echo json_encode([
+							"message" => "505: " . $secrets['key_name'] . " is not found in $userSelectedENV environment or empty",
+							"status" => 403
+						]);
 						die;
 					}
 				}

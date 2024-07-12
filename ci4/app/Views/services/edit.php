@@ -607,6 +607,7 @@ $uriSegment = $uri->getSegment(3);
                 <?php endforeach; ?>
             <?php } ?>
         </form>
+        <span class="deply-message" id="deplyMessage"></span>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
@@ -833,11 +834,17 @@ $uriSegment = $uri->getSegment(3);
                     'data': { Status,  selectedTags, serviceType}
                 },
                 success: function(response) {
-                    alert(response);
-                    // You will get response from your PHP page (what you echo or print)
+                    const res = typeof(response) == "string" ? JSON.parse(response) : response;
+                    if (res.status != 200) {
+                        const msg = `<p class="text-danger">${res.message}</p>`
+                        $("#deplyMessage").html(msg);
+                    } else {
+                        const msg = `<p class="text-success">${res.message}</p>`
+                        $("#deplyMessage").html(msg);
+                    }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
-                    console.log(textStatus, errorThrown);
+                    console.log({textStatus, errorThrown});
                 }
             });
         }); 
