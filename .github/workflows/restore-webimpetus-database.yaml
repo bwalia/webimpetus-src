@@ -43,9 +43,9 @@ jobs:
 
     - name: Configure MinIO client
       env:
-        MINIO_ENDPOINT: ${{ secrets.MINIO_ENDPOINT }}
-        MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
-        MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
+        MINIO_ENDPOINT: ${{ secrets.DR_MINIO_HOST }}
+        MINIO_ACCESS_KEY: ${{ secrets.DR_MINIO_ACCESS_KEY }}
+        MINIO_SECRET_KEY: ${{ secrets.DR_MINIO_SECRET_KEY }}
       run: |
         mc alias set myminio $MINIO_ENDPOINT $MINIO_ACCESS_KEY $MINIO_SECRET_KEY
 
