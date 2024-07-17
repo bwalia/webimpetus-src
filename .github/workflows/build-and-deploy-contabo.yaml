@@ -1,29 +1,17 @@
-name: "Build Workstation CRM Docker Image and Deploy to K3S"
+name: "Build Workstation CRM Docker Image and Deploy to Contabo"
 
 on:
-  push:
-    branches: [ main ]
   workflow_run:
-    workflows: ["Webimpetus database restore"]
+    workflows: ["Webimpetus database restore abandonded"]
     types:
       - completed
     
   workflow_dispatch:
     inputs:
-      TARGET_SERVICE:
-        type: choice
-        description: 'Please choose the service'
-        default: 'workstation-international'
-        required: true
-        options:
-          - workstation-uk
-          - daybook-uk
-          - workstation-international
-
       TARGET_ENV:
         type: choice
         description: 'Please choose the environment'
-        default: 'test'
+        default: 'int'
         required: true
         options:
           - int
@@ -49,7 +37,6 @@ env:
   TARGET_STACK: openresty_php
   IMAGE_NAME: webimpetus
   TARGET_ENV: ${{ github.event.inputs.TARGET_ENV || 'int' }}
-  TARGET_SERVICE: ${{ github.event.inputs.TARGET_SERVICE || 'workstation-international' }}
   minReplicas: ${{ secrets.minReplicas_test }}
   IMAGE_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
   TARGET_CLUSTER: ${{ github.event.inputs.TARGET_CLUSTER || 'k3s2' }}
@@ -115,21 +102,11 @@ jobs:
                       
         - name: Helm Deploy - Release Workstation CRM to K3S2 Rancher
           uses: koslib/helm-eks-action@master
-          if: ${{ env.TARGET_SERVICE }} == 'workstation-uk'
           env:
             KUBE_CONFIG_DATA: ${{ env.KUBE_CONFIG_K3S }}
           with:
             command: |
               helm upgrade -i wsl-${{ env.TARGET_ENV }} ./devops/webimpetus-chart -f devops/webimpetus-chart/values-${{ env.TARGET_ENV }}-${{ env.TARGET_CLUSTER }}.yaml --set-string targetImage="${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}" --set-string targetImageTag="${{ env.IMAGE_TAG }}" --namespace ${{ env.TARGET_ENV }} --create-namespace
-
-        - name: Helm Deploy - Release Workstation CRM International to K3S2 Rancher
-          uses: koslib/helm-eks-action@master
-          if: ${{ env.TARGET_SERVICE }} == 'workstation-international'
-          env:
-            KUBE_CONFIG_DATA: ${{ env.KUBE_CONFIG_K3S }}
-          with:
-            command: |
-              helm upgrade -i wscom-${{ env.TARGET_ENV }} ./devops/webimpetus-chart -f devops/webimpetus-chart/values-wscom-${{ env.TARGET_ENV }}-${{ env.TARGET_CLUSTER }}.yaml --set-string targetImage="${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}" --set-string targetImageTag="${{ env.IMAGE_TAG }}" --namespace ${{ env.TARGET_ENV }} --create-namespace
               
         - name: Delete default ingress from the chart, Deploy API Gateway Ingress overriding the ingress from the chart            
           uses: actions-hub/kubectl@master

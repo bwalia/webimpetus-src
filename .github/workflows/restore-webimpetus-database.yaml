@@ -1,0 +1,81 @@
+name: Webimpetus database restore
+
+on:
+  workflow_dispatch:
+    inputs:
+      TARGET_ENV:
+        type: choice
+        description: 'Please choose the environment'
+        default: 'int'
+        required: true
+        options:
+          - 'dev'    
+          - 'int'    
+          - 'test'    
+          - 'acc'    
+          - 'prod'
+      FILE_NAME:
+        description: 'Please enter the file name'
+        required: true
+
+env:
+  TARGET_ENV : ${{ github.event.inputs.TARGET_ENV || 'int' }}
+  FILE_NAME : ${{ github.event.inputs.FILE_NAME }}
+  DR_DB_HOST: ${{ secrets.DR_DB_HOST }}
+  DR_DB_USER: ${{ secrets.DR_DB_USER }}
+  DR_DB_PASSWORD: ${{ secrets.DR_DB_PASSWORD }}
+  DR_DB_NAME: ${{ secrets.DR_DB_NAME }}
+  DR_DB_PORT: ${{ secrets.DR_DB_PORT }}
+
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up MinIO client
+      run: |
+        curl -O https://dl.min.io/client/mc/release/linux-amd64/mc
+        chmod +x mc
+        sudo mv mc /usr/local/bin/
+
+    - name: Configure MinIO client
+      env:
+        MINIO_ENDPOINT: ${{ secrets.MINIO_ENDPOINT }}
+        MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
+        MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
+      run: |
+        mc alias set myminio $MINIO_ENDPOINT $MINIO_ACCESS_KEY $MINIO_SECRET_KEY
+
+    - name: List MinIO buckets and files
+      run: |
+        mc ls myminio
+
+    - name: Check if backup file exists on MinIO
+      env:
+        BACKUP_PATH: "${{ env.TARGET_ENV }}/${{ env.FILE_NAME }}"
+      run: |
+        nslookup s3-cli.workstation.co.uk
+        echo "Checking if file exists: myminio/webimpetus-database/$BACKUP_PATH"
+        mc stat myminio/webimpetus-database/$BACKUP_PATH || { echo "File does not exist."; exit 1; }
+
+    - name: Download backup from MinIO
+      env:
+        BACKUP_PATH: "${{ env.TARGET_ENV }}/${{ env.FILE_NAME }}"
+      run: |
+        mc cp myminio/webimpetus-database/$BACKUP_PATH /tmp/backup.sql
+
+    - name: Install MySQL client
+      run: sudo apt-get install mysql-client
+  
+    - name: Restore MySQL database
+      env:
+        MYSQL_HOST: ${{ env.DR_DB_HOST }}
+        MYSQL_USER: ${{ env.DR_DB_USER }}
+        MYSQL_PASSWORD: ${{ env.DR_DB_PASSWORD }}
+        MYSQL_DATABASE: ${{ env.DR_DB_NAME }}
+        MYSQL_PORT: ${{ env.DR_DB_PORT }}
+      run: |
+        mysql -h $MYSQL_HOST -P $MYSQL_PORT -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE < /tmp/backup.sql
