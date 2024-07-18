@@ -60,7 +60,23 @@ jobs:
       env:
         BACKUP_PATH: "${{ env.FILE_NAME }}"
       run: |
-        mc cp myminio/wsl-${{ env.TARGET_ENV }}-db-backups/hourly/$BACKUP_PATH /tmp/backup.sql
+        mc cp myminio/wsl-${{ env.TARGET_ENV }}-db-backups/hourly/$BACKUP_PATH /tmp/backup.tar.gz
+
+    - name: Extract backup file
+      run: |
+        tar -xzf /tmp/backup.tar.gz -C /tmp/extracted
+        ls /tmp/extracted
+
+    - name: Find SQL file
+      id: find_sql
+      run: |
+        SQL_FILE=$(find /tmp/extracted/var/www/html/writeable/backups -type f -name "*.sql" | head -n 1)
+        echo "SQL_FILE_PATH=$SQL_FILE" >> $GITHUB_ENV
+        if [ -z "$SQL_FILE" ]; then
+          echo "No SQL file found in the extracted archive."
+          exit 1
+        fi
+        echo "Found SQL file: $SQL_FILE"
 
     - name: Install MySQL client
       run: sudo apt-get -y install mysql-client
@@ -72,4 +88,4 @@ jobs:
         MYSQL_PASSWORD: ${{ env.DR_DB_PASSWORD }}
         MYSQL_PORT: ${{ env.DR_DB_PORT }}
       run: |
-        mysql -h $MYSQL_HOST -P $MYSQL_PORT -u $MYSQL_USER -p$MYSQL_PASSWORD wsl-${{ env.TARGET_ENV }}-db < /tmp/backup.sql
+        mysql -h $MYSQL_HOST -P $MYSQL_PORT -u $MYSQL_USER -p$MYSQL_PASSWORD wsl-${{ env.TARGET_ENV }}-db < ${{ env.SQL_FILE_PATH }}
