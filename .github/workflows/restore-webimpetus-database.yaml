@@ -58,14 +58,14 @@ jobs:
         BACKUP_PATH: "${{ env.TARGET_ENV }}/${{ env.FILE_NAME }}"
       run: |
         nslookup s3-cli.workstation.co.uk
-        echo "Checking if file exists: myminio/webimpetus-database/$BACKUP_PATH"
-        mc stat myminio/webimpetus-database/$BACKUP_PATH || { echo "File does not exist."; exit 1; }
+        echo "Checking if file exists: myminio/wsl-int-db-backups/hourly/$BACKUP_PATH"
+        mc stat myminio/wsl-int-db-backups/hourly/$BACKUP_PATH || { echo "File does not exist."; exit 1; }
 
     - name: Download backup from MinIO
       env:
         BACKUP_PATH: "${{ env.TARGET_ENV }}/${{ env.FILE_NAME }}"
       run: |
-        mc cp myminio/webimpetus-database/$BACKUP_PATH /tmp/backup.sql
+        mc cp myminio/wsl-int-db-backups/hourly/$BACKUP_PATH /tmp/backup.sql
 
     - name: Install MySQL client
       run: sudo apt-get install mysql-client
