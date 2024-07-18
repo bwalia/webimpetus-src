@@ -48,10 +48,6 @@ jobs:
       run: |
         mc alias set myminio $MINIO_ENDPOINT $MINIO_ACCESS_KEY $MINIO_SECRET_KEY
 
-    - name: List MinIO buckets and files
-      run: |
-        mc ls myminio
-
     - name: Check if backup file exists on MinIO
       env:
         BACKUP_PATH: "${{ env.FILE_NAME }}"
@@ -67,7 +63,7 @@ jobs:
         mc cp myminio/wsl-${{ env.TARGET_ENV }}-db-backups/hourly/$BACKUP_PATH /tmp/backup.sql
 
     - name: Install MySQL client
-      run: sudo apt-get install mysql-client
+      run: sudo apt-get -y install mysql-client
   
     - name: Restore MySQL database
       env:
