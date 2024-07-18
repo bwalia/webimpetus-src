@@ -24,7 +24,6 @@ env:
   DR_DB_HOST: ${{ secrets.DR_DB_HOST }}
   DR_DB_USER: ${{ secrets.DR_DB_USER }}
   DR_DB_PASSWORD: ${{ secrets.DR_DB_PASSWORD }}
-  DR_DB_NAME: ${{ secrets.DR_DB_NAME }}
   DR_DB_PORT: ${{ secrets.DR_DB_PORT }}
 
 jobs:
@@ -75,7 +74,6 @@ jobs:
         MYSQL_HOST: ${{ env.DR_DB_HOST }}
         MYSQL_USER: ${{ env.DR_DB_USER }}
         MYSQL_PASSWORD: ${{ env.DR_DB_PASSWORD }}
-        MYSQL_DATABASE: ${{ env.DR_DB_NAME }}
         MYSQL_PORT: ${{ env.DR_DB_PORT }}
       run: |
-        mysql -h $MYSQL_HOST -P $MYSQL_PORT -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE < /tmp/backup.sql
+        mysql -h $MYSQL_HOST -P $MYSQL_PORT -u $MYSQL_USER -p$MYSQL_PASSWORD wsl-${{ env.TARGET_ENV }}-db < /tmp/backup.sql
