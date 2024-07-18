@@ -64,6 +64,7 @@ jobs:
 
     - name: Extract backup file
       run: |
+        mkdir -p /tmp/extracted
         tar -xzf /tmp/backup.tar.gz -C /tmp/extracted
         ls /tmp/extracted
 
