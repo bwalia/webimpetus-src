@@ -24,12 +24,11 @@ env:
   DR_DB_HOST: ${{ secrets.DR_DB_HOST }}
   DR_DB_USER: ${{ secrets.DR_DB_USER }}
   DR_DB_PASSWORD: ${{ secrets.DR_DB_PASSWORD }}
-  DR_DB_NAME: ${{ secrets.DR_DB_NAME }}
   DR_DB_PORT: ${{ secrets.DR_DB_PORT }}
 
 jobs:
   restore:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
     - name: Checkout repository
@@ -55,17 +54,17 @@ jobs:
 
     - name: Check if backup file exists on MinIO
       env:
-        BACKUP_PATH: "${{ env.TARGET_ENV }}/${{ env.FILE_NAME }}"
+        BACKUP_PATH: "${{ env.FILE_NAME }}"
       run: |
         nslookup s3-cli.workstation.co.uk
-        echo "Checking if file exists: myminio/wsl-int-db-backups/hourly/$BACKUP_PATH"
-        mc stat myminio/wsl-int-db-backups/hourly/$BACKUP_PATH || { echo "File does not exist."; exit 1; }
+        echo "Checking if file exists: myminio/wsl-${{ env.TARGET_ENV }}-db-backups/hourly/$BACKUP_PATH"
+        mc stat myminio/wsl-${{ env.TARGET_ENV }}-db-backups/hourly/$BACKUP_PATH || { echo "File does not exist."; exit 1; }
 
     - name: Download backup from MinIO
       env:
-        BACKUP_PATH: "${{ env.TARGET_ENV }}/${{ env.FILE_NAME }}"
+        BACKUP_PATH: "${{ env.FILE_NAME }}"
       run: |
-        mc cp myminio/wsl-int-db-backups/hourly/$BACKUP_PATH /tmp/backup.sql
+        mc cp myminio/wsl-${{ env.TARGET_ENV }}-db-backups/hourly/$BACKUP_PATH /tmp/backup.sql
 
     - name: Install MySQL client
       run: sudo apt-get install mysql-client
@@ -75,7 +74,6 @@ jobs:
         MYSQL_HOST: ${{ env.DR_DB_HOST }}
         MYSQL_USER: ${{ env.DR_DB_USER }}
         MYSQL_PASSWORD: ${{ env.DR_DB_PASSWORD }}
-        MYSQL_DATABASE: ${{ env.DR_DB_NAME }}
         MYSQL_PORT: ${{ env.DR_DB_PORT }}
       run: |
-        mysql -h $MYSQL_HOST -P $MYSQL_PORT -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE < /tmp/backup.sql
+        mysql -h $MYSQL_HOST -P $MYSQL_PORT -u $MYSQL_USER -p$MYSQL_PASSWORD wsl-${{ env.TARGET_ENV }}-db < /tmp/backup.sql
