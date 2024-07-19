@@ -14,6 +14,14 @@ on:
           - 'test'    
           - 'acc'    
           - 'prod'
+      SERVICE_CODE:
+        type: choice
+        description: 'Please choose the service code'
+        default: 'wsl'
+        required: true
+        options:
+          - 'wsl'    
+          - 'wscom'
       FILE_NAME:
         description: 'Please enter the file name'
         required: true
@@ -21,6 +29,7 @@ on:
 env:
   TARGET_ENV : ${{ github.event.inputs.TARGET_ENV || 'int' }}
   FILE_NAME : ${{ github.event.inputs.FILE_NAME }}
+  SERVICE_CODE : ${{ github.event.inputs.SERVICE_CODE || 'wsl' }}
   DR_DB_HOST: ${{ secrets.DR_DB_HOST }}
   DR_DB_USER: ${{ secrets.DR_DB_USER }}
   DR_DB_PASSWORD: ${{ secrets.DR_DB_PASSWORD }}
@@ -89,4 +98,4 @@ jobs:
         MYSQL_PASSWORD: ${{ env.DR_DB_PASSWORD }}
         MYSQL_PORT: ${{ env.DR_DB_PORT }}
       run: |
-        mysql -h $MYSQL_HOST -P $MYSQL_PORT -u $MYSQL_USER -p$MYSQL_PASSWORD wsl-${{ env.TARGET_ENV }}-db < ${{ env.SQL_FILE_PATH }}
+        mysql -h $MYSQL_HOST -P $MYSQL_PORT -u $MYSQL_USER -p$MYSQL_PASSWORD ${{ env.SERVICE_CODE }}-${{ env.TARGET_ENV }}-db < ${{ env.SQL_FILE_PATH }}
