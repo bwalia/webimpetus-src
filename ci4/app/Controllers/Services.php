@@ -68,7 +68,7 @@ class Services extends Api
 		echo view('services/list', $data);
 	}
 
-	public function edit($id = 0)
+	public function edit($id = null)
 	{
 		$data['tableName'] = "services";
 		$data['rawTblName'] = "service";
@@ -76,11 +76,11 @@ class Services extends Api
 		$data['tenants'] = $this->tmodel->getRows();
 		$data['category'] = $this->cmodel->getRows();
 		$data['users'] = $this->user_model->getUser();
-		$data['secret_services'] = $this->secret_model->getSecrets($id);
-		$data['serviceDomains'] = $this->serviceDomainModel->getRowsByService($id);
+		$data['secret_services'] = isset($id) ? $this->secret_model->getSecrets($id) : [];
+		$data['serviceDomains'] = isset($id) ? $this->serviceDomainModel->getRowsByService($id): [];
 		$data['all_domains'] = $this->common_model->getCommonData('domains', ['uuid_business_id' => $this->businessUuid]);
-		$data['secret_values_templates'] = $this->secret_model->getTemplatesById($id);
-
+		$data['secret_values_templates'] = isset($id) ? $this->secret_model->getTemplatesById($id) : [];
+		
 		//print_r($data['all_domains']); die;
 		echo view('services/edit', $data);
 	}
