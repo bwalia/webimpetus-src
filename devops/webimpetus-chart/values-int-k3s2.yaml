@@ -30,7 +30,7 @@ ingress:
     enabled: true
     className: traefik
     annotations: {  }
-    hosts: [{ host: int-my.workstation.co.uk, paths: [{ path: /, pathType: Prefix }] }]
+    hosts: [{ host: moved-int-my.workstation.co.uk, paths: [{ path: /, pathType: Prefix }] }]
     tls: {  }
 ingressAdminer:
     enabled: true
