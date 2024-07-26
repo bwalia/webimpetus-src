@@ -115,7 +115,7 @@ jobs:
                       
         - name: Helm Deploy - Release Workstation CRM to K3S2 Rancher
           uses: koslib/helm-eks-action@master
-          if: ${{ env.TARGET_SERVICE }} == 'workstation-uk'
+          if: ${{ env.TARGET_SERVICE  == 'workstation-uk' }}
           env:
             KUBE_CONFIG_DATA: ${{ env.KUBE_CONFIG_K3S }}
           with:
@@ -124,7 +124,7 @@ jobs:
 
         - name: Helm Deploy - Release Workstation CRM International to K3S2 Rancher
           uses: koslib/helm-eks-action@master
-          if: ${{ env.TARGET_SERVICE }} == 'workstation-international'
+          if: ${{ env.TARGET_SERVICE  == 'workstation-international' }}
           env:
             KUBE_CONFIG_DATA: ${{ env.KUBE_CONFIG_K3S }}
           with:
