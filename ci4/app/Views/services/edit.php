@@ -1,7 +1,7 @@
 <?php require_once(APPPATH . 'Views/common/edit-title.php');
 $blocks_list = getResultArray("blocks_list", ["uuid_linked_table" => @$service->uuid]);
 $domains = getResultArray("domains", ["sid" => @$service->uuid]);
-$templates = getResultArray("templates", []);
+$templates = getResultArray("templates", ['module_name' => 'services']);
 $uri = service('uri');
 $uriSegment = $uri->getSegment(3);
 // print_r($secret_values_templates); die;
@@ -115,14 +115,15 @@ $uriSegment = $uri->getSegment(3);
                                     </select>
                                 </div>
                             </div>
+                            <?php $secret_values_templates['secret_template_id'] = isset($secret_values_templates['secret_template_id']) ? @$secret_values_templates['secret_template_id'] : []; ?>
                             <div class="service-template-wrapper <?php echo @$service->service_type == 'workflows' ? 'show' : 'hidden'; ?>" id="service-template-wrapper">
                                 <div class="form-row">
                                     <div class="form-group col-md-6">
                                         <label for="inputPassword4">Secret Template</label>
-                                        <select id="secret_template" name="secret_template" class="form-control">
-                                            <option value="" selected="">--Select--</option>
+                                        <select id="secret_template" name="secret_template[]" class="form-control select2 multiple" multiple>
+                                            <!-- <option value="" selected="">--Select--</option> -->
                                             <?php foreach ($templates as $template) : ?>
-                                                <option value="<?= $template['uuid']; ?>" <?= ($template['uuid'] == @$secret_values_templates['secret_template_id']) ? 'selected' : '' ?>>
+                                                <option value="<?= $template['uuid']; ?>" <?= (in_array($template['uuid'], @$secret_values_templates['secret_template_id'])) ? 'selected' : '' ?>>
                                                     <?= $template['code']; ?>
                                                 </option>
                                             <?php endforeach; ?>
@@ -139,6 +140,10 @@ $uriSegment = $uri->getSegment(3);
                                             <?php endforeach; ?>
                                         </select>
                                     </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6" id="secretKeysName"></div>
+                                    <div class="form-group col-md-6" id="valuesKeysName"></div>
                                 </div>
                             </div>
                             <div class="marketing-wrapper <?php echo @$service->service_type == 'marketing' ? 'show' : 'hidden'; ?>" id="marketing-wrapper">
@@ -1121,6 +1126,92 @@ $uriSegment = $uri->getSegment(3);
                 $(this).parent().parent().remove();
                 x--;
             })
+        });
+        var templates = <?php echo json_encode($templates); ?>;
+        var secretKeys = <?php echo !empty($tempKeys) ? json_encode($tempKeys) : "[]" ?>;
+        console.log({secretKeys});
+        function getCodeByUuid(uuid) {
+            for (var i = 0; i < templates.length; i++) {
+                if (templates[i].uuid === uuid) {
+                    return templates[i].code;
+                }
+            }
+            return null;
+        }
+
+        function findSecretKey(secretTempId) {
+            var secretKey = null;
+            $.each(secretKeys, function(index, item) {
+                if (item.secret_temp_id === secretTempId) {
+                    secretKey = item.secret_key;
+                    return false;
+                }
+            });
+            return secretKey;
+        }
+        function findValSecretKey(secretTempId, valueTempId) {
+            var secretKey = null;
+            $.each(secretKeys, function(index, item) {
+                if (item.secret_temp_id === secretTempId && item.values_temp_id === valueTempId) {
+                    secretKey = item.values_key;
+                    return false;
+                }
+            });
+            return secretKey;
+        }
+
+        function addSecKeyInput (secKeys) {
+            $.each(secKeys, function (idx, selectedSec) {
+                var secTempName = getCodeByUuid(selectedSec);
+                var secKey = findSecretKey(selectedSec);
+                var keyHtml = `
+                    <div class="col-md-12">
+                        <label for="secKeysName${idx}">Take keys From: ${secTempName}</label>
+                        <select id="secKeysName${idx}" data-select2-tags="true" name="secKeysName[${selectedSec}][]" class="form-control select2">
+                        <option value="${secKey ? secKey : ''}" selected >${secKey ? secKey : ''}</option>
+                        </select>
+                    </div>
+                `;
+                $("#secretKeysName").append(keyHtml);
+                selectRefresh();
+            });
+        }
+        function addValuesKeyInput (secKeys, tempId) {
+            $.each(secKeys, function (idx, selectedSec) {
+                var secTempName = getCodeByUuid(selectedSec);
+                var valKey = findValSecretKey(selectedSec, tempId)
+                var keyHtml = `
+                    <div class="col-md-12">
+                        <label for="valKeysName${idx}">Add Keys For: ${secTempName}</label>
+                        <select id="valKeysName${idx}" data-select2-tags="true" name="valKeysName[${tempId}/${selectedSec}][]" class="form-control select2">
+                        <option value="${valKey ? valKey : ''}" selected >${valKey ? valKey : ''}</option>
+                        </select>
+                    </div>
+                `;
+                $("#valuesKeysName").append(keyHtml);
+                selectRefresh();
+            });
+        }
+
+        var previousSelectedValues = <?php echo json_encode($secret_values_templates['secret_template_id']); ?>;
+        var prevValTemps = "<?php echo $secret_values_templates['values_template_id'] ?? "false"; ?>";
+        addSecKeyInput(previousSelectedValues);
+        addValuesKeyInput(previousSelectedValues, prevValTemps);
+        $('#secret_template').on('change', function() {
+            var selectedSecretValues = $(this).val();
+            var selectedValues = $("#values_template").val();
+            $("#secretKeysName").html("");
+            addSecKeyInput(selectedSecretValues);
+            if (selectedValues) {
+                $("#valuesKeysName").html("");
+                addValuesKeyInput(selectedSecretValues, selectedValues);
+            }
+        });
+        $('#values_template').on('change', function() {
+            var selectedValues = $(this).val();
+            var selectedSecretValues = $("#secret_template").val();
+            $("#valuesKeysName").html("");
+            addValuesKeyInput(selectedSecretValues, selectedValues);
         });
     });
 </script>

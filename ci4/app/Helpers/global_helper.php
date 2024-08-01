@@ -228,3 +228,22 @@ function filterFalseValues($item) {
     }
     return true;
 }
+
+
+function isJsonEncoded($string) {
+    json_decode($string);
+    return (json_last_error() == JSON_ERROR_NONE);
+}
+
+function getNestedValue(array $array, string $path, string $delimiter = ',') {
+    $keys = explode($delimiter, $path);
+
+    foreach ($keys as $key) {
+        if (!is_array($array) || !array_key_exists($key, $array)) {
+            return null;
+        }
+        $array = $array[$key];
+    }
+
+    return $array;
+}

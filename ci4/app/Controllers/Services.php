@@ -78,8 +78,23 @@ class Services extends Api
 		$data['users'] = $this->user_model->getUser();
 		$data['secret_services'] = isset($id) ? $this->secret_model->getSecrets($id) : [];
 		$data['serviceDomains'] = isset($id) ? $this->serviceDomainModel->getRowsByService($id): [];
+		$data['tempKeys'] = isset($id) ? $this->common_model->getSingleRowMultipleWhere(
+			"service__secret_value_template__key",
+			[
+				"service_id" => $id,
+				"uuid_business_id" => $this->businessUuid
+			],
+			"array"
+		): [];
 		$data['all_domains'] = $this->common_model->getCommonData('domains', ['uuid_business_id' => $this->businessUuid]);
 		$data['secret_values_templates'] = isset($id) ? $this->secret_model->getTemplatesById($id) : [];
+		if (isset($data['secret_values_templates']) && !empty($data['secret_values_templates'])) {
+			if (isJsonEncoded($data['secret_values_templates']['secret_template_id'])) {
+				$data['secret_values_templates']['secret_template_id'] = json_decode($data['secret_values_templates']['secret_template_id']);
+			} else {
+				$data['secret_values_templates']['secret_template_id'] = [$data['secret_values_templates']['secret_template_id']];
+			}
+		}
 		
 		//print_r($data['all_domains']); die;
 		echo view('services/edit', $data);
@@ -88,8 +103,7 @@ class Services extends Api
 
 	public function update()
 	{
-		// $post = $this->request->getPost();
-		// print_r($post); die;
+		$post = $this->request->getPost();
 		$id = $this->request->getPost('id');
 		$data = array(
 			'name'  => $this->request->getPost('name'),
@@ -180,7 +194,8 @@ class Services extends Api
 		$valuesTemplateId = $post['values_template'];
 		$marketingTemplate = $post['email_marketing_template'];
 
-		if ($secretTemplateId && $valuesTemplateId) {
+		if (!empty($secretTemplateId) && $valuesTemplateId) {
+			$secretTemplateId = json_encode($secretTemplateId);
 			$templateData = [
 				'uuid' => UUID::v5(UUID::v4(), 'templates__services'),
 				'secret_template_id' => $secretTemplateId,
@@ -189,6 +204,39 @@ class Services extends Api
 			];
 
 			$this->common_model->insertOrUpdateTableData($templateData, "templates__services", "service_id", $id);
+
+			$secKeysName = $post['secKeysName'];
+			$valKeysName = $post['valKeysName'];
+			if (!empty($secKeysName) && !empty($valKeysName)) {
+				$secValKeys = [];
+				$secretTemIds = array_keys($secKeysName);
+				foreach ($secretTemIds as $key => $secretTemId) {
+					$secValKeys[$key]['secTempId'] = $secretTemId;
+					$secValKeys[$key]['secKey'] = $secKeysName[$secretTemId][0];
+				}
+				$ValTemIds = array_keys($valKeysName);
+				foreach ($ValTemIds as $key => $valTemId) {
+					$valArray = explode("/", $valTemId);
+					$secValKeys[$key]['valTempId'] = $valArray[0];
+					$secValKeys[$key]['valKey'] = $valKeysName[$valTemId][0];
+				}
+				if (!empty($secValKeys)) {
+					$this->common_model->deleteTableData("service__secret_value_template__key", $data['uuid'], "service_id");
+					foreach ($secValKeys as $secValKey) {
+						$secValData = [
+							'service_id' => $data['uuid'],
+							'secret_temp_id' => $secValKey['secTempId'],
+							'secret_key' => $secValKey['secKey'],
+							'values_temp_id' => $secValKey['valTempId'],
+							'values_key' => $secValKey['valKey'],
+							'uuid' => UUID::v5(UUID::v4(), 'service__secret_value_template__key'),
+							'uuid_business_id' => $this->businessUuid
+						];
+						$this->common_model->insertTableData($secValData, "service__secret_value_template__key");
+					}
+				}
+
+			}
 		}
 		if ($marketingTemplate) {
 			$templateData = [
@@ -355,10 +403,17 @@ class Services extends Api
 	public function create_templates($uuid, $userSelectedENV)
 	{
 		$service = $this->common_model->getSingleRowWhere("templates__services", $uuid, "service_id");
-		$secretTemplate = $this->common_model->getSingleRowWhere("templates", $service['secret_template_id'], "uuid");
-		$secretYaml = $secretTemplate["template_content"];
-		$secretYamlArray = explode("---", $secretYaml);
-
+		$secretTemplateIds = isJsonEncoded($service['secret_template_id']) ? json_decode($service['secret_template_id']) : [$service['secret_template_id']];
+		$secretYamlArray = [];
+		foreach ($secretTemplateIds as $key => $secretTemplateId) {
+			$secretTemplate = $this->common_model->getSingleRowWhere("templates", $secretTemplateId, "uuid");
+			
+			$secretYaml = $secretTemplate["template_content"];
+	
+			$secretYamlArray[$key]['yaml'] = $secretYaml;
+			$secretYamlArray[$key]['secretId'] = $secretTemplate['uuid'];
+		}
+		
 		$targetEnvRow = $this->common_model->getSecretByServiceUuid("TARGET_ENV", $uuid);
 		if (empty($targetEnvRow)) {
 			//echo "TARGET_ENV secret not found or is empty"; die;
@@ -371,6 +426,7 @@ class Services extends Api
 			}
 		}
 		foreach ($secretYamlArray as $templateKey => $secretYamlTemplate) {
+			$secretYamlTemplate = $secretYamlTemplate['yaml'];
 			$webSecrets = $this->common_model->getDataWhere("secrets_services", $uuid, "service_id");
 			foreach ($webSecrets as $key => $webSecret) {
 				$secrets = $this->common_model->getSingleRowWhere("secrets", $webSecret['secret_id'], "id");
@@ -455,40 +511,50 @@ class Services extends Api
 				die;
 			}
 			$sealedSecretContent = Yaml::parse($sealedSecretContent);
-			// env_file must be present in the secrets file for this work until we fully create dynamic secrets management system
-			if (isset($sealedSecretContent["spec"]["encryptedData"]["env_file"])) {
-				$envSecret = $sealedSecretContent["spec"]["encryptedData"]["env_file"];
-				$secretsArray['env_file'] = $envSecret;
-			} else {
-				echo json_encode([
-					"message" => "Env file not found in sealed secret. Kubeseal command failed\n",
-					"status" => 403
-				]);
-			}
+			$secTempKey = $this->common_model->getSingleRowMultipleWhere(
+				"service__secret_value_template__key", 
+				[
+					"secret_temp_id" => $secretYamlTemplate3['secretId'],
+					"service_id" => $uuid
+				], 
+			);
+			if (!empty($secTempKey)) {
+				$envSecret = getNestedValue($sealedSecretContent, $secTempKey['secret_key'], ",");
+				
+				// env_file must be present in the secrets file for this work until we fully create dynamic secrets management system
+				if (isset($envSecret)) {
+					$secretsArray[$secTempKey['secret_temp_id']]['env_file'] = $envSecret;
+				} else {
+					echo json_encode([
+						"message" => $envSecret ." Env file not found in sealed secret. Kubeseal command failed\n Please make sure this key is right " . $secTempKey['secret_key'],
+						"status" => 403
+					]);
+				}
 
-			if (isset($sealedSecretContent["spec"]["encryptedData"]["hostname"])) {
-				$secret_hostname = $sealedSecretContent["spec"]["encryptedData"]["hostname"];
-				$secretsArray['hostname'] = $secret_hostname;
-			}
+				// if (isset($sealedSecretContent["spec"]["encryptedData"]["hostname"])) {
+				// 	$secret_hostname = $sealedSecretContent["spec"]["encryptedData"]["hostname"];
+				// 	$secretsArray['hostname'] = $secret_hostname;
+				// }
 
-			if (isset($sealedSecretContent["spec"]["encryptedData"]["password"])) {
-				$secret_dbPassword = $sealedSecretContent["spec"]["encryptedData"]["password"];
-				$secretsArray['password'] = $secret_dbPassword;
-			}
+				// if (isset($sealedSecretContent["spec"]["encryptedData"]["password"])) {
+				// 	$secret_dbPassword = $sealedSecretContent["spec"]["encryptedData"]["password"];
+				// 	$secretsArray['password'] = $secret_dbPassword;
+				// }
 
-			if (isset($sealedSecretContent["spec"]["encryptedData"]["rootPassword"])) {
-				$secret_dbRootPassword = $sealedSecretContent["spec"]["encryptedData"]["rootPassword"];
-				$secretsArray['rootPassword'] = $secret_dbRootPassword;
-			}
+				// if (isset($sealedSecretContent["spec"]["encryptedData"]["rootPassword"])) {
+				// 	$secret_dbRootPassword = $sealedSecretContent["spec"]["encryptedData"]["rootPassword"];
+				// 	$secretsArray['rootPassword'] = $secret_dbRootPassword;
+				// }
 
-			if (isset($sealedSecretContent["spec"]["encryptedData"]["username"])) {
-				$secret_dbUsername = $sealedSecretContent["spec"]["encryptedData"]["username"];
-				$secretsArray['username'] = $secret_dbUsername;
-			}
+				// if (isset($sealedSecretContent["spec"]["encryptedData"]["username"])) {
+				// 	$secret_dbUsername = $sealedSecretContent["spec"]["encryptedData"]["username"];
+				// 	$secretsArray['username'] = $secret_dbUsername;
+				// }
 
-			if (isset($sealedSecretContent["spec"]["encryptedData"]["port"])) {
-				$secret_dbRootPort = $sealedSecretContent["spec"]["encryptedData"]["port"];
-				$secretsArray['port'] = $secret_dbRootPort;
+				// if (isset($sealedSecretContent["spec"]["encryptedData"]["port"])) {
+				// 	$secret_dbRootPort = $sealedSecretContent["spec"]["encryptedData"]["port"];
+				// 	$secretsArray['port'] = $secret_dbRootPort;
+				// }
 			}
 		}
 		// Create Values YAML
@@ -551,19 +617,31 @@ class Services extends Api
 			array_push($modifiedValuesString['ingress']['hosts'], $hostsArray);
 		}
 
-		if (isset($modifiedValuesString["secure_env_file"])) {
-			$modifiedValuesString["secure_env_file"] = $secretsArray['env_file'];
-		} elseif (isset($modifiedValuesString["safeSealedSecret"])) {
-			$modifiedValuesString["safeSealedSecret"] = $secretsArray['env_file'];
+		$valTempsKey = $this->common_model->getSingleRowMultipleWhere(
+			"service__secret_value_template__key", 
+			[
+				"values_temp_id" => $valuesTemplate['uuid'],
+				"service_id" => $uuid
+			],
+			"array"
+		);
+		
+		if (!empty($valTempsKey)) {
+			foreach ($valTempsKey as $key => $valTempKey) {
+				if (isset($modifiedValuesString[$valTempKey['values_key']])) {
+					$modifiedValuesString[$valTempKey['values_key']] = $secretsArray[$valTempKey['secret_temp_id']]['env_file'];
+				}
+			}
 		}
+
 
 		/*	$modifiedValuesString["secure_env_file"] = $envSecret; */
 
-		isset($secretsArray['hostname']) ? $modifiedValuesString["db"]["hostname"] = $secretsArray['hostname'] : "";
-		isset($secretsArray['password']) ? $modifiedValuesString["db"]["password"] = $secretsArray['password'] : "";
-		isset($secretsArray['rootPassword']) ? $modifiedValuesString["db"]["rootPassword"] = $secretsArray['rootPassword'] : "";
-		isset($secretsArray['username']) ? $modifiedValuesString["db"]["username"] = $secretsArray['username'] : "";
-		isset($secretsArray['port']) ? $modifiedValuesString["db"]["port"] = $secretsArray['port'] : "";
+		// isset($secretsArray['hostname']) ? $modifiedValuesString["db"]["hostname"] = $secretsArray['hostname'] : "";
+		// isset($secretsArray['password']) ? $modifiedValuesString["db"]["password"] = $secretsArray['password'] : "";
+		// isset($secretsArray['rootPassword']) ? $modifiedValuesString["db"]["rootPassword"] = $secretsArray['rootPassword'] : "";
+		// isset($secretsArray['username']) ? $modifiedValuesString["db"]["username"] = $secretsArray['username'] : "";
+		// isset($secretsArray['port']) ? $modifiedValuesString["db"]["port"] = $secretsArray['port'] : "";
 
 		$modifiedValuesString = YAML::dump($modifiedValuesString);
 		$valuesFile = fopen(WRITEPATH . "values/" . $userSelectedENV . "-values-" . $uuid . ".yaml", "w") or die("Unable to open file!");
