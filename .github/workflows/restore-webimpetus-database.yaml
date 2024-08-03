@@ -124,4 +124,8 @@ jobs:
         MYSQL_PASSWORD: ${{ env.DR_DB_PASSWORD }}
         MYSQL_PORT: ${{ env.DR_DB_PORT }}
       run: |
+        if [ -z ${{ env.SQL_FILE_PATH }} ]; then
+          echo "No SQL file found in the extracted archive."
+          exit 1
+        fi
         mysql -h $MYSQL_HOST -P $MYSQL_PORT -u $MYSQL_USER -p$MYSQL_PASSWORD ${{ env.SERVICE_CODE }}-${{ env.TARGET_ENV }}-db < ${{ env.SQL_FILE_PATH }}
