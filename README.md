@@ -74,8 +74,8 @@ Please make sure to update tests as appropriate.
 ## RESTORE BACKUP FROM AUTOMATED HOURLY BACKUP BUCKET
 
 - Step 1. Run Restore WebImpetus Backup Workflow
-- Step 2. Enter the file path located in the hourly bucket for that environment
-- Step 3. Please note the file path must exist in the bucket
+- Step 2. Enter the file path located in the hourly bucket for that environment, Example : mydump.tar.gz
+- Step 3. Please note the file path must exist in the bucket and must be .tar.gz format, Example: mydump.tar.gz
 - Step 4. Restore the backup and test the environment has database restored
 
 Please make sure to update tests as appropriate.
