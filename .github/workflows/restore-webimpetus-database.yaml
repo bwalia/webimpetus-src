@@ -65,19 +65,45 @@ jobs:
         echo "Checking if file exists: myminio/wsl-${{ env.TARGET_ENV }}-db-backups/hourly/$BACKUP_PATH"
         mc stat myminio/wsl-${{ env.TARGET_ENV }}-db-backups/hourly/$BACKUP_PATH || { echo "File does not exist."; exit 1; }
 
+    - name: Check if file is .sql
+      if: endsWith(env.FILE_NAME, '.sql')
+      env:
+        BACKUP_PATH: "${{ env.FILE_NAME }}"
+      run: |
+        mc cp myminio/wsl-${{ env.TARGET_ENV }}-db-backups/hourly/$BACKUP_PATH /tmp/backup.sql
+        echo "SQL_FILE_PATH=/tmp/backup.sql" >> $GITHUB_ENV
+
+    - name: Check if file is .sql.gz
+      if: endsWith(env.FILE_NAME, '.sql.gz')
+      env:
+        BACKUP_PATH: "${{ env.FILE_NAME }}"
+      run: |
+        mc cp myminio/wsl-${{ env.TARGET_ENV }}-db-backups/hourly/$BACKUP_PATH /tmp/backup.sql.gz
+        gunzip -c /tmp/backup.sql.gz > /tmp/backup.sql
+        echo "SQL_FILE_PATH=/tmp/backup.sql" >> $GITHUB_ENV
+
+    - name: File is not supported
+      if: ${{ !endsWith(env.FILE_NAME, '.sql') && !endsWith(env.FILE_NAME, '.tar.gz') && !endsWith(env.FILE_NAME, '.sql.gz') }}
+      run: |
+        echo "The file is neither a .sql nor a .tar.gz file."
+        exit 1
+
     - name: Download backup from MinIO
+      if: endsWith(env.FILE_NAME, '.tar.gz')
       env:
         BACKUP_PATH: "${{ env.FILE_NAME }}"
       run: |
         mc cp myminio/wsl-${{ env.TARGET_ENV }}-db-backups/hourly/$BACKUP_PATH /tmp/backup.tar.gz
 
     - name: Extract backup file
+      if: endsWith(env.FILE_NAME, '.tar.gz')
       run: |
         mkdir -p /tmp/extracted
         tar -xzf /tmp/backup.tar.gz -C /tmp/extracted
         ls /tmp/extracted
 
     - name: Find SQL file
+      if: endsWith(env.FILE_NAME, '.tar.gz')
       id: find_sql
       run: |
         SQL_FILE=$(find /tmp/extracted/var/www/html/writeable/backups -type f -name "*.sql" | head -n 1)
