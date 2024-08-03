@@ -71,6 +71,15 @@ to discuss what you would like to change.
 
 Please make sure to update tests as appropriate.
 
+## RESTORE BACKUP FROM AUTOMATED HOURLY BACKUP BUCKET
+
+- Step 1. Run Restore WebImpetus Backup Workflow
+- Step 2. Enter the file path located in the hourly bucket for that environment
+- Step 3. Please note the file path must exist in the bucket
+- Step 4. Restore the backup and test the environment has database restored
+
+Please make sure to update tests as appropriate.
+
 ## LICENCE
 
 Checkout LICENCE
