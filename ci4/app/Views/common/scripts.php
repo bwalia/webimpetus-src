@@ -188,6 +188,14 @@
         return readableDate;
 	}
 
+	function selectRefresh() {
+		$('.select2').select2({
+			placeholder: "Select an Option",
+			allowClear: true,
+			tags: true,
+		});
+	}
+
 	function initializeGridTable({ ...params }) {
 		const { columnsTitle, tableName, apiPath, selector, columnsMachineName } = params;
 		let allColumns = ['uuid'].concat(columnsMachineName);
