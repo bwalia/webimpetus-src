@@ -23,7 +23,7 @@ on:
           - 'wsl'    
           - 'wscom'
       FILE_NAME:
-        description: 'Please enter the file name'
+        description: 'Please enter the file name on Minio S3'
         required: true
 
 env:
