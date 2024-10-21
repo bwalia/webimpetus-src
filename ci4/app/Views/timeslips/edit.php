@@ -325,10 +325,23 @@ if (empty(@$timeslips['slip_timer_started'])) {
     }
 
     function setCurrentTime(el, callback) {
-        const now = new Date();
-        let hours = now.getHours();
-        const minutes = now.getMinutes();
-        const seconds = now.getSeconds();
+        const formatter = new Intl.DateTimeFormat('en-GB', {
+            timeZone: 'Europe/London',
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric',
+        });
+        const parts = formatter.formatToParts(new Date());
+        const londonTime = parts.reduce((acc, part) => {
+        if (part.type !== 'literal') {
+            acc[part.type] = part.value;
+        }
+        return acc;
+        }, {});
+        
+        let hours = londonTime.hour;
+        const minutes = londonTime.minute;
+        const seconds = londonTime.second;
         const ampm = hours >= 12 ? 'PM' : 'AM';
         // Convert hours to 12-hour format
         hours = hours % 12 || 12;

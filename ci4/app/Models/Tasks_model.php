@@ -226,7 +226,9 @@ class Tasks_model extends Model
 
     public function updateStatusByUUID($uuid = null, $status = null)
     {
-        $sql = "UPDATE tasks SET status = '$status' WHERE uuid = '$uuid'";
+        $taskStatus = "in-progress";
+        if ($status == "inReview") $taskStatus = "review";
+        $sql = "UPDATE tasks SET status = '$status', category = '$taskStatus' WHERE uuid = '$uuid'";
         $query = $this->db->query($sql);
         return $query;
     }
