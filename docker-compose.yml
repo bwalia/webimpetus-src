@@ -12,9 +12,9 @@ services:
       MYSQL_PASSWORD: 'CHANGE_ME'
       MYSQL_ROOT_PASSWORD: 'CHANGE_ME_DEFINITELY'
     ports:
-      - '3306:3306'
+      - '3309:3306'
     expose:
-      - '3306'
+      - '3309'
     volumes:
       - ./myworkstation_dev_db.sql:/docker-entrypoint-initdb.d/myworkstation_dev_db.sql
     networks: 
@@ -28,7 +28,7 @@ services:
       ADMINER_DEFAULT_SERVER: webimpetus-db
     restart: always
     ports:
-      - 8082:8080
+      - 5502:8080
     networks:
       - webimpetus-network
 
@@ -51,10 +51,29 @@ services:
       depends_on: 
       - webimpetus-db # This service depends on mysql. Start that first.
       ports:
-        - "8080:80"
+        - "5500:80"
       environment:
         CI_ENVIRONMENT: 'development'
-        app.baseURL: 'http://localhost:8080/'
+        app.baseURL: 'http://localhost:5500/'
+
+# Add Keycloak service
+  keycloak:
+    container_name: keycloak
+    build:
+      context: .
+      dockerfile: Dockerfile.keycloak
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      # KEYCLOAK_IMPORT: /opt/keycloak/import/realm-config.json
+    ports:
+      - "3010:8080"
+    depends_on:
+      - webimpetus-db
+    volumes:
+      - ./devops/keycloak_data:/opt/keycloak/data
+    networks:
+      webimpetus-network:
 
   #4 - Run the cypress e2e smoke tests
   # e2e:

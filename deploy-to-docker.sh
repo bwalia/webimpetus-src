@@ -25,6 +25,7 @@ clear
 DEBUG=false
 
 cp devops/docker/Dockerfile .
+cp devops/docker/Dockerfile.keycloak .
 
 echo "Running docker-compose up -d."
 
@@ -60,6 +61,7 @@ docker exec -it ${DOCKER_CONTAINER_NAME} bash /usr/local/bin/bootstrap-openresty
 # docker exec -it ${DOCKER_CONTAINER_NAME} composer install
 
 rm Dockerfile
+rm Dockerfile.keycloak
 
         SRC_ENV_FILE=$(pwd)/.env
         if [ -f "$SRC_ENV_FILE" ];then
