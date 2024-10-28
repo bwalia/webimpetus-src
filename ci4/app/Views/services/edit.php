@@ -1,10 +1,11 @@
-<?php require_once(APPPATH . 'Views/common/edit-title.php');
-$blocks_list = getResultArray("blocks_list", ["uuid_linked_table" => @$service->uuid]);
-$domains = getResultArray("domains", ["sid" => @$service->uuid]);
-$templates = getResultArray("templates", ['module_name' => 'services']);
-$uri = service('uri');
-$uriSegment = $uri->getSegment(3);
-// print_r($secret_values_templates); die;
+<?php 
+    header('Content-Type: text/html');
+    require_once(APPPATH . 'Views/common/edit-title.php');
+    $blocks_list = getResultArray("blocks_list", ["uuid_linked_table" => @$service->uuid]);
+    $domains = getResultArray("domains", ["sid" => @$service->uuid]);
+    $templates = getResultArray("templates", ['module_name' => 'services']);
+    $uri = service('uri');
+    $uriSegment = $uri->getSegment(3);
 ?>
 <style>
     .hidden {
