@@ -8,6 +8,22 @@ use Exception;
 class Users_model extends Model
 {
     protected $table = 'users';
+    protected $allowedFields    = [
+        'uuid',
+        'name',
+        'email',
+        'password',
+        'address',
+        'status',
+        'role',
+        'notes',
+        'date_time',
+        'permissions',
+        'uuid_business_id',
+        'language_code',
+        'token',
+        'profile_img',
+    ];
     private $whereCond = array();
 
     public function __construct()

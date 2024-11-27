@@ -9,6 +9,7 @@ use CodeIgniter\HTTP\Response;
 use CodeIgniter\HTTP\ResponseInterface;
 use Exception;
 use ReflectionException;
+use Config\Services;
 
 class Auth extends BaseController
 {
@@ -180,5 +181,45 @@ return $this
                     ResponseInterface::HTTP_FORBIDDEN
                 );
         }
+    }
+
+
+    public function googleLogin()
+    {
+        $oidc = Services::openIDConnect();
+        $oidc->authenticate();
+
+        $userInfo = $oidc->requestUserInfo();
+
+        session()->set('user', [
+            'id' => $userInfo->sub,
+            'name' => $userInfo->name,
+            'email' => $userInfo->email,
+        ]);
+
+        return redirect()->to('/dashboard');
+    }
+
+    public function callback()
+    {
+        $oidc = Services::openIDConnect();
+
+        // Handle the callback from Keycloak
+        if ($oidc->authenticate()) {
+            return redirect()->to('/dashboard');
+        }
+
+        return redirect()->to('/login')->with('error', 'Authentication failed.');
+    }
+
+    public function googleLogout()
+    {
+        $oidc = Services::openIDConnect();
+
+        // Destroy session
+        session()->destroy();
+
+        // Redirect to Keycloak's logout URL
+        return redirect()->to($oidc->getProviderURL() . '/protocol/openid-connect/logout?redirect_uri=' . urlencode(base_url()));
     }
 }

@@ -7,7 +7,7 @@ services:
     image: mariadb:11.2.2
     restart: always
     environment:
-      MYSQL_DATABASE: 'wsl-dev-db'
+      MYSQL_DATABASE: 'myworkstation_dev'
       MYSQL_USER: 'wsl_dev'
       MYSQL_PASSWORD: 'CHANGE_ME'
       MYSQL_ROOT_PASSWORD: 'CHANGE_ME_DEFINITELY'
@@ -16,7 +16,7 @@ services:
     expose:
       - '3309'
     volumes:
-      - ./myworkstation_dev_db.sql:/docker-entrypoint-initdb.d/myworkstation_dev_db.sql
+      - ./wi-dev.sql:/docker-entrypoint-initdb.d/myworkstation_dev_db.sql
     networks: 
     - webimpetus-network
 
@@ -65,6 +65,8 @@ services:
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
+      KEYCLOAK_BIND_ADDRESS: 0.0.0.0
+      KC_HOSTNAME: 0.0.0.0
       # KEYCLOAK_IMPORT: /opt/keycloak/import/realm-config.json
     ports:
       - "3010:8080"
@@ -74,7 +76,7 @@ services:
       - ./devops/keycloak_data:/opt/keycloak/data
     networks:
       webimpetus-network:
-
+          ipv4_address: 172.178.0.11
   #4 - Run the cypress e2e smoke tests
   # e2e:
   #   # image: cypress/included:12.8.1

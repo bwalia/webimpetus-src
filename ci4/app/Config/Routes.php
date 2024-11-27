@@ -23,6 +23,10 @@ $routes->setTranslateURIDashes(false);
 $routes->set404Override();
 $routes->setAutoRoute(true);
 
+$routes->get('google-login', 'Auth::googleLogin');
+$routes->get('callback', 'Auth::callback');
+$routes->get('google-logout', 'Auth::googleLogout');
+
 /*
  * --------------------------------------------------------------------
  * Route Definitions
@@ -67,7 +71,9 @@ $routes->resource('api/v2/secrets');
 $routes->resource('api/v2/create_domain');
 $routes->resource('api/v2/services');
 $routes->resource('api/v2/companies');
-$routes->resource('api/v2/vm', ['controller' => 'Api/v2/VmController']);
+$routes->resource('api/v2/vm', ['controller' => 'Api\v2\VmController']);
+$routes->resource('scim/v2/Users', ['controller' => 'Api\V2\ScimUserController']);
+$routes->resource('scim/v2/Groups', ['controller' => 'Api\V2\ScimGroupController']);
 
 // List project by business Id
 $routes->get('api/v2/business/(:segment)/projects', 'Api\V2\Projects::projectsByBId/$1');
