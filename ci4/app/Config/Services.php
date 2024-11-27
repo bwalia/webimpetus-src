@@ -3,6 +3,7 @@
 namespace Config;
 
 use CodeIgniter\Config\BaseService;
+use Jumbojett\OpenIDConnectClient;
 
 /**
  * Services Configuration file.
@@ -32,4 +33,21 @@ class Services extends BaseService
 	 public static function getSecretKey(){
 		return getenv('JWT_SECRET_KEY');
 	} 
+
+    public static function openIDConnect($getShared = true)
+    {
+        if ($getShared) {
+            return self::getSharedInstance('openIDConnect');
+        }
+
+        // Configure with Keycloak details
+        $oidc = new OpenIDConnectClient(
+            getenv('KEYCLOAK_REALM_URL'),
+            getenv('KEYCLOAK_CLIENT_ID'),
+            getenv('KEYCLOAK_CLIENT_SECRET'),
+        );
+
+        $oidc->setRedirectURL(getenv('KEYCLOAK_REDIRECT_URL'));
+        return $oidc;
+    }
 }

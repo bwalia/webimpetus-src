@@ -23,6 +23,10 @@ $routes->setTranslateURIDashes(false);
 $routes->set404Override();
 $routes->setAutoRoute(true);
 
+$routes->get('google-login', 'Auth::googleLogin');
+$routes->get('callback', 'Auth::callback');
+$routes->get('google-logout', 'Auth::googleLogout');
+
 /*
  * --------------------------------------------------------------------
  * Route Definitions
