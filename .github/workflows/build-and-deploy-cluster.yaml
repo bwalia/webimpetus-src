@@ -137,25 +137,12 @@ jobs:
                     
         - name: Helm Deploy - Release Workstation CRM to K3S2 Rancher
           if: | 
-            ${{ (env.DEPLOYMENT_TYPE == 'deploy' || env.DEPLOYMENT_TYPE == 'build-and-deploy') && env.TARGET_SERVICE  == 'workstation-uk' }}
+            ${{ env.DEPLOYMENT_TYPE == 'deploy' || env.DEPLOYMENT_TYPE == 'build-and-deploy' }}
           run: |
             export KUBECONFIG=$(pwd)/kubeconfig
             helm upgrade -i wsl-${{ env.TARGET_ENV }} \
             ./devops/webimpetus-chart \
             -f devops/webimpetus-chart/values-${{ env.TARGET_ENV }}-${{ env.TARGET_CLUSTER }}.yaml \
-            --set-string targetImage="${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}" \
-            --set-string targetImageTag="${{ env.IMAGE_TAG }}" \
-            --namespace ${{ env.TARGET_ENV }} \
-            --create-namespace
-
-        - name: Helm Deploy - Release Workstation CRM International to K3S2 Rancher
-          if: | 
-            ${{ (env.DEPLOYMENT_TYPE == 'deploy' || env.DEPLOYMENT_TYPE == 'build-and-deploy') && env.TARGET_SERVICE  == 'workstation-international' }}
-          run: |
-            export KUBECONFIG=$(pwd)/kubeconfig
-            helm upgrade -i wscom-${{ env.TARGET_ENV }} \
-            ./devops/webimpetus-chart \
-            -f devops/webimpetus-chart/values-wscom-${{ env.TARGET_ENV }}-${{ env.TARGET_CLUSTER }}.yaml \
             --set-string targetImage="${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}" \
             --set-string targetImageTag="${{ env.IMAGE_TAG }}" \
             --namespace ${{ env.TARGET_ENV }} \
