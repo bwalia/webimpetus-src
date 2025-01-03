@@ -13,7 +13,7 @@ on:
       TARGET_SERVICE:
         type: choice
         description: 'Please choose the service'
-        default: 'workstation-international'
+        default: 'workstation-uk'
         required: true
         options:
           - workstation-uk
@@ -59,7 +59,7 @@ env:
   TARGET_STACK: openresty_php
   IMAGE_NAME: webimpetus
   TARGET_ENV: ${{ github.event.inputs.TARGET_ENV || 'int' }}
-  TARGET_SERVICE: ${{ github.event.inputs.TARGET_SERVICE || 'workstation-international' }}
+  TARGET_SERVICE: ${{ github.event.inputs.TARGET_SERVICE || 'workstation-uk' }}
   minReplicas: ${{ secrets.minReplicas_test }}
   IMAGE_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
   TARGET_CLUSTER: ${{ github.event.inputs.TARGET_CLUSTER || 'k3s2' }}
