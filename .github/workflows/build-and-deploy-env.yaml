@@ -2,7 +2,7 @@ name: "Build Workstation CRM Docker Image and Deploy to K3S"
 
 on:
   push:
-    branches: [ main ]
+    branches: [ dummy ]
   workflow_run:
     workflows: ["Webimpetus database restore"]
     types:
