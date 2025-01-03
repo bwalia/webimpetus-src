@@ -153,10 +153,10 @@ jobs:
           run: |
             kubectl delete ing wsl-ingress-int -n int        
 
-        - name: Install API Gateway Ingress overriding the ingress from the chart
-          if: ${{ env.DEPLOYMENT_TYPE == 'deploy' || env.DEPLOYMENT_TYPE == 'build-and-deploy' }}       
-          run: |
-            kubectl apply -f devops/kubernetes/ingress-override-manifests.yaml
+        # - name: Install API Gateway Ingress overriding the ingress from the chart
+        #   if: ${{ env.DEPLOYMENT_TYPE == 'deploy' || env.DEPLOYMENT_TYPE == 'build-and-deploy' }}       
+        #   run: |
+        #     kubectl apply -f devops/kubernetes/ingress-override-manifests.yaml
 
         - name: Restart Workstation CRM Pods using Kubectl
           if: ${{ env.DEPLOYMENT_TYPE == 'deploy' || env.DEPLOYMENT_TYPE == 'build-and-deploy' }}
