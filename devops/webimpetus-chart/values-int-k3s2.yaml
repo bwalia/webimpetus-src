@@ -28,13 +28,13 @@ serviceAdminer:
     port: 8080
 ingress:
     enabled: true
-    className: traefik
+    className: nginx
     annotations: {  }
-    hosts: [{ host: moved-int-my.workstation.co.uk, paths: [{ path: /, pathType: Prefix }] }]
+    hosts: [{ host: int-my.workstation.co.uk, paths: [{ path: /, pathType: Prefix }] }]
     tls: {  }
 ingressAdminer:
     enabled: true
-    className: traefik
+    className: nginx
     annotations: {  }
     hosts: [{ host: int-adminer.workstation.co.uk, paths: [{ path: /, pathType: Prefix }] }]
     tls: {  }
