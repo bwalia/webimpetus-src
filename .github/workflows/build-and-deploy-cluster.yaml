@@ -148,10 +148,10 @@ jobs:
             --namespace ${{ env.TARGET_ENV }} \
             --create-namespace
               
-        - name: Delete default ingress from the chart, Deploy API Gateway Ingress overriding the ingress from the chart
-          if: ${{ env.DEPLOYMENT_TYPE == 'deploy' || env.DEPLOYMENT_TYPE == 'build-and-deploy' }}
-          run: |
-            kubectl delete ing wsl-ingress-int -n int        
+        # - name: Delete default ingress from the chart, Deploy API Gateway Ingress overriding the ingress from the chart
+        #   if: ${{ env.DEPLOYMENT_TYPE == 'deploy' || env.DEPLOYMENT_TYPE == 'build-and-deploy' }}
+        #   run: |
+        #     kubectl delete ing wsl-ingress-int -n int        
 
         # - name: Install API Gateway Ingress overriding the ingress from the chart
         #   if: ${{ env.DEPLOYMENT_TYPE == 'deploy' || env.DEPLOYMENT_TYPE == 'build-and-deploy' }}       
