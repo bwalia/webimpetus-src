@@ -35,7 +35,9 @@ RUN kubectl version --client
 
 COPY ci4 /src
 
+WORKDIR /src
 RUN composer update
+WORKDIR /var/www/html
 
 #    updated ci4 to ci4.2.10 on 12 Dec 2022 BW/HS Testing 4.2.10 but issues with cors and s3 extension
 #    COPY ci4.2.10-test /src 
