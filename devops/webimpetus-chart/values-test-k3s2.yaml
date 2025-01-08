@@ -81,7 +81,7 @@ resources: {}
 storageSettings:
   storageClassName: local-path
   accessModes: ReadWriteOnce
-  diskSize: 1G
+  diskSize: 1Gi
 
 autoscaling:
   enabled: false
