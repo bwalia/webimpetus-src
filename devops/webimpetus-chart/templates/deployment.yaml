@@ -11,9 +11,9 @@ spec:
     storage: {{ .Values.storageSettings.diskSize }}
   accessModes:
     - {{ .Values.storageSettings.accessModes }}
-  hostPath:
-    path: "/wsl/data/{{ .Values.targetEnv }}"
-  persistentVolumeReclaimPolicy: Retain
+  # hostPath:
+  #   path: "/wsl/data/{{ .Values.targetEnv }}"
+  # persistentVolumeReclaimPolicy: Retain
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
