@@ -41,6 +41,10 @@ ingressAdminer:
 adminer:
     port: 30882
 resources: {  }
+storageSettings:
+    storageClassName: longhorn
+    accessModes: ReadWriteMany
+    diskSize: 10G
 autoscaling:
     enabled: false
     minReplicas: 2
