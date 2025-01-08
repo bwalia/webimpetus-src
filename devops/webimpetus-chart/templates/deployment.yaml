@@ -6,11 +6,11 @@ metadata:
     type: local
     app: wsl-{{ .Values.targetEnv }}
 spec:
-  storageClassName: local-path
+  storageClassName: {{ .Values.storageSettings.storageClassName }}
   capacity:
-    storage: 10Gi
+    storage: {{ .Values.storageSettings.diskSize }}
   accessModes:
-    - ReadWriteOnce
+    - {{ .Values.storageSettings.accessModes }}
   hostPath:
     path: "/wsl/data/{{ .Values.targetEnv }}"
   persistentVolumeReclaimPolicy: Retain
@@ -22,11 +22,12 @@ metadata:
     app: wsl-{{ .Values.targetEnv }}
   name: wsl-{{ .Values.targetEnv }}-pvc
 spec:
+  storagwClassName: {{ .Values.storageSettings.storageClassName }}
   accessModes:
-  - ReadWriteOnce
+  - {{ .Values.storageSettings.accessModes }}
   resources:
     requests:
-      storage: 10Gi    
+      storage: {{ .Values.storageSettings.diskSize }}    
 ---
 apiVersion: apps/v1
 kind: Deployment

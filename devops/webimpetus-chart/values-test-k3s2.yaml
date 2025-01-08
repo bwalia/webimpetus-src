@@ -78,6 +78,11 @@ adminer:
   
 resources: {}
 
+storageSettings:
+  storageClassName: local-path
+  accessModes: ReadWriteOnce
+  diskSize: 1G
+
 autoscaling:
   enabled: false
   minReplicas: 2
