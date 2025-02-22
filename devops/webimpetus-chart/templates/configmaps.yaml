@@ -222,6 +222,8 @@ data:
         ls -alh $DUMP_FILE_TAR
         file $DUMP_FILE_TAR
         stat $DUMP_FILE_TAR
+        echo "Creating Minio bucket if missing: $MINIO_BUCKET/"
+        mc mb --ignore-existing myminio/$MINIO_BUCKET
         echo "Uploading dump file to Minio bucket: $MINIO_BUCKET/"
         mc cp $DUMP_FILE_TAR myminio/$MINIO_BUCKET/$BACKUP_FREQUENCY/
         # Remove old dump files older than 30 days
