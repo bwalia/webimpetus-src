@@ -4,6 +4,10 @@ targetCluster: k3s2
 targetEnv: prod
 targetNS: prod
 
+storageSettings:
+  storageClassName: longhorn
+  storageSize: 10Gi
+
 envPreferences:
   timeZone: Europe/London
   codeIgniterEnv: production

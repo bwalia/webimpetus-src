@@ -6,14 +6,14 @@ metadata:
     type: local
     app: wsl-{{ .Values.targetEnv }}
 spec:
-  storageClassName: longhorn
+  storageClassName: {{ .Values.storageSettings.storageClassName }}
   capacity:
-    storage: 10Gi
+    storage: {{ .Values.storageSettings.diskSize }}
   accessModes:
-    - ReadWriteOnce
-  hostPath:
-    path: "/wsl/data/{{ .Values.targetEnv }}"
-  persistentVolumeReclaimPolicy: Retain
+    - {{ .Values.storageSettings.accessModes }}
+  # hostPath:
+  #   path: "/wsl/data/{{ .Values.targetEnv }}"
+  # persistentVolumeReclaimPolicy: Retain
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -22,11 +22,12 @@ metadata:
     app: wsl-{{ .Values.targetEnv }}
   name: wsl-{{ .Values.targetEnv }}-pvc
 spec:
+  storagwClassName: {{ .Values.storageSettings.storageClassName }}
   accessModes:
-  - ReadWriteOnce
+  - {{ .Values.storageSettings.accessModes }}
   resources:
     requests:
-      storage: 10Gi    
+      storage: {{ .Values.storageSettings.diskSize }}    
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -61,7 +62,7 @@ spec:
             items:
             - key: env_file
               path: .env
-        - name: wsl-{{ .Values.targetEnv }}-vol
+        - name: wsl-{{ .Values.targetEnv }}-pvc
           persistentVolumeClaim:
             claimName: wsl-{{ .Values.targetEnv }}-pvc
       containers:
@@ -99,7 +100,7 @@ spec:
               exec:
                 command: ["/bin/sh", "-c", "stat -c %a /tmp && ls -la /tmp && cp /tmp/configmap/bootstrap-{{ .Values.architecture.http_server_type }}.sh /usr/local/bin/bootstrap-{{ .Values.architecture.http_server_type }}.sh && chmod +x /usr/local/bin/bootstrap-{{ .Values.architecture.http_server_type }}.sh && bash /usr/local/bin/bootstrap-{{ .Values.architecture.http_server_type }}.sh"]
           volumeMounts:
-            - name: wsl-{{ .Values.targetEnv }}-vol
+            - name: wsl-{{ .Values.targetEnv }}-pvc
               mountPath: /var/www/html  
             - name: wslenv-vol-{{ .Values.targetEnv }}
               mountPath: /tmp/secrets
