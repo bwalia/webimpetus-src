@@ -8,12 +8,12 @@ metadata:
 spec:
   storageClassName: {{ .Values.storageSettings.storageClassName }}
   capacity:
-    storage: {{ .Values.storageSettings.diskSize }}
+    storage: 10Gi
   accessModes:
-    - {{ .Values.storageSettings.accessModes }}
-  # hostPath:
-  #   path: "/wsl/data/{{ .Values.targetEnv }}"
-  # persistentVolumeReclaimPolicy: Retain
+    - ReadWriteOnce
+  hostPath:
+    path: "/wsl/data/{{ .Values.targetEnv }}"
+  persistentVolumeReclaimPolicy: Retain
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -22,12 +22,11 @@ metadata:
     app: wsl-{{ .Values.targetEnv }}
   name: wsl-{{ .Values.targetEnv }}-pvc
 spec:
-  storagwClassName: {{ .Values.storageSettings.storageClassName }}
   accessModes:
-  - {{ .Values.storageSettings.accessModes }}
+  - ReadWriteOnce
   resources:
     requests:
-      storage: {{ .Values.storageSettings.diskSize }}    
+      storage: 10Gi    
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -62,7 +61,7 @@ spec:
             items:
             - key: env_file
               path: .env
-        - name: wsl-{{ .Values.targetEnv }}-pvc
+        - name: wsl-{{ .Values.targetEnv }}-vol
           persistentVolumeClaim:
             claimName: wsl-{{ .Values.targetEnv }}-pvc
       containers:
@@ -100,7 +99,7 @@ spec:
               exec:
                 command: ["/bin/sh", "-c", "stat -c %a /tmp && ls -la /tmp && cp /tmp/configmap/bootstrap-{{ .Values.architecture.http_server_type }}.sh /usr/local/bin/bootstrap-{{ .Values.architecture.http_server_type }}.sh && chmod +x /usr/local/bin/bootstrap-{{ .Values.architecture.http_server_type }}.sh && bash /usr/local/bin/bootstrap-{{ .Values.architecture.http_server_type }}.sh"]
           volumeMounts:
-            - name: wsl-{{ .Values.targetEnv }}-pvc
+            - name: wsl-{{ .Values.targetEnv }}-vol
               mountPath: /var/www/html  
             - name: wslenv-vol-{{ .Values.targetEnv }}
               mountPath: /tmp/secrets
@@ -120,7 +119,7 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      # kubernetes.io/hostname: {{ .Values.node_name }}
+        # kubernetes.io/hostname: {{ .Values.node_name }}
       # nodeSelector:
       #   apptype: datadriven
       #   appcode: wslcrm
