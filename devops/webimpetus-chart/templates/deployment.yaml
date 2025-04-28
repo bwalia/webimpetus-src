@@ -119,7 +119,7 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-        # kubernetes.io/hostname: {{ .Values.node_name }}
+      # kubernetes.io/hostname: {{ .Values.node_name }}
       # nodeSelector:
       #   apptype: datadriven
       #   appcode: wslcrm
