@@ -108,6 +108,19 @@ spec:
               # execute in the poststrat lifecycle hook
             - name: {{ .Values.service_name }}-bootstrap-cm-{{ .Values.architecture.http_server_type }}-vol
               mountPath: /tmp/configmap
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+        # kubernetes.io/hostname: {{ .Values.node_name }}
       # nodeSelector:
       #   apptype: datadriven
       #   appcode: wslcrm

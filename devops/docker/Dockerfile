@@ -24,7 +24,10 @@ RUN wget ${BASE_URL}/helm-v${VERSION}-linux-${ARCH}.tar.gz -O - | tar -xz && \
     rm -rf linux-${ARCH}
 
 RUN apk add mysql-client
+#  caused backup to fail due to file cmd not found
+RUN apk add file  
 RUN apk add curl
+
 RUN wget https://dl.min.io/client/mc/release/linux-amd64/mc -O /usr/local/bin/mc \
     --tries=3 --timeout=30 && \
     chmod +x /usr/local/bin/mc
