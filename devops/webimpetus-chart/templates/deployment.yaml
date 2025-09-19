@@ -128,7 +128,3 @@ spec:
 #      maxUnavailable: 1 # this is the new alpha field, whose default value is 1
 #      partition: 0
 #    type: RollingUpdate
-
-
-
-  
