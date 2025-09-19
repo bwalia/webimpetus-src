@@ -5,9 +5,9 @@
 set -x
 
 if [ -z "$1" ]; then
-    ENV_FILE_CONTENT=""
+    ENV_FILE_CONTENT_BASE64=""
 else
-    ENV_FILE_CONTENT="$1"
+    ENV_FILE_CONTENT_BASE64="$1"
 fi
 
 echo "OSTYPE variable: $OSTYPE"
@@ -69,17 +69,23 @@ if ! command -v yq &> /dev/null; then
     fi
 fi
 
-if [ -z "$ENV_FILE_CONTENT" ]; then
-    ENV_FILE_CONTENT=$(cat "/Users/balinderwalia/Documents/Work/aws_keys/.env_wsl_prod")
+if ! command -v yq &> /dev/null; then
+    echo "Error: yq is not installed!"
+    exit 1
 fi
+
+echo $ENV_FILE_CONTENT_BASE64 | base64 -d > temp.txt
+ENV_FILE_CONTENT_BASE64_DECODED_FILE="temp.txt"
+#"/Users/balinderwalia/Documents/Work/aws_keys/.env_wsl_prod"
 
 SEALED_SECRET_INPUT_PATH="secret_wsl_prod_template.yaml"
 SEALED_SECRET_OUTPUT_PATH="secret_wsl_prod.yaml"
 
-if [ ! -f "$ENV_FILE_CONTENT" ]; then
-    echo "Error: Environment file '$ENV_FILE_CONTENT' not found!"
+if [ ! -f "$ENV_FILE_CONTENT_BASE64_DECODED_FILE" ]; then
+    echo "Error: Environment file '$ENV_FILE_CONTENT_BASE64_DECODED_FILE' not found!"
     exit 1
 fi
+
 if [ ! -f "$SEALED_SECRET_INPUT_PATH" ]; then
     echo "Error: Sealed secret template file '$SEALED_SECRET_INPUT_PATH' not found!"
     exit 1
@@ -95,18 +101,14 @@ else
     BASE64_WRAP_OPTION="-b 0"
 fi
 
-cat $ENV_FILE_CONTENT | base64 $BASE64_WRAP_OPTION > temp_base64.txt
+#   cat temp.txt 
 
-#   cat temp_base64.txt 
-
-ENV_FILE_BASE64=$(<temp_base64.txt)
-
-# rm temp_base64.txt
+# rm temp.txt
 
 rm -Rf $SEALED_SECRET_OUTPUT_PATH
 cp $SEALED_SECRET_INPUT_PATH $SEALED_SECRET_OUTPUT_PATH
 
-sed -i '' "s/WSL_ENV_FILE_PLACEHOLDER_BASE64_PROD/$ENV_FILE_BASE64/g" $SEALED_SECRET_OUTPUT_PATH
+sed -i '' "s/WSL_ENV_FILE_PLACEHOLDER_BASE64_PROD/$ENV_FILE_CONTENT_BASE64/g" $SEALED_SECRET_OUTPUT_PATH
 
 if [ ! -f "$SEALED_SECRET_OUTPUT_PATH" ]; then
     echo "Error: Sealed secret output file '$SEALED_SECRET_OUTPUT_PATH' not found!"
@@ -179,7 +181,7 @@ echo "Helm values file created at '$HELM_VALUES_OUTPUT_PATH'"
 # Clean up temporary files
 rm -Rf $SEALED_SECRET_OUTPUT_PATH
 rm -Rf sealed_secret_wsl_prod.yaml
-rm -Rf temp_base64.txt
+rm -Rf temp.txt
 rm -Rf sealed_env_file_base64_wsl_prod.txt
 
 
