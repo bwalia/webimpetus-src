@@ -1,19 +1,18 @@
-kind: PersistentVolume
-apiVersion: v1
-metadata:
-  name: wsl-{{ .Values.targetEnv }}-pv
-  labels:
-    type: local
-    app: wsl-{{ .Values.targetEnv }}
-spec:
-  storageClassName: {{ .Values.storageSettings.storageClassName }}
-  capacity:
-    storage: {{ .Values.storageSettings.diskSize }}
-  accessModes:
-    - {{ .Values.storageSettings.accessModes }}
-  # hostPath:
-  #   path: "/wsl/data/{{ .Values.targetEnv }}"
-  # persistentVolumeReclaimPolicy: Retain
+# kind: PersistentVolume
+# apiVersion: v1
+# metadata:
+#   name: wsl-{{ .Values.targetEnv }}-pv
+#   labels:
+#     app: wsl-{{ .Values.targetEnv }}
+# spec:
+#   storageClassName: {{ .Values.storageSettings.storageClassName }}
+#   capacity:
+#     storage: {{ .Values.storageSettings.diskSize }}
+#   accessModes:
+#     - {{ .Values.storageSettings.accessModes }}
+#   # hostPath:
+#   #   path: "/wsl/data/{{ .Values.targetEnv }}"
+#   # persistentVolumeReclaimPolicy: Retain
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -22,12 +21,12 @@ metadata:
     app: wsl-{{ .Values.targetEnv }}
   name: wsl-{{ .Values.targetEnv }}-pvc
 spec:
-  storagwClassName: {{ .Values.storageSettings.storageClassName }}
+  storageClassName: {{ .Values.storageSettings.storageClassName }}
   accessModes:
   - {{ .Values.storageSettings.accessModes }}
   resources:
     requests:
-      storage: {{ .Values.storageSettings.diskSize }}    
+      storage: {{ .Values.storageSettings.diskSize }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -116,15 +115,13 @@ spec:
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-        # kubernetes.io/hostname: {{ .Values.node_name }}
+      
+      
+              # kubernetes.io/hostname: {{ .Values.node_name }}
       # nodeSelector:
       #   apptype: datadriven
       #   appcode: wslcrm
-        
+
 #if kubernetes 1.24+ use the following
 #    updateStrategy:
 #    rollingUpdate:
