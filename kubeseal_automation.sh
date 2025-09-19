@@ -4,10 +4,18 @@
 
 set -x
 
+# Validate input parameter
 if [ -z "$1" ]; then
-    ENV_FILE_CONTENT_BASE64=""
+    echo "Error: Missing base64 encoded environment file content as first parameter"
+    echo "Usage: $0 <base64_encoded_env_file_content>"
+    exit 1
 else
     ENV_FILE_CONTENT_BASE64="$1"
+    # Validate base64 content
+    if ! echo "$ENV_FILE_CONTENT_BASE64" | base64 -d > /dev/null 2>&1; then
+        echo "Error: Invalid base64 content provided"
+        exit 1
+    fi
 fi
 
 echo "OSTYPE variable: $OSTYPE"
@@ -35,22 +43,43 @@ else
 fi
 echo "Final OS detection: $OS_TYPE"
 
-# Check if kubeseal binary is installed
-if [[ "$OS_TYPE" == "macos" ]]; then
-
-    if ! command -v kubeseal &> /dev/null; then
-        echo "Error: kubeseal binary is not installed!"
-        echo "Please install kubeseal from: https://github.com/bitnami-labs/sealed-secrets"
-        echo "Or run: brew install kubeseal"
-        exit 1
+# Function to install kubeseal
+install_kubeseal() {
+    echo "Installing kubeseal..."
+    if [[ "$OS_TYPE" == "macos" ]]; then
+        if command -v brew &> /dev/null; then
+            brew install kubeseal
+        else
+            echo "Homebrew not found. Installing kubeseal manually..."
+            KUBESEAL_VERSION=$(curl -s https://api.github.com/repos/bitnami-labs/sealed-secrets/releases/latest | grep tag_name | cut -d '"' -f 4 | cut -d 'v' -f 2)
+            curl -L "https://github.com/bitnami-labs/sealed-secrets/releases/download/v${KUBESEAL_VERSION}/kubeseal-${KUBESEAL_VERSION}-darwin-amd64.tar.gz" -o kubeseal.tar.gz
+            tar -xzf kubeseal.tar.gz kubeseal
+            sudo mv kubeseal /usr/local/bin/
+            rm kubeseal.tar.gz
+        fi
+    elif [[ "$OS_TYPE" == "ubuntu" || "$OS_TYPE" == "linux" ]]; then
+        KUBESEAL_VERSION=$(curl -s https://api.github.com/repos/bitnami-labs/sealed-secrets/releases/latest | grep tag_name | cut -d '"' -f 4 | cut -d 'v' -f 2)
+        wget "https://github.com/bitnami-labs/sealed-secrets/releases/download/v${KUBESEAL_VERSION}/kubeseal-${KUBESEAL_VERSION}-linux-amd64.tar.gz"
+        tar -xzf "kubeseal-${KUBESEAL_VERSION}-linux-amd64.tar.gz" kubeseal
+        sudo install -m 755 kubeseal /usr/local/bin/kubeseal
+        rm kubeseal "kubeseal-${KUBESEAL_VERSION}-linux-amd64.tar.gz"
     fi
+}
 
-elif [[ "$OS_TYPE" == "ubuntu" ]]; then
-    echo "Running on Ubuntu Linux"
-    if ! command -v kubeseal &> /dev/null; then
-        echo "Error: kubeseal binary is not installed!"
+# Check if kubeseal binary is installed
+if ! command -v kubeseal &> /dev/null; then
+    echo "kubeseal binary is not installed!"
+    read -p "Do you want to install kubeseal automatically? (y/n): " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        install_kubeseal
+        if ! command -v kubeseal &> /dev/null; then
+            echo "Error: Failed to install kubeseal!"
+            exit 1
+        fi
+    else
+        echo "Error: kubeseal is required but not installed!"
         echo "Please install kubeseal from: https://github.com/bitnami-labs/sealed-secrets"
-        echo "Or run: sudo apt-get install kubeseal"
         exit 1
     fi
 fi
@@ -108,7 +137,12 @@ fi
 rm -Rf $SEALED_SECRET_OUTPUT_PATH
 cp $SEALED_SECRET_INPUT_PATH $SEALED_SECRET_OUTPUT_PATH
 
-sed -i '' "s/WSL_ENV_FILE_PLACEHOLDER_BASE64_PROD/$ENV_FILE_CONTENT_BASE64/g" $SEALED_SECRET_OUTPUT_PATH
+# Use cross-platform sed replacement
+if [[ "$OS_TYPE" == "macos" ]]; then
+    sed -i '' "s/WSL_ENV_FILE_PLACEHOLDER_BASE64_PROD/$ENV_FILE_CONTENT_BASE64/g" $SEALED_SECRET_OUTPUT_PATH
+else
+    sed -i "s/WSL_ENV_FILE_PLACEHOLDER_BASE64_PROD/$ENV_FILE_CONTENT_BASE64/g" $SEALED_SECRET_OUTPUT_PATH
+fi
 
 if [ ! -f "$SEALED_SECRET_OUTPUT_PATH" ]; then
     echo "Error: Sealed secret output file '$SEALED_SECRET_OUTPUT_PATH' not found!"
