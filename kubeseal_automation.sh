@@ -69,19 +69,11 @@ install_kubeseal() {
 # Check if kubeseal binary is installed
 if ! command -v kubeseal &> /dev/null; then
     echo "kubeseal binary is not installed!"
-    read -p "Do you want to install kubeseal automatically? (y/n): " -n 1 -r
-    echo
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
         install_kubeseal
         if ! command -v kubeseal &> /dev/null; then
             echo "Error: Failed to install kubeseal!"
             exit 1
         fi
-    else
-        echo "Error: kubeseal is required but not installed!"
-        echo "Please install kubeseal from: https://github.com/bitnami-labs/sealed-secrets"
-        exit 1
-    fi
 fi
 # Add more OS checks if needed
 
