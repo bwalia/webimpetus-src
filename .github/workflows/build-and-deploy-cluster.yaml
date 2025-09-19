@@ -135,7 +135,7 @@ jobs:
         - name: Kubeseal encrypt the secrets file
           if: ${{ env.DEPLOYMENT_TYPE == 'deploy' || env.DEPLOYMENT_TYPE == 'build-and-deploy' }}
           run: |
-            ./kubeseal_automation.sh ${{ secrets.DOT_WSL_ENV_PROD }}
+            ./kubeseal_automation.sh ${{ secrets.DOT_WSL_ENV_PROD }} ${{ env.TARGET_ENV }}
           shell: bash
                     
         - name: Helm Deploy - Release Workstation CRM to K3S2 Rancher
