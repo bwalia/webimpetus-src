@@ -136,6 +136,7 @@ jobs:
           if: ${{ env.DEPLOYMENT_TYPE == 'deploy' || env.DEPLOYMENT_TYPE == 'build-and-deploy' }}
           run: |
             bash kubeseal_automation.sh ${{ secrets.DOT_WSL_ENV_PROD }}
+          shell: bash
                     
         - name: Helm Deploy - Release Workstation CRM to K3S2 Rancher
           if: ${{ env.DEPLOYMENT_TYPE == 'deploy' || env.DEPLOYMENT_TYPE == 'build-and-deploy' }}
