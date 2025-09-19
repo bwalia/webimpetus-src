@@ -18,6 +18,13 @@ else
     fi
 fi
 
+if [ -z "$2" ]; then
+    echo "Error: Environment reference (like prod, dev) as second parameter is required"
+    exit 1
+else
+    ENV_REF="$2"
+fi
+
 echo "OSTYPE variable: $OSTYPE"
 
 # Method 3: Check for specific OS
@@ -99,8 +106,8 @@ echo $ENV_FILE_CONTENT_BASE64 | base64 -d > temp.txt
 ENV_FILE_CONTENT_BASE64_DECODED_FILE="temp.txt"
 #"/Users/balinderwalia/Documents/Work/aws_keys/.env_wsl_prod"
 
-SEALED_SECRET_INPUT_PATH="secret_wsl_prod_template.yaml"
-SEALED_SECRET_OUTPUT_PATH="secret_wsl_prod.yaml"
+SEALED_SECRET_INPUT_PATH="secret_wsl_${ENV_REF}_template.yaml"
+SEALED_SECRET_OUTPUT_PATH="secret_wsl_${ENV_REF}.yaml"
 
 if [ ! -f "$ENV_FILE_CONTENT_BASE64_DECODED_FILE" ]; then
     echo "Error: Environment file '$ENV_FILE_CONTENT_BASE64_DECODED_FILE' not found!"
@@ -131,9 +138,11 @@ cp $SEALED_SECRET_INPUT_PATH $SEALED_SECRET_OUTPUT_PATH
 
 # Use cross-platform sed replacement
 if [[ "$OS_TYPE" == "macos" ]]; then
-    sed -i '' "s/WSL_ENV_FILE_PLACEHOLDER_BASE64_PROD/$ENV_FILE_CONTENT_BASE64/g" $SEALED_SECRET_OUTPUT_PATH
+    sed -i '' "s/WSL_ENV_FILE_PLACEHOLDER_BASE64/$ENV_FILE_CONTENT_BASE64/g" $SEALED_SECRET_OUTPUT_PATH
+    sed -i '' "s/WSL_ENV_REF_PLACEHOLDER/$ENV_REF/g" $SEALED_SECRET_OUTPUT_PATH
 else
-    sed -i "s/WSL_ENV_FILE_PLACEHOLDER_BASE64_PROD/$ENV_FILE_CONTENT_BASE64/g" $SEALED_SECRET_OUTPUT_PATH
+    sed -i "s/WSL_ENV_FILE_PLACEHOLDER_BASE64/$ENV_FILE_CONTENT_BASE64/g" $SEALED_SECRET_OUTPUT_PATH
+    sed -i "s/WSL_ENV_REF_PLACEHOLDER/$ENV_REF/g" $SEALED_SECRET_OUTPUT_PATH
 fi
 
 if [ ! -f "$SEALED_SECRET_OUTPUT_PATH" ]; then
@@ -144,11 +153,11 @@ fi
 # cat $SEALED_SECRET_OUTPUT_PATH
 
 echo "Sealing the secret using kubeseal..."
-kubeseal --format yaml < $SEALED_SECRET_OUTPUT_PATH > sealed_secret_wsl_prod.yaml
+kubeseal --format yaml < $SEALED_SECRET_OUTPUT_PATH > sealed_secret_wsl_${ENV_REF}.yaml
 
 # rm -Rf $SEALED_SECRET_OUTPUT_PATH
 # cat sealed_secret_wsl_prod.yaml
-echo "Sealed secret created at 'sealed_secret_wsl_prod.yaml'"
+echo "Sealed secret created at 'sealed_secret_wsl_${ENV_REF}.yaml'"
 
 # extract the sealed secret env_file
 echo "Extracting sealed secret env_file encrypted value..."
@@ -158,12 +167,12 @@ if ! command -v yq &> /dev/null; then
     exit 1
 fi
 
-yq .spec.encryptedData.env_file sealed_secret_wsl_prod.yaml > sealed_env_file_base64_wsl_prod.txt
-echo "Sealed env_file base64 content saved to 'sealed_env_file_base64_wsl_prod.txt'"
+yq .spec.encryptedData.env_file sealed_secret_wsl_${ENV_REF}.yaml > sealed_env_file_base64_wsl_${ENV_REF}.txt
+echo "Sealed env_file base64 content saved to 'sealed_env_file_base64_wsl_${ENV_REF}.txt'"
 # cat sealed_env_file_base64_wsl_prod.txt
 
-HELM_VALUES_INPUT_PATH=devops/webimpetus-chart/values-prod-k3s1_template.yaml
-HELM_VALUES_OUTPUT_PATH=devops/webimpetus-chart/values-prod-k3s1.yaml
+HELM_VALUES_INPUT_PATH=devops/webimpetus-chart/values-${ENV_REF}-k3s1_template.yaml
+HELM_VALUES_OUTPUT_PATH=devops/webimpetus-chart/values-${ENV_REF}-k3s1.yaml
 
 if [ ! -f "$HELM_VALUES_INPUT_PATH" ]; then
     echo "Error: Helm values template file '$HELM_VALUES_INPUT_PATH' not found!"
@@ -172,7 +181,7 @@ fi
 
 cp $HELM_VALUES_INPUT_PATH $HELM_VALUES_OUTPUT_PATH
 
-SAFE_SEALEDSECRET_ENCRYPTED=$(<sealed_env_file_base64_wsl_prod.txt)
+SAFE_SEALEDSECRET_ENCRYPTED=$(<sealed_env_file_base64_wsl_${ENV_REF}.txt)
 
 # echo $SAFE_SEALEDSECRET_ENCRYPTED
 
@@ -206,8 +215,8 @@ cat $HELM_VALUES_OUTPUT_PATH
 echo "Helm values file created at '$HELM_VALUES_OUTPUT_PATH'"
 # Clean up temporary files
 rm -Rf $SEALED_SECRET_OUTPUT_PATH
-rm -Rf sealed_secret_wsl_prod.yaml
+rm -Rf sealed_secret_wsl_${ENV_REF}.yaml
 rm -Rf temp.txt
-rm -Rf sealed_env_file_base64_wsl_prod.txt
+rm -Rf sealed_env_file_base64_wsl_${ENV_REF}.txt
 
 

@@ -1,0 +1,53 @@
+service_name: wsl
+targetCluster: k3s2
+targetEnv: int
+targetNS: int
+envPreferences:
+    timeZone: Europe/London
+    codeIgniterEnv: production
+architecture:
+    http_server_type: openresty
+targetImage: bwalia/webimpetus
+targetImageTag: latest
+safeSealedSecret: helmfilesecretsplaceholder
+serviceAccount:
+    create: true
+svcAccessPort: 31178
+db:
+    hostname: AgCiAbd9xsr3dNna0b7XmgTMeUB+mQvxCfwEKOjDtDzlVagXcrHXZ+E3cGPSHC9O1P9MVT+3xabG3F9PiAcJ8xzDBTWJLFYW5FL398XlOVggnoLrotuXumjPkuRoDToVMu7ooRGQHz5qGlEw8DyEmHBTsc7LrWPK8iTPkEqJGjw8nJo/WNOhnmHhWf4uAFBs9Mn08IgijKpFWW+dmdYqsgzGlK75kb/lw+g9aSnz8ATaEDvF305WYFwqP+DWetNzCXQwBOrC0dch7TgDQWl2UqKGZNnkbzqVLp+2itqpFHi0RAhfzT08MsK5/zuXrEGCxTGDB2D9tW9WcdGSJpbi0pd5Np9Q+3jCJd3TMjO8+zEDNcrCwzMFMwKwk/wKhRWjN+hV+EKH0idli9A7+QruL8tGutaTcrW07CLzbQ4BVoisf4ClW79+4+kS3MtkO3lUl4SAdfUfB/o8wEgl0VILy27hZ9KWBCS/JGtCX4wNSLmZBGi40AosHaj8rpTKx0N7kyMIbn/8AL8i/YdsN9k1Wk38nAlql0YTfRU4w4NFHqsE6tABre34d3uYdr7uEqBBAVneqPKgEYJJDi4L3sCDOxoYUZFpcl7r1cLP+MUmH+A+DXMLq7tWIBj0jC+sETxTzxb9hV8cPg0aUMMiLKEQRdvU4844Sklpceyi5I+Vgj8v9l1Q5dd/2GmorVBGxbLCfpQI8V0Q/6IyMGs=
+    password: AgAXs1KlkCTwUxAGkeYy+GJvdPzpO8MRuiFTsUr/CmFgbs3UVXJiqfwom/GNwe19vjzthTsswQS7byjO2katoMwcD9qWxH7m7gRM3Z2U1bgvMeolNkYrjoXe18GbtPv4uE3bepVRZbWxZDbo20pHGwqqN9UZwHEbEIYY6OiLT7WjnipwnP9b7rin88qM9REoI5tgFbN9j37MKlUabf/Q/yiNzuum7OxdXr3NeH7pp3/rAUz2beX8PXohgBYbJCjrAWRFYXW9TTUwd80PuC2lBVeYvsD+RVgomJxHEpElRiZAol0DVWV6NE9JFZCJGpZrf+yGS5p4flonbQdlqMv9E7e1vXGKvDvnSL0POEGcBYCq6HE+rp1DzyaKKEm61ICBnyE9ulgovYQHIGOsCAwZUMXKE1nZYPn3tBGmxrUFPu4KU0BwIKYAakQgOYQiHmLBtJy6JCe19Ep26JLLA+Y9QThSebMDTrLdMP8F0NnpAXiro+CjP2KKJ2V3YxoXIjPWRPMD3C7VrjxM4tKa3cZ1AnkJDbh659uC47G4okDKuDBrQhMwVRkzOOVIXbQ740Awv9h5iIK0MxxYzohbbYWFCJcJIZOOzEJhUNpgioLkfIk6mIGMeYb1h2ruLGbNZBEmeRjc1/zCI2+Q9jmSA4LRry2+1toEdWMgj6INTVjmAQEgSXih6sn6Mqp0HdrKIKu0gWMSijQ5PwkmRls=
+    port: AgCFroyai9hc1VXHhsxZmndan9pftboCmfEcep8PkhhRU8OEAeFlYjQ6BRw0bJpmIJuELoMc/R/K872Vk9UeQc3SS9FWlKpZ9GSNVo7ggJHGeEYbon7yQhy/IZB1G1iyg8ZBZ+BG3faLj6YddFNZ+p1gnLz7bZOBkBvuc5jrpZYccTe8MPp4tSG1AEioeVElymuFt2J8jNx2eLCb72iNsKGCY8cKgdNUA59MMZf9f38HgETlY1vKuUypdDpzmH5kN2liCLZ6zpzomnal75ImEURLGTl0HdG3Y6BNL3/BGOMrviPlHGqWweH4V30XbtZQrsngIevB3EtKj6G77NAZvyR1XoGdsQcmnK1O5nu2xsCCCJ2v1aWLQ8rP3NrcCWo9L381V+EK4OGZyv1nt2SDu+5Iu/6ilxqVWTTZ6Qp8KDMle7KwKMF+Pq8jzn+LVy+qsIQkKjjvv0EjjJ7e81eaHq/JbwuGzT6+iCZ5TAd9jAu8xpGNlVXmrhjeIEVv8FHg4KEhw0RC0dytdVkka5Z9K5xnfV0XYa2SS/0w+ZtPoPHV1T6xyrGHT6uQixKJwczEybpothgZdOfFmUb1MCdnUtNUo9cxQTEi2s0wyHgsPZE3esVPz99ESGGO0f5VRe8S5JxCq2l/VIW3a6tEKeLWW996qkr5XF04ZeXGBx55Liah9efkfcQzSUbaVr+3DnNTFCgopVFE
+    rootPassword: AgC6Q/YAdDwEjv7dXK7XwF/5LRB83k+jm1Av6iOKwzuTng75YBce9C5a2vPjqsWJbpIDu6ckKY6mWXud7Ea5Dfj91b138lDZtZcSI2h0ckf13EFyXQB0lmLcIEWI+aoPGhhmS3+2UXoUn5ppxe3kHHh6E16eydXWhDdPU4HI5nR2+j6u8qUUyp9pcJXE5zViuWo5+UcOMUar4lmDOSAYZndKoult9bBxhRevpU7j+kLY6XrW733rqduNywBxy2DUgCzfwHH+71+ITWAnKyLlT/AAgJ5VXaaIaUxb85MbJYCUerfK9kdhuhVyTXDxq2rFRfHOfBNFLl60/UavsVbJc54XTCRWSHrmszP7EjkK7F3WZC4Sthw0rh3i9UNw5n7dU/TQoJaMldTWjgSEA5a8FvUM1pmETkCBIWdoKhuaWflYudsuXRAg02rILRebSjGa2TFNnCHFVEDpBSWovHAKit4B4at0DyT1T3BdxAtmywp8qRJyC7X80iZtBmf/mLOeQ/kCGO5GEimmvg6F26WpE/VrWrQ1o73gsHoO7Z3dZT3osCCjDQVXg946uPrW83CgTT6YSaBNd6kQ/vUV7z738xozm+bCxC8hHsbJWfVB/MaEmbAR4Zs6JGccR35MnA4gTdHrnsCBPghxFRPSe3d9b+9n/uhvveZZH22pt12kCGoZPuKmEQNcsba3K9E/pEE0MJ93bvXg1KgVy5A=
+    username: AgAFUu7/nBF6XK2x8Z7ll+J2mdZtLXK1X+j3wIZzxPGXIz/1wtIZtYfuSAllpFuN4EhA74JC/iyK6x52vdFpycNnkfylI4GkRIBm8JnRCoL/sxHHdD1VbpULtnWe+QVWSZH5oyhxSsadD9m7VkQuoLTlU5+OljWvSSmEjgGq1TvjDV/5Mg96aT3SAe5P8a2+r+qPdJkXrlLGxhJ5a4jyqSwNGT0sUx+EHGwSQ7XukpmuwNp3PvrKcTGzUjtCzz1uil5Syn1AfmQbGVCA12ylx/A0GP7nyNQCy2oUpVr8dcm6YmDL4EnvauHMIjFLYZVXo3EqxuLXLGehhjwBZHDMUzPvqLFcAMxhFKrUYlXBdl+aPNrqoG/u0wwl29MHlZ+5yAZSVKDi90bCPYTfPNzF5q5F4TuTPeW0dX7PQh6su2UEQqCABbGJQ5tkUbhganqoArznPwPxAWlZ9ELpRI5+E6xcBqzhsSEdAY+6XIGTMfCB5claEmGEh9cADgdfA5hLqGThja/uShbyP+FCR5z5w+TRqXyJ4nUGrlxo0x15G46abG3oRVfrEMIiTvWENodSmoNMv4gt93PObgSs9C2zk3jvT7U85xd6bVC/81ZTH99cwmxNbsQavEqypBt/I9p75UtaNVQRng2FoRTqIpyjcB/9+q2x6fQH6+nryI0N5+RkmpRFMbkWi+q3p8LBM+EyYaTBIytu
+service:
+    type: ClusterIP
+    port: 80
+serviceAdminer:
+    enabled: true
+    type: ClusterIP
+    port: 8080
+ingress:
+    enabled: true
+    className: nginx
+    annotations: {  }
+    hosts: [{ host: int-my.workstation.co.uk, paths: [{ path: /, pathType: Prefix }] }]
+    tls: {  }
+ingressAdminer:
+    enabled: true
+    className: nginx
+    annotations: {  }
+    hosts: [{ host: int-adminer.workstation.co.uk, paths: [{ path: /, pathType: Prefix }] }]
+    tls: {  }
+adminer:
+    port: 30882
+resources: {  }
+storageSettings:
+    storageClassName: longhorn
+    accessModes: ReadWriteMany
+    diskSize: 10Gi
+autoscaling:
+    enabled: false
+    minReplicas: 2
+    maxReplicas: 10
+    maxUnavailable: 1
+    targetCPUUtilizationPercentage: 80
