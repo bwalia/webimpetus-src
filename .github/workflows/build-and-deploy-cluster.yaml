@@ -131,6 +131,11 @@ jobs:
             echo "$KUBECONFIG_BASE64" | base64 -d > kubeconfig
             echo "KUBECONFIG=$(pwd)/kubeconfig" >> $GITHUB_ENV
             echo "Kubeconfig decoded and exported successfully."
+
+        - name: Kubeseal encrypt the secrets file
+          if: ${{ env.DEPLOYMENT_TYPE == 'deploy' || env.DEPLOYMENT_TYPE == 'build-and-deploy' }}
+          run: |
+            bash kubeseal_automation.sh ${{ secrets.DOT_WSL_ENV_PROD }}
                     
         - name: Helm Deploy - Release Workstation CRM to K3S2 Rancher
           if: ${{ env.DEPLOYMENT_TYPE == 'deploy' || env.DEPLOYMENT_TYPE == 'build-and-deploy' }}
