@@ -2,7 +2,7 @@
 
 # This bash script automates the process of sealing Kubernetes secrets using kubeseal.
 
-set -x
+# set -x
 
 # Validate input parameter
 if [ -z "$1" ]; then
@@ -106,8 +106,8 @@ echo $ENV_FILE_CONTENT_BASE64 | base64 -d > temp.txt
 ENV_FILE_CONTENT_BASE64_DECODED_FILE="temp.txt"
 #"/Users/balinderwalia/Documents/Work/aws_keys/.env_wsl_prod"
 
-SEALED_SECRET_INPUT_PATH="secret_wsl_per_env_input_template.yaml"
-SEALED_SECRET_OUTPUT_PATH="secret_wsl_${ENV_REF}.yaml"
+SEALED_SECRET_INPUT_PATH="devops/kubeseal/secret_wsl_per_env_input_template.yaml"
+SEALED_SECRET_OUTPUT_PATH="devops/kubeseal/secret_wsl_${ENV_REF}.yaml"
 
 if [ ! -f "$ENV_FILE_CONTENT_BASE64_DECODED_FILE" ]; then
     echo "Error: Environment file '$ENV_FILE_CONTENT_BASE64_DECODED_FILE' not found!"
