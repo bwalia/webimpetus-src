@@ -113,5 +113,5 @@ spec:
       {{- end }}
       nodeSelector:
         node: slworker00
+        environment: production
         workload: production
-        disktype: ssd

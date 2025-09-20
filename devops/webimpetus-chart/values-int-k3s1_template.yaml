@@ -43,7 +43,7 @@ adminer:
 resources: {  }
 storageSettings:
     storageClassName: longhorn
-    accessModes: ReadWriteMany
+    accessModes: ReadWriteOnce
     diskSize: 10Gi
 autoscaling:
     enabled: false
