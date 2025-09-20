@@ -34,7 +34,7 @@ on:
       TARGET_CLUSTER:
         type: choice
         description: 'Please choose the cluster'
-        default: 'k3s2'
+        default: 'k3s1'
         required: true
         options:
           - k3s1
