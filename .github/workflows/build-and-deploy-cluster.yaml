@@ -118,7 +118,7 @@ jobs:
             elif [ "${{ env.TARGET_ENV }}" == "acc" ]; then
                 echo "KUBE_CONFIG_K3S=${{ secrets.KUBE_CONFIG_DATA_K3S }}" >> $GITHUB_ENV
             elif [ "${{ env.TARGET_ENV }}" == "prod" ]; then
-                echo "KUBE_CONFIG_K3S=${{ secrets.KUBE_CONFIG_DATA_K3S1 }}" >> $GITHUB_ENV
+                echo "KUBE_CONFIG_K3S=${{ secrets.KUBE_CONFIG_DATA_K3S }}" >> $GITHUB_ENV
             else
                 echo "KUBE_CONFIG_K3S=${{ secrets.KUBE_CONFIG_DATA_K3S }}" >> $GITHUB_ENV
             fi
