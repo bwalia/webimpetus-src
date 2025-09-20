@@ -117,7 +117,15 @@ spec:
       {{- end }}
       {{- with .Values.tolerations }}
       tolerations:
-        {{- toYaml . | nindent 8 }}
+      tolerations:
+      - effect: NoSchedule
+        key: workload
+        operator: Equal
+        value: production
+      - effect: NoSchedule
+        key: app
+        operator: Equal
+        value: s3
       {{- end }}
       
               # kubernetes.io/hostname: {{ .Values.node_name }}
