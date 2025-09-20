@@ -55,8 +55,23 @@ nodeSelector:
   node: slworker00
   workload: production
   disktype: ssd
-  tolerations:
-    - key: "environment"
-      value: "production"
-    - key: "workload"
-      value: "production"
+affinity: {}
+  # affinity:
+  #   nodeAffinity:
+  #     requiredDuringSchedulingIgnoredDuringExecution:
+  #       nodeSelectorTerms:
+  #       - matchExpressions:
+  #         - key: node
+  #           operator: In
+  #           values:
+  #           - slworker00
+  #           - slworker01
+  #     preferredDuringSchedulingIgnoredDuringExecution:
+  #     - weight: 1
+  #       preference:
+  #         matchExpressions:
+  #         - key: disktype
+  #           operator: In
+  #           values:
+  #           - ssd
+  #           - hdd
