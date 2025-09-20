@@ -90,11 +90,6 @@ autoscaling:
   maxUnavailable: 1
   targetCPUUtilizationPercentage: 80
 
-nodeSelector:
-  node: slworker00
-  workload: production
-  disktype: ssd
-
 affinity: {}
   # affinity:
   #   nodeAffinity:
