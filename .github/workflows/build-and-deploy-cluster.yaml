@@ -140,9 +140,9 @@ jobs:
             elif [ "${{ env.TARGET_ENV }}" == "acc" ]; then
                 ./kubeseal_automation.sh ${{ secrets.DOT_WSL_ENV_ACC }} "acc"
             elif [ "${{ env.TARGET_ENV }}" == "prod" ]; then
-                ./kubeseal_automation.sh ${{ secrets.DOT_WSL_ENV_PROD }} "prod"
+                ./devops/kubeseal/kubeseal_automation.sh ${{ secrets.DOT_WSL_ENV_PROD }} "prod"
             else
-                ./kubeseal_automation.sh ${{ secrets.DOT_WSL_ENV_INT }} "int"
+                ./devops/kubeseal/kubeseal_automation.sh ${{ secrets.DOT_WSL_ENV_INT }} "int"
             fi
           shell: bash
                     
