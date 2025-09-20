@@ -132,13 +132,13 @@ jobs:
             echo "KUBECONFIG=$(pwd)/kubeconfig" >> $GITHUB_ENV
             echo "Kubeconfig decoded and exported successfully."
 
-        - name: Kubeseal encrypt the secrets file
+        - name: Kubeseal encrypt the env secrets file
           if: ${{ env.DEPLOYMENT_TYPE == 'deploy' || env.DEPLOYMENT_TYPE == 'build-and-deploy' }}
           run: |
             if [ "${{ env.TARGET_ENV }}" == "test" ]; then
-                ./kubeseal_automation.sh ${{ secrets.DOT_WSL_ENV_TEST }} "test"
+                ./devops/kubeseal/kubeseal_automation.sh ${{ secrets.DOT_WSL_ENV_TEST }} "test"
             elif [ "${{ env.TARGET_ENV }}" == "acc" ]; then
-                ./kubeseal_automation.sh ${{ secrets.DOT_WSL_ENV_ACC }} "acc"
+                ./devops/kubeseal/kubeseal_automation.sh ${{ secrets.DOT_WSL_ENV_ACC }} "acc"
             elif [ "${{ env.TARGET_ENV }}" == "prod" ]; then
                 ./devops/kubeseal/kubeseal_automation.sh ${{ secrets.DOT_WSL_ENV_PROD }} "prod"
             else
