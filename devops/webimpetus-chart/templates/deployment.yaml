@@ -117,7 +117,6 @@ spec:
       {{- end }}
       {{- with .Values.tolerations }}
       tolerations:
-      tolerations:
       - effect: NoSchedule
         key: workload
         operator: Equal
