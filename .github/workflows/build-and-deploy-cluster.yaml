@@ -34,7 +34,7 @@ on:
       TARGET_CLUSTER:
         type: choice
         description: 'Please choose the cluster'
-        default: 'k3s2'
+        default: 'k3s1'
         required: true
         options:
           - k3s1
@@ -62,7 +62,7 @@ env:
   TARGET_SERVICE: ${{ github.event.inputs.TARGET_SERVICE || 'workstation-uk' }}
   minReplicas: ${{ secrets.minReplicas_test }}
   IMAGE_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
-  TARGET_CLUSTER: ${{ github.event.inputs.TARGET_CLUSTER || 'k3s2' }}
+  TARGET_CLUSTER: ${{ github.event.inputs.TARGET_CLUSTER || 'k3s1' }}
   KUBE_CONFIG_K3S: ${{ secrets.KUBE_CONFIG_DATA_K3S }}
   DEPLOYMENT_TYPE: ${{ github.event.inputs.DEPLOYMENT_TYPE || 'build-and-deploy' }}
 
