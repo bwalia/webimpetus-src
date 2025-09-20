@@ -111,20 +111,7 @@ spec:
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.tolerations }}
       nodeSelector:
-        environment: production
+        node: slworker00
         workload: production
-
-      
-              # kubernetes.io/hostname: {{ .Values.node_name }}
-      # nodeSelector:
-      #   apptype: datadriven
-      #   appcode: wslcrm
-
-#if kubernetes 1.24+ use the following
-#    updateStrategy:
-#    rollingUpdate:
-#      maxUnavailable: 1 # this is the new alpha field, whose default value is 1
-#      partition: 0
-#    type: RollingUpdate
+        disktype: ssd
