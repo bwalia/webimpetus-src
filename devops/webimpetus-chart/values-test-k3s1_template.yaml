@@ -21,7 +21,7 @@ serviceAccount:
   # Specifies whether a service account should be created
   create: true
 # ports
-svcAccessPort: 31177
+svcAccessPort: 31178
 
 # mysql / mariadb
 db:
