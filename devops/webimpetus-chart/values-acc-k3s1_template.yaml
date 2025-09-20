@@ -72,7 +72,7 @@ ingressAdminer:
   #      - chart-example.local
 
 adminer:
-  port: 30882
+  port: 30883
   
 resources: {}
 
