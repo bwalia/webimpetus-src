@@ -1,6 +1,6 @@
 service_name: wsl
 
-targetCluster: k3s2
+targetCluster: k3s1
 targetEnv: acc
 targetNS: acc
 
