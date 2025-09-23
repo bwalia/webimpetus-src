@@ -14580,13 +14580,17 @@ h5, .h5, h6, .h6 {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Touch-friendly button sizes */
+/* Touch-friendly button sizes with improved typography */
 .btn {
-  min-height: 44px;
-  font-size: clamp(14px, 2vw, 16px);
-  padding: 0.75rem 1.5rem;
+  min-height: 48px;
+  font-size: clamp(16px, 2.2vw, 18px);
+  padding: 0.875rem 1.75rem;
   font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
   transition: all 0.2s ease-in-out;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 .btn:focus {
@@ -14595,27 +14599,37 @@ h5, .h5, h6, .h6 {
   box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
 }
 
-/* Improved form controls */
+/* Improved form controls with better typography */
 .form-control, .form-select {
-  min-height: 44px;
-  font-size: clamp(14px, 2vw, 16px);
-  padding: 0.75rem 1rem;
+  min-height: 48px;
+  font-size: clamp(16px, 2.2vw, 18px);
+  padding: 0.875rem 1.125rem;
   border: 2px solid #e9ecef;
+  line-height: 1.5;
+  font-weight: 400;
+  letter-spacing: 0.005em;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-/* Better table readability */
+/* Better table readability with enhanced typography */
 .table th {
-  font-size: clamp(12px, 1.8vw, 14px);
+  font-size: clamp(14px, 2vw, 16px);
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 1rem 0.75rem;
+  letter-spacing: 0.075em;
+  padding: 1.125rem 1rem;
+  color: #4a5568;
+  -webkit-font-smoothing: antialiased;
 }
 
 .table td {
-  font-size: clamp(14px, 2vw, 16px) !important;
-  padding: 0.875rem 0.75rem;
-  line-height: 1.5;
+  font-size: clamp(16px, 2.2vw, 18px) !important;
+  padding: 1rem 1rem;
+  line-height: 1.6;
+  color: #2d3748 !important;
+  font-weight: 400 !important;
+  -webkit-font-smoothing: antialiased;
 }
 
 /* High contrast mode support */
@@ -14667,9 +14681,102 @@ h5, .h5, h6, .h6 {
 /* Better responsive breakpoints */
 @media (max-width: 576px) {
   .container { padding: 0 1rem; }
-  .btn { font-size: 14px; padding: 0.5rem 1rem; }
+  .btn { font-size: 15px; padding: 0.625rem 1.25rem; }
+  .table td { font-size: 15px !important; }
 }
 
 @media (min-width: 1400px) {
   .container { max-width: 1320px; }
+}
+
+/* =================================================================
+   ENHANCED DASHBOARD TYPOGRAPHY
+   ================================================================= */
+
+/* Paragraph and general text improvements */
+p, .text-base {
+  font-size: clamp(16px, 2.2vw, 18px);
+  line-height: 1.7;
+  color: #4a5568;
+  margin-bottom: 1rem;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Enhanced list styling */
+ul, ol {
+  font-size: clamp(16px, 2.2vw, 18px);
+  line-height: 1.6;
+  color: #4a5568;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Card and panel typography */
+.card-title {
+  font-size: clamp(18px, 2.5vw, 22px) !important;
+  font-weight: 600 !important;
+  color: #2d3748 !important;
+  letter-spacing: -0.01em !important;
+  -webkit-font-smoothing: antialiased !important;
+}
+
+.card-text, .card-body p {
+  font-size: clamp(16px, 2.2vw, 18px) !important;
+  line-height: 1.6 !important;
+  color: #4a5568 !important;
+  -webkit-font-smoothing: antialiased !important;
+}
+
+/* Navigation text improvements */
+.nav-link {
+  font-size: clamp(16px, 2.2vw, 18px) !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.005em !important;
+  -webkit-font-smoothing: antialiased !important;
+}
+
+/* Badge and label improvements */
+.badge {
+  font-size: clamp(13px, 1.8vw, 15px) !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.025em !important;
+  padding: 0.375rem 0.75rem !important;
+  -webkit-font-smoothing: antialiased !important;
+}
+
+/* Small text and helper text */
+.small, small, .text-sm {
+  font-size: clamp(14px, 2vw, 16px) !important;
+  line-height: 1.5 !important;
+  color: #6b7280 !important;
+  -webkit-font-smoothing: antialiased !important;
+}
+
+/* Large text */
+.lead, .text-lg {
+  font-size: clamp(20px, 3vw, 24px) !important;
+  font-weight: 400 !important;
+  line-height: 1.6 !important;
+  color: #374151 !important;
+  -webkit-font-smoothing: antialiased !important;
+}
+
+/* Dashboard specific improvements */
+.dashboard-widget {
+  font-size: clamp(16px, 2.2vw, 18px);
+  -webkit-font-smoothing: antialiased;
+}
+
+.dashboard-number {
+  font-size: clamp(24px, 4vw, 32px) !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em !important;
+  -webkit-font-smoothing: antialiased !important;
+}
+
+/* Dropdown menu improvements */
+.dropdown-item {
+  font-size: clamp(15px, 2.1vw, 17px) !important;
+  padding: 0.625rem 1.25rem !important;
+  line-height: 1.5 !important;
+  -webkit-font-smoothing: antialiased !important;
 }
