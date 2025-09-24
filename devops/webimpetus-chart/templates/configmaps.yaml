@@ -203,7 +203,8 @@ data:
         fi
         if [ -f $DUMP_FILE ]; then
         # Upload Dump File to Minio Bucket
-        mc config host add myminio $MINIO_HOST $MINIO_ACCESS_KEY $MINIO_SECRET_KEY
+        # not working mc config host add myminio $MINIO_HOST $MINIO_ACCESS_KEY $MINIO_SECRET_KEY
+        mc alias set myminio $MINIO_HOST $MINIO_ACCESS_KEY $MINIO_SECRET_KEY
         ls -alh $DUMP_FILE
         file $DUMP_FILE
         stat $DUMP_FILE

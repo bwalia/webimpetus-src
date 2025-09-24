@@ -56,7 +56,7 @@
         fi
         if [ -f $DUMP_FILE ]; then
         # Upload Dump File to Minio Bucket
-        mc config host add myminio $MINIO_HOST $MINIO_ACCESS_KEY $MINIO_SECRET_KEY
+        mc alias set myminio $MINIO_HOST $MINIO_ACCESS_KEY $MINIO_SECRET_KEY
         ls -alh $DUMP_FILE
         file $DUMP_FILE
         stat $DUMP_FILE
@@ -80,7 +80,7 @@
         if [ $? -eq 0 ]; then
         echo "Dump file uploaded to Minio bucket: $MINIO_BUCKET"
         mv $DUMP_FILE_TAR $TMP_DIR/wsl_{{ .Values.targetEnv }}_db_dump_latest.tar.gz
-        $DUMP_FILE_TAR = $TMP_DIR/wsl_{{ .Values.targetEnv }}_db_dump_latest.tar.gz
+        DUMP_FILE_TAR=$TMP_DIR/wsl_{{ .Values.targetEnv }}_db_dump_latest.tar.gz
         if [ -f $DUMP_FILE_TAR ]; then
             echo "Dump file renamed to db_dump_latest.tar.gz"
             mc cp $DUMP_FILE_TAR myminio/$MINIO_BUCKET/hourly/                # Copy the latest dump to hourly folder
