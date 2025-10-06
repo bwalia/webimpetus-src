@@ -23,9 +23,12 @@ require realpath($pathsConfig) ?: $pathsConfig;
 
 $paths = new Config\Paths();
 
-// Location of the framework bootstrap file.
-$bootstrap = rtrim($paths->systemDirectory, '\\/ ') . DIRECTORY_SEPARATOR . 'bootstrap.php';
-$app       = require realpath($bootstrap) ?: $bootstrap;
+// Location of the framework boot file.
+require rtrim($paths->systemDirectory, '\\/ ') . DIRECTORY_SEPARATOR . 'Boot.php';
+
+// Load environment settings from .env files if they exist
+require_once SYSTEMPATH . 'Config/DotEnv.php';
+(new CodeIgniter\Config\DotEnv(ROOTPATH))->load();
 
 /*
  *---------------------------------------------------------------
@@ -34,4 +37,7 @@ $app       = require realpath($bootstrap) ?: $bootstrap;
  * Now that everything is setup, it's time to actually fire
  * up the engines and make this app do its thang.
  */
+
+$app = Config\Services::codeigniter();
+$app->initialize();
 $app->run();
