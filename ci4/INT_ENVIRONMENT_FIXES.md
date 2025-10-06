@@ -56,6 +56,23 @@
   - `$limitZeroAsAll`
   - `$strictLocaleNegotiation`
 
+### 6. Kint Debugging Library Dependency
+**Error**: `Class "Kint\Renderer\Renderer" not found`
+
+**Root Cause**: Kint debugging library is not installed in production, but Kint config was importing and using its classes.
+
+**Fix Applied**:
+- ✅ Removed `use Kint\Renderer\Renderer;` import from `ci4/app/Config/Kint.php`
+- ✅ Changed `Renderer::SORT_FULL` to numeric value `0`
+
+### 7. Missing Cache Config Property
+**Error**: `Undefined property: Config\Cache::$reservedCharacters`
+
+**Root Cause**: CodeIgniter 4.5+ requires `$reservedCharacters` property for PSR-6 cache compliance.
+
+**Fix Applied**:
+- ✅ Added `public $reservedCharacters = '{}()/\@:';` property to `ci4/app/Config/Cache.php`
+
 ## Git Commits
 
 1. `88b218b` - Fix: Update Paths.php to use vendor directory for CI 4.6.3
@@ -68,6 +85,9 @@
 8. `5b79f60` - Add missing CI 4.5+ config properties (Modules, App, Exceptions)
 9. `0ed5d19` - docs: Update INT_ENVIRONMENT_FIXES.md with config property fixes
 10. `4c4f348` - Add missing Feature config class for CI 4.5+
+11. `4fb0bb3` - docs: Update INT_ENVIRONMENT_FIXES.md with Feature config fix
+12. `0fb87fc` - Fix: Remove Kint\Renderer\Renderer dependency from Kint config
+13. `926c192` - Fix: Add missing reservedCharacters property to Cache config
 
 ## Deployment Status
 
