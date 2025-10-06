@@ -44,6 +44,18 @@
 - ✅ Added `public $logDeprecations = true;` property to `ci4/app/Config/Exceptions.php`
 - ✅ Added `public $deprecationLogLevel = 'warning';` property to `ci4/app/Config/Exceptions.php`
 
+### 5. Missing Feature Config Class
+**Error**: `Attempt to read property "strictLocaleNegotiation" on null`
+
+**Root Cause**: CodeIgniter 4.5+ introduced a new `Feature` config class for backward compatibility settings.
+
+**Fix Applied**:
+- ✅ Created `ci4/app/Config/Feature.php` with required properties:
+  - `$autoRoutesImproved`
+  - `$oldFilterOrder`
+  - `$limitZeroAsAll`
+  - `$strictLocaleNegotiation`
+
 ## Git Commits
 
 1. `88b218b` - Fix: Update Paths.php to use vendor directory for CI 4.6.3
@@ -54,6 +66,8 @@
 6. `0e1a501` - Fix: Add missing helpers property to Autoload.php for CI 4.5+ compatibility
 7. `82c93e8` - docs: Update INT_ENVIRONMENT_FIXES.md with all applied fixes and deployment status
 8. `5b79f60` - Add missing CI 4.5+ config properties (Modules, App, Exceptions)
+9. `0ed5d19` - docs: Update INT_ENVIRONMENT_FIXES.md with config property fixes
+10. `4c4f348` - Add missing Feature config class for CI 4.5+
 
 ## Deployment Status
 
