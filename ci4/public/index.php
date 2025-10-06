@@ -26,18 +26,5 @@ $paths = new Config\Paths();
 // Location of the framework boot file.
 require rtrim($paths->systemDirectory, '\\/ ') . DIRECTORY_SEPARATOR . 'Boot.php';
 
-// Load environment settings from .env files if they exist
-require_once SYSTEMPATH . 'Config/DotEnv.php';
-(new CodeIgniter\Config\DotEnv(ROOTPATH))->load();
-
-/*
- *---------------------------------------------------------------
- * LAUNCH THE APPLICATION
- *---------------------------------------------------------------
- * Now that everything is setup, it's time to actually fire
- * up the engines and make this app do its thang.
- */
-
-$app = Config\Services::codeigniter();
-$app->initialize();
-$app->run();
+// Return the exit code
+exit(CodeIgniter\Boot::bootWeb($paths));
