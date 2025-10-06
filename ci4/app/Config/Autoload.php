@@ -84,4 +84,17 @@ class Autoload extends AutoloadConfig
      * @var array<int, string>
      */
     public $files = [];
+
+    /**
+     * -------------------------------------------------------------------
+     * Helpers
+     * -------------------------------------------------------------------
+     * Prototype:
+     * ```
+     *   $helpers = ['url', 'form'];
+     * ```
+     *
+     * @var array<int, string>
+     */
+    public $helpers = [];
 }
