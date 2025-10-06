@@ -29,6 +29,21 @@
 **Fix Applied**:
 - ✅ Added `public $helpers = [];` property to `ci4/app/Config/Autoload.php`
 
+### 4. Missing Config Properties for CI 4.5+
+**Errors**: 
+- `Undefined property: Config\Modules::$composerPackages`
+- `Undefined property: Config\App::$allowedHostnames`
+- `Creation of dynamic property Config\Exceptions::$logDeprecations is deprecated`
+- `Creation of dynamic property Config\Exceptions::$deprecationLogLevel is deprecated`
+
+**Root Cause**: CodeIgniter 4.5+ introduced new required properties in configuration classes.
+
+**Fixes Applied**:
+- ✅ Added `public $composerPackages = [];` property to `ci4/app/Config/Modules.php`
+- ✅ Added `public $allowedHostnames = [];` property to `ci4/app/Config/App.php`
+- ✅ Added `public $logDeprecations = true;` property to `ci4/app/Config/Exceptions.php`
+- ✅ Added `public $deprecationLogLevel = 'warning';` property to `ci4/app/Config/Exceptions.php`
+
 ## Git Commits
 
 1. `88b218b` - Fix: Update Paths.php to use vendor directory for CI 4.6.3
@@ -37,6 +52,8 @@
 4. `a463b58` - Fix index.php to properly call Boot::bootWeb() for CI 4.5+
 5. `bc50b64` - docs: Add int environment fix documentation and deployment instructions
 6. `0e1a501` - Fix: Add missing helpers property to Autoload.php for CI 4.5+ compatibility
+7. `82c93e8` - docs: Update INT_ENVIRONMENT_FIXES.md with all applied fixes and deployment status
+8. `5b79f60` - Add missing CI 4.5+ config properties (Modules, App, Exceptions)
 
 ## Deployment Status
 
