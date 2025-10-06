@@ -57,4 +57,26 @@ class Exceptions extends BaseConfig
      * @var array
      */
     public $sensitiveDataInTrace = [];
+
+    /**
+     * --------------------------------------------------------------------------
+     * WHETHER TO THROW AN EXCEPTION ON DEPRECATED ERRORS
+     * --------------------------------------------------------------------------
+     * If set to `true`, DEPRECATED errors are only logged and no exceptions are
+     * thrown. This option also works for user deprecations.
+     */
+    public $logDeprecations = true;
+
+    /**
+     * --------------------------------------------------------------------------
+     * LOG LEVEL THRESHOLD FOR DEPRECATIONS
+     * --------------------------------------------------------------------------
+     * If `$logDeprecations` is set to `true`, this sets the log level
+     * to which the deprecation will be logged. This should be one of the log
+     * levels recognized by PSR-3.
+     *
+     * The related `Config\Logger::$threshold` should be adjusted, if needed,
+     * to capture logging the deprecations.
+     */
+    public $deprecationLogLevel = 'warning';
 }
