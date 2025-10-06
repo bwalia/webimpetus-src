@@ -73,6 +73,17 @@
 **Fix Applied**:
 - ✅ Added `public $reservedCharacters = '{}()/\@:';` property to `ci4/app/Config/Cache.php`
 
+### 8. Missing Routing Config Class
+**Error**: `Argument #3 ($routing) must be of type Config\Routing, null given`
+
+**Root Cause**: CodeIgniter 4.5+ introduced a new `Routing` config class for routing configuration.
+
+**Fix Applied**:
+- ✅ Created `ci4/app/Config/Routing.php` with required routing properties:
+  - `$routeFiles`, `$defaultNamespace`, `$defaultController`, `$defaultMethod`
+  - `$translateURIDashes`, `$override404`, `$autoRoute`, `$prioritize`
+  - `$multipleSegmentsOneParam`, `$moduleRoutes`, `$translateUriToCamelCase`
+
 ## Git Commits
 
 1. `88b218b` - Fix: Update Paths.php to use vendor directory for CI 4.6.3
@@ -88,6 +99,8 @@
 11. `4fb0bb3` - docs: Update INT_ENVIRONMENT_FIXES.md with Feature config fix
 12. `0fb87fc` - Fix: Remove Kint\Renderer\Renderer dependency from Kint config
 13. `926c192` - Fix: Add missing reservedCharacters property to Cache config
+14. `64c7f93` - docs: Update INT_ENVIRONMENT_FIXES.md with Kint and Cache fixes
+15. `8a9a55a` - Add missing Routing config class for CI 4.5+
 
 ## Deployment Status
 
