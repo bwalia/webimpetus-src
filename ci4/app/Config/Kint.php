@@ -3,7 +3,6 @@
 namespace Config;
 
 use CodeIgniter\Config\BaseConfig;
-use Kint\Renderer\Renderer;
 
 /**
  * --------------------------------------------------------------------------
@@ -40,7 +39,7 @@ class Kint extends BaseConfig
 
     public $richFolder = false;
 
-    public $richSort = Renderer::SORT_FULL;
+    public $richSort = 0; // Renderer::SORT_FULL equivalent
 
     public $richObjectPlugins;
 
