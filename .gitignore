@@ -1,0 +1,32 @@
+ci4/public/.DS_Store
+ci4/public/assets/.DS_Store
+ci4/public/assets/img/.DS_Store
+cypress/cypress/e2e/.DS_Store
+.DS_Store
+.env_cypress
+webimpetusci4test_db copy.sql
+webimpetusci4test_db.sql
+myworkstation_int_db.sql
+webimpetusci4test_db-mbp.sql
+myworkstation_test_db.sql
+
+# Large files that should not be in git
+ci4/core
+ci4/system.old/
+ci4/public/whitefalcon/
+ci4/rancher-base64
+ci4/rancher.yaml
+ci4/start.sh
+ci4/supervisord.log
+ci4/supervisord.pid
+ci4/test.sh
+
+# Database dumps
+*.sql
+myworkstation_dev_db*.sql
+
+# Environment files
+.env.dev
+
+# Test files
+test-env-servers.json
