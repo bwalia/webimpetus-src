@@ -147,6 +147,27 @@
   - TimeslipsModel::getApiV2Timeslips() - cast $_GET['perPage'] for paginate() (2 locations)
 - Affected controllers: Sales_invoices, Secrets, Users, Companies, Purchase_orders, Work_orders, ScimGroupController, Webpages, Timeslips, Sprints, ScimUserController, Contacts, Categories, Customers, Domains, User_business, Products, Enquiries, Blog, Menu, Jobs, Blog_comments, Gallery, Tasks, Jobapps, Templates, Projects, Employees, Purchase_invoices, Tenants
 
+### 14. Filter header() Function Compatibility
+**Error**: `CodeIgniter\Debug\Exceptions->errorHandler` in `APPPATH/Filters/Options.php : 12 — header()`
+
+**Root Cause**: CI 4.5+ filters should use the Response object methods instead of raw PHP `header()` function. Using raw `header()` can cause exceptions when headers have already been sent.
+
+**Fix Applied**:
+- ✅ Replaced `header()` calls with `$response->setHeader()` in Options.php filter
+- ✅ Use `$request->getMethod()` instead of `$_SERVER['REQUEST_METHOD']`
+- ✅ Return proper Response object with status 200 for OPTIONS requests instead of `die()`
+- ✅ Return `$request` object from before() method for proper filter chain
+- ✅ Return `$response` object from after() method
+
+### 15. PHP 8.4 E_STRICT Deprecation
+**Error**: `Deprecated: Constant E_STRICT is deprecated in /var/www/html/app/Config/Boot/production.php on line 11`
+
+**Root Cause**: PHP 8.4 deprecated the `E_STRICT` error constant as it's no longer used in modern PHP versions.
+
+**Fix Applied**:
+- ✅ Removed `E_STRICT` from error_reporting() in production.php boot file
+- ✅ Updated to: `error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_USER_NOTICE & ~E_USER_DEPRECATED)`
+
 ## Git Commits
 
 1. `88b218b` - Fix: Update Paths.php to use vendor directory for CI 4.6.3
@@ -178,6 +199,9 @@
 27. `80491fc` - Fix: Cast limit and offset to int in all non-API controllers for CI 4.5+ type safety
 28. `bc540ea` - docs: Update INT_ENVIRONMENT_FIXES.md - Add fix #13 (limit/offset type safety)
 29. `126ea89` - Fix: Cast limit/offset/paginate parameters to int in all Models for CI 4.5+ type safety
+30. `9040637` - docs: Update INT_ENVIRONMENT_FIXES.md - Add Model fixes for limit/offset/paginate type safety
+31. `c497f9d` - Fix: Use Response object instead of raw header() in Options filter for CI 4.5+ compatibility
+32. `afebea0` - Fix: Remove deprecated E_STRICT constant for PHP 8.4 compatibility
 
 ## Deployment Status
 
