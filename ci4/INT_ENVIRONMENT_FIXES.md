@@ -137,6 +137,14 @@
 **Fix Applied**:
 - ✅ Cast all `$_GET['limit']` and `$_GET['offset']` to `(int)` in API V2 controllers (11 files)
 - ✅ Cast all `$this->request->getVar('limit')` and `getVar('offset')` to `(int)` in regular controllers (20 files)
+- ✅ Cast all `$limit`, `$offset`, and `$perPage` parameters in Model methods (6 files)
+  - Tasks_model::getTaskList() - cast $page and $perPage
+  - Dashboard_model::jobsbycat() - cast $limit and $offset
+  - Content_model::jobsbycat() - cast $limit and $offset
+  - Content_model::blogposts() - cast $limit and $offset
+  - Users_model::getApiV2Users() - cast $_GET['perPage'] for paginate()
+  - User_business_model::getAllList() - cast $_GET['perPage'] for paginate()
+  - TimeslipsModel::getApiV2Timeslips() - cast $_GET['perPage'] for paginate() (2 locations)
 - Affected controllers: Sales_invoices, Secrets, Users, Companies, Purchase_orders, Work_orders, ScimGroupController, Webpages, Timeslips, Sprints, ScimUserController, Contacts, Categories, Customers, Domains, User_business, Products, Enquiries, Blog, Menu, Jobs, Blog_comments, Gallery, Tasks, Jobapps, Templates, Projects, Employees, Purchase_invoices, Tenants
 
 ## Git Commits
@@ -168,6 +176,8 @@
 25. `f4928b8` - docs: Update INT_ENVIRONMENT_FIXES.md - comprehensive documentation of all 12 fixes
 26. `6d72c40` - Fix: Cast limit and offset to int in all API V2 controllers for CI 4.5+ type safety
 27. `80491fc` - Fix: Cast limit and offset to int in all non-API controllers for CI 4.5+ type safety
+28. `bc540ea` - docs: Update INT_ENVIRONMENT_FIXES.md - Add fix #13 (limit/offset type safety)
+29. `126ea89` - Fix: Cast limit/offset/paginate parameters to int in all Models for CI 4.5+ type safety
 
 ## Deployment Status
 
