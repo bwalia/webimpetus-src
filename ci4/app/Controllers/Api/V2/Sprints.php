@@ -124,8 +124,8 @@ class Sprints extends ResourceController
             return $this->respond($data);
         } else {
             $sprintsModel = new Sprints_model();
-            $limit = $_GET['limit'] ?? 20;
-            $offset = $_GET['offset'] ?? 0;
+            $limit = (int)($_GET['limit'] ?? 20);
+            $offset = (int)($_GET['offset'] ?? 0);
             $query = $_GET['query'] ?? false;
             $order = $_GET['order'] ?? "sprint_name";
             $dir = $_GET['dir'] ?? "asc";

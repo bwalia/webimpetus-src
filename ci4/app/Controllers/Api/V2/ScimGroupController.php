@@ -42,8 +42,8 @@ class ScimGroupController extends ResourceController
             $db = \Config\Database::connect();
             $builder = $db->table('businesses');
 
-            $limit = $_GET['limit'] ?? 20;
-            $offset = $_GET['offset'] ?? 0;
+            $limit = (int)($_GET['limit'] ?? 20);
+            $offset = (int)($_GET['offset'] ?? 0);
             $query = $_GET['query'] ?? false;
             $order = $_GET['order'] ?? "name";
             $dir = $_GET['dir'] ?? "asc";

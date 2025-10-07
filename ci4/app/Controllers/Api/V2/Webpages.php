@@ -75,8 +75,8 @@ class Webpages extends ResourceController
             return $this->respond($api->webpages($_GET['category_id'] ?? $catId, $_GET['q']));
         } else {
             $webModel = new Content_model();
-            $limit = $_GET['limit'] ?? 20;
-            $offset = $_GET['offset'] ?? 0;
+            $limit = (int)($_GET['limit'] ?? 20);
+            $offset = (int)($_GET['offset'] ?? 0);
             $query = $_GET['query'] ?? false;
             $order = $_GET['order'] ?? "title";
             $dir = $_GET['dir'] ?? "asc";
