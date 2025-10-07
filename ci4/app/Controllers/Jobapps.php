@@ -35,8 +35,8 @@ class Jobapps extends CommonController
 
 	public function jobAppList()
 	{
-		$limit = $this->request->getVar('limit');
-		$offset = $this->request->getVar('offset');
+		$limit = (int)$this->request->getVar('limit');
+		$offset = (int)$this->request->getVar('offset');
 		$query = $this->request->getVar('query');
 		$order = $this->request->getVar('order') ?? "title";
 		$dir = $this->request->getVar('dir') ?? "asc";

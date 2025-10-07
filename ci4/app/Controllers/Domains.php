@@ -41,8 +41,8 @@ class Domains extends CommonController
 
 	public function domainList()
     {
-        $limit = $this->request->getVar('limit');
-        $offset = $this->request->getVar('offset');
+        $limit = (int)$this->request->getVar('limit');
+        $offset = (int)$this->request->getVar('offset');
         $query = $this->request->getVar('query');
         $order = $this->request->getVar('order') ?? "name";
         $dir = $this->request->getVar('dir') ?? "asc";
