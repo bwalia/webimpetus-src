@@ -169,12 +169,12 @@
 - ✅ Updated to: `error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_USER_NOTICE & ~E_USER_DEPRECATED)`
 
 ### 16. Spark CLI Bootstrap Deprecation
-**Error**: `This "system/bootstrap.php" is no longer used` and `Undefined constant "ENVIRONMENT"` / `Undefined constant "CI_DEBUG"`
+**Error**: `This "system/bootstrap.php" is no longer used` and `Undefined constant "ENVIRONMENT"` / `Undefined constant "CI_DEBUG"`, then `Call to undefined method CodeIgniter\Boot::bootCLI()`
 
-**Root Cause**: The `spark` CLI tool was still using the deprecated `bootstrap.php` file instead of the new Boot system. CI 4.5+ requires using `Boot::bootCLI()` for command-line operations.
+**Root Cause**: The `spark` CLI tool was still using the deprecated `bootstrap.php` file instead of the new Boot system. CI 4.5+ requires using `Boot::bootSpark()` for command-line operations (not `bootCLI()` which doesn't exist).
 
 **Fix Applied**:
-- ✅ Updated spark file to use `Boot::bootCLI($paths)` instead of requiring `bootstrap.php`
+- ✅ Updated spark file to use `Boot::bootSpark($paths)` instead of requiring `bootstrap.php`
 - ✅ Removed old Console initialization code
 - ✅ This fixes CLI commands, migrations, and all spark-based operations
 
@@ -213,7 +213,9 @@
 31. `c497f9d` - Fix: Use Response object instead of raw header() in Options filter for CI 4.5+ compatibility
 32. `afebea0` - Fix: Remove deprecated E_STRICT constant for PHP 8.4 compatibility
 33. `7282c48` - docs: Update INT_ENVIRONMENT_FIXES.md - Add fix #15 (E_STRICT PHP 8.4 deprecation)
-34. `caf9b2f` - Fix: Update spark CLI tool to use Boot::bootCLI() for CI 4.5+ compatibility
+34. `caf9b2f` - Fix: Update spark CLI tool to use Boot::bootCLI() for CI 4.5+ compatibility (incorrect)
+35. `b8b6933` - docs: Update INT_ENVIRONMENT_FIXES.md - Add fix #16 (spark CLI bootstrap)
+36. `16ded32` - Fix: Update spark to use Boot::bootSpark() (corrected from bootCLI)
 
 ## Deployment Status
 
