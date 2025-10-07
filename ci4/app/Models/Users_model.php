@@ -95,6 +95,9 @@ class Users_model extends Model
     public function getApiV2Users($id = false, $whereCond = [])
     {
         $_GET['perPage'] = !empty($_GET['perPage'])?$_GET['perPage']:10;
+        // Cast to int for type safety with CI 4.5+
+        $perPage = (int)$_GET['perPage'];
+        
         $fields = $this->getFieldNames('users');
         $unset = array('password','id','uuid');
         $fields = array_diff($fields,$unset);
@@ -108,7 +111,7 @@ class Users_model extends Model
         }else {
             $this->orderBy('date_time','ASC');
         }  
-        return $this->paginate($_GET['perPage']);
+        return $this->paginate($perPage);
     }
     
     public function getApiV2UsersCount()

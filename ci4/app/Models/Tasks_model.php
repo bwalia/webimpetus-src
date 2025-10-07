@@ -29,6 +29,10 @@ class Tasks_model extends Model
 
     public function getTaskList($whereConditions = null, $page = 1, $perPage = 10, $keyword = '')
     {
+        // Cast to int for type safety with CI 4.5+
+        $page = (int)$page;
+        $perPage = (int)$perPage;
+        
         $builder = $this->db->table($this->table);
         $builder->select($this->table . ".*, customers.company_name, projects.name as project_name");
         $builder->join('customers', 'customers.id = ' . $this->table . '.reported_by', 'left');

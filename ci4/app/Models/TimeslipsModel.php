@@ -273,7 +273,9 @@ class TimeslipsModel extends Model
                     $this->orderBy($table . '.slip_start_date', 'DESC');
                 }
                 $_GET['perPage'] = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-                return $this->paginate($_GET['perPage']);
+                // Cast to int for type safety with CI 4.5+
+                $perPage = (int)$_GET['perPage'];
+                return $this->paginate($perPage);
             } else {
                 if (!empty($search)) {
                     $this->groupStart();
@@ -294,7 +296,9 @@ class TimeslipsModel extends Model
                 }
 
                 $_GET['perPage'] = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-                return $this->paginate($_GET['perPage']);
+                // Cast to int for type safety with CI 4.5+
+                $perPage = (int)$_GET['perPage'];
+                return $this->paginate($perPage);
             }
         } else {
             $whereCond = array_merge(array($table . '.uuid' => $id), $timeslip_where);

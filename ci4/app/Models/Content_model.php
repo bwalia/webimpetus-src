@@ -48,6 +48,10 @@ class Content_model extends Model
 
 	public function jobsbycat($cat = false, $limit = false, $offset = false)
 	{
+		// Cast to int for type safety with CI 4.5+
+		if ($limit !== false) $limit = (int)$limit;
+		if ($offset !== false) $offset = (int)$offset;
+		
 		$whereCond = array_merge(['categories.Code' => $cat, 'content_list.type' => 4, 'content_list.status' => 1], $this->whereCond);
 		if ($cat !== false && $limit !== false) {
 			$this->join('content_category', 'content_category.contentid=content_list.id', 'LEFT');
@@ -64,6 +68,10 @@ class Content_model extends Model
 
 	public function blogposts($limit = false, $offset = false, $con = false)
 	{
+		// Cast to int for type safety with CI 4.5+
+		if ($limit !== false) $limit = (int)$limit;
+		if ($offset !== false) $offset = (int)$offset;
+		
 		if ($limit !== false) {
 			$whereCond = array_merge(['content_list.type' => 2, 'content_list.status' => 1], $this->whereCond);
 			$this->join('enquiries', 'content_list.id=enquiries.contentid and enquiries.type=3', 'LEFT');

@@ -20,8 +20,8 @@ class Templates extends CommonController
 
     public function templateList()
 	{
-		$limit = $this->request->getVar('limit');
-		$offset = $this->request->getVar('offset');
+		$limit = (int)$this->request->getVar('limit');
+		$offset = (int)$this->request->getVar('offset');
 		$query = $this->request->getVar('query');
 		$order = $this->request->getVar('order') ?? "code";
 		$dir = $this->request->getVar('dir') ?? "asc";
