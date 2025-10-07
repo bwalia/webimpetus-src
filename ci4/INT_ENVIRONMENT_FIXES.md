@@ -102,6 +102,14 @@
   - `$lockRetryInterval` - Lock retry interval for Redis (microseconds)
   - `$lockMaxRetries` - Maximum lock acquisition attempts for Redis
 
+### 10. ProxyIPs Type Error
+**Error**: `foreach() argument must be of type array|object, string given` in RequestTrait.php line 87
+
+**Root Cause**: CodeIgniter 4.5+ expects `$proxyIPs` to be an array, but it was set to an empty string.
+
+**Fix Applied**:
+- ✅ Changed `public $proxyIPs = '';` to `public $proxyIPs = [];` in `ci4/app/Config/App.php`
+
 ## Git Commits
 
 1. `88b218b` - Fix: Update Paths.php to use vendor directory for CI 4.6.3
@@ -121,6 +129,8 @@
 15. `8a9a55a` - Add missing Routing config class for CI 4.5+
 16. `a926d97` - docs: Update INT_ENVIRONMENT_FIXES.md with Routing config fix
 17. `f589b90` - Add Session config class for CI 4.5+ compatibility
+18. `f44b83c` - docs: Update INT_ENVIRONMENT_FIXES.md with Session config fix
+19. `10647d4` - Fix: Change proxyIPs from empty string to empty array for CI 4.5+ compatibility
 
 ## Deployment Status
 
