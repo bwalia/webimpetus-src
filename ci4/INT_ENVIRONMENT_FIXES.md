@@ -110,6 +110,15 @@
 **Fix Applied**:
 - ✅ Changed `public $proxyIPs = '';` to `public $proxyIPs = [];` in `ci4/app/Config/App.php`
 
+### 11. Protected Request Config Property
+**Error**: `Cannot access protected property CodeIgniter\HTTP\IncomingRequest::$config` in BaseController.php line 70
+
+**Root Cause**: CodeIgniter 4.5+ made the `$config` property protected, preventing direct access via `$request->config`.
+
+**Fix Applied**:
+- ✅ Changed `$request->config->supportedLocales` to `config('App')->supportedLocales` in `ci4/app/Controllers/BaseController.php`
+- Uses the `config()` helper function which is the recommended way to access config in CI 4.5+
+
 ## Git Commits
 
 1. `88b218b` - Fix: Update Paths.php to use vendor directory for CI 4.6.3
@@ -131,6 +140,8 @@
 17. `f589b90` - Add Session config class for CI 4.5+ compatibility
 18. `f44b83c` - docs: Update INT_ENVIRONMENT_FIXES.md with Session config fix
 19. `10647d4` - Fix: Change proxyIPs from empty string to empty array for CI 4.5+ compatibility
+20. `0934816` - docs: Update INT_ENVIRONMENT_FIXES.md with proxyIPs fix
+21. `89fda58` - Fix: Use config helper instead of protected request->config property for CI 4.5+ compatibility
 
 ## Deployment Status
 
