@@ -67,7 +67,7 @@ class BaseController extends Controller
         //$request->setLocale('hi');
         $this->data['locale'] = $request->getLocale();
         //echo '<pre>'; print_r($this->data['locale']);die;
-        $this->data['supportedLocales'] = $request->config->supportedLocales;
+        $this->data['supportedLocales'] = config('App')->supportedLocales;
     }
 
     public function getResponse(array $responseBody, int $code = ResponseInterface::HTTP_OK)
