@@ -102,6 +102,8 @@ class User_business_model extends Model
         // }         
         
         $_GET['perPage'] = !empty($_GET['perPage'])?$_GET['perPage']:10;
-        return $this->paginate($_GET['perPage']);
+        // Cast to int for type safety with CI 4.5+
+        $perPage = (int)$_GET['perPage'];
+        return $this->paginate($perPage);
     }
 }

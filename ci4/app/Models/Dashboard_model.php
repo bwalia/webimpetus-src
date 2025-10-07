@@ -28,6 +28,10 @@ class Dashboard_model extends Model
 	
 	public function jobsbycat($cat = false, $limit=false, $offset=false)
     {
+		// Cast to int for type safety with CI 4.5+
+		if ($limit !== false) $limit = (int)$limit;
+		if ($offset !== false) $offset = (int)$offset;
+		
 		$whereCond = array_merge(['categories.Code'=>$cat,'content_list.type'=>4,'content_list.status'=>1], $this->whereCond);
         if($cat !== false && $limit!== false){
 			$this->join('content_category', 'content_category.contentid=content_list.id', 'LEFT');
