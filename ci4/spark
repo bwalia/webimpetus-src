@@ -41,23 +41,11 @@ $paths = new Config\Paths();
 // Ensure the current directory is pointing to the front controller's directory
 chdir(FCPATH);
 
-$bootstrap = rtrim($paths->systemDirectory, '\\/ ') . DIRECTORY_SEPARATOR . 'bootstrap.php';
-$app       = require realpath($bootstrap) ?: $bootstrap;
+// Location of the framework boot file.
+require rtrim($paths->systemDirectory, '\\/ ') . DIRECTORY_SEPARATOR . 'Boot.php';
 
-// Grab our Console
-$console = new CodeIgniter\CLI\Console($app);
-
-// We want errors to be shown when using it from the CLI.
-error_reporting(-1);
-ini_set('display_errors', '1');
-
-// Show basic information before we do anything else.
-if (is_int($suppress = array_search('--no-header', $_SERVER['argv'], true))) {
-    unset($_SERVER['argv'][$suppress]); // @codeCoverageIgnore
-    $suppress = true;
-}
-
-$console->showHeader($suppress);
+// Return the exit code
+exit(CodeIgniter\Boot::bootCLI($paths));
 
 // fire off the command in the main framework.
 $response = $console->run();
