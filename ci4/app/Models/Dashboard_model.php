@@ -87,11 +87,11 @@ class Dashboard_model extends Model
 	public function getSalesChartData(){
 		// Get sales data for the last 6 months
 		$builder = $this->db->table("sales_invoices");
-		$builder->select("DATE_FORMAT(created_at, '%b') as month, COALESCE(SUM(total), 0) as total");
+		$builder->select("DATE_FORMAT(created_at, '%b') as month, COALESCE(SUM(total), 0) as total, MIN(created_at) as min_date");
 		$builder->where("uuid_business_id", $this->businessUuid);
 		$builder->where("created_at >=", date('Y-m-d', strtotime('-6 months')));
 		$builder->groupBy("DATE_FORMAT(created_at, '%Y-%m')");
-		$builder->orderBy("MIN(created_at)", "ASC");
+		$builder->orderBy("min_date", "ASC");
 		$result = $builder->get()->getResultArray();
 
 		// Initialize last 6 months with zero values
