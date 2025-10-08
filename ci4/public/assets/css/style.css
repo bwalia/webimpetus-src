@@ -2033,18 +2033,18 @@ p a:hover {
 }
 
 /* line 1495,  */
-/* .btn-primary {
+.btn-primary {
   color: #fff;
   background-color: #ff004e;
   border-color: #ff004e;
-} */
+}
 
 /* line 1500,  */
-/* .btn-primary:hover {
+.btn-primary:hover {
   color: #fff;
   background-color: #ff004ee6;
   border-color: #ff004ee6;
-} */
+}
 
 @media (max-width: 991px) {
   /* line 1506,  */

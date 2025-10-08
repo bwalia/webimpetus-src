@@ -57,10 +57,10 @@ jobs:
               uses: actions/checkout@v3
         
             - name: Deploy WebImpetus to k3s3 VPN INT Environment
-              run: chmod +x ./deploy-to-kubernetes.sh && ./deploy-to-kubernetes.sh "int" "k3s3" "int"
+              run: chmod +x ./deploy-webimpetus-in-kubernetes.sh && ./deploy-webimpetus-in-kubernetes.sh "int" "k3s3" "int"
 
             - name: Deploy WebImpetus to k3s3 VPN TEST Environment
-              run: chmod +x ./deploy-to-kubernetes.sh && ./deploy-to-kubernetes.sh "test" "k3s3" "test"
+              run: chmod +x ./deploy-webimpetus-in-kubernetes.sh && ./deploy-webimpetus-in-kubernetes.sh "test" "k3s3" "test"
 
     deployment2:
       runs-on: 'node2'
@@ -71,10 +71,10 @@ jobs:
             uses: actions/checkout@v3
       
           - name: Deploy WebImpetus to k3s2 VPN INT Environment
-            run: chmod +x ./deploy-to-kubernetes.sh && ./deploy-to-kubernetes.sh "int" "k3s2" "int"
+            run: chmod +x ./deploy-webimpetus-in-kubernetes.sh && ./deploy-webimpetus-in-kubernetes.sh "int" "k3s2" "int"
 
           - name: Deploy WebImpetus to k3s2 VPN TEST Environment
-            run: chmod +x ./deploy-to-kubernetes.sh && ./deploy-to-kubernetes.sh "test" "k3s2" "test"
+            run: chmod +x ./deploy-webimpetus-in-kubernetes.sh && ./deploy-webimpetus-in-kubernetes.sh "test" "k3s2" "test"
 
     deployment6:
       runs-on: 'node6'
@@ -85,10 +85,10 @@ jobs:
             uses: actions/checkout@v3
       
           - name: Deploy WebImpetus to k3s6 VPN INT Environment
-            run: chmod +x ./deploy-to-kubernetes.sh && ./deploy-to-kubernetes.sh "int" "k3s6" "int"
+            run: chmod +x ./deploy-webimpetus-in-kubernetes.sh && ./deploy-webimpetus-in-kubernetes.sh "int" "k3s6" "int"
 
           - name: Deploy WebImpetus to k3s6 VPN TEST Environment
-            run: chmod +x ./deploy-to-kubernetes.sh && ./deploy-to-kubernetes.sh "test" "k3s6" "test"
+            run: chmod +x ./deploy-webimpetus-in-kubernetes.sh && ./deploy-webimpetus-in-kubernetes.sh "test" "k3s6" "test"
 
     deployment10:
       runs-on: 'node10'
@@ -99,10 +99,10 @@ jobs:
             uses: actions/checkout@v3
       
           - name: Deploy WebImpetus to k3s10 VPN INT Environment
-            run: chmod +x ./deploy-to-kubernetes.sh && ./deploy-to-kubernetes.sh "int" "k3s10" "int"
+            run: chmod +x ./deploy-webimpetus-in-kubernetes.sh && ./deploy-webimpetus-in-kubernetes.sh "int" "k3s10" "int"
 
           - name: Deploy WebImpetus to k3s10 VPN TEST Environment
-            run: chmod +x ./deploy-to-kubernetes.sh && ./deploy-to-kubernetes.sh "test" "k3s10" "test"
+            run: chmod +x ./deploy-webimpetus-in-kubernetes.sh && ./deploy-webimpetus-in-kubernetes.sh "test" "k3s10" "test"
         
 
           - name: Slack Notification for Workstation CRM INT & TEST release 

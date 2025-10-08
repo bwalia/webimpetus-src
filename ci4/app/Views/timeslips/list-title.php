@@ -51,9 +51,8 @@
                                     </a>
                                 <?php } ?>
                                 <button data-toggle="modal" data-target="#exampleModal"
-                                    href="<?php echo base_url("timeslips/downloadPdf"); ?>" class="btn btn-primary"><i
-                                        class="ti-export"></i>
-                                    <?php echo lang('Common.export_pdf'); ?>
+                                    href="<?php echo base_url("timeslips/downloadPdf"); ?>" class="btn btn-primary">
+                                    <i class="ti-export"></i> <?php echo lang('Common.export_pdf'); ?>
                                 </button>
                             </div>
 

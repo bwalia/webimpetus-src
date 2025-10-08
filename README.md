@@ -30,7 +30,7 @@ Use the helm package manager [helm](https://webimpetus.io/en/stable/) to install
 
 
 ```shell or bash
-`sudo sh ./deploy-to-docker.sh` or `sudo bash ./deploy-to-docker.sh`
+`sudo sh ./start-dev-docker-compose.sh` or `sudo bash ./start-dev-docker-compose.sh`
 ```
 
 # DEPLOY WEBIMPETUS TO KUBERNETES (SUITABLE FOR DEVELOPMENT PODS, TEST, INT, ACC and or PROD environments)
@@ -40,7 +40,7 @@ Use the helm package manager [helm](https://webimpetus.io/en/stable/) to install
 Use the helm package manager [helm](https://webimpetus.io/en/stable/) to install WebImpetus.
 
 ```shell or bash
-`sudo sh ./deploy-to-kubernetes.sh` or `sudo bash ./deploy-to-kubernetes.sh`
+`sudo sh ./deploy-webimpetus-in-kubernetes.sh` or `sudo bash ./deploy-webimpetus-in-kubernetes.sh`
 `this shell script assumes you have a working kubernetes cluster and connection to kubernetes configured and working`
 ```
 ## List of the environments:-
@@ -48,7 +48,7 @@ Use the helm package manager [helm](https://webimpetus.io/en/stable/) to install
 | Environment | Link     | Credentials                |
 | :-------- | :------- | :------------------------- |
 | `dev` | `http://localhost:8080/` | `Ask administrator` |
-| `dev with https:// tls cert` | `https://localhost:9093/` | `Ask administrator` | `see deploy-to-docker.sh`
+| `dev with https:// tls cert` | `https://localhost:9093/` | `Ask administrator` | `see start-dev-docker-compose.sh`
 | `int` | `https://int-my.workstation.co.uk/` | `Ask administrator` |
 | `test` | `https://test-my.workstation.co.uk/` | `Ask administrator` |
 | `acc` | `https://acc-my.workstation.co.uk/` | `Ask administrator` |

@@ -1,8 +1,8 @@
 #!/bin/bash
 # Date: 2024 03 05 7:50AM
 # Docker dev env setup script
-# Usage: ./deploy-to-docker.sh [env]
-# Example: ./deploy-to-docker.sh dev
+# Usage: ./start-dev-docker-compose.sh [env]
+# Example: ./start-dev-docker-compose.sh dev
 # Note: Do not run this against Kubernetes cluster
 
 if [ -z "$1" ]; then

@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Common Development Commands
 
 ### Docker Development Environment
-- **Start development environment**: `sudo ./deploy-to-docker.sh` or `sudo ./deploy-to-docker.sh dev`
+- **Start development environment**: `sudo ./start-dev-docker-compose.sh` or `sudo ./start-dev-docker-compose.sh dev`
 - **Docker Compose operations**: 
   - `docker-compose up -d --build` - Start all services
   - `docker-compose down` - Stop all services
@@ -27,7 +27,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   - `npm run allure-report-open` - Open reports
 
 ### Kubernetes Deployment
-- **Deploy to K8s**: `sudo ./deploy-to-kubernetes.sh`
+- **Deploy to K8s**: `sudo ./deploy-webimpetus-in-kubernetes.sh`
 - **Helm operations**: Located in `devops/webimpetus-chart/`
 
 ## Architecture Overview
@@ -89,7 +89,7 @@ The system includes these main modules:
 
 ### Development Workflow
 1. Configure `.env` file with database and application settings
-2. Run `./deploy-to-docker.sh` to start development environment
+2. Run `./start-dev-docker-compose.sh` to start development environment
 3. Access application at http://localhost:8080
 4. Use `docker exec -it webimpetus-dev bash` for container access
 5. Run tests with Cypress in `qa/cypress_ui_test/`
