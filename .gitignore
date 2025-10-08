@@ -23,6 +23,9 @@ ci4/test.sh
 
 # Database dumps
 *.sql
+wi-dev.sql
+myworkstation_int_db.sql
+
 myworkstation_dev_db*.sql
 
 # Environment files
