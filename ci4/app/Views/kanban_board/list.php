@@ -294,4 +294,30 @@
     function gotoTask(task_id) {
         window.location.href = '<?= "/" . $tableName . "/edit/" ?>'+task_id
     }
+    
+    // Ensure kanban container responds to sidebar toggle
+    $(document).ready(function() {
+        // Listen for sidebar toggle button clicks
+        $(".open_miniSide").on("click", function() {
+            console.log("Sidebar toggled - Kanban should respond");
+            // Force refresh of kanban container classes
+            setTimeout(function() {
+                if ($(".sidebar").hasClass("mini_sidebar")) {
+                    $(".kanban-container").addClass("full_main_content");
+                    console.log("Sidebar collapsed - Kanban adjusted to 70px padding");
+                } else {
+                    $(".kanban-container").removeClass("full_main_content");
+                    console.log("Sidebar expanded - Kanban adjusted to 270px padding");
+                }
+            }, 50);
+        });
+        
+        // Check initial state on page load
+        if ($(".sidebar").hasClass("mini_sidebar")) {
+            $(".kanban-container").addClass("full_main_content");
+            console.log("Initial state: Sidebar collapsed");
+        } else {
+            console.log("Initial state: Sidebar expanded");
+        }
+    });
 </script>

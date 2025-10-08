@@ -381,7 +381,7 @@ nav.sidebar::-webkit-scrollbar {
 
 /* line 278, /scss/_sidebar.scss */
 .sidebar #sidebar_menu > li a {
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 500;
   color: #144339;
   padding: 0px 25px 0px 0px;

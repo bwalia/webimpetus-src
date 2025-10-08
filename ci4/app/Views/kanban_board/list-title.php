@@ -7,6 +7,12 @@
         background: #ffffff;
         min-height: 100vh;
         padding: 20px 0;
+        /* Removed fixed padding to allow responsive sidebar behavior */
+    }
+
+    /* Sidebar responsiveness - ensure padding adjusts when sidebar toggles */
+    .main_content.kanban-container {
+        transition: padding-left 0.3s ease !important;
     }
 
     .kanban-board {
@@ -36,12 +42,12 @@
     .kanban-column-header {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
-        padding: 15px 20px;
+        padding: 10px 15px;
         border-radius: 12px 12px 0 0;
         font-weight: 700;
-        font-size: 16px;
+        font-size: 14px;
         text-transform: uppercase;
-        letter-spacing: 1px;
+        letter-spacing: 0.5px;
         text-align: center;
         position: relative;
         overflow: hidden;
@@ -62,49 +68,49 @@
         left: 100%;
     }
 
-    /* Column-specific colors */
+    /* Column-specific colors - Darker, more saturated to match brand */
     .kanban-column[data-category="todo"] .kanban-column-header {
-        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        background: linear-gradient(135deg, #d946ef 0%, #e11d48 100%);
     }
 
     .kanban-column[data-category="in-progress"] .kanban-column-header {
-        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        background: linear-gradient(135deg, #3b82f6 0%, #0ea5e9 100%);
     }
 
     .kanban-column[data-category="review"] .kanban-column-header {
-        background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
     }
 
     .kanban-column[data-category="done"] .kanban-column-header {
-        background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        background: linear-gradient(135deg, #f59e0b 0%, #eab308 100%);
     }
 
     .kanban-column-content {
-        padding: 20px 15px;
+        padding: 8px 10px;
         min-height: 520px;
     }
 
     .kanban-task {
         background: white;
-        border-radius: 12px;
-        margin-bottom: 15px;
+        border-radius: 8px;
+        margin-bottom: 6px;
         cursor: grab;
         transition: all 0.3s ease;
         border: 1px solid #e9ecef;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
         position: relative;
         overflow: hidden;
     }
 
     .kanban-task:hover {
-        transform: translateY(-3px) scale(1.02);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
         border-color: #667eea;
     }
 
     .kanban-task:active {
         cursor: grabbing;
-        transform: rotate(5deg) scale(1.05);
+        transform: rotate(3deg) scale(1.02);
     }
 
     .kanban-task::before {
@@ -112,36 +118,36 @@
         position: absolute;
         top: 0;
         left: 0;
-        width: 4px;
+        width: 3px;
         height: 100%;
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     }
 
     .kanban-task-content {
-        padding: 18px;
+        padding: 12px;
     }
 
     .kanban-task-id {
-        font-size: 12px;
-        font-weight: 700;
+        font-size: 10px;
+        font-weight: 800;
         color: #667eea;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-        margin-bottom: 8px;
-        background: rgba(102, 126, 234, 0.1);
-        padding: 4px 8px;
-        border-radius: 20px;
+        margin-bottom: 6px;
+        background: rgba(102, 126, 234, 0.15);
+        padding: 3px 6px;
+        border-radius: 12px;
         display: inline-block;
     }
 
     .kanban-task-title {
-        font-size: 15px;
+        font-size: 14px;
         font-weight: 600;
         color: #2c3e50;
-        line-height: 1.4;
-        margin-bottom: 12px;
+        line-height: 1.3;
+        margin-bottom: 8px;
         display: -webkit-box;
-        -webkit-line-clamp: 3;
+        -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
     }
@@ -150,18 +156,18 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-top: 15px;
-        padding-top: 12px;
+        margin-top: 8px;
+        padding-top: 8px;
         border-top: 1px solid #f1f3f4;
     }
 
     .kanban-priority {
-        padding: 6px 12px;
-        border-radius: 20px;
-        font-size: 11px;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 10px;
         font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
+        letter-spacing: 0.3px;
         color: white;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
     }
@@ -182,24 +188,24 @@
     }
 
     .kanban-project {
-        font-size: 12px;
+        font-size: 11px;
         color: #6c757d;
         font-weight: 500;
         background: #f8f9fa;
-        padding: 4px 8px;
-        border-radius: 12px;
+        padding: 3px 6px;
+        border-radius: 10px;
     }
 
     .dropzone {
-        min-height: 40px;
+        min-height: 30px;
         border: 2px dashed transparent;
         border-radius: 8px;
-        margin: 8px 0;
+        margin: 4px 0;
         transition: all 0.3s ease;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 12px;
+        font-size: 11px;
         color: #adb5bd;
     }
 
@@ -221,6 +227,7 @@
         border-radius: 8px;
         padding: 8px 15px;
         font-weight: 500;
+        font-size: 16px;
         color: #495057;
         transition: all 0.3s ease;
         min-width: 180px;
@@ -334,14 +341,14 @@
         background: rgba(255, 255, 255, 0.3);
         color: white;
         border-radius: 50%;
-        width: 25px;
-        height: 25px;
+        width: 22px;
+        height: 22px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        font-size: 12px;
+        font-size: 11px;
         font-weight: 700;
-        margin-left: 8px;
+        margin-left: 6px;
     }
 </style>
 

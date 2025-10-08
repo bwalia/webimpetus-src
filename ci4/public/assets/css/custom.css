@@ -18,6 +18,17 @@
     color: #ff004e !important;
 }
 
+/* DataTables - Bold Column Headers for All List Pages */
+table.dataTable thead th,
+table.dataTable thead td,
+.table thead th,
+.table thead td,
+.QA_table thead th,
+.QA_table thead td {
+    font-weight: 700 !important;
+    color: #2c3e50 !important;
+}
+
 .dragtoken {
     width: 100%;
     z-index: 9999;
@@ -240,4 +251,158 @@
 .alert.alert-danger {
     background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%) !important;
     color: white !important;
+}
+
+/* Kanban Board Sidebar Responsiveness */
+/* Fix: The kanban-container IS the main_content element itself */
+
+/* Default state when sidebar is expanded (270px) */
+.main_content.kanban-container {
+    padding-left: 270px !important;
+    transition: padding-left 0.3s ease !important;
+}
+
+/* When sidebar is collapsed (70px) via mini_sidebar */
+.main_content.kanban-container.full_main_content {
+    padding-left: 70px !important;
+    transition: padding-left 0.3s ease !important;
+}
+
+/* Ensure inner content adjusts properly */
+.kanban-container .main_content_iner {
+    transition: all 0.3s ease !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    position: relative !important;
+}
+
+/* Ensure kanban board columns are responsive */
+.kanban-board {
+    transition: all 0.3s ease !important;
+}
+
+.kanban-board .col-lg-3,
+.kanban-board .col-md-6 {
+    transition: all 0.3s ease !important;
+}
+
+/* Ensure breadcrumb and header elements stay visible and clickable */
+.kanban-page-header {
+    position: relative !important;
+    z-index: 25 !important;
+    transition: all 0.3s ease !important;
+}
+
+.kanban-page-header * {
+    position: relative !important;
+    z-index: 30 !important;
+}
+
+.kanban-page-title,
+.breadcrumb {
+    position: relative !important;
+    z-index: 35 !important;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 991px) {
+    .main_content.kanban-container {
+        padding-left: 0 !important;
+    }
+    
+    .main_content.kanban-container.full_main_content {
+        padding-left: 0 !important;
+    }
+}
+
+/* Business Switcher Dropdown - Match Kanban Board Styling */
+.business-uuid-selector select#uuidBusinessIdSwitcher {
+    background: #ffffff !important;
+    border: 2px solid #667eea !important;
+    border-radius: 8px !important;
+    padding: 8px 15px !important;
+    font-weight: 500 !important;
+    font-size: 16px !important;
+    color: #495057 !important;
+    transition: all 0.3s ease !important;
+    min-width: 180px !important;
+    height: auto !important;
+    line-height: 1.5 !important;
+}
+
+.business-uuid-selector select#uuidBusinessIdSwitcher:focus {
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15) !important;
+    background: #ffffff !important;
+    border-color: #5a67d8 !important;
+}
+
+/* Select2 dropdown styling to match Kanban */
+.select2-container--default .select2-selection--single {
+    background: #ffffff !important;
+    border: 2px solid #667eea !important;
+    border-radius: 8px !important;
+    height: auto !important;
+    padding: 8px 15px !important;
+    transition: all 0.3s ease !important;
+    font-size: 16px !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #495057 !important;
+    font-weight: 500 !important;
+    font-size: 16px !important;
+    line-height: 1.5 !important;
+    padding: 0 !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 100% !important;
+    top: 0 !important;
+    right: 8px !important;
+}
+
+.select2-container--default.select2-container--focus .select2-selection--single,
+.select2-container--default.select2-container--open .select2-selection--single {
+    border-color: #5a67d8 !important;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15) !important;
+    outline: none !important;
+}
+
+/* Select2 dropdown menu */
+.select2-container--default .select2-results__option {
+    padding: 10px 15px !important;
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    transition: all 0.2s ease !important;
+}
+
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background-color: #667eea !important;
+    color: white !important;
+}
+
+.select2-container--default .select2-results__option[aria-selected=true] {
+    background-color: #f0f2ff !important;
+    color: #495057 !important;
+}
+
+.select2-dropdown {
+    border: 2px solid #667eea !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+}
+
+.select2-search--dropdown .select2-search__field {
+    border: 1px solid #dee2e6 !important;
+    border-radius: 6px !important;
+    padding: 8px 12px !important;
+    font-size: 16px !important;
+    font-weight: 500 !important;
+}
+
+.select2-search--dropdown .select2-search__field:focus {
+    outline: none !important;
+    border-color: #667eea !important;
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1) !important;
 }
