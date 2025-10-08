@@ -83,7 +83,7 @@ table.dataTable thead td,
 /* Make sidebar menu items bold and more user-friendly */
 .sidebar #sidebar_menu li a span {
     font-weight: 600 !important;
-    font-size: 15px !important;
+    font-size: 19px !important;
     color: #2c3e50 !important;
     text-transform: none !important;
     letter-spacing: 0.3px !important;
