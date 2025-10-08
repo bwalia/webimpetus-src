@@ -83,7 +83,7 @@ table.dataTable thead td,
 /* Make sidebar menu items bold and more user-friendly */
 .sidebar #sidebar_menu li a span {
     font-weight: 600 !important;
-    font-size: 20px !important;
+    font-size: 19px !important;
     color: #2c3e50 !important;
     text-transform: none !important;
     letter-spacing: 0.3px !important;
@@ -484,4 +484,10 @@ select.form-control option {
     font-size: 16px !important;
     line-height: 1.6 !important;
     min-height: 24px !important;
+}
+
+/* Ensure sidebar menu text spans match the updated font size */
+.sidebar #sidebar_menu > li a span {
+    font-size: 20px !important;
+    font-weight: 500 !important;
 }
