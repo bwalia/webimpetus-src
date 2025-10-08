@@ -315,6 +315,68 @@ table.dataTable thead td,
     }
 }
 
+/* Scrum Board Sidebar Responsiveness */
+/* Same responsive behavior as Kanban Board */
+
+/* Default state when sidebar is expanded (270px) */
+.main_content.scrum-container {
+    padding-left: 270px !important;
+    transition: padding-left 0.3s ease !important;
+}
+
+/* When sidebar is collapsed (70px) via mini_sidebar */
+.main_content.scrum-container.full_main_content {
+    padding-left: 70px !important;
+    transition: padding-left 0.3s ease !important;
+}
+
+/* Ensure inner content adjusts properly */
+.scrum-container .main_content_iner {
+    transition: all 0.3s ease !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    position: relative !important;
+}
+
+/* Ensure scrum board columns are responsive */
+.scrum-board {
+    transition: all 0.3s ease !important;
+}
+
+.scrum-board .col-lg-3,
+.scrum-board .col-md-6 {
+    transition: all 0.3s ease !important;
+}
+
+/* Ensure breadcrumb and header elements stay visible and clickable */
+.scrum-page-header {
+    position: relative !important;
+    z-index: 25 !important;
+    transition: all 0.3s ease !important;
+}
+
+.scrum-page-header * {
+    position: relative !important;
+    z-index: 30 !important;
+}
+
+.scrum-page-title,
+.breadcrumb {
+    position: relative !important;
+    z-index: 35 !important;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 991px) {
+    .main_content.scrum-container {
+        padding-left: 0 !important;
+    }
+    
+    .main_content.scrum-container.full_main_content {
+        padding-left: 0 !important;
+    }
+}
+
 /* Business Switcher Dropdown - Match Kanban Board Styling */
 .business-uuid-selector select#uuidBusinessIdSwitcher {
     background: #ffffff !important;
