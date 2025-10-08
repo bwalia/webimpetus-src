@@ -1,8 +1,11 @@
 
 
 // currently sale
+// Get dynamic weekly sales data or fallback to default value
+var weeklySales = window.weeklySalesData || { percentage: 0 };
+
 var options = {
-    series: [74],
+    series: [weeklySales.percentage],
     chart: {
         height: 300,
         type: 'radialBar',
@@ -83,13 +86,19 @@ options = {
 (chart = new ApexCharts(document.querySelector("#management_bar"), options)).render();
 
 
-// cart area 
+// cart area
 
 // currently sale
+// Get dynamic sales data or fallback to default values
+var salesData = window.salesChartData || {
+    months: ['Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+    data: [30, 25, 45, 30, 55, 55]
+};
+
 var options = {
     series: [{
         name: 'Net Profit',
-        data: [30, 25, 45, 30, 55, 55]
+        data: salesData.data
     }],
     chart: {
         type: 'area',
@@ -123,7 +132,7 @@ var options = {
         colors:  ["#ff004e" ,"#E5ECFF" ],
     },
     xaxis: {
-        categories: ['Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+        categories: salesData.months,
         axisBorder: {
             show: false,
         },
@@ -159,7 +168,7 @@ var options = {
     },
     yaxis: {
         min: 0,
-        max: 60,
+        max: Math.max(...salesData.data) * 1.2 || 60,
         labels: {
             show: false,
             style: {
