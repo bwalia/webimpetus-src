@@ -141,13 +141,13 @@
     }
 
     .kanban-task-title {
-        font-size: 14px;
-        font-weight: 600;
+        font-size: 16px;
+        font-weight: 700;
         color: #2c3e50;
-        line-height: 1.3;
-        margin-bottom: 8px;
+        line-height: 1.4;
+        margin-bottom: 10px;
         display: -webkit-box;
-        -webkit-line-clamp: 2;
+        -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
         overflow: hidden;
     }

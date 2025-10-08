@@ -29,6 +29,10 @@ class Dashboard extends CommonController
 		$data['title'] = "";
 		$data['recent_users'] = $this->dashboard_model->getRecentUsers();
 		$data['recent_employees'] = $this->dashboard_model->getRecentEmployees();
+		$data['sales_chart_data'] = $this->dashboard_model->getSalesChartData();
+		$data['sales_totals'] = $this->dashboard_model->getSalesTotals();
+		$data['weekly_sales'] = $this->dashboard_model->getWeeklySalesProgress();
+		$data['incidents_per_customer'] = $this->dashboard_model->getIncidentsPerCustomer();
 		// prd($data);
 		$allMenu = $this->dashboard_model->filterMenu(); //getWithOutUuidResultArray("menu");
 		$menuList = [];

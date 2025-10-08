@@ -236,7 +236,7 @@
                                                         <img src="img/icon2/3.svg" alt="">
                                                     </div>
                                                     <div>
-                                                        <h5>$2,034</h5>
+                                                        <h5>$<?= number_format($sales_totals['current_month'], 2) ?></h5>
                                                         <span>Author Sales</span>
                                                     </div>
                                                 </div>
@@ -249,7 +249,7 @@
                                                         <img src="img/icon2/2.svg" alt="">
                                                     </div>
                                                     <div>
-                                                        <h5>$5.8M</h5>
+                                                        <h5>$<?= number_format($sales_totals['all_time'], 2) ?></h5>
                                                         <span>All Time Sales</span>
                                                     </div>
                                                 </div>
@@ -435,6 +435,32 @@
                         </div>
                     </div>
 
+                    <div class="col-xl-4">
+                        <div class="white_card mb_30">
+                            <div class="white_card_header">
+                                <div class="box_header m-0">
+                                    <div class="main-title">
+                                        <h3 class="m-0">Incidents Per Customer</h3>
+                                    </div>
+                                    <div class="header_more_tool dropInr">
+                                        <div class="dropdown">
+                                            <span class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown">
+                                                <i class="ti-more-alt"></i>
+                                            </span>
+                                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                                                <a class="dropdown-item" href="/incidents"> <i class="ti-eye"></i> View All</a>
+                                                <a class="dropdown-item" href="/incidents/edit"> <i class="fas fa-plus"></i> New Incident</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="white_card_body">
+                                <div id="incidents_customer_chart"></div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
         </div>
     </div>
@@ -444,6 +470,127 @@
 <!-- main content part end -->
 
 <?php require_once('common/scripts.php'); ?>
+
+<script>
+    // Pass sales data from PHP to JavaScript
+    window.salesChartData = {
+        months: <?= json_encode($sales_chart_data['months']) ?>,
+        data: <?= json_encode($sales_chart_data['data']) ?>
+    };
+
+    // Pass weekly sales progress data
+    window.weeklySalesData = {
+        percentage: <?= $weekly_sales['percentage'] ?>,
+        currentWeek: <?= $weekly_sales['current_week'] ?>,
+        lastWeek: <?= $weekly_sales['last_week'] ?>
+    };
+
+    // Pass incidents per customer data
+    window.incidentsCustomerData = {
+        customers: <?= json_encode($incidents_per_customer['customers']) ?>,
+        counts: <?= json_encode($incidents_per_customer['counts']) ?>
+    };
+</script>
+
+<script>
+    // Create incidents per customer chart
+    if (document.querySelector("#incidents_customer_chart")) {
+        var incidentsData = window.incidentsCustomerData || {
+            customers: [],
+            counts: []
+        };
+
+        // Limit to top 5 customers for better visibility
+        var topCustomers = incidentsData.customers.slice(0, 5);
+        var topCounts = incidentsData.counts.slice(0, 5);
+
+        // Generate different colors for each bar
+        var chartColors = ['#ff004e', '#9767FD', '#f1b44c', '#50a5f1', '#34c38f'];
+
+        var incidentsChartOptions = {
+            series: [{
+                name: 'Incidents',
+                data: topCounts
+            }],
+            chart: {
+                type: 'bar',
+                height: 300,
+                toolbar: {
+                    show: false
+                }
+            },
+            plotOptions: {
+                bar: {
+                    horizontal: false,
+                    columnWidth: '60%',
+                    endingShape: 'rounded',
+                    distributed: true,
+                    dataLabels: {
+                        position: 'top'
+                    }
+                }
+            },
+            dataLabels: {
+                enabled: true,
+                offsetY: -20,
+                style: {
+                    fontSize: '11px',
+                    fontWeight: 'bold',
+                    colors: ["#304758"]
+                }
+            },
+            stroke: {
+                show: true,
+                width: 2,
+                colors: ['transparent']
+            },
+            xaxis: {
+                categories: topCustomers,
+                labels: {
+                    rotate: -45,
+                    rotateAlways: false,
+                    style: {
+                        fontSize: '10px'
+                    },
+                    trim: true
+                }
+            },
+            yaxis: {
+                title: {
+                    text: 'Incidents',
+                    style: {
+                        fontSize: '11px'
+                    }
+                },
+                labels: {
+                    style: {
+                        fontSize: '10px'
+                    }
+                }
+            },
+            colors: chartColors,
+            legend: {
+                show: false
+            },
+            tooltip: {
+                y: {
+                    formatter: function (val) {
+                        return val + " incidents"
+                    }
+                }
+            },
+            grid: {
+                borderColor: '#f1f1f1',
+                padding: {
+                    bottom: 10
+                }
+            }
+        };
+
+        var incidentsChart = new ApexCharts(document.querySelector("#incidents_customer_chart"), incidentsChartOptions);
+        incidentsChart.render();
+    }
+</script>
 
 <script>
     $(".view_more").click(function() {
