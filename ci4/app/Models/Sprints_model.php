@@ -7,14 +7,13 @@ use CodeIgniter\Model;
 class Sprints_model extends Model
 {
     protected $table = 'sprints';
+    protected $businessUuid;
 
     public function __construct()
     {
         parent::__construct();
-        if(property_exists($this, 'businessUuid') && session()->has('uuid_business')) {
-            $this->businessUuid = session('uuid_business');
-            }
-        }
+        $this->businessUuid = session()->has('uuid_business') ? session('uuid_business') : null;
+    }
     public function getRows($id = false)
     {
         if ($id === false) {
@@ -28,6 +27,7 @@ class Sprints_model extends Model
     {
         $builder = $this->db->table($this->table);
         $builder->where($this->table . ".uuid_business_id",  $this->businessUuid);
+        $builder->orderBy('start_date', 'ASC');
         return $builder->get()->getResultArray();
     }
 
