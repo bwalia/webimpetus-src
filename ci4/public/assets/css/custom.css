@@ -468,3 +468,20 @@ table.dataTable thead td,
     border-color: #667eea !important;
     box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1) !important;
 }
+
+/* Fix for standard select.form-control dropdown text display */
+select.form-control {
+    height: auto !important;
+    min-height: 38px !important;
+    padding: 8px 12px !important;
+    font-size: 16px !important;
+    line-height: 1.5 !important;
+    display: block !important;
+}
+
+select.form-control option {
+    padding: 8px 12px !important;
+    font-size: 16px !important;
+    line-height: 1.6 !important;
+    min-height: 24px !important;
+}
