@@ -1,4 +1,244 @@
 <?php require_once(APPPATH . 'Views/fullcalendar/list-title.php'); ?>
+
+<style>
+    /* JIRA-style Calendar Enhancements */
+    .calendar-wrapper {
+        background: var(--bg-primary, #ffffff);
+        border-radius: var(--radius-lg, 12px);
+        padding: 24px;
+        box-shadow: var(--shadow-md, 0 2px 8px rgba(0,0,0,0.08));
+    }
+
+    #calendar {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    /* FullCalendar Header Styling */
+    .fc-header-toolbar {
+        padding: 16px 0;
+        margin-bottom: 20px !important;
+    }
+
+    .fc-toolbar-title {
+        font-size: 1.5rem !important;
+        font-weight: 700 !important;
+        color: var(--gray-800, #1f2937) !important;
+    }
+
+    .fc-button {
+        background: var(--primary, #667eea) !important;
+        border: none !important;
+        border-radius: var(--radius-md, 8px) !important;
+        padding: 8px 16px !important;
+        font-weight: 600 !important;
+        text-transform: capitalize !important;
+        transition: all 0.2s ease !important;
+    }
+
+    .fc-button:hover {
+        background: var(--primary-dark, #5a67d8) !important;
+        transform: translateY(-1px);
+    }
+
+    .fc-button:active {
+        transform: translateY(0);
+    }
+
+    .fc-button-active {
+        background: var(--primary-dark, #5a67d8) !important;
+    }
+
+    /* Calendar Grid */
+    .fc-daygrid-day {
+        transition: background 0.2s ease;
+    }
+
+    .fc-daygrid-day:hover {
+        background: var(--gray-50, #f9fafb) !important;
+    }
+
+    .fc-col-header-cell {
+        background: var(--gray-50, #f9fafb) !important;
+        padding: 12px 8px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        font-size: 0.75rem !important;
+        letter-spacing: 0.5px !important;
+        color: var(--gray-600, #4b5563) !important;
+    }
+
+    .fc-daygrid-day-number {
+        font-weight: 600 !important;
+        color: var(--gray-700, #374151) !important;
+        padding: 8px !important;
+    }
+
+    .fc-day-today {
+        background: rgba(102, 126, 234, 0.08) !important;
+    }
+
+    .fc-day-today .fc-daygrid-day-number {
+        background: var(--primary, #667eea) !important;
+        color: white !important;
+        border-radius: 50% !important;
+        width: 32px !important;
+        height: 32px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    /* Calendar Events */
+    .fc-event {
+        border: none !important;
+        border-radius: var(--radius-sm, 4px) !important;
+        padding: 4px 8px !important;
+        margin: 2px 4px !important;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        font-size: 0.75rem !important;
+        font-weight: 600 !important;
+        transition: all 0.2s ease !important;
+    }
+
+    .fc-event:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3) !important;
+    }
+
+    .fc-event-title {
+        font-weight: 600 !important;
+    }
+
+    /* Popup Form Styling */
+    .new-event {
+        background: var(--bg-primary, #ffffff) !important;
+        border-radius: var(--radius-lg, 12px) !important;
+        box-shadow: var(--shadow-xl, 0 8px 24px rgba(0,0,0,0.15)) !important;
+        padding: 24px !important;
+        border: 2px solid var(--primary, #667eea) !important;
+        min-width: 400px !important;
+    }
+
+    .new-event h5 {
+        color: var(--gray-800, #1f2937) !important;
+        font-size: 1.125rem !important;
+        font-weight: 700 !important;
+        margin-bottom: 20px !important;
+        padding-bottom: 12px !important;
+        border-bottom: 2px solid var(--gray-100, #f3f4f6) !important;
+    }
+
+    .new-event h5 .date {
+        color: var(--primary, #667eea) !important;
+    }
+
+    .new-event .close-pop {
+        position: absolute !important;
+        right: 16px !important;
+        top: 16px !important;
+        color: var(--gray-400, #9ca3af) !important;
+        font-size: 1.25rem !important;
+        cursor: pointer !important;
+        transition: all 0.2s ease !important;
+    }
+
+    .new-event .close-pop:hover {
+        color: var(--gray-700, #374151) !important;
+        transform: rotate(90deg);
+    }
+
+    .new-event .form-group {
+        margin-bottom: 16px !important;
+    }
+
+    .new-event label,
+    .new-event .form-group > div:first-of-type {
+        font-size: 0.875rem !important;
+        font-weight: 600 !important;
+        color: var(--gray-700, #374151) !important;
+        margin-bottom: 6px !important;
+    }
+
+    .new-event .form-control {
+        border: 1px solid var(--border-medium, #d1d5db) !important;
+        border-radius: var(--radius-md, 8px) !important;
+        padding: 8px 12px !important;
+        font-size: 0.875rem !important;
+        transition: all 0.2s ease !important;
+    }
+
+    .new-event .form-control:focus {
+        outline: none !important;
+        border-color: var(--primary, #667eea) !important;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15) !important;
+    }
+
+    .new-event .btn-primary {
+        background: var(--primary, #667eea) !important;
+        border: none !important;
+        border-radius: var(--radius-md, 8px) !important;
+        padding: 10px 24px !important;
+        font-weight: 600 !important;
+        transition: all 0.2s ease !important;
+    }
+
+    .new-event .btn-primary:hover {
+        background: var(--primary-dark, #5a67d8) !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3) !important;
+    }
+
+    .new-event .required {
+        color: #ef4444 !important;
+        font-weight: 700 !important;
+    }
+
+    /* Popup Pointer Arrow */
+    .pointer .arrow {
+        border-top: 12px solid var(--primary, #667eea) !important;
+    }
+
+    .pointer .arrow_border {
+        border-top: 14px solid var(--primary, #667eea) !important;
+    }
+
+    /* Time Grid View Styling */
+    .fc-timegrid-slot {
+        height: 3em !important;
+    }
+
+    .fc-timegrid-slot-label {
+        font-weight: 600 !important;
+        color: var(--gray-600, #4b5563) !important;
+    }
+
+    /* List View Styling */
+    .fc-list-event {
+        transition: background 0.2s ease !important;
+    }
+
+    .fc-list-event:hover {
+        background: var(--gray-50, #f9fafb) !important;
+    }
+
+    .fc-list-event-dot {
+        background: var(--primary, #667eea) !important;
+        border-color: var(--primary, #667eea) !important;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        .new-event {
+            min-width: 300px !important;
+            max-width: 90vw !important;
+        }
+
+        .fc-toolbar-title {
+            font-size: 1.125rem !important;
+        }
+    }
+</style>
+
 <script>
 
     var calendar;

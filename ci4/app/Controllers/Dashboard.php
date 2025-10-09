@@ -170,4 +170,29 @@ class Dashboard extends CommonController
 		session()->setFlashdata('alert-class', 'alert-success');
 		return redirect()->to('/dashboard/chgpwd');
 	}
+
+	public function setLanguage()
+	{
+		$language = $this->request->getPost('language');
+
+		// Validate language code
+		$allowedLanguages = ['en', 'fr', 'nl', 'hi'];
+		if (!in_array($language, $allowedLanguages)) {
+			return $this->response->setJSON([
+				'status' => false,
+				'message' => 'Invalid language code'
+			]);
+		}
+
+		// Store language preference in session
+		$this->session->set('app_language', $language);
+
+		// Set CodeIgniter locale
+		service('request')->setLocale($language);
+
+		return $this->response->setJSON([
+			'status' => true,
+			'message' => 'Language updated successfully'
+		]);
+	}
 }

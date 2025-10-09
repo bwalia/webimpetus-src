@@ -113,6 +113,26 @@ class Purchase_invoices extends CommonController
         echo view($this->table . "/edit", $data);
     }
 
+    public function getAdditionalData($uuid)
+    {
+        $data = [];
+        if (!empty($uuid)) {
+            $data['invoice_items'] = $this->db->table($this->purchase_invoice_items)
+                ->where('purchase_invoices_uuid', $uuid)
+                ->get()
+                ->getResultArray();
+
+            $data['invoice_notes'] = $this->db->table($this->purchase_invoice_notes)
+                ->where('purchase_invoices_uuid', $uuid)
+                ->get()
+                ->getResultArray();
+        } else {
+            $data['invoice_items'] = [];
+            $data['invoice_notes'] = [];
+        }
+        return $data;
+    }
+
     public function update()
     {
         $uuid = $this->request->getPost('uuid');

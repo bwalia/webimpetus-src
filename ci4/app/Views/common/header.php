@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="/assets/css/style.css" />
     <link rel="stylesheet" href="/assets/css/sidebar.css" />
     <link rel="stylesheet" href="/assets/css/custom.css" />
+    <link rel="stylesheet" href="/assets/css/jira-theme.css" />
     <link rel="stylesheet" href="/assets/css/select2.min.css" />
     <link rel="stylesheet" href="/assets/css/jquery-ui.min.css" />
     

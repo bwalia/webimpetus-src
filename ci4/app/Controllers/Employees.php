@@ -33,7 +33,7 @@ class Employees extends CommonController
         $model = new Common_model();
 
         $sqlQuery = $model->builder("employees")
-            ->select('uuid, id, first_name, surname, email, mobile, allow_web_access')
+            ->select('uuid, id, first_name, surname, email, mobile, allow_web_access, created_at')
             ->where(['uuid_business_id' => session('uuid_business')]);
         if ($query) {
             $sqlQuery = $sqlQuery

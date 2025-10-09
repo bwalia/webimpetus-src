@@ -124,7 +124,7 @@
   right: 20px; */
         display: contents;
         transform: translateY(-50%);
-        font-size: 18px;
+        font-size: 14px;
         transition: transform 0.4s;
     }
 

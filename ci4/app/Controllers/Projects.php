@@ -47,8 +47,9 @@ class Projects extends CommonController
 		$order = $this->request->getVar('order') ?? "name";
 		$dir = $this->request->getVar('dir') ?? "asc";
 
-		$sqlQuery = $this->projects_model
-            ->select("uuid, id, name, budget, rate, currency, start_date, active")
+		// Use view to get projects with tags and related data
+		$sqlQuery = $this->db->table('view_projects_with_tags')
+            ->select("uuid, id, name, budget, rate, currency, start_date, active, status, priority, progress, deadline_date, project_manager_name, customer_name, tag_names, tag_colors, color, actual_hours")
 			->where(['uuid_business_id' => session('uuid_business')]);
 		if ($query) {
 			$sqlQuery = $sqlQuery->like("name", $query);

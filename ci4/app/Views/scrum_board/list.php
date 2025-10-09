@@ -65,21 +65,21 @@
         left: 100%;
     }
 
-    /* Column-specific colors - Darker, more saturated */
+    /* Column-specific colors - JIRA-style matching tasks board */
     .scrum-column[data-category="backlog"] .scrum-column-header {
-        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
     }
 
     .scrum-column[data-category="sprint-ready"] .scrum-column-header {
-        background: linear-gradient(135deg, #3b82f6 0%, #0ea5e9 100%);
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
     }
 
     .scrum-column[data-category="in-sprint"] .scrum-column-header {
-        background: linear-gradient(135deg, #f59e0b 0%, #eab308 100%);
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
     }
 
     .scrum-column[data-category="completed"] .scrum-column-header {
-        background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     }
 
     .scrum-column-content {
@@ -170,18 +170,24 @@
     }
 
     .scrum-priority.high {
-        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
-        box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+        background: #fee2e2;
+        color: #991b1b;
+        box-shadow: none;
+        text-shadow: none;
     }
 
     .scrum-priority.medium {
-        background: linear-gradient(135deg, #feca57 0%, #ff9ff3 100%);
-        box-shadow: 0 2px 8px rgba(254, 202, 87, 0.3);
+        background: #fef3c7;
+        color: #92400e;
+        box-shadow: none;
+        text-shadow: none;
     }
 
     .scrum-priority.low {
-        background: linear-gradient(135deg, #48dbfb 0%, #0abde3 100%);
-        box-shadow: 0 2px 8px rgba(72, 219, 251, 0.3);
+        background: #dbeafe;
+        color: #1e40af;
+        box-shadow: none;
+        text-shadow: none;
     }
 
     .scrum-sprint {

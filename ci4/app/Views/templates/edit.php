@@ -43,6 +43,26 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Tags Section -->
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label for="template_tags">
+                                <i class="fa fa-tags"></i> Tags
+                                <a href="/tags/manage" target="_blank" style="font-size: 0.85rem; margin-left: 8px;">
+                                    <i class="fa fa-cog"></i> Manage Tags
+                                </a>
+                            </label>
+                            <select id="template_tags" name="template_tags[]" class="form-control select2" multiple="multiple"
+                                    data-placeholder="Select tags for this template...">
+                                <!-- Populated by JavaScript -->
+                            </select>
+                            <small class="form-text text-muted">
+                                Select multiple tags to categorize this template. You can create new tags from the Manage Tags page.
+                            </small>
+                        </div>
+                    </div>
+
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </form>
             </div>
@@ -85,6 +105,113 @@
             alert("You are not allowed to enter JavaScript code here!");
             $("textarea.template_content").val(text.replace(js_start_tag, ""));
             return false;
+        }
+    });
+
+    // Load tags functionality
+    $(document).ready(function() {
+        loadTemplateTags();
+    });
+
+    function loadTemplateTags() {
+        const templateId = '<?= @$template->id ?>';
+
+        // Load all tags
+        $.ajax({
+            url: '/tags/tagsList',
+            method: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                if (response.status && response.data) {
+                    const tags = response.data;
+                    const $select = $('#template_tags');
+
+                    // Populate select options
+                    tags.forEach(function(tag) {
+                        const option = new Option(tag.name, tag.id, false, false);
+                        $(option).attr('data-color', tag.color);
+                        $select.append(option);
+                    });
+
+                    // Initialize select2 with custom template
+                    $select.select2({
+                        placeholder: 'Select tags for this template...',
+                        allowClear: true,
+                        templateResult: formatTemplateTag,
+                        templateSelection: formatTemplateTagSelection
+                    });
+
+                    // Load currently assigned tags if editing
+                    if (templateId) {
+                        loadCurrentTemplateTags(templateId);
+                    }
+                }
+            }
+        });
+    }
+
+    function loadCurrentTemplateTags(templateId) {
+        $.ajax({
+            url: '/tags/getEntityTags/template/' + templateId,
+            method: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                if (response.status && response.data) {
+                    const currentTagIds = response.data.map(function(tag) {
+                        return tag.id.toString();
+                    });
+                    $('#template_tags').val(currentTagIds).trigger('change');
+                }
+            }
+        });
+    }
+
+    function formatTemplateTag(tag) {
+        if (!tag.id) return tag.text;
+
+        const color = $(tag.element).data('color') || '#667eea';
+        const $tag = $(
+            '<span style="display: flex; align-items: center; gap: 8px;">' +
+                '<span style="width: 12px; height: 12px; border-radius: 50%; background-color: ' + color + ';"></span>' +
+                '<span>' + tag.text + '</span>' +
+            '</span>'
+        );
+        return $tag;
+    }
+
+    function formatTemplateTagSelection(tag) {
+        if (!tag.id) return tag.text;
+        return tag.text;
+    }
+
+    // Save tags when form is submitted
+    $('#addcustomer').on('submit', function(e) {
+        const templateId = '<?= @$template->id ?>';
+
+        if (templateId) {
+            e.preventDefault();
+
+            // Save tags first
+            const selectedTags = $('#template_tags').val() || [];
+
+            $.ajax({
+                url: '/tags/attach',
+                method: 'POST',
+                data: {
+                    entity_type: 'template',
+                    entity_id: templateId,
+                    tag_ids: selectedTags
+                },
+                dataType: 'json',
+                success: function(response) {
+                    // Now submit the main form
+                    $('#addcustomer').off('submit').submit();
+                },
+                error: function() {
+                    // Submit anyway if tag saving fails
+                    $('#addcustomer').off('submit').submit();
+                }
+            });
         }
     });
 </script>

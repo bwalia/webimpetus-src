@@ -31,14 +31,54 @@
                             </ol>
                         </div>
                         <div class="page_title_right">
+                            <style>
+                                .task-view-toggle {
+                                    display: inline-flex;
+                                    background: #f3f4f6;
+                                    border-radius: 8px;
+                                    padding: 4px;
+                                    margin-right: 12px;
+                                }
+                                .task-view-toggle-btn {
+                                    padding: 8px 16px;
+                                    border: none;
+                                    background: transparent;
+                                    color: #6b7280;
+                                    font-weight: 600;
+                                    border-radius: 6px;
+                                    cursor: pointer;
+                                    transition: all 0.2s;
+                                    text-decoration: none;
+                                    font-size: 0.875rem;
+                                }
+                                .task-view-toggle-btn.active {
+                                    background: white;
+                                    color: #667eea;
+                                    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+                                }
+                                .task-view-toggle-btn:hover {
+                                    color: #667eea;
+                                }
+                            </style>
 
-                            <div class="form-group mr-3 mt-2">
+                            <div class="task-view-toggle">
+                                <a href="/tasks" class="task-view-toggle-btn <?php echo (strpos($_SERVER['REQUEST_URI'], '/board') === false) ? 'active' : ''; ?>">
+                                    <i class="fa fa-list"></i> List
+                                </a>
+                                <a href="/tasks/board" class="task-view-toggle-btn <?php echo (strpos($_SERVER['REQUEST_URI'], '/board') !== false) ? 'active' : ''; ?>">
+                                    <i class="fa fa-th"></i> Board
+                                </a>
+                            </div>
+
+                            <?php if (strpos($_SERVER['REQUEST_URI'], '/board') === false && isset($taskStatusList)) : ?>
+                            <div class="form-group mr-3 mt-2" style="display: inline-block;">
                                 <select id="task_status" class="form-control required">
                                     <?php foreach ($taskStatusList as $row) : ?>
                                         <option <?php echo (($_GET['status'] ?? "") == strtolower($row["value"]) ?  "selected" : "") ?> value="<?php echo ($row["key"]) ?>"><?php echo (ucfirst($row["value"])) ?></option>
                                     <?php endforeach; ?>
                                 </select>
                             </div>
+                            <?php endif; ?>
 
                             <div class="header_more_tool setDropDownBlk">
                                 <a href="javascript:void(0)" onClick="window.location.reload();" class="btn btn-primary"><i class="ti-reload"></i> Refresh</a>

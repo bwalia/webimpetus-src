@@ -107,7 +107,6 @@ class Menu extends CommonController
         $cat_data['link'] = $this->request->getPost('link');
         $cat_data['icon'] = $this->request->getPost('icon');
         $cat_data['language_code'] = $this->request->getPost('language_code');
-        $cat_data['menu_fts'] = implode(',',$this->request->getPost('tags'));
         $cat_data['uuid_business_id'] = session('uuid_business');
         if(!empty($uuid)){
             $this->menuModel->updateDataByUUID($uuid,$cat_data);

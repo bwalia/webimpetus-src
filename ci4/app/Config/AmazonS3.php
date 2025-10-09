@@ -30,6 +30,28 @@ class AmazonS3 extends BaseConfig
 
     /*
     |--------------------------------------------------------------------------
+    | S3 Endpoint (for MinIO or S3-compatible storage)
+    |--------------------------------------------------------------------------
+    |
+    | Custom endpoint URL for MinIO or other S3-compatible storage.
+    | Leave empty for standard AWS S3.
+    |
+    */
+    public $endpoint = "";
+
+    /*
+    |--------------------------------------------------------------------------
+    | Use Path Style Endpoint
+    |--------------------------------------------------------------------------
+    |
+    | Set to true for MinIO and some S3-compatible services.
+    | Set to false for standard AWS S3.
+    |
+    */
+    public $use_path_style = false;
+
+    /*
+    |--------------------------------------------------------------------------
     | bucket name
     |--------------------------------------------------------------------------
     |
@@ -124,16 +146,24 @@ class AmazonS3 extends BaseConfig
     public function __construct()
 	{
 		parent::__construct();
-        
+
         if ( $this->get_from_enviroment ){
-            
+
             $this->access_key = getenv('amazons3.access_key');
             $this->secret_key = getenv('amazons3.secret_key');
             $this->bucket = getenv('amazons3.bucket');
             $this->s3_directory = getenv('amazons3.s3_directory');
             $this->region = getenv('amazons3.region');
-            $this->s3_url = 'https://s3-'.$this->region.'.amazonaws.com/';
-            
+            $this->endpoint = getenv('amazons3.endpoint');
+            $this->use_path_style = getenv('amazons3.use_path_style') === 'true';
+
+            // If custom endpoint is set (MinIO), use that, otherwise use AWS S3 URL
+            if (!empty($this->endpoint)) {
+                $this->s3_url = rtrim($this->endpoint, '/') . '/';
+            } else {
+                $this->s3_url = 'https://s3-'.$this->region.'.amazonaws.com/';
+            }
+
         }
     }
 }

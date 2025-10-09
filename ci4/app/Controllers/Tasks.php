@@ -209,9 +209,88 @@ class Tasks extends CommonController
         if(!empty($q)) {
             $data = $data->like('company_name', $q);
         }
-        
+
         $data = $data->limit(500)->get()->getResult();
 
         return $this->respond($data);
+    }
+
+    /**
+     * Kanban Board View
+     */
+    public function board()
+    {
+        $data['tableName'] = $this->table;
+        $data['rawTblName'] = $this->rawTblName;
+
+        // Get all necessary data for filters
+        $projectsBuilder = $this->db->table('projects');
+        $projectsBuilder->where('uuid_business_id', session('uuid_business'));
+        $projectsBuilder->orderBy('name', 'ASC');
+        $data['projects'] = $projectsBuilder->get()->getResultArray();
+
+        $sprintsBuilder = $this->db->table('sprints');
+        $sprintsBuilder->where('uuid_business_id', session('uuid_business'));
+        $sprintsBuilder->orderBy('sprint_name', 'ASC');
+        $data['sprints'] = $sprintsBuilder->get()->getResultArray();
+
+        $usersBuilder = $this->db->table('users');
+        $usersBuilder->orderBy('name', 'ASC');
+        $data['users'] = $usersBuilder->get()->getResultArray();
+
+        echo view('tasks/board', $data);
+    }
+
+    /**
+     * Get board data as JSON for kanban view
+     */
+    public function boardData()
+    {
+        $builder = $this->db->table('tasks');
+        $builder->select('tasks.*, projects.name as project_name, users.name as assigned_to_name');
+        $builder->join('projects', 'tasks.projects_id = projects.id', 'left');
+        $builder->join('users', 'tasks.assigned_to = users.id', 'left');
+        $builder->where('tasks.uuid_business_id', session('uuid_business'));
+        $builder->orderBy('tasks.id', 'DESC');
+
+        $tasks = $builder->get()->getResultArray();
+
+        return $this->response->setJSON([
+            'status' => true,
+            'data' => $tasks
+        ]);
+    }
+
+    /**
+     * Update task status via AJAX (for drag and drop)
+     */
+    public function updateStatus()
+    {
+        $uuid = $this->request->getPost('uuid');
+        $category = $this->request->getPost('category');
+
+        if (!$uuid || !$category) {
+            return $this->response->setJSON([
+                'status' => false,
+                'message' => 'Invalid parameters'
+            ]);
+        }
+
+        $builder = $this->db->table('tasks');
+        $builder->where('uuid', $uuid);
+        $builder->where('uuid_business_id', session('uuid_business'));
+        $builder->update(['category' => $category]);
+
+        if ($this->db->affectedRows() > 0) {
+            return $this->response->setJSON([
+                'status' => true,
+                'message' => 'Task status updated successfully'
+            ]);
+        }
+
+        return $this->response->setJSON([
+            'status' => false,
+            'message' => 'Failed to update task status'
+        ]);
     }
 }

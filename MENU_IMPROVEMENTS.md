@@ -42,7 +42,7 @@ Both the visual styling and naming of menu items have been improved to make them
 | Image Gallery | **Media Gallery** | Broader, more inclusive term |
 | Blocks | **Content Blocks** | Clearer functionality description |
 | Enquiries | **Inquiries** | Standardized spelling |
-| Secrets | **Secure Settings** | More professional, less mysterious |
+| Secrets | **Secure Secrets** | More professional, less mysterious |
 | My Workspaces | **Workspaces** | Simplified, less possessive |
 | Timeslips | **Time Tracking** | Modern, clear terminology |
 | Timeslips Calendar | **Time Calendar** | Concise and clear |

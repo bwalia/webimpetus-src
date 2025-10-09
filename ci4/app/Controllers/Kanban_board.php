@@ -20,38 +20,12 @@ class Kanban_board extends CommonController
     }
 
     /**
-     * [POST] Display kanban board based on task category
+     * Display kanban board - redirect to modern tasks board view
      */
     public function index()
     {
-
-        $data['tableName'] = 'tasks';
-        $data['sprints_list'] = $this->sprintModel->getSprintList();
-        $sprint = $_GET['sprint'] ?? "";
-        $current_sprint = $this->sprintModel->getCurrentSprint();
-        $next_sprint = $this->sprintModel->getNextSprint($current_sprint);
-
-        $categories = ['todo', 'in-progress', 'review', 'done'];
-
-        foreach ($categories as $category) {
-
-            if ($sprint === "backlog") {
-                if ($category == "done") {
-                    $data['tasks'][$category] = [];
-                } else {
-                    $sprintCondition = $current_sprint > 0 ? "sprint_id < $current_sprint AND" : "sprint_id < $next_sprint AND";
-                    $data['tasks'][$category] = $this->taskModel->getTaskList("category = '$category' AND (sprint_id = null OR (" . $sprintCondition . " tasks.status != 'done'))")['data'];
-                }
-            } else {
-                if ($sprint && is_numeric($sprint)) {
-                    $data['tasks'][$category] = $this->taskModel->getTaskList(['category' => $category, 'sprint_id' => $sprint])['data'];
-                } else {
-                    $data['tasks'][$category] = $this->taskModel->getTaskList(['category' => $category])['data'];
-                }
-            }
-        }
-
-        return view(file_exists(APPPATH . 'Views/' . $this->table . '/list.php') ? $this->table . '/list' : 'common/list', $data);
+        // Redirect to the new JIRA-style tasks board
+        return redirect()->to('/tasks/board');
     }
 
     /**

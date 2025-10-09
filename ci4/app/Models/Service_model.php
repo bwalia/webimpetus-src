@@ -15,16 +15,18 @@ class Service_model extends Model
     public function getRowsWithService($id = false)
     {
         if($id === false){
-			$this->join('categories', 'services.cid = categories.id', 'LEFT');
-			$this->join('tenants', 'services.tid = tenants.id', 'LEFT');
-			$this->select('categories.name as category');			
-			$this->select('tenants.name as tenant');
-			$this->select('services.*');
-			$this->where([$this->table . '.uuid_business_id' => $this->businessUuid]);
-            return $this->findAll();
+			// Use view_services_with_secrets for enhanced data
+			$builder = $this->db->table('view_services_with_secrets');
+			$builder->join('categories', 'view_services_with_secrets.cid = categories.id', 'LEFT');
+			$builder->join('tenants', 'view_services_with_secrets.tid = tenants.id', 'LEFT');
+			$builder->select('categories.name as category');
+			$builder->select('tenants.name as tenant');
+			$builder->select('view_services_with_secrets.*');
+			$builder->where(['view_services_with_secrets.uuid_business_id' => $this->businessUuid]);
+            return $builder->get()->getResultArray();
         }else{
             return $this->getWhere(['uuid' => $id, 'uuid_business_id' => $this->businessUuid]);
-        }   
+        }
     }
     public function getRows($id = false)
     {
@@ -39,16 +41,19 @@ class Service_model extends Model
 	public function getApiRows($id = false)
     {
         if($id === false){
-			$this->join('categories', 'services.cid = categories.id', 'LEFT');
-			$this->join('tenants', 'services.tid = tenants.id', 'LEFT');
-			$this->select('categories.name as category');			
-			$this->select('tenants.name as tenant');
-			$this->select('services.*');
-            $this->where($this->table . '.uuid_business_id', $this->businessUuid);
-            return $this->where('status', 1)->findAll();
+			// Use view_services_with_secrets for enhanced API data
+			$builder = $this->db->table('view_services_with_secrets');
+			$builder->join('categories', 'view_services_with_secrets.cid = categories.id', 'LEFT');
+			$builder->join('tenants', 'view_services_with_secrets.tid = tenants.id', 'LEFT');
+			$builder->select('categories.name as category');
+			$builder->select('tenants.name as tenant');
+			$builder->select('view_services_with_secrets.*');
+            $builder->where('view_services_with_secrets.uuid_business_id', $this->businessUuid);
+            $builder->where('view_services_with_secrets.status', 1);
+            return $builder->get()->getResultArray();
         }else{
             return $this->getWhere(['id' => $id,'status'=>1, 'uuid_business_id' => $this->businessUuid]);
-        }   
+        }
     }
 	
 	public function saveData($data)
@@ -103,23 +108,25 @@ class Service_model extends Model
 
     public function getServciesRows($limit, $offset, $order, $dir, $query, $uuidBusineess)
     {
-			$this->join('categories', 'services.cid = categories.id', 'LEFT');
-			$this->join('tenants', 'services.tid = tenants.id', 'LEFT');
-			$this->select('categories.name as category');			
-			$this->select('tenants.name as tenant');
-			$this->select('services.*');
+			// Use view_services_with_secrets for enhanced data with secret counts and tags
+			$builder = $this->db->table('view_services_with_secrets');
+			$builder->join('categories', 'view_services_with_secrets.cid = categories.id', 'LEFT');
+			$builder->join('tenants', 'view_services_with_secrets.tid = tenants.id', 'LEFT');
+			$builder->select('categories.name as category');
+			$builder->select('tenants.name as tenant');
+			$builder->select('view_services_with_secrets.*');
 
             if ($query) {
-                $this->like('services.name', $query);
+                $builder->like('view_services_with_secrets.name', $query);
             }
 
-			$this->where([$this->table . '.uuid_business_id' => $uuidBusineess]);
+			$builder->where(['view_services_with_secrets.uuid_business_id' => $uuidBusineess]);
 
-            $count = $this->countAllResults(false);
-            $this->limit($limit, $offset);
-            $this->orderBy($order, $dir);
+            $count = $builder->countAllResults(false);
+            $builder->limit($limit, $offset);
+            $builder->orderBy($order, $dir);
 
-            $record = $this->get()->getResultArray();
+            $record = $builder->get()->getResultArray();
 
             return [
                 'data' => $record,

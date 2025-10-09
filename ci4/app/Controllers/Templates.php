@@ -26,8 +26,8 @@ class Templates extends CommonController
 		$order = $this->request->getVar('order') ?? "code";
 		$dir = $this->request->getVar('dir') ?? "asc";
 
-		$sqlQuery = $this->templateModel
-            ->select("uuid, id, code, subject")
+		$sqlQuery = $this->db->table('view_templates_with_tags')
+            ->select("uuid, id, code, subject, module_name, is_default, created_at, tag_names, tag_colors")
 			->where(['uuid_business_id' => session('uuid_business')]);
 		if ($query) {
 			$sqlQuery = $sqlQuery->like("code", $query);

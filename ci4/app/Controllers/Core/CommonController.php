@@ -78,19 +78,33 @@ class CommonController extends BaseController
 	public function changeLanguage()
 	{
 		$language = Services::language();
+
+		// Priority 1: Check session for user's current language preference
+		if ($this->session->has('app_language')) {
+			$language->setLocale($this->session->get('app_language'));
+			return;
+		}
+
+		// Priority 2: Check user's saved language preference in database
 		$user_id = $this->session->get('uuid');
 		$udata = $this->db->table('users')->select('language_code')->where("id", $user_id)->get()->getRowArray();
-		//print_r($udata); die;
 		if (!empty($udata) && !empty($udata['language_code'])) {
 			$language->setLocale($udata['language_code']);
-		} else {
-			$business = $this->db->table('businesses')->where("uuid", $this->businessUuid)->get()->getRowArray();
-			if (!empty($business['language_code'])) {
-				$language->setLocale($business['language_code']);
-			} else {
-				$language->setLocale('en');
-			}
+			$this->session->set('app_language', $udata['language_code']);
+			return;
 		}
+
+		// Priority 3: Check business default language
+		$business = $this->db->table('businesses')->where("uuid", $this->businessUuid)->get()->getRowArray();
+		if (!empty($business['language_code'])) {
+			$language->setLocale($business['language_code']);
+			$this->session->set('app_language', $business['language_code']);
+			return;
+		}
+
+		// Priority 4: Default to English
+		$language->setLocale('en');
+		$this->session->set('app_language', 'en');
 	}
 
 	public function getTableNameFromUri()

@@ -204,6 +204,24 @@ $categories = getResultArray("categories");
                 </div>
             </div>
 
+            <!-- Tags Section -->
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <label for="customer_tags">
+                        <i class="fa fa-tags"></i> Tags
+                        <a href="/tags/manage" target="_blank" style="font-size: 0.85rem; margin-left: 8px;">
+                            <i class="fa fa-cog"></i> Manage Tags
+                        </a>
+                    </label>
+                    <select id="customer_tags" name="customer_tags[]" class="form-control select2" multiple="multiple"
+                            data-placeholder="Select tags for this customer...">
+                        <!-- Populated by JavaScript -->
+                    </select>
+                    <small class="form-text text-muted">
+                        Select multiple tags to categorize this customer. You can create new tags from the Manage Tags page.
+                    </small>
+                </div>
+            </div>
 
             <div class="form-row">
                 <div class="form-group col-md-3">
@@ -373,5 +391,112 @@ $contactsValues = array_map(function ($v, $k) {
         })
 
         x--;
-    })
+    });
+
+    // Load tags functionality
+    $(document).ready(function() {
+        loadCustomerTags();
+    });
+
+    function loadCustomerTags() {
+        const customerId = '<?= @$customer->id ?>';
+
+        // Load all tags
+        $.ajax({
+            url: '/tags/tagsList',
+            method: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                if (response.status && response.data) {
+                    const tags = response.data;
+                    const $select = $('#customer_tags');
+
+                    // Populate select options
+                    tags.forEach(function(tag) {
+                        const option = new Option(tag.name, tag.id, false, false);
+                        $(option).attr('data-color', tag.color);
+                        $select.append(option);
+                    });
+
+                    // Initialize select2 with custom template
+                    $select.select2({
+                        placeholder: 'Select tags for this customer...',
+                        allowClear: true,
+                        templateResult: formatCustomerTag,
+                        templateSelection: formatCustomerTagSelection
+                    });
+
+                    // Load currently assigned tags if editing
+                    if (customerId) {
+                        loadCurrentCustomerTags(customerId);
+                    }
+                }
+            }
+        });
+    }
+
+    function loadCurrentCustomerTags(customerId) {
+        $.ajax({
+            url: '/tags/getEntityTags/customer/' + customerId,
+            method: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                if (response.status && response.data) {
+                    const currentTagIds = response.data.map(function(tag) {
+                        return tag.id.toString();
+                    });
+                    $('#customer_tags').val(currentTagIds).trigger('change');
+                }
+            }
+        });
+    }
+
+    function formatCustomerTag(tag) {
+        if (!tag.id) return tag.text;
+
+        const color = $(tag.element).data('color') || '#667eea';
+        const $tag = $(
+            '<span style="display: flex; align-items: center; gap: 8px;">' +
+                '<span style="width: 12px; height: 12px; border-radius: 50%; background-color: ' + color + ';"></span>' +
+                '<span>' + tag.text + '</span>' +
+            '</span>'
+        );
+        return $tag;
+    }
+
+    function formatCustomerTagSelection(tag) {
+        if (!tag.id) return tag.text;
+        return tag.text;
+    }
+
+    // Save tags when form is submitted
+    $('#addcustomer').on('submit', function(e) {
+        const customerId = '<?= @$customer->id ?>';
+
+        if (customerId) {
+            e.preventDefault();
+
+            // Save tags first
+            const selectedTags = $('#customer_tags').val() || [];
+
+            $.ajax({
+                url: '/tags/attach',
+                method: 'POST',
+                data: {
+                    entity_type: 'customer',
+                    entity_id: customerId,
+                    tag_ids: selectedTags
+                },
+                dataType: 'json',
+                success: function(response) {
+                    // Now submit the main form
+                    $('#addcustomer').off('submit').submit();
+                },
+                error: function() {
+                    // Submit anyway if tag saving fails
+                    $('#addcustomer').off('submit').submit();
+                }
+            });
+        }
+    });
 </script>
