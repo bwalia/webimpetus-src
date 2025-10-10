@@ -77,9 +77,9 @@ class Projects extends CommonController
 		// if there any special cause we can overried this function and pass data to add or edit view
 		$data['additional_data'] = $projectData ? $projectData->id : $uuid;
         
-        if(!empty($data[$this->rawTblName]->customer_id)) {
+        if(!empty($data[$this->rawTblName]->customers_id)) {
             $data['customers'] = $this->customers_model
-                ->where('id', $data[$this->rawTblName]->customer_id)
+                ->where('id', $data[$this->rawTblName]->customers_id)
                 ->where("uuid_business_id", session('uuid_business'))
                 ->get()
                 ->getResultArray();

@@ -89,18 +89,14 @@
 
             <div class="form-row">
                 <div class="form-group col-md-12">
-                    <label for="project_tags">
+                    <label for="project_tags_text">
                         <i class="fa fa-tags"></i> Tags
-                        <a href="/tags/manage" target="_blank" style="font-size: 0.85rem; margin-left: 8px;">
-                            <i class="fa fa-cog"></i> Manage Tags
-                        </a>
                     </label>
-                    <select id="project_tags" name="project_tags[]" class="form-control select2" multiple="multiple"
-                            data-placeholder="Select tags for this project...">
-                        <!-- Populated by JavaScript -->
-                    </select>
+                    <input type="text" class="form-control" id="project_tags_text" name="project_tags"
+                           value="<?= @$project->project_tags ?>"
+                           placeholder="e.g., urgent, client-project, maintenance, phase-1">
                     <small class="form-text text-muted">
-                        Select multiple tags to categorize this project. You can create new tags from the Manage Tags page.
+                        Enter tags separated by commas
                     </small>
                 </div>
             </div>
@@ -157,7 +153,10 @@
     }
 
     $(document).ready(function() {
-        $(".select-customer-ajax").select2({
+        // Initialize Select2 with AJAX for customer search
+        var $customerSelect = $(".select-customer-ajax");
+
+        $customerSelect.select2({
             ajax: {
                 url: "/projects/companyCustomerAjax",
                 dataType: 'json',
@@ -168,10 +167,6 @@
                     };
                 },
                 processResults: function(data, params) {
-                    // parse the results into the format expected by Select2
-                    // since we are using custom formatting functions we do not need to
-                    // alter the remote JSON data, except to indicate that infinite
-                    // scrolling can be used
                     return {
                         results: $.map(data, function(item) {
                             return {
@@ -182,8 +177,23 @@
                     };
                 },
             },
-            minimumInputLength: 2
+            minimumInputLength: 0, // Allow showing the selected customer without typing
+            placeholder: '--Select--',
+            allowClear: true
         });
+
+        // Preserve the currently selected customer from the server-rendered HTML
+        // This ensures the selected customer appears in the dropdown even with AJAX mode
+        <?php if (!empty($project->customers_id) && !empty($customers) && count($customers) > 0): ?>
+        // Create a new option with the current customer data and append it
+        var customerData = {
+            id: <?= $customers[0]['id'] ?>,
+            text: <?= json_encode($customers[0]['company_name']) ?>
+        };
+
+        var newOption = new Option(customerData.text, customerData.id, true, true);
+        $customerSelect.append(newOption).trigger('change');
+        <?php endif; ?>
 
         // Initialize tags select2
         loadTags();

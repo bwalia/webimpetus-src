@@ -57,7 +57,7 @@
         background: white;
         border-radius: 8px;
         padding: 20px;
-        margin-bottom: 16px;
+        margin-bottom: 20px;
         transition: all 0.2s ease;
         border: 1px solid #dfe1e6;
         box-shadow: 0 1px 1px rgba(9, 30, 66, 0.08);

@@ -164,7 +164,7 @@
     #sidebar_menu li a {
         padding: 8px 16px;
         margin: 2px 8px;
-        font-size: 14px;
+        font-size: 13px;
         font-weight: 400;
         color: #172b4d;
         display: flex;
@@ -213,7 +213,7 @@
     #sidebar_menu li a span {
         display: contents;
         transform: translateY(-50%);
-        font-size: 14px;
+        font-size: 13px;
         transition: transform 0.4s;
         line-height: 1.4;
     }
@@ -235,7 +235,7 @@
 
     #sidebar_menu li.cat-listing ul li a {
         padding: 6px 16px 6px 46px;
-        font-size: 14px;
+        font-size: 13px;
         font-weight: 400;
         margin: 1px 8px;
     }
@@ -266,7 +266,7 @@
         border: 2px solid #dfe1e6;
         border-radius: 3px;
         padding: 8px 12px 8px 36px;
-        font-size: 14px;
+        font-size: 13px;
         font-weight: 400;
         color: #172b4d;
         transition: all 0.15s ease;
@@ -287,7 +287,7 @@
 
     .sidebar-search::placeholder {
         color: #5e6c84;
-        font-size: 14px;
+        font-size: 13px;
         font-weight: 400;
     }
 
@@ -361,7 +361,7 @@
     }
 
     .nav_title span {
-        font-size: 14px;
+        font-size: 13px;
         font-weight: 400;
         color: inherit;
         line-height: 1.4;

@@ -252,18 +252,14 @@ if (preg_match($customerPatt, $previousUrl)) {
                             <!-- Tags Section -->
                             <div class="form-row">
                                 <div class="form-group col-md-12">
-                                    <label for="contact_tags">
+                                    <label for="contact_tags_text">
                                         <i class="fa fa-tags"></i> Tags
-                                        <a href="/tags/manage" target="_blank" style="font-size: 0.85rem; margin-left: 8px;">
-                                            <i class="fa fa-cog"></i> Manage Tags
-                                        </a>
                                     </label>
-                                    <select id="contact_tags" name="contact_tags[]" class="form-control select2" multiple="multiple"
-                                            data-placeholder="Select tags for this contact...">
-                                        <!-- Populated by JavaScript -->
-                                    </select>
+                                    <input type="text" class="form-control" id="contact_tags_text" name="contact_tags"
+                                           value="<?= @$contact->contact_tags ?>"
+                                           placeholder="e.g., vip, partner, lead, customer">
                                     <small class="form-text text-muted">
-                                        Select multiple tags to categorize this contact. You can create new tags from the Manage Tags page.
+                                        Enter tags separated by commas
                                     </small>
                                 </div>
                             </div>

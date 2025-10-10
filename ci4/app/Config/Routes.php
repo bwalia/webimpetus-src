@@ -106,6 +106,12 @@ $routes->get('api/v2/business/(:segment)/contact/(:segment)/blog/(:segment)', 'A
 $routes->get('api/v2/business/(:segment)/public/blogs', 'Api\V2\Webpages::getPublicBlogs/$1');
 $routes->get('api/v2/business/(:segment)/public/blog/(:segment)', 'Api\V2\Webpages::getPublicBlog/$1/$2');
 
+// API Documentation Routes
+$routes->get('swagger', 'Swagger::index');
+$routes->get('swagger/json', 'Swagger::json');
+$routes->get('swagger/yaml', 'Swagger::yaml');
+$routes->get('api-docs', 'Swagger::ui');
+$routes->get('api/docs', 'Swagger::ui');
 
 /*
  * --------------------------------------------------------------------
