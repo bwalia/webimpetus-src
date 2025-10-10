@@ -154,7 +154,21 @@
 
     $(document).ready(function() {
         // Initialize Select2 with AJAX for customer search
-        var $customerSelect = $(".select-customer-ajax");
+        var $customerSelect = $("#customers_id");
+
+        // Store the currently selected customer ID and name from PHP
+        var selectedCustomerId = <?= !empty($project->customers_id) ? (int)$project->customers_id : 'null' ?>;
+        var selectedCustomerName = <?= (!empty($customers) && isset($customers[0]['company_name'])) ? json_encode($customers[0]['company_name']) : 'null' ?>;
+
+        console.log('Selected Customer ID:', selectedCustomerId);
+        console.log('Selected Customer Name:', selectedCustomerName);
+
+        // Initialize Select2 AFTER creating the initial option
+        if (selectedCustomerId && selectedCustomerName) {
+            // Pre-populate with the selected customer
+            var option = new Option(selectedCustomerName, selectedCustomerId, true, true);
+            $customerSelect.append(option);
+        }
 
         $customerSelect.select2({
             ajax: {
@@ -163,37 +177,30 @@
                 delay: 250,
                 data: function(params) {
                     return {
-                        q: params.term // search term
+                        q: params.term || '' // search term
                     };
                 },
                 processResults: function(data, params) {
-                    return {
-                        results: $.map(data, function(item) {
-                            return {
-                                text: item.company_name,
-                                id: item.id
-                            }
-                        })
-                    };
-                },
+                    var results = $.map(data, function(item) {
+                        return {
+                            id: item.id,
+                            text: item.company_name
+                        }
+                    });
+
+                    return { results: results };
+                }
             },
-            minimumInputLength: 0, // Allow showing the selected customer without typing
-            placeholder: '--Select--',
-            allowClear: true
+            minimumInputLength: 0,
+            placeholder: '--Select Customer--',
+            allowClear: true,
+            width: '100%'
         });
 
-        // Preserve the currently selected customer from the server-rendered HTML
-        // This ensures the selected customer appears in the dropdown even with AJAX mode
-        <?php if (!empty($project->customers_id) && !empty($customers) && count($customers) > 0): ?>
-        // Create a new option with the current customer data and append it
-        var customerData = {
-            id: <?= $customers[0]['id'] ?>,
-            text: <?= json_encode($customers[0]['company_name']) ?>
-        };
-
-        var newOption = new Option(customerData.text, customerData.id, true, true);
-        $customerSelect.append(newOption).trigger('change');
-        <?php endif; ?>
+        // Trigger change to ensure Select2 displays the value
+        if (selectedCustomerId) {
+            $customerSelect.val(selectedCustomerId).trigger('change');
+        }
 
         // Initialize tags select2
         loadTags();

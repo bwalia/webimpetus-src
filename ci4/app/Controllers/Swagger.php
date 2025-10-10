@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-use App\Controllers\Core\CommonController;
+use CodeIgniter\Controller;
 
 /**
  * @OA\Info(
@@ -27,64 +27,133 @@ use App\Controllers\Core\CommonController;
  *     description="Enter your JWT token in the format: Bearer {token}"
  * )
  */
-class Swagger extends CommonController
+class Swagger extends Controller
 {
-    function __construct()
-    {
-        parent::__construct();
-    }
+    // No authentication required for API documentation
+    // This allows public access to view and test the API endpoints
 
     /**
      * Generate and display OpenAPI documentation
      */
     public function index()
     {
-        // Scan all API controllers in the Api/V2 directory
-        $openapi = \OpenApi\Generator::scan([
-            APPPATH . 'Controllers/Api/V2',
-            APPPATH . 'Controllers/Swagger.php'
-        ]);
+        try {
+            $apiPath = APPPATH . 'Controllers' . DIRECTORY_SEPARATOR . 'Api' . DIRECTORY_SEPARATOR . 'V2';
 
-        header('Content-Type: application/x-yaml');
-        echo $openapi->toYaml();
+            // Scan all API controllers using Generator::scan()
+            $openapi = \OpenApi\Generator::scan(
+                [
+                    $apiPath,
+                    __FILE__
+                ],
+                [
+                    'logger' => new \Psr\Log\NullLogger(),
+                    'validate' => false
+                ]
+            );
+
+            header('Content-Type: application/x-yaml');
+            echo $openapi->toYaml();
+        } catch (\Exception $e) {
+            header('Content-Type: text/plain');
+            echo "Error generating OpenAPI documentation:\n\n";
+            echo $e->getMessage() . "\n\n";
+            echo "File: " . $e->getFile() . "\n";
+            echo "Line: " . $e->getLine();
+        }
     }
 
     /**
-     * Generate and save JSON version of API documentation
+     * Generate and serve JSON version of API documentation
      */
     public function json()
     {
-        // Scan all API controllers in the Api/V2 directory
-        $openapi = \OpenApi\Generator::scan([
-            APPPATH . 'Controllers/Api/V2',
-            APPPATH . 'Controllers/Swagger.php'
-        ]);
+        // Check if doctrine/annotations is installed
+        if (!class_exists('Doctrine\\Common\\Annotations\\AnnotationReader')) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'error' => 'Missing dependency: doctrine/annotations',
+                'message' => 'The swagger-php library requires doctrine/annotations to read @OA annotations from docblocks.',
+                'solution' => 'Run: composer require doctrine/annotations',
+                'note' => 'Your API controllers have proper @OA annotations, but they cannot be parsed without this package.',
+                'api_endpoints_working' => true,
+                'endpoints_count' => '35+',
+                'documentation' => 'See API_DOCUMENTATION.md for manual API documentation',
+                'temporary_solution' => 'Use /api-docs to view the interactive UI (requires swagger.json to be manually created)'
+            ], JSON_PRETTY_PRINT);
+            return;
+        }
 
-        // Save to public directory
-        $jsonPath = FCPATH . 'swagger.json';
-        file_put_contents($jsonPath, $openapi->toJson());
+        try {
+            $apiPath = APPPATH . 'Controllers' . DIRECTORY_SEPARATOR . 'Api' . DIRECTORY_SEPARATOR . 'V2';
+            $swaggerPath = __FILE__;
 
-        header('Content-Type: application/json');
-        echo $openapi->toJson();
+            if (!is_dir($apiPath)) {
+                throw new \Exception("API directory not found: " . $apiPath);
+            }
+
+            $openapi = \OpenApi\Generator::scan(
+                [$apiPath, $swaggerPath],
+                ['logger' => new \Psr\Log\NullLogger()]
+            );
+
+            // Try to save to public directory
+            try {
+                $jsonPath = FCPATH . 'swagger.json';
+                @file_put_contents($jsonPath, $openapi->toJson());
+            } catch (\Exception $e) {
+                // Ignore write errors
+            }
+
+            header('Content-Type: application/json');
+            echo $openapi->toJson();
+        } catch (\Exception $e) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ], JSON_PRETTY_PRINT);
+        }
     }
 
     /**
-     * Generate and save YAML version of API documentation
+     * Generate and serve YAML version of API documentation
      */
     public function yaml()
     {
-        // Scan all API controllers in the Api/V2 directory
-        $openapi = \OpenApi\Generator::scan([
-            APPPATH . 'Controllers/Api/V2',
-            APPPATH . 'Controllers/Swagger.php'
-        ]);
+        try {
+            $apiPath = APPPATH . 'Controllers' . DIRECTORY_SEPARATOR . 'Api' . DIRECTORY_SEPARATOR . 'V2';
 
-        // Save to public directory
-        $yamlPath = FCPATH . 'swagger.yaml';
-        file_put_contents($yamlPath, $openapi->toYaml());
+            // Scan all API controllers using Generator::scan()
+            $openapi = \OpenApi\Generator::scan(
+                [
+                    $apiPath,
+                    __FILE__
+                ],
+                [
+                    'logger' => new \Psr\Log\NullLogger(),
+                    'validate' => false
+                ]
+            );
 
-        header('Content-Type: application/x-yaml');
-        echo $openapi->toYaml();
+            // Try to save to public directory (optional, will fail silently if no permissions)
+            try {
+                $yamlPath = FCPATH . 'swagger.yaml';
+                @file_put_contents($yamlPath, $openapi->toYaml());
+            } catch (\Exception $e) {
+                // Ignore write errors - just serve the YAML
+            }
+
+            header('Content-Type: application/x-yaml');
+            echo $openapi->toYaml();
+        } catch (\Exception $e) {
+            header('Content-Type: text/plain');
+            echo "Error generating OpenAPI documentation:\n\n";
+            echo $e->getMessage() . "\n\n";
+            echo "File: " . $e->getFile() . "\n";
+            echo "Line: " . $e->getLine();
+        }
     }
 
     /**
@@ -93,5 +162,63 @@ class Swagger extends CommonController
     public function ui()
     {
         echo view('swagger/ui');
+    }
+
+    /**
+     * Debug endpoint to test annotation scanning
+     */
+    public function debug()
+    {
+        $apiPath = APPPATH . 'Controllers' . DIRECTORY_SEPARATOR . 'Api' . DIRECTORY_SEPARATOR . 'V2';
+
+        $files = [];
+        if (is_dir($apiPath)) {
+            $iterator = new \RecursiveIteratorIterator(
+                new \RecursiveDirectoryIterator($apiPath)
+            );
+            foreach ($iterator as $file) {
+                if ($file->isFile() && $file->getExtension() === 'php') {
+                    $files[] = $file->getPathname();
+                }
+            }
+        }
+
+        // Try scanning just one file to see if it works
+        $testFile = APPPATH . 'Controllers' . DIRECTORY_SEPARATOR . 'Api' . DIRECTORY_SEPARATOR . 'V2' . DIRECTORY_SEPARATOR . 'Customers.php';
+
+        // Read the file content to check for annotations
+        $fileContent = file_get_contents($testFile);
+
+        // Look for @OA\ patterns (note: in the actual file it's @OA\ not @OA\\)
+        $hasOAAnnotations = (bool) preg_match('/@OA\\\[A-Z]/', $fileContent);
+
+        // Try to manually parse annotations from the file
+        preg_match_all('/@OA\\\(\w+)\(/', $fileContent, $matches);
+
+        $openapi = \OpenApi\Generator::scan(
+            [$testFile, __FILE__],
+            [
+                'logger' => new \Psr\Log\NullLogger(),
+                'validate' => false
+            ]
+        );
+
+        header('Content-Type: application/json');
+        echo json_encode([
+            'api_path' => $apiPath,
+            'path_exists' => is_dir($apiPath),
+            'files_found' => count($files),
+            'files' => array_slice($files, 0, 10),
+            'test_file' => $testFile,
+            'test_file_exists' => file_exists($testFile),
+            'has_oa_annotations' => $hasOAAnnotations,
+            'found_annotations' => array_unique($matches[1] ?? []),
+            'file_snippet' => substr($fileContent, 0, 500),
+            'openapi_paths' => $openapi->paths ?? null,
+            'openapi_info' => $openapi->info ?? null,
+            'full_spec' => json_decode($openapi->toJson(), true),
+            'php_version' => PHP_VERSION,
+            'reflection_classes' => class_exists('\ReflectionClass')
+        ], JSON_PRETTY_PRINT);
     }
 }

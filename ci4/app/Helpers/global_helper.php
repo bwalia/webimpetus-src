@@ -172,7 +172,7 @@ function totalRows($tableName, $where = array(), $returnArr = true)
 
     if (session('uuid_business') !== null) {
         $builder = $db->table($tableName);
-        $builder->like('uuid_business_id', session('uuid_business'));
+        $builder->where('uuid_business_id', session('uuid_business'));
         $count = $builder->countAllResults();
     } else {
         $count = $db->table($tableName)->countAllResults();
