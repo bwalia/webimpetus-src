@@ -96,7 +96,7 @@ class App extends BaseConfig
      *
      * @var bool
      */
-    public $negotiateLocale = true;
+    public $negotiateLocale = false;
 
     /**
      * --------------------------------------------------------------------------
@@ -109,7 +109,7 @@ class App extends BaseConfig
      *
      * @var string[]
      */
-    public $supportedLocales = ['en','hi'];
+    public $supportedLocales = ['en', 'fr', 'nl', 'hi'];
 
     /**
      * --------------------------------------------------------------------------

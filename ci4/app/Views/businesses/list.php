@@ -41,6 +41,18 @@ $roles = getResultWithoutBusiness("roles", ["uuid" => $_SESSION['role']], false)
 </style>
 
 <div class="white_card_body">
+    <!-- Action Buttons -->
+    <div class="d-flex justify-content-end mb-3" style="padding-bottom: 0;">
+        <button type="button" onclick="window.location.reload();" class="btn btn-primary mr-2">
+            <i class="fa fa-refresh"></i> Refresh
+        </button>
+        <a href="/businesses/edit" class="btn btn-primary">
+            <i class="fa fa-plus"></i> Add New Business
+        </a>
+    </div>
+</div>
+
+<div class="white_card_body">
     <!-- Summary Cards using JIRA theme -->
     <div class="summary-cards">
         <div class="summary-card blue">
