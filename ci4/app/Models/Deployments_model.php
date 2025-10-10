@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use CodeIgniter\Model;
+use App\Libraries\UUID;
 
 class Deployments_model extends Model
 {
@@ -93,27 +94,10 @@ class Deployments_model extends Model
     protected function generateUuid(array $data)
     {
         if (!isset($data['data']['uuid'])) {
-            $data['data']['uuid'] = $this->generateUUID();
+            $uuid = new UUID();
+            $data['data']['uuid'] = $uuid->v4();
         }
         return $data;
-    }
-
-    /**
-     * Generate UUID v4
-     */
-    private function generateUUID()
-    {
-        return sprintf(
-            '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-            mt_rand(0, 0xffff),
-            mt_rand(0, 0xffff),
-            mt_rand(0, 0xffff),
-            mt_rand(0, 0x0fff) | 0x4000,
-            mt_rand(0, 0x3fff) | 0x8000,
-            mt_rand(0, 0xffff),
-            mt_rand(0, 0xffff),
-            mt_rand(0, 0xffff)
-        );
     }
 
     /**
@@ -123,7 +107,7 @@ class Deployments_model extends Model
     {
         $builder = $this->db->table($this->table . ' d');
         $builder->select('d.*, s.name as service_name, s.code as service_code,
-                         t.title as task_title, i.title as incident_title,
+                         t.name as task_title, i.title as incident_title,
                          u1.name as deployed_by_name, u2.name as approved_by_name');
         $builder->join('services s', 's.uuid = d.uuid_service_id', 'left');
         $builder->join('tasks t', 't.uuid = d.uuid_task_id', 'left');

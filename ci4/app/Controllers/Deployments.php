@@ -62,7 +62,7 @@ class Deployments extends CommonController
         // Get tasks for dropdown
         $this->data['tasks'] = $this->db->table('tasks')
             ->where('uuid_business_id', $this->businessUuid)
-            ->orderBy('title', 'ASC')
+            ->orderBy('name', 'ASC')
             ->get()
             ->getResultArray();
 

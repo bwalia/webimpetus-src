@@ -80,6 +80,10 @@ $routes->resource('api/v2/roles');
 $routes->resource('api/v2/vat-returns', ['controller' => 'Api\v2\VatReturns']);
 $routes->resource('api/v2/deployments');
 $routes->get('api/v2/deployments/stats', 'Api\V2\Deployments::stats');
+$routes->resource('api/v2/launchpad');
+$routes->post('api/v2/launchpad/click/(:segment)', 'Api\V2\Launchpad::click/$1');
+$routes->post('api/v2/launchpad/share', 'Api\V2\Launchpad::share');
+$routes->get('api/v2/launchpad/recent', 'Api\V2\Launchpad::recent');
 $routes->resource('scim/v2/Users', ['controller' => 'Api\V2\ScimUserController']);
 $routes->resource('scim/v2/Groups', ['controller' => 'Api\V2\ScimGroupController']);
 

@@ -32,7 +32,7 @@ class MyController extends CommonController
 
     public function index()
     {   //echo FCPATH; die;
-        $openapi = \OpenApi\Generator::scan([FCPATH]);
+        $openapi = \OpenApi\Generator::scan([APPPATH . 'Controllers']);
         header('Content-Type: application/x-yaml');
         echo $openapi->toYaml();
 

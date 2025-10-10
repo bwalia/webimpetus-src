@@ -179,7 +179,7 @@
                                 <?php foreach ($tasks as $task): ?>
                                     <option value="<?= $task['uuid'] ?>"
                                         <?= (@$deployment->uuid_task_id == $task['uuid']) ? 'selected' : '' ?>>
-                                        <?= $task['title'] ?>
+                                        <?= $task['name'] ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
