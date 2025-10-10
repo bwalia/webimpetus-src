@@ -12,19 +12,19 @@
     </div>
 
     <ul id="sidebar_menu">
-        <?php if (empty($_SESSION['permissions'])) { ?>
-            <li class="mm-active">
-                <a class="has-arrow" href="/dashboard" aria-expanded="true">
-                    <div class="nav_icon_small">
-                        <img src="/assets/img/menu-icon/dashboard.svg" alt="">
-                    </div>
-                    <div class="nav_title">
-                        <span>Dashboard</span>
-                    </div>
-                </a>
+        <!-- Dashboard - Always shown at the top -->
+        <?php
+        $currentPath = $_SERVER['REQUEST_URI'] ?? '';
+        $isDashboard = (strpos($currentPath, '/dashboard') === 0);
+        ?>
+        <li>
+            <a href="/dashboard" class="<?= $isDashboard ? 'active' : '' ?>">
+                <i class="fa fa-tachometer-alt"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
 
-            </li>
-        <?php } else { ?>
+        <?php if (!empty($_SESSION['permissions'])) { ?>
             <?php
             $menu = MenuByCategory(); //getWithOutUuidResultArray("menu", [], true, "sort_order");
             $permissions = $_SESSION['permissions'];

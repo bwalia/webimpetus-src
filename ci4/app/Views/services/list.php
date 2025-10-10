@@ -39,6 +39,18 @@
 </style>
 
 <div class="white_card_body">
+    <!-- Action Buttons -->
+    <div class="d-flex justify-content-end mb-3" style="padding-bottom: 0;">
+        <button type="button" onclick="window.location.reload();" class="btn btn-primary mr-2">
+            <i class="fa fa-refresh"></i> Refresh
+        </button>
+        <a href="/services/edit" class="btn btn-primary">
+            <i class="fa fa-plus"></i> Add New Service
+        </a>
+    </div>
+</div>
+
+<div class="white_card_body">
     <!-- Summary Cards -->
     <div class="summary-cards">
         <div class="summary-card blue">

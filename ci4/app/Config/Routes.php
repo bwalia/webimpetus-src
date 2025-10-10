@@ -78,6 +78,8 @@ $routes->resource('api/v2/email-campaigns', ['controller' => 'Api\v2\EmailCampai
 $routes->resource('api/v2/tags');
 $routes->resource('api/v2/roles');
 $routes->resource('api/v2/vat-returns', ['controller' => 'Api\v2\VatReturns']);
+$routes->resource('api/v2/deployments');
+$routes->get('api/v2/deployments/stats', 'Api\V2\Deployments::stats');
 $routes->resource('scim/v2/Users', ['controller' => 'Api\V2\ScimUserController']);
 $routes->resource('scim/v2/Groups', ['controller' => 'Api\V2\ScimGroupController']);
 
