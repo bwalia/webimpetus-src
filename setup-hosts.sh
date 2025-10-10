@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# Script to add workstation.local to /etc/hosts
+# Script to add dev000.workstation.co.uk to /etc/hosts
 # Run with: sudo ./setup-hosts.sh
 
 set -e
 
 HOSTS_FILE="/etc/hosts"
-DOMAIN="workstation.local"
+DOMAIN="dev000.workstation.co.uk"
 IP="127.0.0.1"
 
 echo "=================================="
@@ -57,10 +57,10 @@ echo "  Setup Complete!"
 echo "=================================="
 echo ""
 echo "You can now access:"
-echo "  • https://workstation.local        (Main App - HTTPS)"
-echo "  • https://workstation.local/adminer/ (Database Admin)"
-echo "  • https://workstation.local/auth/  (Keycloak SSO)"
-echo "  • https://workstation.local/minio/ (MinIO Storage)"
+echo "  • https://dev000.workstation.co.uk        (Main App - HTTPS)"
+echo "  • https://dev000.workstation.co.uk/adminer/ (Database Admin)"
+echo "  • https://dev000.workstation.co.uk/auth/  (Keycloak SSO)"
+echo "  • https://dev000.workstation.co.uk/minio/ (MinIO Storage)"
 echo ""
 echo "To verify, run: cat $HOSTS_FILE | grep $DOMAIN"
 echo ""

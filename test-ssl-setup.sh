@@ -1,13 +1,13 @@
 #!/bin/bash
 
-# Script to test SSL setup for workstation.local
+# Script to test SSL setup for dev000.workstation.co.uk
 # Run with: ./test-ssl-setup.sh
 
 set -e
 
 echo "=========================================="
 echo "  SSL Setup Testing Script"
-echo "  Domain: workstation.local:8443"
+echo "  Domain: dev000.workstation.co.uk:8443"
 echo "=========================================="
 echo ""
 
@@ -67,7 +67,7 @@ test_redirect() {
 # Function to test security header
 test_security_header() {
     local header="$1"
-    local url="https://workstation.local:8443/"
+    local url="https://dev000.workstation.co.uk:8443/"
 
     echo -n "Testing security header: $header... "
 
@@ -89,11 +89,11 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo ""
 
 # Check hosts file
-if grep -q "workstation.local" /etc/hosts; then
-    echo -e "${GREEN}✓ PASS${NC} - workstation.local found in /etc/hosts"
+if grep -q "dev000.workstation.co.uk" /etc/hosts; then
+    echo -e "${GREEN}✓ PASS${NC} - dev000.workstation.co.uk found in /etc/hosts"
     ((PASSED++))
 else
-    echo -e "${RED}✗ FAIL${NC} - workstation.local NOT in /etc/hosts"
+    echo -e "${RED}✗ FAIL${NC} - dev000.workstation.co.uk NOT in /etc/hosts"
     echo "  Run: sudo ./setup-hosts.sh"
     ((FAILED++))
 fi
@@ -121,12 +121,12 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo ""
 
 # Check if certificate files exist
-if [ -f "nginx/ssl/workstation.local.crt" ] && [ -f "nginx/ssl/workstation.local.key" ]; then
+if [ -f "nginx/ssl/dev000.workstation.co.uk.crt" ] && [ -f "nginx/ssl/dev000.workstation.co.uk.key" ]; then
     echo -e "${GREEN}✓ PASS${NC} - SSL certificate files exist"
     ((PASSED++))
 
     # Check certificate expiry
-    expiry=$(openssl x509 -in nginx/ssl/workstation.local.crt -noout -enddate | cut -d= -f2)
+    expiry=$(openssl x509 -in nginx/ssl/dev000.workstation.co.uk.crt -noout -enddate | cut -d= -f2)
     echo "  Certificate expires: $expiry"
 else
     echo -e "${RED}✗ FAIL${NC} - SSL certificate files missing"
@@ -139,9 +139,9 @@ echo " 4. Testing HTTPS Endpoints"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 
-test_endpoint "Health check" "https://workstation.local:8443/health" "200"
-test_endpoint "Main application" "https://workstation.local:8443/" "302"
-test_endpoint "Adminer" "https://workstation.local:8443/adminer/" "200"
+test_endpoint "Health check" "https://dev000.workstation.co.uk:8443/health" "200"
+test_endpoint "Main application" "https://dev000.workstation.co.uk:8443/" "302"
+test_endpoint "Adminer" "https://dev000.workstation.co.uk:8443/adminer/" "200"
 
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -149,7 +149,7 @@ echo " 5. Testing HTTP to HTTPS Redirect"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 
-test_redirect "HTTP redirect" "http://workstation.local:8888/"
+test_redirect "HTTP redirect" "http://dev000.workstation.co.uk:8888/"
 
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -169,7 +169,7 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo ""
 
 echo -n "Testing HTTP/2... "
-if curl -k -s -I https://workstation.local:8443/ 2>&1 | grep -q "HTTP/2"; then
+if curl -k -s -I https://dev000.workstation.co.uk:8443/ 2>&1 | grep -q "HTTP/2"; then
     echo -e "${GREEN}✓ PASS${NC}"
     ((PASSED++))
 else
@@ -191,7 +191,7 @@ if [ $FAILED -eq 0 ]; then
     echo "Your SSL setup is working correctly."
     echo ""
     echo "Access your application at:"
-    echo "  🔒 https://workstation.local:8443/"
+    echo "  🔒 https://dev000.workstation.co.uk:8443/"
     echo ""
     echo "Note: You'll see a security warning in the browser"
     echo "because the certificate is self-signed. Click 'Advanced'"
