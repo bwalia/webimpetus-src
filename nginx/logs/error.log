@@ -1,0 +1,27 @@
+2025/10/10 07:39:21 [emerg] 1#1: host not found in upstream "webimpetus-minio:9000" in /etc/nginx/nginx.conf:56
+2025/10/10 07:39:21 [emerg] 1#1: host not found in upstream "webimpetus-minio:9000" in /etc/nginx/nginx.conf:56
+2025/10/10 07:39:22 [emerg] 1#1: host not found in upstream "webimpetus-minio:9000" in /etc/nginx/nginx.conf:56
+2025/10/10 07:39:23 [emerg] 1#1: host not found in upstream "webimpetus-minio:9000" in /etc/nginx/nginx.conf:56
+2025/10/10 07:39:24 [emerg] 1#1: host not found in upstream "webimpetus-minio:9000" in /etc/nginx/nginx.conf:56
+2025/10/10 07:39:26 [emerg] 1#1: host not found in upstream "webimpetus-minio:9000" in /etc/nginx/nginx.conf:56
+2025/10/10 07:39:29 [emerg] 1#1: host not found in upstream "webimpetus-minio:9000" in /etc/nginx/nginx.conf:56
+2025/10/10 07:39:36 [emerg] 1#1: host not found in upstream "webimpetus-minio:9000" in /etc/nginx/nginx.conf:56
+2025/10/10 07:39:49 [emerg] 1#1: host not found in upstream "webimpetus-minio:9000" in /etc/nginx/nginx.conf:56
+2025/10/10 07:40:15 [emerg] 1#1: host not found in upstream "webimpetus-minio:9000" in /etc/nginx/nginx.conf:56
+2025/10/10 07:40:44 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:74
+2025/10/10 07:40:44 [emerg] 1#1: unknown "body_size" variable
+2025/10/10 07:40:45 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:74
+2025/10/10 07:40:45 [emerg] 1#1: unknown "body_size" variable
+2025/10/10 07:40:46 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:74
+2025/10/10 07:40:46 [emerg] 1#1: unknown "body_size" variable
+2025/10/10 07:40:46 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:74
+2025/10/10 07:40:46 [emerg] 1#1: unknown "body_size" variable
+2025/10/10 07:40:48 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:74
+2025/10/10 07:40:48 [emerg] 1#1: unknown "body_size" variable
+2025/10/10 07:40:50 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:74
+2025/10/10 07:40:50 [emerg] 1#1: unknown "body_size" variable
+2025/10/10 07:40:53 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:74
+2025/10/10 07:40:53 [emerg] 1#1: unknown "body_size" variable
+2025/10/10 07:41:00 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:74
+2025/10/10 07:41:00 [emerg] 1#1: unknown "body_size" variable
+2025/10/10 07:41:13 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:74

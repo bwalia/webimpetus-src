@@ -1,0 +1,8 @@
+172.178.0.1 - - [10/Oct/2025:07:41:36 +0000] "HEAD / HTTP/2.0" 302 0 "-" "curl/8.14.1" "-"
+172.178.0.1 - - [10/Oct/2025:07:41:41 +0000] "HEAD / HTTP/1.1" 301 0 "-" "curl/8.14.1" "-"
+172.178.0.1 - - [10/Oct/2025:07:43:59 +0000] "HEAD / HTTP/2.0" 302 0 "-" "curl/8.14.1" "-"
+172.178.0.1 - - [10/Oct/2025:07:44:04 +0000] "HEAD / HTTP/2.0" 302 0 "-" "curl/8.14.1" "-"
+192.168.1.58 - - [10/Oct/2025:07:50:30 +0000] "GET / HTTP/1.1" 400 657 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36" "-"
+192.168.1.58 - - [10/Oct/2025:07:50:30 +0000] "GET /favicon.ico HTTP/1.1" 400 657 "http://workstation.local:8443/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36" "-"
+192.168.1.58 - - [10/Oct/2025:07:50:32 +0000] "GET / HTTP/1.1" 400 657 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36" "-"
+192.168.1.58 - - [10/Oct/2025:07:50:32 +0000] "GET /favicon.ico HTTP/1.1" 400 657 "http://workstation.local:8443/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36" "-"
