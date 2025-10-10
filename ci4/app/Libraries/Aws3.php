@@ -8,21 +8,34 @@ use Exception;
 
 class Aws3{
 	 private static $_s3Obj = NULL;
-	public static $instance = NULL; 
+	public static $instance = NULL;
 	public function __construct(){
 
-		$this->region = getenv('amazons3.region');
-		$this->access_key = getenv('amazons3.access_key');
-		$this->secret_key = getenv('amazons3.secret_key');
+		// Get S3/MinIO config from CodeIgniter config
+		$s3config = config("AmazonS3");
 
-		self :: $_s3Obj = S3Client::factory([
+		$this->region = $s3config->region ?? 'us-east-1';
+		$this->access_key = $s3config->access_key;
+		$this->secret_key = $s3config->secret_key;
+		$this->endpoint = $s3config->endpoint ?? '';
+		$this->use_path_style = $s3config->use_path_style ?? false;
+
+		$config = [
 			'version' => 'latest',
 			'region' => $this->region,
 			'credentials' => [
 				'key'    => $this->access_key ,
 				'secret' => $this->secret_key,
 			],
-		]);
+		];
+
+		// Add MinIO/S3-compatible endpoint if configured
+		if (!empty($this->endpoint)) {
+			$config['endpoint'] = $this->endpoint;
+			$config['use_path_style_endpoint'] = $this->use_path_style;
+		}
+
+		self :: $_s3Obj = S3Client::factory($config);
 	}	
 
 	public static function getInstance()

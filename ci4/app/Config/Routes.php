@@ -113,6 +113,10 @@ $routes->get('swagger/yaml', 'Swagger::yaml');
 $routes->get('api-docs', 'Swagger::ui');
 $routes->get('api/docs', 'Swagger::ui');
 
+// Document Preview and Download Routes
+$routes->get('documents/preview/(:segment)', 'Documents::preview/$1');
+$routes->get('documents/download/(:segment)', 'Documents::download/$1');
+
 // Accounting Module Routes
 $routes->group('accounts', function($routes) {
     $routes->get('/', 'Accounts::index');

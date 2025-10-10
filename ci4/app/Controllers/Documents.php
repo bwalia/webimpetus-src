@@ -200,47 +200,6 @@ class Documents extends CommonController
         return redirect()->to('/' . $this->table);
     }
 
-    public function download($uuid)
-    {
-        $document = $this->db->table($this->table)
-            ->where('uuid', $uuid)
-            ->where('uuid_business_id', session('uuid_business'))
-            ->get()
-            ->getRowArray();
-
-        if (empty($document)) {
-            session()->setFlashdata('message', 'Document not found!');
-            session()->setFlashdata('alert-class', 'alert-danger');
-            return redirect()->to('/' . $this->table);
-        }
-
-        if (empty($document['file'])) {
-            session()->setFlashdata('message', 'Document file not found!');
-            session()->setFlashdata('alert-class', 'alert-danger');
-            return redirect()->to('/' . $this->table);
-        }
-
-        // Get original filename from metadata
-        $metadata = json_decode($document['metadata'], true);
-        $filename = $metadata['original_name'] ?? 'document_' . $uuid;
-
-        // For S3/MinIO URLs, redirect to the file
-        if (filter_var($document['file'], FILTER_VALIDATE_URL)) {
-            // Generate a pre-signed URL if using private buckets
-            // For now, redirect directly
-            return redirect()->to($document['file']);
-        } else {
-            // If file is stored locally (fallback)
-            $filepath = WRITEPATH . 'uploads/' . $document['file'];
-            if (file_exists($filepath)) {
-                return $this->response->download($filepath, null)->setFileName($filename);
-            }
-        }
-
-        session()->setFlashdata('message', 'File not accessible!');
-        session()->setFlashdata('alert-class', 'alert-danger');
-        return redirect()->to('/' . $this->table);
-    }
 
     public function delete($uuid)
     {
@@ -368,5 +327,192 @@ class Documents extends CommonController
             'recordsFiltered' => $totalRecords,
             'data' => $data
         ]);
+    }
+
+    /**
+     * Preview document - serves file from MinIO/S3
+     */
+    public function preview($uuid = null)
+    {
+        if (!$uuid) {
+            return $this->response->setStatusCode(400)->setBody('Document UUID required');
+        }
+
+        // Get document from database
+        $document = $this->db->table('documents')
+            ->where('uuid', $uuid)
+            ->where('uuid_business_id', session('uuid_business'))
+            ->get()
+            ->getRowArray();
+
+        if (!$document) {
+            return $this->response->setStatusCode(404)->setBody('Document not found');
+        }
+
+        // Check if file exists
+        if (empty($document['file'])) {
+            return $this->response->setStatusCode(404)->setBody('File not found for this document');
+        }
+
+        try {
+            // Get S3/MinIO configuration
+            $s3config = config("AmazonS3");
+            $bucket = $s3config->bucket;
+
+            // Clean up the file path - remove newlines and trim
+            $filePath = trim($document['file']);
+
+            // If file is a full URL, extract just the key/path
+            if (filter_var($filePath, FILTER_VALIDATE_URL)) {
+                // Parse the URL to extract the path after the bucket name
+                $parsedUrl = parse_url($filePath);
+                $path = $parsedUrl['path'] ?? '';
+
+                // Remove leading slash and bucket name from path
+                // Example: /webimpetus/dev/documents/... -> dev/documents/...
+                $path = ltrim($path, '/');
+                if (strpos($path, $bucket . '/') === 0) {
+                    $filePath = substr($path, strlen($bucket) + 1);
+                } else {
+                    $filePath = $path;
+                }
+            }
+
+            // Get file from S3/MinIO
+            $s3Client = new \Aws\S3\S3Client([
+                'version' => 'latest',
+                'region' => $s3config->region,
+                'credentials' => [
+                    'key' => $s3config->access_key,
+                    'secret' => $s3config->secret_key,
+                ],
+                'endpoint' => $s3config->endpoint,
+                'use_path_style_endpoint' => $s3config->use_path_style,
+            ]);
+
+            // Get object from S3/MinIO
+            $result = $s3Client->getObject([
+                'Bucket' => $bucket,
+                'Key' => $filePath,
+            ]);
+
+            // Determine content type
+            $contentType = $result['ContentType'] ?? $this->getMimeType($document['file']);
+
+            // Set headers
+            $this->response->setHeader('Content-Type', $contentType);
+            $this->response->setHeader('Content-Disposition', 'inline; filename="' . basename($filePath) . '"');
+            $this->response->setHeader('Cache-Control', 'public, max-age=3600');
+
+            // Output file content
+            return $this->response->setBody($result['Body']);
+
+        } catch (\Exception $e) {
+            log_message('error', 'Document preview error: ' . $e->getMessage());
+            return $this->response->setStatusCode(500)->setBody('Error loading document: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Download document - forces download instead of preview
+     */
+    public function download($uuid = null)
+    {
+        if (!$uuid) {
+            return $this->response->setStatusCode(400)->setBody('Document UUID required');
+        }
+
+        // Get document from database
+        $document = $this->db->table('documents')
+            ->where('uuid', $uuid)
+            ->where('uuid_business_id', session('uuid_business'))
+            ->get()
+            ->getRowArray();
+
+        if (!$document) {
+            return $this->response->setStatusCode(404)->setBody('Document not found');
+        }
+
+        if (empty($document['file'])) {
+            return $this->response->setStatusCode(404)->setBody('File not found for this document');
+        }
+
+        try {
+            $s3config = config("AmazonS3");
+            $bucket = $s3config->bucket;
+
+            // Clean up the file path - remove newlines and trim
+            $filePath = trim($document['file']);
+
+            // If file is a full URL, extract just the key/path
+            if (filter_var($filePath, FILTER_VALIDATE_URL)) {
+                // Parse the URL to extract the path after the bucket name
+                $parsedUrl = parse_url($filePath);
+                $path = $parsedUrl['path'] ?? '';
+
+                // Remove leading slash and bucket name from path
+                // Example: /webimpetus/dev/documents/... -> dev/documents/...
+                $path = ltrim($path, '/');
+                if (strpos($path, $bucket . '/') === 0) {
+                    $filePath = substr($path, strlen($bucket) + 1);
+                } else {
+                    $filePath = $path;
+                }
+            }
+
+            $s3Client = new \Aws\S3\S3Client([
+                'version' => 'latest',
+                'region' => $s3config->region,
+                'credentials' => [
+                    'key' => $s3config->access_key,
+                    'secret' => $s3config->secret_key,
+                ],
+                'endpoint' => $s3config->endpoint,
+                'use_path_style_endpoint' => $s3config->use_path_style,
+            ]);
+
+            $result = $s3Client->getObject([
+                'Bucket' => $bucket,
+                'Key' => $filePath,
+            ]);
+
+            // Get original filename from metadata or fallback
+            $metadata = !empty($document['metadata']) ? json_decode($document['metadata'], true) : [];
+            $filename = $metadata['original_name'] ?? ($document['original_filename'] ?? basename($filePath));
+            $contentType = $result['ContentType'] ?? 'application/octet-stream';
+
+            $this->response->setHeader('Content-Type', $contentType);
+            $this->response->setHeader('Content-Disposition', 'attachment; filename="' . $filename . '"');
+            $this->response->setHeader('Content-Length', (string)$result['ContentLength']);
+
+            return $this->response->setBody($result['Body']);
+
+        } catch (\Exception $e) {
+            log_message('error', 'Document download error: ' . $e->getMessage());
+            return $this->response->setStatusCode(500)->setBody('Error downloading document: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Get mime type from file extension
+     */
+    private function getMimeType($filename)
+    {
+        $extension = pathinfo($filename, PATHINFO_EXTENSION);
+        $mimeTypes = [
+            'pdf' => 'application/pdf',
+            'jpg' => 'image/jpeg',
+            'jpeg' => 'image/jpeg',
+            'png' => 'image/png',
+            'gif' => 'image/gif',
+            'doc' => 'application/msword',
+            'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'xls' => 'application/vnd.ms-excel',
+            'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'txt' => 'text/plain',
+            'zip' => 'application/zip',
+        ];
+
+        return $mimeTypes[strtolower($extension)] ?? 'application/octet-stream';
     }
 }
