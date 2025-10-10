@@ -1,8 +1,249 @@
 <?php include('common/header.php'); ?>
 <!-- main content part here -->
 
-
 <?php include('common/sidebar.php'); ?>
+
+<style>
+    /* JIRA-Style Dashboard Styling */
+    .dashboard_part {
+        background: #f4f5f7 !important;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    .main_content_iner {
+        background: transparent !important;
+    }
+
+    /* Page Header - JIRA Style */
+    .page_title_box {
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e9ecef;
+    }
+
+    .page_title_box h3 {
+        font-size: 24px;
+        font-weight: 600;
+        color: #172b4d;
+        margin: 0;
+    }
+
+    .breadcrumb {
+        background: transparent;
+        margin: 0;
+        padding: 0;
+    }
+
+    .breadcrumb-item {
+        font-size: 14px;
+        color: #5e6c84;
+    }
+
+    .breadcrumb-item a {
+        color: #0052cc;
+        text-decoration: none;
+    }
+
+    .breadcrumb-item a:hover {
+        color: #0065ff;
+        text-decoration: underline;
+    }
+
+    /* Dashboard Cards - JIRA Style */
+    .dashboard-card {
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 16px;
+        transition: all 0.2s ease;
+        border: 1px solid #dfe1e6;
+        box-shadow: 0 1px 1px rgba(9, 30, 66, 0.08);
+        height: 100%;
+    }
+
+    .dashboard-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(9, 30, 66, 0.15);
+        border-color: #0052cc;
+    }
+
+    .dashboard-card a {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+    }
+
+    .dashCount {
+        font-size: 28px;
+        font-weight: 700;
+        color: #172b4d;
+        margin: 0 0 4px 0;
+        line-height: 1;
+    }
+
+    .dashTitle {
+        font-size: 14px;
+        font-weight: 600;
+        color: #5e6c84;
+        margin: 0;
+        text-transform: none;
+    }
+
+    .dashBrdIcon {
+        width: 48px;
+        height: 48px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 24px;
+    }
+
+    /* White Cards - JIRA Style */
+    .white_card {
+        background: white;
+        border-radius: 8px;
+        border: 1px solid #dfe1e6;
+        box-shadow: 0 1px 1px rgba(9, 30, 66, 0.08);
+        transition: box-shadow 0.2s ease;
+    }
+
+    .white_card:hover {
+        box-shadow: 0 4px 8px rgba(9, 30, 66, 0.15);
+    }
+
+    .white_card_header {
+        padding: 16px 20px;
+        border-bottom: 1px solid #f4f5f7;
+    }
+
+    .white_card_header h3 {
+        font-size: 16px;
+        font-weight: 600;
+        color: #172b4d;
+        margin: 0;
+    }
+
+    .white_card_body {
+        padding: 16px 20px;
+    }
+
+    /* User List - JIRA Style */
+    .single_user_pil {
+        padding: 12px 0;
+        border-bottom: 1px solid #f4f5f7;
+        transition: background 0.2s ease;
+    }
+
+    .single_user_pil:last-child {
+        border-bottom: none;
+    }
+
+    .single_user_pil:hover {
+        background: #f4f5f7;
+        border-radius: 4px;
+        margin: 0 -8px;
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    .single_user_pil span {
+        font-size: 14px;
+        font-weight: 500;
+        color: #172b4d;
+    }
+
+    .user_info {
+        font-size: 13px;
+        color: #5e6c84;
+    }
+
+    .action_btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 4px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: #f4f5f7;
+        color: #5e6c84;
+        transition: all 0.2s ease;
+    }
+
+    .action_btn:hover {
+        background: #0052cc;
+        color: white;
+    }
+
+    /* Buttons - JIRA Style */
+    .btn_1 {
+        background: #0052cc;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 10px 20px;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+    .btn_1:hover {
+        background: #0065ff;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0, 82, 204, 0.3);
+    }
+
+    /* Tables - JIRA Style */
+    .QA_table table,
+    .dataTable {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    .QA_table thead th,
+    .dataTable thead th {
+        background: #f4f5f7;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 11px;
+        letter-spacing: 0.5px;
+        color: #5e6c84;
+        padding: 12px 16px;
+        border-bottom: 2px solid #dfe1e6;
+    }
+
+    .QA_table tbody td,
+    .dataTable tbody td {
+        padding: 12px 16px;
+        font-size: 14px;
+        color: #172b4d;
+        border-bottom: 1px solid #f4f5f7;
+    }
+
+    .QA_table tbody tr:hover,
+    .dataTable tbody tr:hover {
+        background: #f4f5f7;
+        transition: background 0.2s ease;
+    }
+
+    /* Responsive Grid */
+    @media (max-width: 1400px) {
+        .col-xxl-2 {
+            flex: 0 0 20%;
+            max-width: 20%;
+        }
+    }
+
+    @media (max-width: 991px) {
+        .dashboard-card {
+            margin-bottom: 12px;
+        }
+    }
+</style>
 
 <section class="main_content dashboard_part large_header_bg full_main_content">
     <?php include('common/top-header.php'); ?>
@@ -13,10 +254,10 @@
                 <div class="col-12">
                     <div class="page_title_box d-flex flex-wrap align-items-center justify-content-between">
                         <div class="page_title_left d-flex align-items-center">
-                            <h3 class="f_s_25 f_w_700 dark_text mr_30">Dashboard</h3>
+                            <h3 class="f_s_25 f_w_700 dark_text mr_30">📊 Dashboard</h3>
                             <ol class="breadcrumb page_bradcam mb-0">
                                 <li class="breadcrumb-item"><a href="javascript:void(0);">Home</a></li>
-                                <li class="breadcrumb-item active">Analytic</li>
+                                <li class="breadcrumb-item active">Dashboard</li>
                             </ol>
                         </div>
                         <div class="page_title_right">

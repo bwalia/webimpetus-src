@@ -23,10 +23,11 @@ $roles = isset($_SESSION['role']) ? getResultWithoutBusiness("roles", ["uuid" =>
 
                 <div class="header_search">
                     <form action="/dashboard" class="header_search_form" style="margin: 0;">
-                        <div class="business-uuid-selector ml-3 mr-3">
+                        <div class="business-uuid-selector ml-3 mr-3" style="max-width: 300px;">
                             <input type="search" class="form-control" name="search"
                                 value="<?php echo isset($_GET['search']) ? $_GET['search'] : '' ?>"
-                                placeholder="Search..." />
+                                placeholder="Search..."
+                                style="width: 100%; max-width: 300px;" />
                         </div>
                     </form>
                     <div class="search-icon">
@@ -39,15 +40,45 @@ $roles = isset($_SESSION['role']) ? getResultWithoutBusiness("roles", ["uuid" =>
 
 
 
-                    <div class="business-uuid-selector mr-3">
+                    <div class="business-uuid-selector mr-3" style="min-width: 400px; max-width: 600px;">
                         <select name="uuid_business_id" id="uuidBusinessIdSwitcher"
-                            class="form-control dashboard-dropdown">
+                            class="form-control dashboard-dropdown" style="width: 100%;">
                             <option value="">-- Choose Business --</option>
                             <?php foreach ($business as $eachUuid) { ?>
                                 <option value="<?php echo $eachUuid['uuid'] ?>" <?php if (@$_SESSION['uuid_business'] == $eachUuid['uuid']) {
                                        echo "selected";
                                    } ?>> <?php echo $eachUuid['name'] ?></option>
                             <?php } ?>
+                        </select>
+                    </div>
+
+                    <!-- Language Switcher -->
+                    <div class="language-switcher mr-3">
+                        <style>
+                            .language-switcher select {
+                                border: 2px solid #667eea;
+                                border-radius: 8px;
+                                padding: 8px 12px;
+                                font-weight: 500;
+                                color: #495057;
+                                transition: all 0.3s ease;
+                                min-width: 120px;
+                                background: white;
+                            }
+                            .language-switcher select:focus {
+                                outline: none;
+                                box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+                                border-color: #5a67d8;
+                            }
+                            .language-switcher select option {
+                                padding: 10px;
+                            }
+                        </style>
+                        <select name="app_language" id="languageSwitcher" class="form-control dashboard-dropdown">
+                            <option value="en" <?= (session('app_language') ?? 'en') == 'en' ? 'selected' : '' ?>>🇬🇧 English</option>
+                            <option value="fr" <?= (session('app_language') ?? 'en') == 'fr' ? 'selected' : '' ?>>🇫🇷 Français</option>
+                            <option value="nl" <?= (session('app_language') ?? 'en') == 'nl' ? 'selected' : '' ?>>🇳🇱 Nederlands</option>
+                            <option value="hi" <?= (session('app_language') ?? 'en') == 'hi' ? 'selected' : '' ?>>🇮🇳 हिन्दी</option>
                         </select>
                     </div>
 
@@ -98,5 +129,88 @@ $roles = isset($_SESSION['role']) ? getResultWithoutBusiness("roles", ["uuid" =>
 <style>
     input[type=search]::-webkit-search-cancel-button {
         -webkit-appearance: searchfield-cancel-button;
+    }
+</style>
+
+<script>
+    $(document).ready(function() {
+        // Language Switcher Handler
+        $('#languageSwitcher').on('change', function() {
+            const selectedLanguage = $(this).val();
+
+            // Save language preference via AJAX
+            $.ajax({
+                url: '/dashboard/setLanguage',
+                method: 'POST',
+                data: { language: selectedLanguage },
+                success: function(response) {
+                    // Reload page to apply new language
+                    window.location.reload();
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error switching language:', error);
+                }
+            });
+        });
+
+        // Font Size Controls
+        let currentFontSize = localStorage.getItem('fontSize') ? parseInt(localStorage.getItem('fontSize')) : 100;
+
+        // Apply saved font size on page load
+        function applyFontSize(size) {
+            document.documentElement.style.fontSize = size + '%';
+            $('#fontSizeDisplay').text(size + '%');
+            localStorage.setItem('fontSize', size);
+        }
+
+        // Initialize with saved size
+        applyFontSize(currentFontSize);
+
+        // Increase font size
+        $('#increaseFontSize').on('click', function() {
+            if (currentFontSize < 150) { // Max 150%
+                currentFontSize += 10;
+                applyFontSize(currentFontSize);
+            }
+        });
+
+        // Decrease font size
+        $('#decreaseFontSize').on('click', function() {
+            if (currentFontSize > 70) { // Min 70%
+                currentFontSize -= 10;
+                applyFontSize(currentFontSize);
+            }
+        });
+
+        // Reset font size on double-click of display
+        $('#fontSizeDisplay').on('dblclick', function() {
+            currentFontSize = 100;
+            applyFontSize(currentFontSize);
+        });
+    });
+</script>
+
+<style>
+    /* Make business selector dropdown wider */
+    .business-uuid-selector .select2-container {
+        min-width: 300px !important;
+        max-width: 400px !important;
+    }
+
+    .business-uuid-selector .select2-container .select2-selection--single {
+        height: auto !important;
+        min-height: 38px !important;
+        border: 2px solid #667eea !important;
+        border-radius: 8px !important;
+    }
+
+    .business-uuid-selector .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 34px !important;
+        padding-left: 12px !important;
+        font-weight: 500 !important;
+    }
+
+    .business-uuid-selector .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 34px !important;
     }
 </style>

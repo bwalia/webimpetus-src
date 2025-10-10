@@ -82,7 +82,7 @@ class Timeslips extends CommonController
         $data['uuid_business'] = $this->session->get('uuid_business');
         $data['token'] = $this->session->get('jwt_token');
 
-        $viewPath = "timeslips/list";
+        $viewPath = "timeslips/list_improved";
         return view($viewPath, $data);
     }
 
@@ -114,7 +114,8 @@ class Timeslips extends CommonController
         $data["employees"] = $this->timeSlipsModel->getEmployeesData();
         $data[$this->table] = $this->timeSlipsModel->getSingleData($uuid);
 
-        return view($this->table . "/edit", $data);
+        // Use improved view
+        return view($this->table . "/edit_improved", $data);
     }
 
     public function save($uuid = null)

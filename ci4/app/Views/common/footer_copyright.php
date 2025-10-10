@@ -1,5 +1,60 @@
 <!-- footer div part -->
-<div class="DOCKER_REGISTRYpart">
+<div class="DOCKER_REGISTRYpart" style="position: relative;">
+    <!-- Font Size Controls - Bottom Right -->
+    <div class="font-size-controls-footer">
+        <style>
+            .font-size-controls-footer {
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                z-index: 1000;
+                display: flex;
+                gap: 8px;
+                align-items: center;
+                background: white;
+                padding: 10px 15px;
+                border-radius: 50px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            }
+            .font-size-btn {
+                background: white;
+                border: 2px solid #667eea;
+                border-radius: 50%;
+                width: 40px;
+                height: 40px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                font-weight: 700;
+                color: #667eea;
+            }
+            .font-size-btn:hover {
+                background: #667eea;
+                color: white;
+                transform: scale(1.1);
+            }
+            .font-size-btn:active {
+                transform: scale(0.95);
+            }
+            .font-size-display {
+                font-size: 0.875rem;
+                color: #6b7280;
+                font-weight: 600;
+                min-width: 45px;
+                text-align: center;
+            }
+        </style>
+        <button class="font-size-btn" id="decreaseFontSize" title="Decrease font size">
+            <i class="fa fa-minus"></i>
+        </button>
+        <span class="font-size-display" id="fontSizeDisplay">100%</span>
+        <button class="font-size-btn" id="increaseFontSize" title="Increase font size">
+            <i class="fa fa-plus"></i>
+        </button>
+    </div>
+
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-12">

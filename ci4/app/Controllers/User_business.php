@@ -64,9 +64,9 @@ class User_business extends CommonController
 		$dir = $this->request->getVar('dir') ?? "asc";
 
 		$sqlQuery = $this->User_business_model
-            ->select("user_business.*")
+            ->select("user_business.*, user_business.uuid as uuid")
             ->join('users', 'user_business.user_uuid = users.uuid', 'LEFT')
-            ->select("users.name as username")
+            ->select("users.name as username, users.email as user_email")
             ->join('businesses', 'user_business.primary_business_uuid = businesses.uuid', 'LEFT')
             ->select("businesses.name as business_name");
 			// ->where(["businesses.uuid_business_id" => $this->businessUuid]);

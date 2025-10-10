@@ -67,7 +67,7 @@ if (empty(@$timeslips['slip_timer_started'])) {
                 </select>
             </div>
             <div class="form-group">
-                <label for="slip_start_date" class="font-weight-bolder"> <?=lang('Timeslips.slip_start_date');?> <span class="redstar">*</span></label>
+                <label for="slip_start_date" class="font-weight-bolder">Start Date <span class="redstar">*</span></label>
                 <div class="input-group">
                     <input type="text" id="slip_start_date" name="slip_start_date" class="form-control required datepicker" value="<?php echo render_date($startDate); ?>">
                     <span class="input-group-append">
@@ -77,7 +77,7 @@ if (empty(@$timeslips['slip_timer_started'])) {
             </div>
 
             <div class="form-group">
-                <label for="slip_timer_started" class="font-weight-bolder"> <?=lang('Timeslips.slip_timer_started');?> </label>
+                <label for="slip_timer_started" class="font-weight-bolder">Start Time</label>
                 <div class="form-row">
                     <div class="col-sm-7 col-12 mb-1">
                         <div class="input-group">
@@ -94,7 +94,7 @@ if (empty(@$timeslips['slip_timer_started'])) {
             </div>
 
             <div class="form-group">
-                <label for="slip_end_date" class="font-weight-bolder"> <?=lang('Timeslips.slip_end_date');?> </label>
+                <label for="slip_end_date" class="font-weight-bolder">End Date</label>
                 <div class="input-group">
                     <input id="slip_end_date" name="slip_end_date" class="form-control datepicker" value="<?php echo render_date(@$timeslips['slip_end_date'] ?? $startDate); ?>">
                     <div class="input-group-append">
@@ -105,7 +105,7 @@ if (empty(@$timeslips['slip_timer_started'])) {
             </div>
 
             <div class="form-group">
-                <label for="slip_end_date" class="font-weight-bolder"> <?=lang('Timeslips.slip_timer_end');?> </label>
+                <label for="slip_timer_end" class="font-weight-bolder">End Time</label>
                 <div class="form-row">
                     <div class="col-sm-7 col-12 mb-1">
                         <div class="input-group">
@@ -117,7 +117,7 @@ if (empty(@$timeslips['slip_timer_started'])) {
                         <span class="form-control-feedback" id="end_timer_error"></span>
                     </div>
                     <div class="col-sm-5 col-12">
-                        <button type="button" class="btn btn-block btn-info set-current-time"><?php echo lang('Timeslips.set_current_time');?></button>
+                        <button type="button" class="btn btn-block btn-info set-current-time-end"><?php echo lang('Timeslips.set_current_time');?></button>
                     </div>
                 </div>
             </div>
@@ -180,10 +180,7 @@ if (empty(@$timeslips['slip_timer_started'])) {
                     <input id="slip_rate" name="slip_rate" class="form-control" value="<?php echo @$timeslips['slip_rate']; ?>">
                 </div>
 
-                <div class="form-group">
-                    <label for="slip_timer_accumulated_seconds" class="font-weight-bolder"> <?=lang('Timeslips.slip_timer_accumulated_seconds');?></label>
-                    <input id="slip_timer_accumulated_seconds" name="slip_timer_accumulated_seconds" class="form-control" value="<?php echo @$timeslips['slip_timer_accumulated_seconds']; ?>">
-                </div>
+                <input type="hidden" id="slip_timer_accumulated_seconds" name="slip_timer_accumulated_seconds" value="<?php echo @$timeslips['slip_timer_accumulated_seconds']; ?>">
             </div>
             
             <div class="d-flex justify-content-end mb-4">
@@ -203,9 +200,7 @@ if (empty(@$timeslips['slip_timer_started'])) {
 <?php require_once(APPPATH . 'Views/common/footer.php'); ?>
 <script>
     $(document).ready(function() {
-        setInterval(function() {
-            calculateTime();
-        }, 1000);
+        // Remove continuous interval calculation
     })
     $(function() {
         const breakTime =  $("#break_time").is(":checked");
@@ -216,12 +211,30 @@ if (empty(@$timeslips['slip_timer_started'])) {
             } else {
                 $('.break_time_detail').slideUp('slow');
             }
+            calculateTime();
+        });
+
+        // Calculate on break time changes
+        $("#break_time_start").change(function() {
+            calculateTime();
+        });
+
+        $("#break_time_end").change(function() {
+            calculateTime();
         });
 
         $(".set-current-time").click(function() {
             var el = $(this);
             console.dir({element: el[0]});
             setCurrentTime(el, calculateTime)
+        });
+
+        $(".set-current-time-end").click(function() {
+            var el = $(this);
+            console.dir({element: el[0]});
+            setCurrentTime(el, function() {
+                calculateTime();
+            });
         });
 
         $("#slip_end_date").change(function (evt) {
@@ -244,7 +257,32 @@ if (empty(@$timeslips['slip_timer_started'])) {
 
         $("#slip_timer_end").focusout(function () {
             slipTimerVerify(null);
-        })
+            calculateTime();
+        });
+
+        $("#slip_timer_end").change(function () {
+            calculateTime();
+        });
+
+        $("#slip_timer_started").change(function () {
+            calculateTime();
+        });
+
+        $("#slip_start_date").change(function() {
+            var slip_start_date = $(this).val();
+            var start_date = new Date(slip_start_date);
+            var onejan = new Date(start_date.getFullYear(), 0, 1);
+            var today = new Date(start_date.getFullYear(), start_date.getMonth(), start_date.getDate());
+            var dayOfYear = ((today - onejan + 86400000) / 86400000); // 24*60*60*1000
+            var week_no = Math.ceil(dayOfYear / 7);
+            week_no = week_no > 52 ? 52 : week_no;
+            $("#week_no").val(week_no);
+            calculateTime();
+        });
+
+        $("#slip_end_date").change(function() {
+            calculateTime();
+        });
 
         if (breakTime) {
             $("#break_time_end").focusout(function () {
@@ -426,17 +464,6 @@ if (empty(@$timeslips['slip_timer_started'])) {
             }
         );
     }
-
-    $("#slip_start_date").change(function() {
-        var slip_start_date = $(this).val();
-        var start_date = new Date(slip_start_date);
-        var onejan = new Date(start_date.getFullYear(), 0, 1);
-        var today = new Date(start_date.getFullYear(), start_date.getMonth(), start_date.getDate());
-        var dayOfYear = ((today - onejan + 86400000) / 86400000); // 24*60*60*1000
-        var week_no = Math.ceil(dayOfYear / 7);
-        week_no = week_no > 52 ? 52 : week_no;
-        $("#week_no").val(week_no);
-    });
 
     $(".btn-advance").click(function() {
         $(".btn-advance-down").toggle();

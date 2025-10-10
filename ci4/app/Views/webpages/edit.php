@@ -108,6 +108,22 @@ $data_type_format["YAML"] = "# Employee records
 								</div>
 
 								<div class="form-group col-md-12">
+									<label for="webpage_tags">
+										<i class="fa fa-tags"></i> Tags
+										<a href="/tags/manage" target="_blank" style="font-size: 0.85rem; margin-left: 8px;">
+											<i class="fa fa-cog"></i> Manage Tags
+										</a>
+									</label>
+									<select id="webpage_tags" name="webpage_tags[]" class="form-control select2" multiple="multiple"
+											data-placeholder="Select tags for this page...">
+										<!-- Populated by JavaScript -->
+									</select>
+									<small class="form-text text-muted">
+										Select multiple tags to categorize this page.
+									</small>
+								</div>
+
+								<div class="form-group col-md-12">
 									<label for="inputPassword4">Body</label>
 									<textarea class="form-control" name="content"
 										id="content"><?= @$webpage->content ?></textarea>
@@ -595,6 +611,119 @@ $data_type_format["YAML"] = "# Employee records
 	$(".custom-file-input").on("change", function () {
 		var fileName = $(this).val().split("\\").pop();
 		$(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+	});
+
+	// Tags functionality
+	const webpageId = "<?= @$webpage->uuid ?>";
+
+	function loadWebpageTags() {
+		$.ajax({
+			url: '/tags/list',
+			method: 'GET',
+			dataType: 'json',
+			success: function(response) {
+				if (response.data && Array.isArray(response.data)) {
+					populateWebpageTagsSelect(response.data);
+				}
+			}
+		});
+	}
+
+	function populateWebpageTagsSelect(tags) {
+		const $select = $('#webpage_tags');
+
+		// Populate select options
+		tags.forEach(function(tag) {
+			const option = new Option(tag.name, tag.id, false, false);
+			$(option).attr('data-color', tag.color);
+			$select.append(option);
+		});
+
+		// Initialize select2 with custom template
+		$select.select2({
+			placeholder: 'Select tags for this page...',
+			allowClear: true,
+			templateResult: formatWebpageTag,
+			templateSelection: formatWebpageTagSelection
+		});
+
+		// Load currently assigned tags if editing
+		if (webpageId) {
+			loadCurrentWebpageTags(webpageId);
+		}
+	}
+
+	function loadCurrentWebpageTags(webpageId) {
+		$.ajax({
+			url: '/tags/getEntityTags',
+			method: 'GET',
+			data: {
+				entity_type: 'webpage',
+				entity_id: webpageId
+			},
+			dataType: 'json',
+			success: function(response) {
+				if (response.data && Array.isArray(response.data)) {
+					const currentTagIds = response.data.map(tag => tag.id);
+					$('#webpage_tags').val(currentTagIds).trigger('change');
+				}
+			}
+		});
+	}
+
+	function formatWebpageTag(tag) {
+		if (!tag.id) return tag.text;
+
+		const color = $(tag.element).data('color') || '#667eea';
+		const $tag = $(
+			'<span style="display: flex; align-items: center; gap: 8px;">' +
+				'<span style="width: 12px; height: 12px; border-radius: 50%; background-color: ' + color + ';"></span>' +
+				'<span>' + tag.text + '</span>' +
+			'</span>'
+		);
+		return $tag;
+	}
+
+	function formatWebpageTagSelection(tag) {
+		if (!tag.id) return tag.text;
+
+		const color = $(tag.element).data('color') || '#667eea';
+		return $('<span style="display: flex; align-items: center; gap: 6px;">' +
+			'<span style="width: 10px; height: 10px; border-radius: 50%; background-color: ' + color + ';"></span>' +
+			'<span>' + tag.text + '</span>' +
+			'</span>');
+	}
+
+	// Load tags on page load
+	$(document).ready(function() {
+		loadWebpageTags();
+	});
+
+	// Save tags before form submission
+	$('#addcat').on('submit', function(e) {
+		if (webpageId) {
+			e.preventDefault();
+			const selectedTags = $('#webpage_tags').val() || [];
+
+			$.ajax({
+				url: '/tags/attach',
+				method: 'POST',
+				data: {
+					entity_type: 'webpage',
+					entity_id: webpageId,
+					tag_ids: selectedTags
+				},
+				dataType: 'json',
+				success: function(response) {
+					// Now submit the main form
+					$('#addcat').off('submit').submit();
+				},
+				error: function() {
+					// Submit anyway if tag saving fails
+					$('#addcat').off('submit').submit();
+				}
+			});
+		}
 	});
 </script>
 

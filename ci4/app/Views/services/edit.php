@@ -21,8 +21,9 @@
                         <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
                             <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Service Detail</a>
                             <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Service Secrets</a>
-                            <a class="nav-item nav-link" id="nav-steps-tab" data-toggle="tab" href="#nav-steps" role="tab" aria-controls="nav-steps" aria-selected="false">Service Workflows</a>
                             <a class="nav-item nav-link" id="nav-domains-tab" data-toggle="tab" href="#nav-domains" role="tab" aria-controls="nav-domains" aria-selected="false">Domains</a>
+                            <a class="nav-item nav-link" id="nav-tags-tab" data-toggle="tab" href="#nav-tags" role="tab" aria-controls="nav-tags" aria-selected="false">Tags</a>
+                            <a class="nav-item nav-link" id="nav-steps-tab" data-toggle="tab" href="#nav-steps" role="tab" aria-controls="nav-steps" aria-selected="false">Service Workflows</a>
                         </div>
                     </nav>
                     <div class="tab-content py-3 px-3 px-sm-0 col-md-12" id="nav-tabContent">
@@ -255,18 +256,23 @@
                                     for ($jak_i = 0; $jak_i < count($secret_services); $jak_i++) {
                                         $new_id = $jak_i + 1;
                                     ?>
-                                        <div class="form-row col-md-12 secret-row-container" id="office_address_<?php echo $new_id; ?>">
+                                        <div class="form-row col-md-12 secret-row-container" id="office_address_<?php echo $new_id; ?>" style="border-bottom: 1px solid #e5e7eb; padding-bottom: 20px; margin-bottom: 20px;">
                                             <div class="form-group col-md-3">
-                                                <label for="inputEmail4">Secret Key</label>
-                                                <input autocomplete="off" type="text" class="form-control" id="key_name_<?php echo $new_id; ?>" name="key_name[]" placeholder="" value="<?= $secret_services[$jak_i]['key_name'] ?>">
+                                                <label for="inputEmail4">
+                                                    <i class="fa fa-key"></i> Secret Key
+                                                </label>
+                                                <input autocomplete="off" type="text" class="form-control" id="key_name_<?php echo $new_id; ?>" name="key_name[]" placeholder="e.g., API_KEY" value="<?= $secret_services[$jak_i]['key_name'] ?>">
                                             </div>
-                                            <div class="form-group col-md-5">
-                                                <label for="inputEmail4">Secret Value</label>
-                                                <input autocomplete="off" type="text" class="form-control" id="key_value_<?php echo $new_id; ?>" name="key_value[]" placeholder="" value="<?= (!empty($_SESSION['role']) && $_SESSION['role'] == 1) ? $secret_services[$jak_i]['key_value'] : '********' ?>">
+                                            <div class="form-group col-md-3">
+                                                <label for="inputEmail4">
+                                                    <i class="fa fa-lock"></i> Secret Value
+                                                </label>
+                                                <input autocomplete="off" type="text" class="form-control" id="key_value_<?php echo $new_id; ?>" name="key_value[]" placeholder="Enter secret value" value="<?= (!empty($_SESSION['role']) && $_SESSION['role'] == 1) ? $secret_services[$jak_i]['key_value'] : '********' ?>">
                                             </div>
-                                            <div class="form-group col-md-2 d-flex flex-column">
-                                                <label for="my-select2_<?php echo $new_id; ?>">Environment</label>
-                                                
+                                            <div class="form-group col-md-2">
+                                                <label for="my-select2_<?php echo $new_id; ?>">
+                                                    <i class="fa fa-server"></i> Environment
+                                                </label>
                                                 <select id="my-select2_<?php echo $new_id; ?>" data-select2-tags="true" name="secret_tags[]" class="form-control select2">
                                                     <option value="" >--Select--</option>
                                                     <?php
@@ -277,6 +283,19 @@
                                                             </option>
                                                     <?php } ?>
                                                 </select>
+                                            </div>
+                                            <div class="form-group col-md-2">
+                                                <label for="secret_domains_<?php echo $new_id; ?>">
+                                                    <i class="fa fa-globe"></i> Domains
+                                                </label>
+                                                <select id="secret_domains_<?php echo $new_id; ?>" name="secret_domains_<?php echo $new_id; ?>[]" class="form-control select2-domains" multiple="multiple" data-placeholder="Select domains...">
+                                                    <?php foreach ($all_domains as $domain) : ?>
+                                                        <option value="<?= $domain['uuid']; ?>">
+                                                            <?= $domain['name']; ?>
+                                                        </option>
+                                                    <?php endforeach; ?>
+                                                </select>
+                                                <small class="form-text text-muted">Where this secret is used</small>
                                             </div>
                                             <input type="hidden" class="form-control" name="secret_uuid[]" placeholder="" value="<?= @$secret_services[$jak_i]['uuid'] ?>" />
                                             <?php
@@ -320,34 +339,52 @@
                             <?php
                             } else {
                             ?>
-                                <div class="form-row" id="office_address_1">
+                                <div class="form-row col-md-12" id="office_address_1" style="border-bottom: 1px solid #e5e7eb; padding-bottom: 20px; margin-bottom: 20px;">
                                     <div class="form-group col-md-3">
-                                        <label for="inputEmail4">Secret Key</label>
-                                        <input autocomplete="off" type="text" class="form-control" id="key_name_1" name="key_name[]" placeholder="" value="">
+                                        <label for="inputEmail4">
+                                            <i class="fa fa-key"></i> Secret Key
+                                        </label>
+                                        <input autocomplete="off" type="text" class="form-control" id="key_name_1" name="key_name[]" placeholder="e.g., API_KEY" value="">
                                     </div>
-                                    <div class="form-group col-md-5">
-                                        <label for="inputEmail4">Secret Value</label>
-                                        <input autocomplete="off" type="text" class="form-control" id="key_value_1" name="key_value[]" placeholder="" value="">
+                                    <div class="form-group col-md-3">
+                                        <label for="inputEmail4">
+                                            <i class="fa fa-lock"></i> Secret Value
+                                        </label>
+                                        <input autocomplete="off" type="text" class="form-control" id="key_value_1" name="key_value[]" placeholder="Enter secret value" value="">
                                     </div>
-                                    <div class="form-group col-md-2 d-flex flex-column">
-                                        <label for="my-select2_0">Environment</label>
-                                        
+                                    <div class="form-group col-md-2">
+                                        <label for="my-select2_0">
+                                            <i class="fa fa-server"></i> Environment
+                                        </label>
                                         <select id="my-select2_0" data-select2-tags="true" name="secret_tags[]" class="form-control select2">
                                             <option value="" >--Select--</option>
                                         </select>
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label for="secret_domains_1">
+                                            <i class="fa fa-globe"></i> Domains
+                                        </label>
+                                        <select id="secret_domains_1" name="secret_domains_1[]" class="form-control select2-domains" multiple="multiple" data-placeholder="Select domains...">
+                                            <?php foreach ($all_domains as $domain) : ?>
+                                                <option value="<?= $domain['uuid']; ?>">
+                                                    <?= $domain['name']; ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                        <small class="form-text text-muted">Where this secret is used</small>
                                     </div>
                                     <div class="form-group col-md-1 change">
                                         <button class="btn btn-primary bootstrap-touchspin-up add" type="button" style="max-height: 35px;margin-top: 28px;margin-left: 10px;">+</button>
                                     </div>
                                     <div class="form-group col-md-1 change">
-                                        <button 
-                                            class="btn btn-info bootstrap-touchspin-up clone-row" 
-                                            data-type="secret_services" 
-                                            data-uuid="" 
+                                        <button
+                                            class="btn btn-info bootstrap-touchspin-up clone-row"
+                                            data-type="secret_services"
+                                            data-uuid=""
                                             data-id="office_address_1"
                                             data-key="1"
-                                            id="cloneRow" 
-                                            type="button" 
+                                            id="cloneRow"
+                                            type="button"
                                             style="max-height: 35px;margin-top: 28px;margin-left: 10px;"
                                         >
                                             <i class="fas fa-clone"></i>
@@ -361,6 +398,61 @@
                             <?php
                             }
                             ?>
+
+                            <style>
+                                .secret-row-container {
+                                    transition: background-color 0.2s;
+                                }
+                                .secret-row-container:hover {
+                                    background-color: #f9fafb;
+                                }
+                                .select2-domains .select2-selection__choice {
+                                    background-color: #667eea !important;
+                                    color: white !important;
+                                    border: none !important;
+                                    padding: 4px 8px !important;
+                                    border-radius: 12px !important;
+                                }
+                                .select2-domains .select2-selection__choice__remove {
+                                    color: white !important;
+                                    margin-right: 5px !important;
+                                }
+                            </style>
+
+                            <script>
+                                // Initialize Select2 for domain dropdowns in secrets
+                                $(document).ready(function() {
+                                    // Initialize existing domain selects
+                                    $('.select2-domains').select2({
+                                        placeholder: 'Select domains...',
+                                        allowClear: true,
+                                        width: '100%'
+                                    });
+
+                                    // When adding new secret rows, initialize Select2 for the new domain dropdown
+                                    $(document).on('click', '.add', function() {
+                                        setTimeout(function() {
+                                            $('.select2-domains').not('.select2-hidden-accessible').select2({
+                                                placeholder: 'Select domains...',
+                                                allowClear: true,
+                                                width: '100%'
+                                            });
+                                        }, 100);
+                                    });
+
+                                    // When cloning secret rows, reinitialize Select2
+                                    $(document).on('click', '.clone-row', function() {
+                                        setTimeout(function() {
+                                            $('.select2-domains').select2('destroy');
+                                            $('.select2-domains').select2({
+                                                placeholder: 'Select domains...',
+                                                allowClear: true,
+                                                width: '100%'
+                                            });
+                                        }, 100);
+                                    });
+                                });
+                            </script>
                         </div>
 
                         <div class="tab-pane fade" id="nav-steps" role="tabpanel" aria-labelledby="nav-steps-tab">
@@ -472,90 +564,520 @@
                         </div>
 
                         <div class="tab-pane fade" id="nav-domains" role="tabpanel" aria-labelledby="nav-domains-tab">
+                            <style>
+                                .domains-dual-panel-container {
+                                    display: grid;
+                                    grid-template-columns: 1fr auto 1fr;
+                                    gap: 24px;
+                                    margin: 20px 0;
+                                }
+                                .domains-panel {
+                                    background: white;
+                                    border-radius: 12px;
+                                    padding: 20px;
+                                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                                    min-height: 400px;
+                                }
+                                .domains-panel-header {
+                                    display: flex;
+                                    justify-content: space-between;
+                                    align-items: center;
+                                    margin-bottom: 16px;
+                                    padding-bottom: 12px;
+                                    border-bottom: 2px solid #e5e7eb;
+                                }
+                                .domains-panel-title {
+                                    font-size: 1rem;
+                                    font-weight: 700;
+                                    color: #1f2937;
+                                }
+                                .domains-panel-count {
+                                    background: #667eea;
+                                    color: white;
+                                    padding: 2px 10px;
+                                    border-radius: 12px;
+                                    font-size: 0.75rem;
+                                }
+                                .domains-panel-search {
+                                    width: 100%;
+                                    padding: 8px 12px;
+                                    border: 1px solid #e5e7eb;
+                                    border-radius: 6px;
+                                    margin-bottom: 12px;
+                                }
+                                .domains-list {
+                                    max-height: 450px;
+                                    overflow-y: auto;
+                                }
+                                .domain-item {
+                                    padding: 12px;
+                                    margin-bottom: 8px;
+                                    border: 2px solid #e5e7eb;
+                                    border-radius: 8px;
+                                    cursor: pointer;
+                                    transition: all 0.2s;
+                                    display: flex;
+                                    align-items: center;
+                                    gap: 10px;
+                                }
+                                .domain-item:hover {
+                                    border-color: #667eea;
+                                    background: #f9fafb;
+                                }
+                                .domain-item.selected {
+                                    border-color: #10b981;
+                                    background: #d1fae5;
+                                }
+                                .domain-icon {
+                                    width: 36px;
+                                    height: 36px;
+                                    border-radius: 8px;
+                                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    color: white;
+                                    font-weight: 600;
+                                }
+                                .domain-info {
+                                    flex-grow: 1;
+                                }
+                                .domain-name {
+                                    font-weight: 600;
+                                    color: #1f2937;
+                                }
+                                .domain-meta {
+                                    font-size: 0.75rem;
+                                    color: #6b7280;
+                                }
+                                .domains-transfer-controls {
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: 12px;
+                                    justify-content: center;
+                                }
+                                .domains-transfer-btn {
+                                    padding: 12px 20px;
+                                    border-radius: 8px;
+                                    border: 2px solid #667eea;
+                                    background: #667eea;
+                                    color: white;
+                                    font-weight: 600;
+                                    cursor: pointer;
+                                    transition: all 0.2s;
+                                }
+                                .domains-transfer-btn:hover:not(:disabled) {
+                                    background: #5568d3;
+                                    transform: scale(1.05);
+                                }
+                                .domains-transfer-btn:disabled {
+                                    background: #e5e7eb;
+                                    border-color: #e5e7eb;
+                                    color: #9ca3af;
+                                    cursor: not-allowed;
+                                }
+                                .domains-empty-state {
+                                    text-align: center;
+                                    padding: 40px 20px;
+                                    color: #9ca3af;
+                                }
+                            </style>
 
                             <?php
-                            if (count($serviceDomains) > 0) {
+                            $assignedDomainUUIDs = array_column($serviceDomains, 'domain_uuid');
                             ?>
-                                <div class="form-row domains_container">
-                                    <?php
-                                    for ($jak_i = 0; $jak_i < count($serviceDomains); $jak_i++) {
-                                        $new_id = $jak_i + 1;
-                                    ?>
-                                        <div class="form-row col-md-12" id="domains_<?php echo $new_id; ?>">
-                                            <div class="form-group col-md-6">
 
-                                                <label for="inputEmail4">Select Domain</label>
-
-
-
-                                                <select id="domains" name="domains[]" class="form-control">
-                                                    <option value="" selected="">--Select--</option>
-                                                    <?php foreach ($all_domains as $row) : ?>
-                                                        <option value="<?= $row['uuid']; ?>" <?= ($row['uuid'] == @$serviceDomains[$jak_i]['domain_uuid']) ? 'selected' : '' ?>>
-                                                            <?= $row['name']; ?>
-                                                        </option>
-                                                    <?php endforeach; ?>
-                                                </select>
-
-                                            </div>
-
-                                            <?php
-                                            if ($jak_i == 0) {
-                                            ?>
-                                                <div class="form-group col-md-1 change d-flex">
-                                                    <button class="btn btn-primary bootstrap-touchspin-up add_domain " type="button" style="max-height: 35px;margin-top: 28px;margin-left: 10px;">+</button>
-                                                    <button class="btn btn-info bootstrap-touchspin-up deleteaddress" data-type="domains" data-id="<?= $serviceDomains[$jak_i]['uuid'] ?>" id="deleteRow" type="button" style="max-height: 35px;margin-top: 28px;margin-left: 10px;">-</button>
-                                                </div>
-                                            <?php
-                                            } else {
-                                            ?>
-                                                <div class="form-group col-md-1 change">
-                                                    <button class="btn btn-info bootstrap-touchspin-up deleteaddress" data-type="domains" data-id="<?= $serviceDomains[$jak_i]['uuid'] ?>" id="deleteRow" type="button" style="max-height: 35px;margin-top: 28px;margin-left: 10px;">-</button>
-                                                </div>
-                                            <?php
-                                            }
-                                            ?>
+                            <div class="domains-dual-panel-container">
+                                <!-- Available Domains Panel -->
+                                <div class="domains-panel">
+                                    <div class="domains-panel-header">
+                                        <div class="domains-panel-title">
+                                            <i class="fa fa-globe"></i> Available Domains
+                                            <span class="domains-panel-count" id="availableDomainsCount">0</span>
                                         </div>
-                                    <?php
-                                    }
-                                    ?>
-                                </div>
-
-                                <input type="hidden" value="<?php echo count($serviceDomains); ?>" id="total_domains" name="total_domains">
-
-                            <?php
-                            } else {
-                            ?>
-                                <div class="form-row" id="domains_1">
-                                    <div class="form-group col-md-6">
-                                        <label for="inputEmail4">Select Domain</label>
-
-                                        <select id="domains" name="domains[]" class="form-control">
-                                            <option value="" selected="">--Select--</option>
-                                            <?php foreach ($all_domains as $row) : ?>
-                                                <option value="<?= $row['uuid']; ?>">
-                                                    <?= $row['name']; ?>
-                                                </option>
-                                            <?php endforeach; ?>
-                                        </select>
-
-
                                     </div>
-
-                                    <div class="form-group col-md-1 change">
-                                        <button class="btn btn-primary bootstrap-touchspin-up add_domain" type="button" style="max-height: 35px;margin-top: 28px;margin-left: 10px;">+</button>
+                                    <input type="text" class="domains-panel-search" id="searchAvailableDomains" placeholder="Search domains...">
+                                    <div class="domains-list" id="availableDomainsList">
+                                        <!-- Populated by JavaScript -->
                                     </div>
                                 </div>
-                                <div class="form-row domains_container">
 
+                                <!-- Transfer Controls -->
+                                <div class="domains-transfer-controls">
+                                    <button type="button" class="domains-transfer-btn" id="assignDomainsBtn" onclick="assignSelectedDomains()" disabled>
+                                        <i class="fa fa-arrow-right"></i>
+                                    </button>
+                                    <button type="button" class="domains-transfer-btn" onclick="assignAllDomains()">
+                                        <i class="fa fa-angle-double-right"></i>
+                                    </button>
+                                    <button type="button" class="domains-transfer-btn" onclick="removeAllDomains()">
+                                        <i class="fa fa-angle-double-left"></i>
+                                    </button>
+                                    <button type="button" class="domains-transfer-btn" id="removeDomainsBtn" onclick="removeSelectedDomains()" disabled>
+                                        <i class="fa fa-arrow-left"></i>
+                                    </button>
                                 </div>
-                                <input type="hidden" value="1" id="total_domains" name="total_domains">
-                                <input type="hidden" value="<?php echo $uriSegment; ?>" id="serviceId" name="serviceId">
-                            <?php
+
+                                <!-- Assigned Domains Panel -->
+                                <div class="domains-panel">
+                                    <div class="domains-panel-header">
+                                        <div class="domains-panel-title">
+                                            <i class="fa fa-check-circle"></i> Assigned Domains
+                                            <span class="domains-panel-count" id="assignedDomainsCount">0</span>
+                                        </div>
+                                    </div>
+                                    <input type="text" class="domains-panel-search" id="searchAssignedDomains" placeholder="Search assigned...">
+                                    <div class="domains-list" id="assignedDomainsList">
+                                        <!-- Populated by JavaScript -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Hidden inputs for form submission -->
+                            <div id="domainsHiddenInputs"></div>
+
+                            <script>
+                            // All domains data
+                            const allDomains = <?= json_encode($all_domains); ?>;
+                            const assignedDomainUUIDs = <?= json_encode($assignedDomainUUIDs); ?>;
+
+                            let availableDomains = [];
+                            let assignedDomains = [];
+                            let selectedAvailableDomains = [];
+                            let selectedAssignedDomains = [];
+
+                            // Initialize on page load
+                            $(document).ready(function() {
+                                initializeDomainLists();
+                                setupDomainSearchFilters();
+                            });
+
+                            function initializeDomainLists() {
+                                availableDomains = allDomains.filter(d => !assignedDomainUUIDs.includes(d.uuid));
+                                assignedDomains = allDomains.filter(d => assignedDomainUUIDs.includes(d.uuid));
+
+                                renderAvailableDomains();
+                                renderAssignedDomains();
+                                updateDomainCounts();
+                                updateDomainHiddenInputs();
                             }
-                            ?>
+
+                            function renderAvailableDomains(filter = '') {
+                                const container = $('#availableDomainsList');
+                                container.empty();
+
+                                const filtered = availableDomains.filter(d =>
+                                    d.name.toLowerCase().includes(filter.toLowerCase())
+                                );
+
+                                if (filtered.length === 0) {
+                                    container.html('<div class="domains-empty-state"><i class="fa fa-inbox fa-3x"></i><p>No domains available</p></div>');
+                                    return;
+                                }
+
+                                filtered.forEach(domain => {
+                                    const initial = domain.name.charAt(0).toUpperCase();
+                                    const isSelected = selectedAvailableDomains.includes(domain.uuid);
+                                    const item = $(`
+                                        <div class="domain-item ${isSelected ? 'selected' : ''}" data-uuid="${domain.uuid}" onclick="toggleAvailableDomain('${domain.uuid}')">
+                                            <div class="domain-icon">${initial}</div>
+                                            <div class="domain-info">
+                                                <div class="domain-name">${domain.name}</div>
+                                                <div class="domain-meta">Click to select</div>
+                                            </div>
+                                        </div>
+                                    `);
+                                    container.append(item);
+                                });
+                            }
+
+                            function renderAssignedDomains(filter = '') {
+                                const container = $('#assignedDomainsList');
+                                container.empty();
+
+                                const filtered = assignedDomains.filter(d =>
+                                    d.name.toLowerCase().includes(filter.toLowerCase())
+                                );
+
+                                if (filtered.length === 0) {
+                                    container.html('<div class="domains-empty-state"><i class="fa fa-inbox fa-3x"></i><p>No domains assigned</p></div>');
+                                    return;
+                                }
+
+                                filtered.forEach(domain => {
+                                    const initial = domain.name.charAt(0).toUpperCase();
+                                    const isSelected = selectedAssignedDomains.includes(domain.uuid);
+                                    const item = $(`
+                                        <div class="domain-item ${isSelected ? 'selected' : ''}" data-uuid="${domain.uuid}" onclick="toggleAssignedDomain('${domain.uuid}')">
+                                            <div class="domain-icon">${initial}</div>
+                                            <div class="domain-info">
+                                                <div class="domain-name">${domain.name}</div>
+                                                <div class="domain-meta">Click to select</div>
+                                            </div>
+                                        </div>
+                                    `);
+                                    container.append(item);
+                                });
+                            }
+
+                            function toggleAvailableDomain(uuid) {
+                                const index = selectedAvailableDomains.indexOf(uuid);
+                                if (index > -1) {
+                                    selectedAvailableDomains.splice(index, 1);
+                                } else {
+                                    selectedAvailableDomains.push(uuid);
+                                }
+                                renderAvailableDomains($('#searchAvailableDomains').val());
+                                updateDomainButtons();
+                            }
+
+                            function toggleAssignedDomain(uuid) {
+                                const index = selectedAssignedDomains.indexOf(uuid);
+                                if (index > -1) {
+                                    selectedAssignedDomains.splice(index, 1);
+                                } else {
+                                    selectedAssignedDomains.push(uuid);
+                                }
+                                renderAssignedDomains($('#searchAssignedDomains').val());
+                                updateDomainButtons();
+                            }
+
+                            function assignSelectedDomains() {
+                                selectedAvailableDomains.forEach(uuid => {
+                                    const domain = availableDomains.find(d => d.uuid === uuid);
+                                    if (domain) {
+                                        assignedDomains.push(domain);
+                                        availableDomains = availableDomains.filter(d => d.uuid !== uuid);
+                                    }
+                                });
+
+                                selectedAvailableDomains = [];
+                                renderAvailableDomains($('#searchAvailableDomains').val());
+                                renderAssignedDomains($('#searchAssignedDomains').val());
+                                updateDomainCounts();
+                                updateDomainButtons();
+                                updateDomainHiddenInputs();
+                            }
+
+                            function removeSelectedDomains() {
+                                selectedAssignedDomains.forEach(uuid => {
+                                    const domain = assignedDomains.find(d => d.uuid === uuid);
+                                    if (domain) {
+                                        availableDomains.push(domain);
+                                        assignedDomains = assignedDomains.filter(d => d.uuid !== uuid);
+                                    }
+                                });
+
+                                selectedAssignedDomains = [];
+                                renderAvailableDomains($('#searchAvailableDomains').val());
+                                renderAssignedDomains($('#searchAssignedDomains').val());
+                                updateDomainCounts();
+                                updateDomainButtons();
+                                updateDomainHiddenInputs();
+                            }
+
+                            function assignAllDomains() {
+                                assignedDomains = [...assignedDomains, ...availableDomains];
+                                availableDomains = [];
+                                selectedAvailableDomains = [];
+
+                                renderAvailableDomains($('#searchAvailableDomains').val());
+                                renderAssignedDomains($('#searchAssignedDomains').val());
+                                updateDomainCounts();
+                                updateDomainButtons();
+                                updateDomainHiddenInputs();
+                            }
+
+                            function removeAllDomains() {
+                                availableDomains = [...availableDomains, ...assignedDomains];
+                                assignedDomains = [];
+                                selectedAssignedDomains = [];
+
+                                renderAvailableDomains($('#searchAvailableDomains').val());
+                                renderAssignedDomains($('#searchAssignedDomains').val());
+                                updateDomainCounts();
+                                updateDomainButtons();
+                                updateDomainHiddenInputs();
+                            }
+
+                            function updateDomainCounts() {
+                                $('#availableDomainsCount').text(availableDomains.length);
+                                $('#assignedDomainsCount').text(assignedDomains.length);
+                            }
+
+                            function updateDomainButtons() {
+                                $('#assignDomainsBtn').prop('disabled', selectedAvailableDomains.length === 0);
+                                $('#removeDomainsBtn').prop('disabled', selectedAssignedDomains.length === 0);
+                            }
+
+                            function updateDomainHiddenInputs() {
+                                const container = $('#domainsHiddenInputs');
+                                container.empty();
+
+                                assignedDomains.forEach(domain => {
+                                    container.append(`<input type="hidden" name="domains[]" value="${domain.uuid}">`);
+                                });
+                            }
+
+                            function setupDomainSearchFilters() {
+                                $('#searchAvailableDomains').on('input', function() {
+                                    renderAvailableDomains($(this).val());
+                                });
+
+                                $('#searchAssignedDomains').on('input', function() {
+                                    renderAssignedDomains($(this).val());
+                                });
+                            }
+                            </script>
                         </div>
 
+                        <!-- Tags Tab -->
+                        <div class="tab-pane fade" id="nav-tags" role="tabpanel" aria-labelledby="nav-tags-tab">
+                            <div class="form-group col-md-12" style="margin-top: 20px;">
+                                <label for="service_tags">
+                                    <i class="fa fa-tags"></i> Tags
+                                    <a href="/tags/manage" target="_blank" style="margin-left: 10px;">
+                                        <i class="fa fa-cog"></i> Manage Tags
+                                    </a>
+                                </label>
+                                <select id="service_tags" name="service_tags[]" class="form-control select2-tags" multiple="multiple">
+                                    <!-- Populated by JavaScript -->
+                                </select>
+                                <small class="form-text text-muted">
+                                    Select one or more tags to categorize this service. Tags help organize and filter services.
+                                </small>
+                            </div>
+
+                            <style>
+                                .select2-tags .select2-selection__choice {
+                                    padding: 4px 8px;
+                                    border-radius: 12px;
+                                    font-weight: 600;
+                                    border: none;
+                                }
+                            </style>
+
+                            <script>
+                                // Load tags for service
+                                function loadServiceTags() {
+                                    const serviceId = '<?= @$service->id ?>';
+
+                                    $.ajax({
+                                        url: '/tags/tagsList',
+                                        method: 'GET',
+                                        success: function(response) {
+                                            const allTags = response.data;
+                                            const $select = $('#service_tags');
+
+                                            // Clear and populate select
+                                            $select.empty();
+
+                                            allTags.forEach(tag => {
+                                                const option = new Option(tag.name, tag.id, false, false);
+                                                $select.append(option);
+                                            });
+
+                                            // Initialize Select2
+                                            $select.select2({
+                                                placeholder: 'Select tags...',
+                                                allowClear: true,
+                                                width: '100%',
+                                                templateResult: formatTagOption,
+                                                templateSelection: formatTagSelection
+                                            });
+
+                                            // Load current tags if editing
+                                            if (serviceId) {
+                                                loadCurrentServiceTags(serviceId, allTags);
+                                            }
+                                        },
+                                        error: function(xhr, status, error) {
+                                            console.error('Error loading tags:', error);
+                                        }
+                                    });
+                                }
+
+                                function formatTagOption(tag) {
+                                    if (!tag.id) return tag.text;
+
+                                    const tagData = $('#service_tags option[value="' + tag.id + '"]').data();
+                                    const color = tagData?.color || '#667eea';
+
+                                    return $('<span><span class="tag-color-dot" style="display:inline-block;width:10px;height:10px;border-radius:50%;background:' + color + ';margin-right:8px;"></span>' + tag.text + '</span>');
+                                }
+
+                                function formatTagSelection(tag) {
+                                    if (!tag.id) return tag.text;
+
+                                    const $option = $('#service_tags option[value="' + tag.id + '"]');
+                                    const color = $option.data('color') || '#667eea';
+
+                                    const $span = $('<span style="background:' + color + ';color:white;padding:4px 8px;border-radius:12px;font-weight:600;">' + tag.text + '</span>');
+                                    return $span;
+                                }
+
+                                function loadCurrentServiceTags(serviceId, allTags) {
+                                    $.ajax({
+                                        url: '/tags/getEntityTags',
+                                        method: 'GET',
+                                        data: {
+                                            entity_type: 'service',
+                                            entity_id: serviceId
+                                        },
+                                        success: function(response) {
+                                            if (response.tags && response.tags.length > 0) {
+                                                // Store tag data in options
+                                                allTags.forEach(tag => {
+                                                    $('#service_tags option[value="' + tag.id + '"]').data('color', tag.color);
+                                                });
+
+                                                // Set selected tags
+                                                const selectedTagIds = response.tags.map(t => t.id.toString());
+                                                $('#service_tags').val(selectedTagIds).trigger('change');
+                                            }
+                                        },
+                                        error: function(xhr, status, error) {
+                                            console.error('Error loading current tags:', error);
+                                        }
+                                    });
+                                }
+
+                                // Save tags when form is submitted
+                                $('#addcustomer').on('submit', function(e) {
+                                    const serviceId = '<?= @$service->id ?>';
+
+                                    if (serviceId) {
+                                        e.preventDefault();
+
+                                        const selectedTags = $('#service_tags').val() || [];
+
+                                        // Save tags first
+                                        $.ajax({
+                                            url: '/tags/saveEntityTags',
+                                            method: 'POST',
+                                            data: {
+                                                entity_type: 'service',
+                                                entity_id: serviceId,
+                                                tag_ids: selectedTags
+                                            },
+                                            success: function(response) {
+                                                // After tags are saved, submit the form normally
+                                                $('#addcustomer').off('submit').submit();
+                                            },
+                                            error: function(xhr, status, error) {
+                                                console.error('Error saving tags:', error);
+                                                alert('Error saving tags. Please try again.');
+                                            }
+                                        });
+                                    }
+                                });
+
+                                // Initialize tags when document is ready
+                                $(document).ready(function() {
+                                    loadServiceTags();
+                                });
+                            </script>
+                        </div>
 
                     </div>
                 </div>

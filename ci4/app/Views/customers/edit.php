@@ -194,16 +194,37 @@ $categories = getResultArray("categories");
                                 <label for="contacts-option">Google Map</label>
                                 <div id="company-address-google-map" style="height: 800px;">
                                     <iframe id="company-address-google-map-frame"
-                                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.0000000000005!2d-73.9854286845947!3d40.74881797932569!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c2598f5f1b6f75%3A0x8e0b7e6f3f1b8b1d!2sEmpire%20State%20Building!5e0!3m2!1sen!2sbd!4v1632213660006!5m2!1sen!2sbd"
+                                        src=""
                                         width="100%" height="100%" style="border:0;" allowfullscreen=""
                                         loading="lazy"></iframe>
                                 </div>
+                                <p class="text-muted mt-2">
+                                    <small>Map will update automatically when you enter the address fields. Click the "Google Map" tab to view.</small>
+                                </p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
+            <!-- Tags Section -->
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <label for="customer_tags">
+                        <i class="fa fa-tags"></i> Tags
+                        <a href="/tags/manage" target="_blank" style="font-size: 0.85rem; margin-left: 8px;">
+                            <i class="fa fa-cog"></i> Manage Tags
+                        </a>
+                    </label>
+                    <select id="customer_tags" name="customer_tags[]" class="form-control select2" multiple="multiple"
+                            data-placeholder="Select tags for this customer...">
+                        <!-- Populated by JavaScript -->
+                    </select>
+                    <small class="form-text text-muted">
+                        Select multiple tags to categorize this customer. You can create new tags from the Manage Tags page.
+                    </small>
+                </div>
+            </div>
 
             <div class="form-row">
                 <div class="form-group col-md-3">
@@ -373,5 +394,149 @@ $contactsValues = array_map(function ($v, $k) {
         })
 
         x--;
-    })
+    });
+
+    // Load tags functionality
+    $(document).ready(function() {
+        loadCustomerTags();
+    });
+
+    function loadCustomerTags() {
+        const customerId = '<?= @$customer->id ?>';
+
+        // Load all tags
+        $.ajax({
+            url: '/tags/tagsList',
+            method: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                if (response.status && response.data) {
+                    const tags = response.data;
+                    const $select = $('#customer_tags');
+
+                    // Populate select options
+                    tags.forEach(function(tag) {
+                        const option = new Option(tag.name, tag.id, false, false);
+                        $(option).attr('data-color', tag.color);
+                        $select.append(option);
+                    });
+
+                    // Initialize select2 with custom template
+                    $select.select2({
+                        placeholder: 'Select tags for this customer...',
+                        allowClear: true,
+                        templateResult: formatCustomerTag,
+                        templateSelection: formatCustomerTagSelection
+                    });
+
+                    // Load currently assigned tags if editing
+                    if (customerId) {
+                        loadCurrentCustomerTags(customerId);
+                    }
+                }
+            }
+        });
+    }
+
+    function loadCurrentCustomerTags(customerId) {
+        $.ajax({
+            url: '/tags/getEntityTags/customer/' + customerId,
+            method: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                if (response.status && response.data) {
+                    const currentTagIds = response.data.map(function(tag) {
+                        return tag.id.toString();
+                    });
+                    $('#customer_tags').val(currentTagIds).trigger('change');
+                }
+            }
+        });
+    }
+
+    function formatCustomerTag(tag) {
+        if (!tag.id) return tag.text;
+
+        const color = $(tag.element).data('color') || '#667eea';
+        const $tag = $(
+            '<span style="display: flex; align-items: center; gap: 8px;">' +
+                '<span style="width: 12px; height: 12px; border-radius: 50%; background-color: ' + color + ';"></span>' +
+                '<span>' + tag.text + '</span>' +
+            '</span>'
+        );
+        return $tag;
+    }
+
+    function formatCustomerTagSelection(tag) {
+        if (!tag.id) return tag.text;
+        return tag.text;
+    }
+
+    // Save tags when form is submitted
+    $('#addcustomer').on('submit', function(e) {
+        const customerId = '<?= @$customer->id ?>';
+
+        if (customerId) {
+            e.preventDefault();
+
+            // Save tags first
+            const selectedTags = $('#customer_tags').val() || [];
+
+            $.ajax({
+                url: '/tags/attach',
+                method: 'POST',
+                data: {
+                    entity_type: 'customer',
+                    entity_id: customerId,
+                    tag_ids: selectedTags
+                },
+                dataType: 'json',
+                success: function(response) {
+                    // Now submit the main form
+                    $('#addcustomer').off('submit').submit();
+                },
+                error: function() {
+                    // Submit anyway if tag saving fails
+                    $('#addcustomer').off('submit').submit();
+                }
+            });
+        }
+    });
+
+    // Google Maps integration
+    function updateGoogleMap() {
+        const address1 = $('#address1').val() || '';
+        const address2 = $('#address2').val() || '';
+        const city = $('#city').val() || '';
+        const postalCode = $('#postal_code').val() || '';
+        const country = $('#country').val() || '';
+
+        // Build full address
+        const addressParts = [address1, address2, city, postalCode, country].filter(part => part.trim() !== '');
+        const fullAddress = addressParts.join(', ');
+
+        if (fullAddress) {
+            // Encode address for URL
+            const encodedAddress = encodeURIComponent(fullAddress);
+
+            // Update iframe src with Google Maps embed URL
+            const mapUrl = `https://www.google.com/maps?q=${encodedAddress}&output=embed`;
+            $('#company-address-google-map-frame').attr('src', mapUrl);
+        }
+    }
+
+    // Update map on page load
+    $(document).ready(function() {
+        updateGoogleMap();
+    });
+
+    // Update map when address fields change
+    $('#address1, #address2, #city, #postal_code, #country').on('blur', function() {
+        updateGoogleMap();
+    });
+
+    // Update map when Google Map tab is clicked
+    $('#nav-map-tab').on('click', function() {
+        updateGoogleMap();
+    });
 </script>

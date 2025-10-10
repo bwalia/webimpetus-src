@@ -46,23 +46,6 @@ $json = json_decode($str, true);
             </div>
             <div class="form-row">
                 <div class="form-group required col-md-6">
-                    <label for="inputEmail4">FTS Tags</label>
-
-                    <select id="my-select2" data-select2-tags="true" name="tags[]" multiple="multiple"
-                        class="form-control select2 required">
-                        <?php
-                        if (!empty($data->menu_fts)) {
-                            $arr = explode(',', $data->menu_fts);
-                            foreach ($arr as $row): ?>
-                                <option value="<?= $row; ?>" selected="selected">
-                                    <?= $row; ?>
-                                </option>
-                            <?php endforeach; ?>
-                        <?php } ?>
-                    </select>
-                </div>
-
-                <div class="form-group required col-md-6">
                     <label for="inputEmail4">Language Code</label>
                     <select name="language_code" class="required form-control">
                         <?php foreach ($json as $key => $row): ?>
@@ -70,8 +53,23 @@ $json = json_decode($str, true);
                                 <?= $row; ?>
                             </option>
                         <?php endforeach; ?>
-
                     </select>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label for="menu_tags">
+                        <i class="fa fa-tags"></i> Tags
+                        <a href="/tags/manage" target="_blank" style="font-size: 0.85rem; margin-left: 8px;">
+                            <i class="fa fa-cog"></i> Manage Tags
+                        </a>
+                    </label>
+                    <select id="menu_tags" name="menu_tags[]" class="form-control select2" multiple="multiple"
+                            data-placeholder="Select tags for this menu...">
+                        <!-- Populated by JavaScript -->
+                    </select>
+                    <small class="form-text text-muted">
+                        Select multiple tags to categorize this menu item.
+                    </small>
                 </div>
             </div>
 
@@ -94,7 +92,101 @@ $json = json_decode($str, true);
         }
     });
 
-    $('#my-select2').select2({
-        tags: true
-    })
+    // Load tags system
+    $(document).ready(function() {
+        const menuId = '<?= @$data->id ?>';
+
+        // Load all tags
+        $.ajax({
+            url: '/tags/tagsList',
+            method: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                if (response.status && response.data) {
+                    const tags = response.data;
+                    const $select = $('#menu_tags');
+
+                    // Populate select options
+                    tags.forEach(function(tag) {
+                        const option = new Option(tag.name, tag.id, false, false);
+                        $(option).attr('data-color', tag.color);
+                        $select.append(option);
+                    });
+
+                    // Initialize select2 with custom template
+                    $select.select2({
+                        placeholder: 'Select tags for this menu...',
+                        templateResult: formatMenuTag,
+                        templateSelection: formatMenuTag
+                    });
+
+                    // Load current menu tags if editing
+                    if (menuId) {
+                        loadCurrentMenuTags(menuId);
+                    }
+                }
+            }
+        });
+    });
+
+    function loadCurrentMenuTags(menuId) {
+        $.ajax({
+            url: '/tags/getEntityTags/menu/' + menuId,
+            method: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                if (response.status && response.data) {
+                    const currentTagIds = response.data.map(function(tag) {
+                        return tag.id.toString();
+                    });
+                    $('#menu_tags').val(currentTagIds).trigger('change');
+                }
+            }
+        });
+    }
+
+    function formatMenuTag(tag) {
+        if (!tag.id) return tag.text;
+
+        const color = $(tag.element).data('color') || '#667eea';
+        const $tag = $(
+            '<span style="display: inline-flex; align-items: center; gap: 6px;">' +
+                '<span style="width: 12px; height: 12px; border-radius: 3px; background-color: ' + color + ';"></span>' +
+                '<span>' + tag.text + '</span>' +
+            '</span>'
+        );
+
+        return $tag;
+    }
+
+    // Save tags when form is submitted
+    $('#addcustomer').on('submit', function(e) {
+        const menuId = '<?= @$data->id ?>';
+
+        if (menuId) {
+            e.preventDefault();
+
+            // Save tags first
+            const selectedTags = $('#menu_tags').val() || [];
+
+            $.ajax({
+                url: '/tags/attach',
+                method: 'POST',
+                data: {
+                    entity_type: 'menu',
+                    entity_id: menuId,
+                    tag_ids: selectedTags
+                },
+                dataType: 'json',
+                success: function(response) {
+                    // Then submit the form normally
+                    $('#addcustomer').off('submit').submit();
+                },
+                error: function() {
+                    // Still submit the form even if tag saving fails
+                    $('#addcustomer').off('submit').submit();
+                }
+            });
+        }
+    });
 </script>

@@ -56,7 +56,7 @@ class Contacts extends CommonController
         $dir = $this->request->getVar('dir') ?? "asc";
 
         $sqlQuery = $this->contactModel
-            ->select("uuid, id, first_name, email, mobile, allow_web_access")
+            ->select("uuid, id, first_name, surname, email, mobile, direct_phone, allow_web_access, news_letter_status, created_at")
             ->where(['uuid_business_id' => session('uuid_business')]);
         if ($query) {
             $sqlQuery = $sqlQuery

@@ -64,7 +64,7 @@ class Customers extends CommonController
         $dir = $this->request->getVar('dir') ?? "asc";
 
         $sqlQuery = $this->customerModel
-            ->select("uuid, id, company_name, acc_no, status, email")
+            ->select("uuid, id, company_name, acc_no, status, email, phone, city, supplier, created_at")
             ->where(['uuid_business_id' => session('uuid_business')]);
         if ($query) {
             $sqlQuery = $sqlQuery->like("company_name", $query);

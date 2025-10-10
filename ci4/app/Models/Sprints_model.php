@@ -77,4 +77,15 @@ class Sprints_model extends Model
 
         return sizeof($result) > 0 ? $result[0]["id"] : $currentSprint;
     }
+
+    public function getSprintById($sprintId)
+    {
+        $builder = $this->db->table($this->table);
+        $builder->where($this->table . ".uuid_business_id",  $this->businessUuid);
+        $builder->where('id', $sprintId);
+
+        $result = $builder->get()->getRowArray();
+
+        return $result ?: null;
+    }
 }
