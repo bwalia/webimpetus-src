@@ -44,6 +44,18 @@
     }
 </style>
 
+<!-- Action Buttons -->
+<div class="white_card_body">
+    <div class="d-flex justify-content-end mb-3" style="padding-bottom: 0;">
+        <button type="button" onclick="window.location.reload();" class="btn btn-primary mr-2">
+            <i class="fa fa-refresh"></i> Refresh
+        </button>
+        <a href="/purchase_invoices/edit" class="btn btn-primary">
+            <i class="fa fa-plus"></i> Add New Invoice
+        </a>
+    </div>
+</div>
+
 <!-- Summary Cards -->
 <div class="white_card_body">
     <div class="summary-cards">

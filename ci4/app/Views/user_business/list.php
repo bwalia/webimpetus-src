@@ -65,41 +65,45 @@
     }
 </style>
 
-<!-- Summary Cards -->
-<div class="user-business-summary-cards">
-    <div class="summary-card">
-        <div class="summary-card-title"><i class="fa fa-users"></i> Total Users</div>
-        <div class="summary-card-value" id="totalUsers">0</div>
-        <div class="summary-card-subtitle">with business access</div>
-    </div>
-
-    <div class="summary-card green">
-        <div class="summary-card-title"><i class="fa fa-building"></i> Total Businesses</div>
-        <div class="summary-card-value" id="totalBusinesses">0</div>
-        <div class="summary-card-subtitle">in system</div>
-    </div>
-
-    <div class="summary-card orange">
-        <div class="summary-card-title"><i class="fa fa-link"></i> Total Mappings</div>
-        <div class="summary-card-value" id="totalMappings">0</div>
-        <div class="summary-card-subtitle">user-business links</div>
-    </div>
-
-    <div class="summary-card blue">
-        <div class="summary-card-title"><i class="fa fa-user-check"></i> Avg per User</div>
-        <div class="summary-card-value" id="avgPerUser">0</div>
-        <div class="summary-card-subtitle">businesses/user</div>
+<!-- Action Buttons -->
+<div class="white_card_body">
+    <div class="d-flex justify-content-end mb-3" style="padding-bottom: 0;">
+        <button type="button" onclick="window.location.reload();" class="btn btn-primary mr-2">
+            <i class="fa fa-refresh"></i> Refresh
+        </button>
+        <a href="/user_business/edit" class="btn btn-primary">
+            <i class="fa fa-plus"></i> Assign User to Business
+        </a>
     </div>
 </div>
 
-<!-- Quick Actions -->
-<div class="quick-actions">
-    <a href="/user_business/edit" class="quick-action-btn success">
-        <i class="fa fa-plus"></i> Assign User to Business
-    </a>
-    <button class="quick-action-btn primary" onclick="window.location.reload()">
-        <i class="fa fa-sync"></i> Refresh
-    </button>
+<!-- Summary Cards -->
+<div class="white_card_body">
+    <div class="summary-cards">
+        <div class="summary-card blue">
+            <div class="summary-card-title"><i class="fa fa-users"></i> Total Users</div>
+            <div class="summary-card-value" id="totalUsers">0</div>
+            <div class="summary-card-subtitle">with business access</div>
+        </div>
+
+        <div class="summary-card green">
+            <div class="summary-card-title"><i class="fa fa-building"></i> Total Businesses</div>
+            <div class="summary-card-value" id="totalBusinesses">0</div>
+            <div class="summary-card-subtitle">in system</div>
+        </div>
+
+        <div class="summary-card orange">
+            <div class="summary-card-title"><i class="fa fa-link"></i> Total Mappings</div>
+            <div class="summary-card-value" id="totalMappings">0</div>
+            <div class="summary-card-subtitle">user-business links</div>
+        </div>
+
+        <div class="summary-card purple">
+            <div class="summary-card-title"><i class="fa fa-user-check"></i> Avg per User</div>
+            <div class="summary-card-value" id="avgPerUser">0</div>
+            <div class="summary-card-subtitle">businesses/user</div>
+        </div>
+    </div>
 </div>
 
 <div class="white_card_body">

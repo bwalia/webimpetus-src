@@ -65,6 +65,18 @@
     }
 </style>
 
+<!-- Action Buttons -->
+<div class="white_card_body">
+    <div class="d-flex justify-content-end mb-3" style="padding-bottom: 0;">
+        <button type="button" onclick="window.location.reload();" class="btn btn-primary mr-2">
+            <i class="fa fa-refresh"></i> Refresh
+        </button>
+        <a href="/customers/edit" class="btn btn-primary">
+            <i class="fa fa-plus"></i> Add New Customer
+        </a>
+    </div>
+</div>
+
 <!-- Summary Cards -->
 <div class="summary-cards">
     <div class="summary-card">
@@ -90,16 +102,6 @@
         <div class="summary-card-value" id="suppliersCount">0</div>
         <div class="summary-card-subtitle">marked as supplier</div>
     </div>
-</div>
-
-<!-- Quick Actions -->
-<div class="quick-actions">
-    <a href="/customers/edit" class="quick-action-btn success">
-        <i class="fa fa-plus"></i> New Customer
-    </a>
-    <button class="quick-action-btn primary" onclick="window.location.reload()">
-        <i class="fa fa-sync"></i> Refresh
-    </button>
 </div>
 
 <div class="white_card_body">

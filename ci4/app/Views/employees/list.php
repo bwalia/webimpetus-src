@@ -58,41 +58,45 @@
     }
 </style>
 
-<!-- Summary Cards -->
-<div class="summary-cards">
-    <div class="summary-card">
-        <div class="summary-card-title"><i class="fa fa-users"></i> Total Employees</div>
-        <div class="summary-card-value" id="totalEmployees">0</div>
-        <div class="summary-card-subtitle">in the system</div>
-    </div>
-
-    <div class="summary-card green">
-        <div class="summary-card-title"><i class="fa fa-user-check"></i> Web Access</div>
-        <div class="summary-card-value" id="webAccessCount">0</div>
-        <div class="summary-card-subtitle">employees with access</div>
-    </div>
-
-    <div class="summary-card orange">
-        <div class="summary-card-title"><i class="fa fa-calendar-plus"></i> This Month</div>
-        <div class="summary-card-value" id="newThisMonth">0</div>
-        <div class="summary-card-subtitle">new employees</div>
-    </div>
-
-    <div class="summary-card blue">
-        <div class="summary-card-title"><i class="fa fa-user-clock"></i> This Week</div>
-        <div class="summary-card-value" id="newThisWeek">0</div>
-        <div class="summary-card-subtitle">new employees</div>
+<!-- Action Buttons -->
+<div class="white_card_body">
+    <div class="d-flex justify-content-end mb-3" style="padding-bottom: 0;">
+        <button type="button" onclick="window.location.reload();" class="btn btn-primary mr-2">
+            <i class="fa fa-refresh"></i> Refresh
+        </button>
+        <a href="/employees/edit" class="btn btn-primary">
+            <i class="fa fa-plus"></i> Add New Employee
+        </a>
     </div>
 </div>
 
-<!-- Quick Actions -->
-<div class="quick-actions">
-    <a href="/employees/edit" class="quick-action-btn success">
-        <i class="fa fa-plus"></i> New Employee
-    </a>
-    <button class="quick-action-btn primary" onclick="window.location.reload()">
-        <i class="fa fa-sync"></i> Refresh
-    </button>
+<!-- Summary Cards -->
+<div class="white_card_body">
+    <div class="summary-cards">
+        <div class="summary-card blue">
+            <div class="summary-card-title"><i class="fa fa-users"></i> Total Employees</div>
+            <div class="summary-card-value" id="totalEmployees">0</div>
+            <div class="summary-card-subtitle">in the system</div>
+        </div>
+
+        <div class="summary-card green">
+            <div class="summary-card-title"><i class="fa fa-user-check"></i> Web Access</div>
+            <div class="summary-card-value" id="webAccessCount">0</div>
+            <div class="summary-card-subtitle">employees with access</div>
+        </div>
+
+        <div class="summary-card orange">
+            <div class="summary-card-title"><i class="fa fa-calendar-plus"></i> This Month</div>
+            <div class="summary-card-value" id="newThisMonth">0</div>
+            <div class="summary-card-subtitle">new employees</div>
+        </div>
+
+        <div class="summary-card purple">
+            <div class="summary-card-title"><i class="fa fa-user-clock"></i> This Week</div>
+            <div class="summary-card-value" id="newThisWeek">0</div>
+            <div class="summary-card-subtitle">new employees</div>
+        </div>
+    </div>
 </div>
 
 <div class="white_card_body">

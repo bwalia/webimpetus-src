@@ -30,6 +30,8 @@ if (empty(@$timeslips['slip_timer_started'])) {
         margin-bottom: 30px;
         color: white;
         box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        width: 100%;
+        max-width: 100%;
     }
 
     .timer-display {
@@ -259,7 +261,7 @@ if (empty(@$timeslips['slip_timer_started'])) {
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="slip_start_date" class="font-weight-bolder"> <?=lang('Timeslips.slip_start_date');?> <span class="redstar">*</span></label>
+                            <label for="slip_start_date" class="font-weight-bolder">Start Date <span class="redstar">*</span></label>
                             <div class="input-group">
                                 <input type="text" id="slip_start_date" name="slip_start_date" class="form-control required datepicker" value="<?php echo render_date($startDate); ?>">
                                 <span class="input-group-append">
@@ -271,7 +273,7 @@ if (empty(@$timeslips['slip_timer_started'])) {
 
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="slip_timer_started" class="font-weight-bolder"> <?=lang('Timeslips.slip_timer_started');?> </label>
+                            <label for="slip_timer_started" class="font-weight-bolder">Start Time</label>
                             <div class="input-group">
                                 <input id="slip_timer_started" name="slip_timer_started" class="form-control timepicker" value="<?php echo @$slip_timer_started; ?>">
                                 <div class="input-group-append">
@@ -287,7 +289,7 @@ if (empty(@$timeslips['slip_timer_started'])) {
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="slip_end_date" class="font-weight-bolder"> <?=lang('Timeslips.slip_end_date');?> </label>
+                            <label for="slip_end_date" class="font-weight-bolder">End Date</label>
                             <div class="input-group">
                                 <input id="slip_end_date" name="slip_end_date" class="form-control datepicker" value="<?php echo render_date(@$timeslips['slip_end_date'] ?? $startDate); ?>">
                                 <div class="input-group-append">
@@ -300,7 +302,7 @@ if (empty(@$timeslips['slip_timer_started'])) {
 
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="slip_timer_end" class="font-weight-bolder"> <?=lang('Timeslips.slip_timer_end');?> </label>
+                            <label for="slip_timer_end" class="font-weight-bolder">End Time</label>
                             <div class="input-group">
                                 <input id="slip_timer_end" name="slip_timer_end" class="form-control timepicker" value="<?php echo @$timeslips['slip_timer_end'] ?? @$slip_timer_started; ?>">
                                 <div class="input-group-append">
@@ -397,10 +399,7 @@ if (empty(@$timeslips['slip_timer_started'])) {
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="slip_timer_accumulated_seconds" class="font-weight-bolder"> <?=lang('Timeslips.slip_timer_accumulated_seconds');?></label>
-                        <input id="slip_timer_accumulated_seconds" name="slip_timer_accumulated_seconds" class="form-control" readonly value="<?php echo @$timeslips['slip_timer_accumulated_seconds']; ?>">
-                    </div>
+                    <input type="hidden" id="slip_timer_accumulated_seconds" name="slip_timer_accumulated_seconds" value="<?php echo @$timeslips['slip_timer_accumulated_seconds']; ?>">
                 </div>
             </div>
 
@@ -433,13 +432,6 @@ if (empty(@$timeslips['slip_timer_started'])) {
             updateTimerDisplay();
         }
 
-        // Real-time calculation
-        setInterval(function() {
-            if (!timerRunning) {
-                calculateTime();
-            }
-        }, 1000);
-
         // Timer controls
         $("#startTimer").click(function() {
             startTimer();
@@ -466,10 +458,31 @@ if (empty(@$timeslips['slip_timer_started'])) {
         // Set current time buttons
         $(".set-current-time-start").click(function() {
             setCurrentTime($("#slip_timer_started"));
+            calculateTime();
         });
 
         $(".set-current-time-end").click(function() {
             setCurrentTime($("#slip_timer_end"));
+            calculateTime();
+        });
+
+        // Calculate on time/date field changes
+        $("#slip_timer_started").change(function() {
+            if (!timerRunning) {
+                calculateTime();
+            }
+        });
+
+        $("#slip_timer_end").change(function() {
+            if (!timerRunning) {
+                calculateTime();
+            }
+        });
+
+        $("#slip_end_date").change(function() {
+            if (!timerRunning) {
+                calculateTime();
+            }
         });
 
         // Break time toggle
@@ -478,6 +491,22 @@ if (empty(@$timeslips['slip_timer_started'])) {
                 $('.break_time_detail').slideDown('slow');
             } else {
                 $('.break_time_detail').slideUp('slow');
+            }
+            if (!timerRunning) {
+                calculateTime();
+            }
+        });
+
+        // Calculate on break time changes
+        $("#break_time_start").change(function() {
+            if (!timerRunning) {
+                calculateTime();
+            }
+        });
+
+        $("#break_time_end").change(function() {
+            if (!timerRunning) {
+                calculateTime();
             }
         });
 
@@ -523,6 +552,9 @@ if (empty(@$timeslips['slip_timer_started'])) {
             var week_no = Math.ceil(dayOfYear / 7);
             week_no = week_no > 52 ? 52 : week_no;
             $("#week_no").val(week_no);
+            if (!timerRunning) {
+                calculateTime();
+            }
         });
     });
 

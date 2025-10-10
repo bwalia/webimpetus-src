@@ -234,66 +234,50 @@
     }
 </style>
 
-<!-- Summary Cards -->
-<div class="summary-cards">
-    <div class="summary-card blue">
-        <div class="summary-card-title"><i class="fa fa-project-diagram"></i> Active Projects</div>
-        <div class="summary-card-value" id="activeProjects">0</div>
-        <div class="summary-card-subtitle">currently running</div>
-    </div>
-
-    <div class="summary-card green">
-        <div class="summary-card-title"><i class="fa fa-check-circle"></i> On Track</div>
-        <div class="summary-card-value" id="onTrackProjects">0</div>
-        <div class="summary-card-subtitle">meeting deadlines</div>
-    </div>
-
-    <div class="summary-card orange">
-        <div class="summary-card-title"><i class="fa fa-exclamation-triangle"></i> At Risk</div>
-        <div class="summary-card-value" id="atRiskProjects">0</div>
-        <div class="summary-card-subtitle">needs attention</div>
-    </div>
-
-    <div class="summary-card purple">
-        <div class="summary-card-title"><i class="fa fa-money-bill-wave"></i> Total Budget</div>
-        <div class="summary-card-value" id="totalBudget">£0</div>
-        <div class="summary-card-subtitle">all projects</div>
-    </div>
-
-    <div class="summary-card indigo">
-        <div class="summary-card-title"><i class="fa fa-clock"></i> Hours Logged</div>
-        <div class="summary-card-value" id="totalHours">0</div>
-        <div class="summary-card-subtitle">across all projects</div>
-    </div>
-
-    <div class="summary-card red">
-        <div class="summary-card-title"><i class="fa fa-percent"></i> Completion Rate</div>
-        <div class="summary-card-value" id="completionRate">0%</div>
-        <div class="summary-card-subtitle">average progress</div>
+<!-- Action Buttons -->
+<div class="white_card_body">
+    <div class="d-flex justify-content-end mb-3" style="padding-bottom: 0;">
+        <button class="btn btn-primary mr-2" onclick="switchView('list')" id="listViewBtn">
+            <i class="fa fa-list"></i> List View
+        </button>
+        <button class="btn btn-outline-primary mr-2" onclick="switchView('kanban')" id="kanbanViewBtn">
+            <i class="fa fa-columns"></i> Board View
+        </button>
+        <button type="button" onclick="window.location.reload();" class="btn btn-primary mr-2">
+            <i class="fa fa-refresh"></i> Refresh
+        </button>
+        <a href="/projects/edit" class="btn btn-primary">
+            <i class="fa fa-plus"></i> Add New Project
+        </a>
     </div>
 </div>
 
-<!-- View Toggle and Quick Actions -->
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
-    <div class="view-toggle">
-        <button class="view-btn active" onclick="switchView('list')" id="listViewBtn">
-            <i class="fa fa-list"></i> List View
-        </button>
-        <button class="view-btn" onclick="switchView('kanban')" id="kanbanViewBtn">
-            <i class="fa fa-columns"></i> Board View
-        </button>
-    </div>
+<!-- Summary Cards -->
+<div class="white_card_body">
+    <div class="summary-cards">
+        <div class="summary-card blue">
+            <div class="summary-card-title"><i class="fa fa-project-diagram"></i> Active Projects</div>
+            <div class="summary-card-value" id="activeProjects">0</div>
+            <div class="summary-card-subtitle">currently running</div>
+        </div>
 
-    <div class="quick-actions">
-        <a href="/projects/edit" class="quick-action-btn success">
-            <i class="fa fa-plus"></i> New Project
-        </a>
-        <a href="/tags/manage" class="quick-action-btn secondary">
-            <i class="fa fa-tags"></i> Manage Tags
-        </a>
-        <button class="quick-action-btn primary" onclick="window.location.reload()">
-            <i class="fa fa-sync"></i> Refresh
-        </button>
+        <div class="summary-card green">
+            <div class="summary-card-title"><i class="fa fa-check-circle"></i> On Track</div>
+            <div class="summary-card-value" id="onTrackProjects">0</div>
+            <div class="summary-card-subtitle">meeting deadlines</div>
+        </div>
+
+        <div class="summary-card orange">
+            <div class="summary-card-title"><i class="fa fa-exclamation-triangle"></i> At Risk</div>
+            <div class="summary-card-value" id="atRiskProjects">0</div>
+            <div class="summary-card-subtitle">needs attention</div>
+        </div>
+
+        <div class="summary-card purple">
+            <div class="summary-card-title"><i class="fa fa-money-bill-wave"></i> Total Budget</div>
+            <div class="summary-card-value" id="totalBudget">£0</div>
+            <div class="summary-card-subtitle">all projects</div>
+        </div>
     </div>
 </div>
 
@@ -416,13 +400,17 @@ function switchView(view) {
     if (view === 'list') {
         document.getElementById('listView').classList.remove('hidden');
         document.getElementById('kanbanBoard').classList.remove('active');
-        document.getElementById('listViewBtn').classList.add('active');
-        document.getElementById('kanbanViewBtn').classList.remove('active');
+
+        // Update button styles
+        document.getElementById('listViewBtn').className = 'btn btn-primary mr-2';
+        document.getElementById('kanbanViewBtn').className = 'btn btn-outline-primary mr-2';
     } else {
         document.getElementById('listView').classList.add('hidden');
         document.getElementById('kanbanBoard').classList.add('active');
-        document.getElementById('listViewBtn').classList.remove('active');
-        document.getElementById('kanbanViewBtn').classList.add('active');
+
+        // Update button styles
+        document.getElementById('listViewBtn').className = 'btn btn-outline-primary mr-2';
+        document.getElementById('kanbanViewBtn').className = 'btn btn-primary mr-2';
         renderKanbanBoard();
     }
 }

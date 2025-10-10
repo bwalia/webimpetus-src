@@ -20,7 +20,7 @@
                             </ol>
                         </div>
                         <div class="page_title_right">
-                           <a href="/webpages" class="btn btn-primary"><i class="fa fa-table"></i> Web Pages List</a>
+                           <a href="/webpages" class="btn btn-primary"><i class="fa fa-table"></i> Content Pages List</a>
                         </div>
                       
                     </div>

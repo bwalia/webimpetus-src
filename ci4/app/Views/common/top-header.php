@@ -52,53 +52,6 @@ $roles = isset($_SESSION['role']) ? getResultWithoutBusiness("roles", ["uuid" =>
                         </select>
                     </div>
 
-                    <!-- Font Size Controls -->
-                    <div class="font-size-controls mr-3">
-                        <style>
-                            .font-size-controls {
-                                display: flex;
-                                gap: 8px;
-                                align-items: center;
-                            }
-                            .font-size-btn {
-                                background: white;
-                                border: 2px solid #667eea;
-                                border-radius: 6px;
-                                width: 32px;
-                                height: 32px;
-                                display: flex;
-                                align-items: center;
-                                justify-content: center;
-                                cursor: pointer;
-                                transition: all 0.2s ease;
-                                font-weight: 700;
-                                color: #667eea;
-                            }
-                            .font-size-btn:hover {
-                                background: #667eea;
-                                color: white;
-                                transform: scale(1.1);
-                            }
-                            .font-size-btn:active {
-                                transform: scale(0.95);
-                            }
-                            .font-size-display {
-                                font-size: 0.75rem;
-                                color: #6b7280;
-                                font-weight: 600;
-                                min-width: 40px;
-                                text-align: center;
-                            }
-                        </style>
-                        <button class="font-size-btn" id="decreaseFontSize" title="Decrease font size">
-                            <i class="fa fa-minus"></i>
-                        </button>
-                        <span class="font-size-display" id="fontSizeDisplay">100%</span>
-                        <button class="font-size-btn" id="increaseFontSize" title="Increase font size">
-                            <i class="fa fa-plus"></i>
-                        </button>
-                    </div>
-
                     <!-- Language Switcher -->
                     <div class="language-switcher mr-3">
                         <style>

@@ -50,7 +50,15 @@ class Blocks extends ResourceController
             $query = $_GET['query'] ?? false;
             $order = $_GET['order'] ?? "title";
             $dir = $_GET['dir'] ?? "asc";
-            $uuidBusineess = $_GET['uuid_business_id'];
+            $uuidBusineess = $_GET['uuid_business_id'] ?? false;
+
+            if (!$uuidBusineess) {
+                return $this->respond([
+                    'data' => [],
+                    'message' => 'uuid_business_id is required',
+                    'recordsTotal' => 0
+                ], 400);
+            }
 
             $sqlQuery = $blockModel
                 ->select("uuid, id, title, status, code")

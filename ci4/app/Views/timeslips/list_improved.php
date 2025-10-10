@@ -140,16 +140,6 @@
     </div>
 </div>
 
-<!-- Quick Actions -->
-<div class="quick-actions">
-    <a href="/timeslips/edit" class="quick-action-btn success">
-        <i class="fa fa-plus"></i> New Timeslip
-    </a>
-    <button class="quick-action-btn primary" onclick="window.location.reload()">
-        <i class="fa fa-sync"></i> Refresh
-    </button>
-</div>
-
 <div class="white_card_body" id="tableWrapper">
     <div class="QA_table" id="timeslipsTable"></div>
 </div>

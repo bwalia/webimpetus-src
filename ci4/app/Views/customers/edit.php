@@ -194,10 +194,13 @@ $categories = getResultArray("categories");
                                 <label for="contacts-option">Google Map</label>
                                 <div id="company-address-google-map" style="height: 800px;">
                                     <iframe id="company-address-google-map-frame"
-                                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.0000000000005!2d-73.9854286845947!3d40.74881797932569!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c2598f5f1b6f75%3A0x8e0b7e6f3f1b8b1d!2sEmpire%20State%20Building!5e0!3m2!1sen!2sbd!4v1632213660006!5m2!1sen!2sbd"
+                                        src=""
                                         width="100%" height="100%" style="border:0;" allowfullscreen=""
                                         loading="lazy"></iframe>
                                 </div>
+                                <p class="text-muted mt-2">
+                                    <small>Map will update automatically when you enter the address fields. Click the "Google Map" tab to view.</small>
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -498,5 +501,42 @@ $contactsValues = array_map(function ($v, $k) {
                 }
             });
         }
+    });
+
+    // Google Maps integration
+    function updateGoogleMap() {
+        const address1 = $('#address1').val() || '';
+        const address2 = $('#address2').val() || '';
+        const city = $('#city').val() || '';
+        const postalCode = $('#postal_code').val() || '';
+        const country = $('#country').val() || '';
+
+        // Build full address
+        const addressParts = [address1, address2, city, postalCode, country].filter(part => part.trim() !== '');
+        const fullAddress = addressParts.join(', ');
+
+        if (fullAddress) {
+            // Encode address for URL
+            const encodedAddress = encodeURIComponent(fullAddress);
+
+            // Update iframe src with Google Maps embed URL
+            const mapUrl = `https://www.google.com/maps?q=${encodedAddress}&output=embed`;
+            $('#company-address-google-map-frame').attr('src', mapUrl);
+        }
+    }
+
+    // Update map on page load
+    $(document).ready(function() {
+        updateGoogleMap();
+    });
+
+    // Update map when address fields change
+    $('#address1, #address2, #city, #postal_code, #country').on('blur', function() {
+        updateGoogleMap();
+    });
+
+    // Update map when Google Map tab is clicked
+    $('#nav-map-tab').on('click', function() {
+        updateGoogleMap();
     });
 </script>

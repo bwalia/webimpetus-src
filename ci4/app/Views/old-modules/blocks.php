@@ -20,9 +20,12 @@
                             </ol>
                         </div>
                         <div class="page_title_right">
-                          
+
                             <div class="header_more_tool setDropDownBlk">
-                              
+
+                            <button type="button" onclick="window.location.reload();" class="btn btn-primary mr-2">
+                                <i class="fa fa-refresh"></i> Refresh
+                            </button>
                             <a href="/blocks/add" class="btn btn-primary"><i class="ti-plus"></i> Add Block</a>
 						  </div>
 
