@@ -77,9 +77,9 @@ class Projects extends CommonController
 		// if there any special cause we can overried this function and pass data to add or edit view
 		$data['additional_data'] = $projectData ? $projectData->id : $uuid;
         
-        if(!empty($data[$this->rawTblName]->customer_id)) {
+        if(!empty($data[$this->rawTblName]->customers_id)) {
             $data['customers'] = $this->customers_model
-                ->where('id', $data[$this->rawTblName]->customer_id)
+                ->where('id', $data[$this->rawTblName]->customers_id)
                 ->where("uuid_business_id", session('uuid_business'))
                 ->get()
                 ->getResultArray();
@@ -125,12 +125,22 @@ class Projects extends CommonController
     public function companyCustomerAjax()
     {
         $q = $this->request->getVar('q');
-        $data = $this->customers_model;
+
+        // Filter by current business UUID from session
+        $data = $this->customers_model
+            ->where('uuid_business_id', session('uuid_business'));
+
+        // Add search filter if query provided
         if(!empty($q)) {
             $data = $data->like('company_name', $q);
         }
-        
-        $data = $data->limit(500)->get()->getResult();
+
+        // Order by company name and limit results
+        $data = $data
+            ->orderBy('company_name', 'ASC')
+            ->limit(500)
+            ->get()
+            ->getResult();
 
         return $this->respond($data);
     }

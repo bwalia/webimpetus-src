@@ -82,7 +82,11 @@ class Launchpad extends CommonController
         // Handle checkboxes
         $input['is_favorite'] = isset($input['is_favorite']) && $input['is_favorite'] ? 1 : 0;
         $input['is_public'] = isset($input['is_public']) && $input['is_public'] ? 1 : 0;
-        $input['status'] = isset($input['status']) && $input['status'] ? 1 : 0;
+
+        // Set status to active (1) by default if not provided
+        if (!isset($input['status'])) {
+            $input['status'] = 1;
+        }
 
         try {
             if (!empty($input['uuid'])) {

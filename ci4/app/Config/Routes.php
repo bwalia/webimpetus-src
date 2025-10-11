@@ -106,6 +106,84 @@ $routes->get('api/v2/business/(:segment)/contact/(:segment)/blog/(:segment)', 'A
 $routes->get('api/v2/business/(:segment)/public/blogs', 'Api\V2\Webpages::getPublicBlogs/$1');
 $routes->get('api/v2/business/(:segment)/public/blog/(:segment)', 'Api\V2\Webpages::getPublicBlog/$1/$2');
 
+// API Documentation Routes
+$routes->get('swagger', 'Swagger::index');
+$routes->get('swagger/json', 'Swagger::json');
+$routes->get('swagger/yaml', 'Swagger::yaml');
+$routes->get('api-docs', 'Swagger::ui');
+$routes->get('api/docs', 'Swagger::ui');
+
+// Document Preview and Download Routes
+$routes->get('documents/preview/(:segment)', 'Documents::preview/$1');
+$routes->get('documents/download/(:segment)', 'Documents::download/$1');
+
+// Accounting Module Routes
+$routes->group('accounts', function($routes) {
+    $routes->get('/', 'Accounts::index');
+    $routes->get('edit/(:segment)', 'Accounts::edit/$1');
+    $routes->get('edit', 'Accounts::edit');
+    $routes->post('update', 'Accounts::update');
+    $routes->post('delete/(:segment)', 'Accounts::delete/$1');
+    $routes->get('accountsList', 'Accounts::accountsList');
+    $routes->post('initializeChartOfAccounts', 'Accounts::initializeChartOfAccounts');
+});
+
+// Journal Entries Routes
+$routes->group('journal-entries', function($routes) {
+    $routes->get('/', 'JournalEntries::index');
+    $routes->get('edit/(:segment)', 'JournalEntries::edit/$1');
+    $routes->get('edit', 'JournalEntries::edit');
+    $routes->post('update', 'JournalEntries::update');
+    $routes->post('post/(:segment)', 'JournalEntries::post/$1');
+    $routes->post('delete/(:segment)', 'JournalEntries::delete/$1');
+    $routes->get('journalEntriesList', 'JournalEntries::journalEntriesList');
+});
+
+// Accounting Periods Routes
+$routes->group('accounting-periods', function($routes) {
+    $routes->get('/', 'AccountingPeriods::index');
+    $routes->get('edit/(:segment)', 'AccountingPeriods::edit/$1');
+    $routes->get('edit', 'AccountingPeriods::edit');
+    $routes->post('update', 'AccountingPeriods::update');
+    $routes->post('set-current/(:segment)', 'AccountingPeriods::setCurrent/$1');
+    $routes->post('close-period/(:segment)', 'AccountingPeriods::closePeriod/$1');
+    $routes->get('periodsList', 'AccountingPeriods::periodsList');
+});
+
+// Alternative route with underscores (for backward compatibility)
+$routes->group('accounting_periods', function($routes) {
+    $routes->get('/', 'AccountingPeriods::index');
+    $routes->get('edit/(:segment)', 'AccountingPeriods::edit/$1');
+    $routes->get('edit', 'AccountingPeriods::edit');
+    $routes->post('update', 'AccountingPeriods::update');
+    $routes->post('set-current/(:segment)', 'AccountingPeriods::setCurrent/$1');
+    $routes->post('close-period/(:segment)', 'AccountingPeriods::closePeriod/$1');
+    $routes->get('periodsList', 'AccountingPeriods::periodsList');
+});
+
+// Financial Reports Routes
+$routes->get('balance-sheet', 'BalanceSheet::index');
+$routes->get('balance-sheet/export-pdf', 'BalanceSheet::exportPDF');
+$routes->get('trial-balance', 'TrialBalance::index');
+$routes->get('profit-loss', 'ProfitLoss::index');
+$routes->get('cash-flow', 'CashFlow::index');
+$routes->post('cash-flow/generate', 'CashFlow::generate');
+$routes->get('cash-flow/exportPDF', 'CashFlow::exportPDF');
+
+// Deployments Routes
+$routes->group('deployments', function($routes) {
+    $routes->get('/', 'Deployments::index');
+    $routes->get('edit/(:segment)', 'Deployments::edit/$1');
+    $routes->get('edit', 'Deployments::edit');
+    $routes->post('update', 'Deployments::update');
+    $routes->post('delete/(:segment)', 'Deployments::delete/$1');
+    $routes->get('deploymentsList', 'Deployments::deploymentsList');
+    $routes->post('checkDeploymentAccess', 'Deployments::checkDeploymentAccess');
+    $routes->post('executeDeployment', 'Deployments::executeDeployment');
+    $routes->get('managePermissions', 'Deployments::managePermissions');
+    $routes->post('savePermission', 'Deployments::savePermission');
+    $routes->post('generatePasscode', 'Deployments::generatePasscode');
+});
 
 /*
  * --------------------------------------------------------------------

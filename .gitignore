@@ -33,3 +33,16 @@ myworkstation_dev_db*.sql
 
 # Test files
 test-env-servers.json
+
+# SSL Certificates and Private Keys - NEVER COMMIT THESE!
+nginx/ssl/*.key
+nginx/ssl/*.pem
+nginx/ssl/*.crt
+nginx/ssl/*.cert
+nginx/ssl/*.p12
+nginx/ssl/*.pfx
+.certs/
+*.key
+*.pem
+*-key.pem
+*-cert.pem

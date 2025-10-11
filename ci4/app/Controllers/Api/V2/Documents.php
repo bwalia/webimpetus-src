@@ -73,7 +73,67 @@ class Documents extends ResourceController
      */
     public function create()
     {
-        //
+        $api = new Api_v2();
+
+        // Validate required fields
+        $uuid_business_id = $this->request->getPost('uuid_business_id') ?? $this->request->getHeaderLine('X-Business-UUID');
+
+        if (empty($uuid_business_id)) {
+            return $this->fail('Business UUID is required', 400);
+        }
+
+        // Initialize S3/MinIO model
+        $s3_model = new \App\Models\Amazon_s3_model();
+
+        try {
+            // Prepare document data
+            $data = [
+                'uuid' => \App\Libraries\UUID::v5(\App\Libraries\UUID::v4(), 'document_api_upload'),
+                'uuid_business_id' => $uuid_business_id,
+                'name' => $this->request->getPost('name'),
+                'description' => $this->request->getPost('description'),
+                'category_id' => $this->request->getPost('category_id'),
+                'client_id' => $this->request->getPost('client_id'),
+                'document_date' => $this->request->getPost('document_date') ? strtotime($this->request->getPost('document_date')) : time(),
+                'billing_status' => $this->request->getPost('billing_status'),
+                'metadata' => $this->request->getPost('metadata'),
+                'created_at' => date('Y-m-d H:i:s'),
+            ];
+
+            // Handle file upload to MinIO/S3
+            if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
+                $uploadResponse = $s3_model->doUpload('file', 'documents');
+
+                if ($uploadResponse && isset($uploadResponse['status']) && $uploadResponse['status']) {
+                    $data['file'] = $uploadResponse['filePath'];
+                    $data['file_url'] = $uploadResponse['fileUrl'] ?? $uploadResponse['filePath'];
+                    $data['file_size'] = $_FILES['file']['size'];
+                    $data['file_type'] = $_FILES['file']['type'];
+                    $data['original_filename'] = $_FILES['file']['name'];
+                } else {
+                    return $this->fail('File upload to storage failed', 500);
+                }
+            } else {
+                return $this->fail('No file uploaded or upload error occurred', 400);
+            }
+
+            // Save to database
+            $db = \Config\Database::connect();
+            $db->table('documents')->insert($data);
+
+            $response = [
+                'status' => true,
+                'message' => 'Document uploaded successfully',
+                'data' => $data,
+                'minio_url' => $data['file_url']
+            ];
+
+            return $this->respondCreated($response);
+
+        } catch (\Exception $e) {
+            log_message('error', 'Document API upload error: ' . $e->getMessage());
+            return $this->fail('Upload failed: ' . $e->getMessage(), 500);
+        }
     }
 
     /**

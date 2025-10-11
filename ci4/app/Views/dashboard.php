@@ -56,8 +56,8 @@
     .dashboard-card {
         background: white;
         border-radius: 8px;
-        padding: 20px;
-        margin-bottom: 16px;
+        padding: 20px 20px 24px 20px;
+        margin-bottom: 20px;
         transition: all 0.2s ease;
         border: 1px solid #dfe1e6;
         box-shadow: 0 1px 1px rgba(9, 30, 66, 0.08);
@@ -228,6 +228,11 @@
     .dataTable tbody tr:hover {
         background: #f4f5f7;
         transition: background 0.2s ease;
+    }
+
+    /* Add vertical spacing to dashboard card columns */
+    #dashboard_row > div[class*="col-"] {
+        margin-bottom: 20px;
     }
 
     /* Responsive Grid */
@@ -681,7 +686,8 @@
                             <div class="white_card_header">
                                 <div class="box_header m-0">
                                     <div class="main-title">
-                                        <h3 class="m-0">Incidents Per Customer</h3>
+                                        <h3 class="m-0">Incidents by Customer</h3>
+                                        <p class="mb-0 text-muted" style="font-size: 12px; margin-top: 4px;">Top 5 customers with most incidents</p>
                                     </div>
                                     <div class="header_more_tool dropInr">
                                         <div class="dropdown">
@@ -696,7 +702,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="white_card_body">
+                            <div class="white_card_body" style="padding-top: 10px;">
                                 <div id="incidents_customer_chart"></div>
                             </div>
                         </div>
@@ -734,102 +740,239 @@
 </script>
 
 <script>
-    // Create incidents per customer chart
+    // Create incidents per customer chart - Professional Design
     if (document.querySelector("#incidents_customer_chart")) {
         var incidentsData = window.incidentsCustomerData || {
             customers: [],
             counts: []
         };
 
-        // Limit to top 5 customers for better visibility
-        var topCustomers = incidentsData.customers.slice(0, 5);
-        var topCounts = incidentsData.counts.slice(0, 5);
+        // Check if there's data
+        if (incidentsData.customers.length === 0 || incidentsData.counts.length === 0) {
+            document.querySelector("#incidents_customer_chart").innerHTML = `
+                <div style="text-align: center; padding: 60px 20px; color: #94a3b8;">
+                    <i class="fas fa-inbox" style="font-size: 48px; opacity: 0.3; margin-bottom: 16px; display: block;"></i>
+                    <p style="font-size: 14px; margin: 0; color: #64748b;">No incident data available</p>
+                    <small style="font-size: 12px; color: #94a3b8;">Start tracking incidents to see customer statistics</small>
+                </div>
+            `;
+        } else {
+            // Limit to top 5 customers for better visibility
+            var topCustomers = incidentsData.customers.slice(0, 5);
+            var topCounts = incidentsData.counts.slice(0, 5);
 
-        // Generate different colors for each bar
-        var chartColors = ['#ff004e', '#9767FD', '#f1b44c', '#50a5f1', '#34c38f'];
+            // Calculate total for percentage
+            var totalIncidents = topCounts.reduce((a, b) => a + b, 0);
 
-        var incidentsChartOptions = {
-            series: [{
-                name: 'Incidents',
-                data: topCounts
-            }],
-            chart: {
-                type: 'bar',
-                height: 300,
-                toolbar: {
-                    show: false
-                }
-            },
-            plotOptions: {
-                bar: {
-                    horizontal: false,
-                    columnWidth: '60%',
-                    endingShape: 'rounded',
-                    distributed: true,
-                    dataLabels: {
-                        position: 'top'
-                    }
-                }
-            },
-            dataLabels: {
-                enabled: true,
-                offsetY: -20,
-                style: {
-                    fontSize: '11px',
-                    fontWeight: 'bold',
-                    colors: ["#304758"]
-                }
-            },
-            stroke: {
-                show: true,
-                width: 2,
-                colors: ['transparent']
-            },
-            xaxis: {
-                categories: topCustomers,
-                labels: {
-                    rotate: -45,
-                    rotateAlways: false,
-                    style: {
-                        fontSize: '10px'
+            // Professional gradient colors
+            var gradientColors = [
+                { from: '#f43f5e', to: '#ec4899' },  // Rose to Pink
+                { from: '#f59e0b', to: '#f97316' },  // Amber to Orange
+                { from: '#8b5cf6', to: '#6366f1' },  // Violet to Indigo
+                { from: '#3b82f6', to: '#0ea5e9' },  // Blue to Sky
+                { from: '#10b981', to: '#14b8a6' }   // Emerald to Teal
+            ];
+
+            var incidentsChartOptions = {
+                series: [{
+                    name: 'Incidents',
+                    data: topCounts
+                }],
+                chart: {
+                    type: 'bar',
+                    height: 340,
+                    toolbar: {
+                        show: false
                     },
-                    trim: true
-                }
-            },
-            yaxis: {
-                title: {
-                    text: 'Incidents',
-                    style: {
-                        fontSize: '11px'
+                    animations: {
+                        enabled: true,
+                        easing: 'easeinout',
+                        speed: 800,
+                        animateGradually: {
+                            enabled: true,
+                            delay: 150
+                        },
+                        dynamicAnimation: {
+                            enabled: true,
+                            speed: 350
+                        }
                     }
                 },
-                labels: {
+                plotOptions: {
+                    bar: {
+                        horizontal: true,
+                        borderRadius: 8,
+                        barHeight: '70%',
+                        distributed: true,
+                        dataLabels: {
+                            position: 'top'
+                        }
+                    }
+                },
+                dataLabels: {
+                    enabled: true,
+                    textAnchor: 'start',
+                    offsetX: 8,
+                    formatter: function(val, opt) {
+                        var percentage = ((val / totalIncidents) * 100).toFixed(1);
+                        return val + ' (' + percentage + '%)';
+                    },
                     style: {
-                        fontSize: '10px'
+                        fontSize: '13px',
+                        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                        fontWeight: '600',
+                        colors: ['#1e293b']
+                    },
+                    background: {
+                        enabled: true,
+                        foreColor: '#fff',
+                        padding: 6,
+                        borderRadius: 4,
+                        borderWidth: 0,
+                        opacity: 0.95,
+                        dropShadow: {
+                            enabled: true,
+                            top: 1,
+                            left: 1,
+                            blur: 2,
+                            color: '#000',
+                            opacity: 0.1
+                        }
                     }
-                }
-            },
-            colors: chartColors,
-            legend: {
-                show: false
-            },
-            tooltip: {
-                y: {
-                    formatter: function (val) {
-                        return val + " incidents"
+                },
+                colors: gradientColors.map(c => c.from),
+                fill: {
+                    type: 'gradient',
+                    gradient: {
+                        shade: 'light',
+                        type: 'horizontal',
+                        shadeIntensity: 0.4,
+                        gradientToColors: gradientColors.map(c => c.to),
+                        inverseColors: false,
+                        opacityFrom: 1,
+                        opacityTo: 0.9,
+                        stops: [0, 100]
                     }
-                }
-            },
-            grid: {
-                borderColor: '#f1f1f1',
-                padding: {
-                    bottom: 10
-                }
-            }
-        };
+                },
+                xaxis: {
+                    categories: topCustomers,
+                    labels: {
+                        show: true,
+                        style: {
+                            fontSize: '11px',
+                            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                            fontWeight: 500,
+                            colors: '#64748b'
+                        }
+                    },
+                    axisBorder: {
+                        show: false
+                    },
+                    axisTicks: {
+                        show: false
+                    }
+                },
+                yaxis: {
+                    labels: {
+                        show: true,
+                        maxWidth: 180,
+                        style: {
+                            fontSize: '13px',
+                            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                            fontWeight: 600,
+                            colors: '#334155'
+                        },
+                        formatter: function(val) {
+                            // Truncate long customer names
+                            if (val && val.length > 22) {
+                                return val.substring(0, 22) + '...';
+                            }
+                            return val;
+                        }
+                    }
+                },
+                grid: {
+                    show: true,
+                    borderColor: '#f1f5f9',
+                    strokeDashArray: 3,
+                    position: 'back',
+                    xaxis: {
+                        lines: {
+                            show: true
+                        }
+                    },
+                    yaxis: {
+                        lines: {
+                            show: false
+                        }
+                    },
+                    padding: {
+                        top: 0,
+                        right: 20,
+                        bottom: 0,
+                        left: 10
+                    }
+                },
+                legend: {
+                    show: false
+                },
+                tooltip: {
+                    enabled: true,
+                    custom: function({series, seriesIndex, dataPointIndex, w}) {
+                        var value = series[seriesIndex][dataPointIndex];
+                        var customer = w.globals.labels[dataPointIndex];
+                        var percentage = ((value / totalIncidents) * 100).toFixed(1);
 
-        var incidentsChart = new ApexCharts(document.querySelector("#incidents_customer_chart"), incidentsChartOptions);
-        incidentsChart.render();
+                        return `
+                            <div style="
+                                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                                padding: 12px 16px;
+                                border-radius: 8px;
+                                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+                                min-width: 200px;
+                            ">
+                                <div style="color: #fff; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; opacity: 0.9;">
+                                    Customer
+                                </div>
+                                <div style="color: #fff; font-size: 14px; font-weight: 700; margin-bottom: 8px;">
+                                    ${customer}
+                                </div>
+                                <div style="border-top: 1px solid rgba(255, 255, 255, 0.2); padding-top: 8px; display: flex; justify-content: space-between; align-items: center;">
+                                    <div>
+                                        <div style="color: rgba(255, 255, 255, 0.8); font-size: 10px; margin-bottom: 2px;">Incidents</div>
+                                        <div style="color: #fff; font-size: 18px; font-weight: 700;">${value}</div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <div style="color: rgba(255, 255, 255, 0.8); font-size: 10px; margin-bottom: 2px;">Share</div>
+                                        <div style="color: #fff; font-size: 18px; font-weight: 700;">${percentage}%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    },
+                    fixed: {
+                        enabled: false
+                    }
+                },
+                states: {
+                    hover: {
+                        filter: {
+                            type: 'darken',
+                            value: 0.85
+                        }
+                    },
+                    active: {
+                        filter: {
+                            type: 'darken',
+                            value: 0.8
+                        }
+                    }
+                }
+            };
+
+            var incidentsChart = new ApexCharts(document.querySelector("#incidents_customer_chart"), incidentsChartOptions);
+            incidentsChart.render();
+        }
     }
 </script>
 

@@ -94,6 +94,16 @@ $taxes = getResultArray("taxes", ["uuid_business_id" => session('uuid_business')
                                         </div>
                                     </div>
 
+                                    <div class="row form-group ">
+                                        <div class="col-md-4">
+                                            <label for="tags">Tags</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="text" autocomplete="off" class="form-control" value="<?= @$purchase_invoice->tags ?>" id="tags" name="tags" placeholder="e.g., urgent, project-x, quarterly">
+                                            <small class="form-text text-muted">Enter tags separated by commas</small>
+                                        </div>
+                                    </div>
+
                                     <div class="row form-group required">
                                         <div class="col-md-4">
                                             <label for="inputPassword4"><?php echo lang('Purchase_invoice.project_code'); ?> </label>

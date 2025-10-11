@@ -89,18 +89,14 @@
 
             <div class="form-row">
                 <div class="form-group col-md-12">
-                    <label for="project_tags">
+                    <label for="project_tags_text">
                         <i class="fa fa-tags"></i> Tags
-                        <a href="/tags/manage" target="_blank" style="font-size: 0.85rem; margin-left: 8px;">
-                            <i class="fa fa-cog"></i> Manage Tags
-                        </a>
                     </label>
-                    <select id="project_tags" name="project_tags[]" class="form-control select2" multiple="multiple"
-                            data-placeholder="Select tags for this project...">
-                        <!-- Populated by JavaScript -->
-                    </select>
+                    <input type="text" class="form-control" id="project_tags_text" name="project_tags"
+                           value="<?= @$project->project_tags ?>"
+                           placeholder="e.g., urgent, client-project, maintenance, phase-1">
                     <small class="form-text text-muted">
-                        Select multiple tags to categorize this project. You can create new tags from the Manage Tags page.
+                        Enter tags separated by commas
                     </small>
                 </div>
             </div>
@@ -157,33 +153,54 @@
     }
 
     $(document).ready(function() {
-        $(".select-customer-ajax").select2({
+        // Initialize Select2 with AJAX for customer search
+        var $customerSelect = $("#customers_id");
+
+        // Store the currently selected customer ID and name from PHP
+        var selectedCustomerId = <?= !empty($project->customers_id) ? (int)$project->customers_id : 'null' ?>;
+        var selectedCustomerName = <?= (!empty($customers) && isset($customers[0]['company_name'])) ? json_encode($customers[0]['company_name']) : 'null' ?>;
+
+        console.log('Selected Customer ID:', selectedCustomerId);
+        console.log('Selected Customer Name:', selectedCustomerName);
+
+        // Initialize Select2 AFTER creating the initial option
+        if (selectedCustomerId && selectedCustomerName) {
+            // Pre-populate with the selected customer
+            var option = new Option(selectedCustomerName, selectedCustomerId, true, true);
+            $customerSelect.append(option);
+        }
+
+        $customerSelect.select2({
             ajax: {
                 url: "/projects/companyCustomerAjax",
                 dataType: 'json',
                 delay: 250,
                 data: function(params) {
                     return {
-                        q: params.term // search term
+                        q: params.term || '' // search term
                     };
                 },
                 processResults: function(data, params) {
-                    // parse the results into the format expected by Select2
-                    // since we are using custom formatting functions we do not need to
-                    // alter the remote JSON data, except to indicate that infinite
-                    // scrolling can be used
-                    return {
-                        results: $.map(data, function(item) {
-                            return {
-                                text: item.company_name,
-                                id: item.id
-                            }
-                        })
-                    };
-                },
+                    var results = $.map(data, function(item) {
+                        return {
+                            id: item.id,
+                            text: item.company_name
+                        }
+                    });
+
+                    return { results: results };
+                }
             },
-            minimumInputLength: 2
+            minimumInputLength: 0,
+            placeholder: '--Select Customer--',
+            allowClear: true,
+            width: '100%'
         });
+
+        // Trigger change to ensure Select2 displays the value
+        if (selectedCustomerId) {
+            $customerSelect.val(selectedCustomerId).trigger('change');
+        }
 
         // Initialize tags select2
         loadTags();

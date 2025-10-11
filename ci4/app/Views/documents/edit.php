@@ -23,11 +23,44 @@ $customers = getResultArray("customers");
                             </select>
                         </div>
                     </div>
-                    <?php if (isset($document) && !empty($document->file)) { ?>
-                        <!--php if (strlen(trim(@$document->file)) > 0) { -->
-                        <div class="row form-group ">
-                            <iframe src="https://drive.google.com/viewerng/viewer?embedded=true&url=<?= @$document->file ?>" width="960" height="1200"></iframe>
-                        </div><br><br>
+                    <?php if (isset($document) && !empty($document->file)) {
+                        // Get file extension to determine how to preview
+                        $fileExt = pathinfo($document->file, PATHINFO_EXTENSION);
+                        $imageExts = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'];
+                        $isImage = in_array(strtolower($fileExt), $imageExts);
+                    ?>
+                        <div class="row form-group">
+                            <div class="col-md-12">
+                                <h5>Current Document Preview</h5>
+                                <?php if ($isImage) { ?>
+                                    <!-- Image preview -->
+                                    <div style="border: 1px solid #ddd; padding: 10px; margin-bottom: 15px;">
+                                        <img src="/documents/preview/<?= $document->uuid ?>"
+                                             style="max-width: 100%; height: auto;"
+                                             alt="Document preview" />
+                                    </div>
+                                <?php } else if (strtolower($fileExt) === 'pdf') { ?>
+                                    <!-- PDF preview in iframe -->
+                                    <div style="border: 1px solid #ddd; margin-bottom: 15px;">
+                                        <iframe src="/documents/preview/<?= $document->uuid ?>"
+                                                width="100%"
+                                                height="800"
+                                                style="border: none;"></iframe>
+                                    </div>
+                                <?php } else { ?>
+                                    <!-- Other file types - show download link -->
+                                    <div style="border: 1px solid #ddd; padding: 20px; margin-bottom: 15px; text-align: center;">
+                                        <p><i class="fa fa-file" style="font-size: 48px; color: #666;"></i></p>
+                                        <p>File type: <?= strtoupper($fileExt) ?></p>
+                                        <a href="/documents/download/<?= $document->uuid ?>"
+                                           class="btn btn-primary"
+                                           target="_blank">
+                                            <i class="fa fa-download"></i> Download Document
+                                        </a>
+                                    </div>
+                                <?php } ?>
+                            </div>
+                        </div><br>
                     <?php } ?>
                     <div class="row form-group ">
                         <div class="col-md-4">
