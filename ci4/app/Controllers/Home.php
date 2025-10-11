@@ -132,7 +132,7 @@ class Home extends BaseController
 						}, $menuArray, array_keys($menuArray));
 						$userMenus = $this->menu_model->getWhereinByUUID($menuIds);
 					} else {
-						$arr = json_decode($row->permissions);
+						$arr = json_decode($row->permissions, true); // Convert to array instead of object
 						$userMenus = $this->menu_model->getWherein($arr);
 					}
 				}
@@ -203,7 +203,7 @@ class Home extends BaseController
 									}, $menuArray, array_keys($menuArray));
 									$userMenus = $this->menu_model->getWhereinByUUID($menuIds);
 								} else {
-									$arr = json_decode($row->permissions);
+									$arr = json_decode($row->permissions, true); // Convert to array instead of object
 									$userMenus = $this->menu_model->getWherein($arr);
 								}
 							}

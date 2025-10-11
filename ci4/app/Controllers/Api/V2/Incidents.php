@@ -4,6 +4,8 @@ namespace App\Controllers\Api\V2;
 
 use App\Controllers\Api_v2;
 use App\Models\Incidents_model;
+use App\Libraries\IncidentNotification;
+use App\Libraries\UUID;
 use CodeIgniter\RESTful\ResourceController;
 
 /**
@@ -152,8 +154,28 @@ class Incidents extends ResourceController
             return $this->respond(['error' => 'uuid_business_id is required'], 400);
         }
 
+        // Generate UUID if not provided
+        if (!isset($data['uuid'])) {
+            $data['uuid'] = UUID::v5(UUID::v4(), 'incidents_api');
+        }
+
+        // Generate incident number if not provided
+        if (!isset($data['incident_number'])) {
+            $count = $model->where('uuid_business_id', $data['uuid_business_id'])->countAllResults();
+            $data['incident_number'] = 'INC-' . str_pad($count + 1, 6, '0', STR_PAD_LEFT);
+        }
+
         if ($model->insert($data)) {
-            return $this->respondCreated(['message' => 'Incident created successfully']);
+            // Send notifications for new incident
+            try {
+                $notification = new IncidentNotification();
+                $notificationResults = $notification->sendIncidentNotifications($data);
+                log_message('info', 'API: Incident notifications sent: ' . json_encode($notificationResults));
+            } catch (\Exception $e) {
+                log_message('error', 'API: Failed to send incident notifications: ' . $e->getMessage());
+            }
+
+            return $this->respondCreated(['message' => 'Incident created successfully', 'uuid' => $data['uuid']]);
         }
 
         return $this->fail($model->errors());

@@ -81,17 +81,30 @@ $roles = getResultWithoutBusiness("roles", ["uuid" => $_SESSION['role']], false)
             <?php } ?>
             <div class="form-row">
                 <div class="form-group col-md-12">
-                    <label for="inputState">Set User Roles and Permissions</label>
-                    <select id="sid" name="sid[]" multiple class="form-control select2">
+                    <label for="inputState">
+                        <i class="fa fa-shield"></i> Set User Module Permissions
+                    </label>
+                    <div class="mb-2">
+                        <button type="button" class="btn btn-sm btn-outline-primary" id="selectAllModules">
+                            <i class="fa fa-check-square"></i> Select All
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="deselectAllModules">
+                            <i class="fa fa-square-o"></i> Clear All
+                        </button>
+                    </div>
+                    <select id="sid" name="sid[]" multiple class="form-control select2-permissions" data-placeholder="Select modules to grant access...">
                         <?php
-                            $arr = (isset($user) && (!empty($user->permissions))) ? json_decode(@$user->permissions) : false;
+                            $arr = (isset($user) && (!empty($user->permissions))) ? json_decode(@$user->permissions, true) : false;
                             foreach ($menu as $row): ?>
-                                <option value="<?= $row['id']; ?>" <?php if ($arr)
+                                <option value="<?= $row['id']; ?>" <?php if ($arr && is_array($arr))
                                       echo
                                           in_array($row['id'], $arr) ? 'selected="selected"' : '' ?>><?= $row['name']; ?>
                                 </option>
                             <?php endforeach; ?>
                     </select>
+                    <small class="form-text text-muted">
+                        <i class="fa fa-info-circle"></i> Select all modules this user should have access to. Changes take effect on next login.
+                    </small>
                 </div>
             </div>
 
@@ -203,4 +216,109 @@ $roles = getResultWithoutBusiness("roles", ["uuid" => $_SESSION['role']], false)
         $('.psswrdIcon').removeClass('changeIcon');
       }
     }
+</script>
+
+<style>
+    /* Enhanced Select2 styling for permissions */
+    .select2-permissions .select2-selection__choice {
+        background-color: #667eea !important;
+        color: white !important;
+        border: none !important;
+        padding: 4px 8px !important;
+        border-radius: 12px !important;
+        margin: 3px !important;
+        font-size: 13px !important;
+    }
+
+    .select2-permissions .select2-selection__choice__remove {
+        color: white !important;
+        margin-right: 5px !important;
+        font-weight: bold !important;
+    }
+
+    .select2-permissions .select2-selection__choice__remove:hover {
+        color: #ffcccc !important;
+    }
+
+    .select2-container--default .select2-selection--multiple {
+        border: 1px solid #e3e6f0 !important;
+        border-radius: 0.35rem !important;
+        min-height: 45px !important;
+    }
+
+    .select2-container--default.select2-container--focus .select2-selection--multiple {
+        border-color: #667eea !important;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25) !important;
+    }
+
+    .select2-search__field {
+        min-height: 35px !important;
+    }
+
+    /* Role select styling */
+    #userRole {
+        border: 1px solid #e3e6f0;
+        border-radius: 0.35rem;
+        height: 45px;
+    }
+
+    #userRole:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+</style>
+
+<script>
+    // Initialize Select2 for permissions with enhanced features
+    $(document).ready(function() {
+        $('#sid').select2({
+            placeholder: 'Select modules to grant access...',
+            allowClear: true,
+            width: '100%',
+            closeOnSelect: false, // Keep dropdown open for multiple selections
+            templateResult: formatModule,
+            templateSelection: formatModuleSelection
+        });
+
+        // Format module options with icons
+        function formatModule(module) {
+            if (!module.id) {
+                return module.text;
+            }
+
+            var $module = $(
+                '<span><i class="fa fa-cube" style="margin-right: 8px; color: #667eea;"></i>' +
+                module.text +
+                '</span>'
+            );
+            return $module;
+        }
+
+        // Format selected modules
+        function formatModuleSelection(module) {
+            return module.text;
+        }
+
+        // Show count of selected modules
+        $('#sid').on('change', function() {
+            var count = $(this).val() ? $(this).val().length : 0;
+            var label = count === 1 ? 'module' : 'modules';
+            if (count > 0) {
+                $(this).next('.select2').find('.select2-selection__rendered')
+                    .attr('title', count + ' ' + label + ' selected');
+            }
+        });
+
+        // Select All Modules button
+        $('#selectAllModules').on('click', function() {
+            $('#sid option').prop('selected', true);
+            $('#sid').trigger('change');
+        });
+
+        // Deselect All Modules button
+        $('#deselectAllModules').on('click', function() {
+            $('#sid option').prop('selected', false);
+            $('#sid').trigger('change');
+        });
+    });
 </script>

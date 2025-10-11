@@ -6,6 +6,7 @@ use App\Models\Incidents_model;
 use App\Models\Users_model;
 use App\Models\Knowledge_base_model;
 use App\Libraries\UUID;
+use App\Libraries\IncidentNotification;
 use CodeIgniter\API\ResponseTrait;
 
 class Incidents extends CommonController
@@ -94,8 +95,9 @@ class Incidents extends CommonController
     {
         $uuid = $this->request->getPost('uuid');
         $data = $this->request->getPost();
+        $isNewIncident = empty($uuid);
 
-        if (empty($uuid)) {
+        if ($isNewIncident) {
             $data['uuid'] = UUID::v5(UUID::v4(), 'incidents_saving');
             $data['uuid_business_id'] = $this->session->get('uuid_business');
 
@@ -118,6 +120,19 @@ class Incidents extends CommonController
         $response = $this->model->insertOrUpdateByUUID($uuid, $data);
 
         if ($response) {
+            // Send notifications only for new incidents
+            if ($isNewIncident) {
+                try {
+                    $notification = new IncidentNotification();
+                    $notificationResults = $notification->sendIncidentNotifications($data);
+
+                    // Log notification results
+                    log_message('info', 'Incident notifications sent: ' . json_encode($notificationResults));
+                } catch (\Exception $e) {
+                    log_message('error', 'Failed to send incident notifications: ' . $e->getMessage());
+                }
+            }
+
             session()->setFlashdata('message', 'Incident saved successfully!');
             session()->setFlashdata('alert-class', 'alert-success');
         } else {

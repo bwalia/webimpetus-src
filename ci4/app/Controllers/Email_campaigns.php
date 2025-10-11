@@ -34,8 +34,19 @@ class Email_campaigns extends CommonController
         $order = $this->request->getVar('order') ?? "created_at";
         $dir = $this->request->getVar('dir') ?? "desc";
 
+        // Accept uuid_business_id from either GET parameter or session
+        $uuidBusiness = $this->request->getVar('uuid_business_id') ?? session('uuid_business');
+
+        if (!$uuidBusiness) {
+            return $this->response->setJSON([
+                'error' => 'uuid_business_id is required',
+                'data' => [],
+                'recordsTotal' => 0
+            ]);
+        }
+
         $builder = $this->db->table('email_campaigns');
-        $builder->where('uuid_business_id', session('uuid_business'));
+        $builder->where('uuid_business_id', $uuidBusiness);
 
         if ($query) {
             $builder->groupStart()
