@@ -16,7 +16,8 @@ services:
     expose:
       - '3309'
     volumes:
-      - ./wi-dev.sql:/docker-entrypoint-initdb.d/myworkstation_dev_db.sql
+      - webimpetus-db-vol:/var/lib/mysql
+      # - ./wi-dev.sql:/docker-entrypoint-initdb.d/myworkstation_dev_db.sql
     networks: 
     - webimpetus-network
 
