@@ -46,3 +46,10 @@ nginx/ssl/*.pfx
 *.pem
 *-key.pem
 *-cert.pem
+*.crt
+*access.log
+*error.log
+*.log
+*.pid
+*.swp
+*.swo
