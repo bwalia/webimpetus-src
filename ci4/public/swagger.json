@@ -1,3 +1,4257 @@
 {
-    "openapi": "3.0.0"
+    "openapi": "3.0.0",
+    "info": {
+        "title": "WebAImpetus API Documentation",
+        "description": "Complete API documentation for MyWorkstation application with CRUD operations for all resources",
+        "contact": {
+            "email": "support@myworkstation.com"
+        },
+        "version": "2.0.0"
+    },
+    "servers": [
+        {
+            "url": "/api/v2",
+            "description": "API V2 Server"
+        }
+    ],
+    "paths": {
+        "/api/v2/blog-comments": {
+            "get": {
+                "tags": [
+                    "Blog Comments"
+                ],
+                "operationId": "6c4ae57c66777d56c78b8bf3e61858a9",
+                "parameters": [
+                    {
+                        "name": "blog_uuid",
+                        "in": "query",
+                        "description": "Filter by blog UUID",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get all blog comments"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Blog Comments"
+                ],
+                "operationId": "d87a7807673a966b15c69afe19b52253",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "blog_uuid": {
+                                        "type": "string"
+                                    },
+                                    "Name": {
+                                        "type": "string"
+                                    },
+                                    "Email": {
+                                        "type": "string"
+                                    },
+                                    "Comment": {
+                                        "type": "string"
+                                    },
+                                    "Approved": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Comment created"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/blog-comments/{id}": {
+            "get": {
+                "tags": [
+                    "Blog Comments"
+                ],
+                "operationId": "28e227a322239126d865afaf45034fd4",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Comment UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get single comment"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Blog Comments"
+                ],
+                "operationId": "ed2b85a405fc0836c3a0fb9489e5046d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Comment UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "Comment": {
+                                        "type": "string"
+                                    },
+                                    "Approved": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Comment updated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Blog Comments"
+                ],
+                "operationId": "d35824a94e87c29c7d4e89624970f7db",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Comment UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Comment deleted"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/businesses": {
+            "get": {
+                "tags": [
+                    "Businesses"
+                ],
+                "operationId": "cb880870a0e7072504d57bd41dd65924",
+                "responses": {
+                    "200": {
+                        "description": "Get the businesses data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Businesses"
+                ],
+                "operationId": "c20900f4cf4594f1bcc3928810d10ef7",
+                "responses": {
+                    "200": {
+                        "description": "Created a business data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/businesses/{uuid}": {
+            "get": {
+                "tags": [
+                    "Businesses"
+                ],
+                "operationId": "dc41516a954bea6076281073affb9f5e",
+                "responses": {
+                    "200": {
+                        "description": "Get the single business data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Businesses"
+                ],
+                "operationId": "57c98df4eb901339735c2d8634b2685f",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "query",
+                        "description": "The businesse uuid",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated a businesse data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Businesses"
+                ],
+                "operationId": "6c40c95903c29e682668c2c3d4647a8e",
+                "responses": {
+                    "200": {
+                        "description": "Delete a businesse"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/categories": {
+            "get": {
+                "tags": [
+                    "Categories"
+                ],
+                "operationId": "5a62f82550b2af21684252f8976ad8a0",
+                "responses": {
+                    "200": {
+                        "description": "Get the category data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Categories"
+                ],
+                "operationId": "8d609956bad0f87f822c831a89e0e1b6",
+                "parameters": [
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "business uuid required",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Created a category data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/categories/{uuid}": {
+            "get": {
+                "tags": [
+                    "Categories"
+                ],
+                "operationId": "789bde913edd06987e24ee85d764d077",
+                "responses": {
+                    "200": {
+                        "description": "Get the single category data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Categories"
+                ],
+                "operationId": "c324ef15adc83ce95832b203a4c39be3",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "query",
+                        "description": "The category uuid",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated a category data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Categories"
+                ],
+                "operationId": "a407600fe98d28c2b568a8b0b9fd4c3c",
+                "responses": {
+                    "200": {
+                        "description": "Delete a category"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/contacts": {
+            "get": {
+                "tags": [
+                    "Contacts"
+                ],
+                "operationId": "2776cfef64e17e5802e3ff0f665fc5ea",
+                "responses": {
+                    "200": {
+                        "description": "Get the contacts data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Contacts"
+                ],
+                "operationId": "7a1e1604bb60ce33dfc4a18370cab7b4",
+                "parameters": [
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "business uuid required",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Created a contact data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/contacts/{uuid}": {
+            "get": {
+                "tags": [
+                    "Contacts"
+                ],
+                "operationId": "c94a3f52780815ea66cf284ff2a0a237",
+                "responses": {
+                    "200": {
+                        "description": "Get the single contact data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Contacts"
+                ],
+                "operationId": "3100d5351b8ce53b08551f01eabb5e41",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "query",
+                        "description": "The contact uuid",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated a contact data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Contacts"
+                ],
+                "operationId": "cb9fc2e426f2ec3181ce5f55b0d71f8d",
+                "responses": {
+                    "200": {
+                        "description": "Delete a contact"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/customers": {
+            "get": {
+                "tags": [
+                    "Customers"
+                ],
+                "operationId": "9d5aaed365302fe5e02cd5c09ecd8eba",
+                "responses": {
+                    "200": {
+                        "description": "Get the Customers data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Customers"
+                ],
+                "operationId": "8fa51b17965bd0d7b6c7e90f4ac8bb1e",
+                "parameters": [
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "business uuid required",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Created a customer data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/customers/{uuid}": {
+            "get": {
+                "tags": [
+                    "Customers"
+                ],
+                "operationId": "3cbf1752f2ff4b8c197f7d70cdeba1de",
+                "responses": {
+                    "200": {
+                        "description": "Get the single customer data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Customers"
+                ],
+                "operationId": "d5687ff8a8b187f678600f1d544d4b59",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "query",
+                        "description": "The customer uuid",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated a customer data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Customers"
+                ],
+                "operationId": "f399b7c394abfa9082577ef1d58df400",
+                "responses": {
+                    "200": {
+                        "description": "Delete a customer"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/deployments": {
+            "get": {
+                "tags": [
+                    "Deployments"
+                ],
+                "summary": "Get all deployments",
+                "operationId": "99a5679da15d33fa7e128506319aa72c",
+                "parameters": [
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "Business UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "environment",
+                        "in": "query",
+                        "description": "Filter by environment (Development, Testing, Acceptance, Production)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "deployment_status",
+                        "in": "query",
+                        "description": "Filter by status",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get all deployments"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Deployments"
+                ],
+                "summary": "Create a new deployment",
+                "operationId": "0a13b0e2145eb74c91f92974ee1cd82e",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "deployment_name",
+                                    "uuid_business_id",
+                                    "environment"
+                                ],
+                                "properties": {
+                                    "deployment_name": {
+                                        "type": "string",
+                                        "example": "Deploy User Service v2.1"
+                                    },
+                                    "uuid_business_id": {
+                                        "type": "string"
+                                    },
+                                    "uuid_service_id": {
+                                        "type": "string"
+                                    },
+                                    "environment": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Development",
+                                            "Testing",
+                                            "Acceptance",
+                                            "Production"
+                                        ]
+                                    },
+                                    "version": {
+                                        "type": "string",
+                                        "example": "2.1.0"
+                                    },
+                                    "deployment_type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Initial",
+                                            "Update",
+                                            "Hotfix",
+                                            "Rollback",
+                                            "Configuration"
+                                        ]
+                                    },
+                                    "deployment_status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Planned",
+                                            "In Progress",
+                                            "Completed",
+                                            "Failed",
+                                            "Rolled Back"
+                                        ]
+                                    },
+                                    "deployment_date": {
+                                        "type": "string",
+                                        "format": "date-time"
+                                    },
+                                    "deployed_by": {
+                                        "type": "string"
+                                    },
+                                    "uuid_task_id": {
+                                        "type": "string"
+                                    },
+                                    "uuid_incident_id": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "deployment_notes": {
+                                        "type": "string"
+                                    },
+                                    "rollback_plan": {
+                                        "type": "string"
+                                    },
+                                    "git_commit_hash": {
+                                        "type": "string"
+                                    },
+                                    "git_branch": {
+                                        "type": "string"
+                                    },
+                                    "priority": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Low",
+                                            "Medium",
+                                            "High",
+                                            "Critical"
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Deployment created successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/deployments/{uuid}": {
+            "get": {
+                "tags": [
+                    "Deployments"
+                ],
+                "summary": "Get a single deployment",
+                "operationId": "ea2ebc6d5525fea32bc7438cf5323840",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "Deployment UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get deployment by UUID"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Deployments"
+                ],
+                "summary": "Update a deployment",
+                "operationId": "52533e3d099931336146636dd64c90c8",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "Deployment UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "deployment_name": {
+                                        "type": "string"
+                                    },
+                                    "deployment_status": {
+                                        "type": "string"
+                                    },
+                                    "completed_date": {
+                                        "type": "string",
+                                        "format": "date-time"
+                                    },
+                                    "health_check_status": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Deployment updated successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Deployments"
+                ],
+                "summary": "Delete a deployment",
+                "operationId": "5208af00a31d0b296f8bae8eb677ad54",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "Deployment UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Deployment deleted successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/deployments/stats": {
+            "get": {
+                "tags": [
+                    "Deployments"
+                ],
+                "summary": "Get deployment statistics",
+                "operationId": "e486dfae24039108fa51008f113ccb14",
+                "parameters": [
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "Business UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get deployment statistics by environment"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/domains": {
+            "get": {
+                "tags": [
+                    "Domains"
+                ],
+                "operationId": "c07b730957b32ec31f12d9a442984df4",
+                "parameters": [
+                    {
+                        "name": "with_relations",
+                        "in": "query",
+                        "description": "Include service relations",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get all domains"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Domains"
+                ],
+                "operationId": "cb7af16012e9138b95f7d351e9fe0800",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "uuid_business_id": {
+                                        "type": "string"
+                                    },
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "customer_uuid": {
+                                        "type": "string"
+                                    },
+                                    "domain_path": {
+                                        "type": "string"
+                                    },
+                                    "domain_path_type": {
+                                        "type": "string"
+                                    },
+                                    "domain_service_name": {
+                                        "type": "string"
+                                    },
+                                    "domain_service_port": {
+                                        "type": "string"
+                                    },
+                                    "notes": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Domain created"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/domains/{id}": {
+            "get": {
+                "tags": [
+                    "Domains"
+                ],
+                "operationId": "662b60ceafaa9cd9da1430fef196af17",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Domain UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get single domain"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Domains"
+                ],
+                "operationId": "793b242fe41abc1b6c98f8978740e0df",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Domain UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "customer_uuid": {
+                                        "type": "string"
+                                    },
+                                    "domain_path": {
+                                        "type": "string"
+                                    },
+                                    "notes": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Domain updated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Domains"
+                ],
+                "operationId": "f4a759c2dd406b4d0548009cd9984a8f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Domain UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Domain deleted"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/email-campaigns": {
+            "get": {
+                "tags": [
+                    "Email Campaigns"
+                ],
+                "operationId": "81926586707a7393dbe34d9fed51bd55",
+                "parameters": [
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "Business UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get all email campaigns"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Email Campaigns"
+                ],
+                "operationId": "59bc1521e69a769d70a0a4e1a93ea2f9",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "uuid_business_id": {
+                                        "type": "string"
+                                    },
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "subject": {
+                                        "type": "string"
+                                    },
+                                    "content": {
+                                        "type": "string"
+                                    },
+                                    "status": {
+                                        "type": "string"
+                                    },
+                                    "scheduled_at": {
+                                        "type": "string",
+                                        "format": "date-time"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Campaign created"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/email-campaigns/{uuid}": {
+            "get": {
+                "tags": [
+                    "Email Campaigns"
+                ],
+                "operationId": "c8eeb8382bd57fa4c758062c197f98ad",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "Campaign UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get single email campaign"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Email Campaigns"
+                ],
+                "operationId": "4a2b05f7a4411213ff211b976af405d8",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "Campaign UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Campaign updated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Email Campaigns"
+                ],
+                "operationId": "89226cacf61c54f1347ad58c0ee40614",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "Campaign UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Campaign deleted"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/employees": {
+            "get": {
+                "tags": [
+                    "Employee"
+                ],
+                "operationId": "24f306a170971f96aac857a93c651ad1",
+                "responses": {
+                    "200": {
+                        "description": "Get the employees data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Employee"
+                ],
+                "operationId": "3628306cf0864cffa5de90f39f3bde61",
+                "parameters": [
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "business uuid required",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Created a employee data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/employees/{uuid}": {
+            "get": {
+                "tags": [
+                    "Employee"
+                ],
+                "operationId": "70b7dd9dab4514e4e89914ca2c0336a0",
+                "responses": {
+                    "200": {
+                        "description": "Get the single Employee data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Employee"
+                ],
+                "operationId": "8b610f4fa7f00e9fc42e3e3f5b216e28",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "query",
+                        "description": "The employee uuid",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated a employee data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Employee"
+                ],
+                "operationId": "3fde2d98c89d9e96c0105bc14d4cf9ea",
+                "responses": {
+                    "200": {
+                        "description": "Delete a employee"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/incidents": {
+            "get": {
+                "tags": [
+                    "Incidents"
+                ],
+                "operationId": "03b01932faeb5e745e6223f569456921",
+                "parameters": [
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "Business UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get all incidents"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Incidents"
+                ],
+                "operationId": "dea4d7fd473742d45f6484976b402ca1",
+                "parameters": [
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "Business UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "priority": {
+                                        "type": "string"
+                                    },
+                                    "status": {
+                                        "type": "string"
+                                    },
+                                    "reported_by": {
+                                        "type": "string"
+                                    },
+                                    "assigned_to": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Incident created"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/incidents/{uuid}": {
+            "get": {
+                "tags": [
+                    "Incidents"
+                ],
+                "operationId": "c467c3513c97ee13df26a8617c7f9311",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "Incident UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get single incident"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Incidents"
+                ],
+                "operationId": "4c7fb3ebb4183d3d5566fd15982b33b6",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "Incident UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Incident updated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Incidents"
+                ],
+                "operationId": "e2544c8c2b7425bcf705e6b29ae62156",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "Incident UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Incident deleted"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/interviews": {
+            "get": {
+                "tags": [
+                    "Interviews"
+                ],
+                "operationId": "209243c223e62ff53a7cad62c54a1f01",
+                "parameters": [
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "Business UUID",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "job_id",
+                        "in": "query",
+                        "description": "Filter by job ID",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get all interviews"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Interviews"
+                ],
+                "operationId": "bbbf46f07c0ca70d8ec426a30218c424",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "uuid_business_id": {
+                                        "type": "string"
+                                    },
+                                    "job_id": {
+                                        "type": "integer"
+                                    },
+                                    "job_title": {
+                                        "type": "string"
+                                    },
+                                    "candidate_name": {
+                                        "type": "string"
+                                    },
+                                    "candidate_email": {
+                                        "type": "string"
+                                    },
+                                    "interview_date": {
+                                        "type": "string",
+                                        "format": "date-time"
+                                    },
+                                    "interview_type": {
+                                        "type": "string"
+                                    },
+                                    "interviewer": {
+                                        "type": "string"
+                                    },
+                                    "status": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Interview created"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/interviews/{id}": {
+            "get": {
+                "tags": [
+                    "Interviews"
+                ],
+                "operationId": "32e20015e929282caeb1bf2c336548b0",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Interview UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get single interview"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Interviews"
+                ],
+                "operationId": "78a3b954fea37e77c276ad6e13e8a2f9",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Interview UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "interview_date": {
+                                        "type": "string",
+                                        "format": "date-time"
+                                    },
+                                    "status": {
+                                        "type": "string"
+                                    },
+                                    "feedback": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Interview updated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Interviews"
+                ],
+                "operationId": "dcef866ee1aa83cd37676e0add7cdec8",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Interview UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Interview deleted"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/jobs": {
+            "get": {
+                "tags": [
+                    "Jobs"
+                ],
+                "operationId": "d7fb67f6ef46079cdda1727b73286e8e",
+                "parameters": [
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "Business UUID",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get all job vacancies"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Jobs"
+                ],
+                "operationId": "efb3946da7b4e1ed1984b282d12c691e",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "uuid_business_id": {
+                                        "type": "string"
+                                    },
+                                    "reference_number": {
+                                        "type": "string"
+                                    },
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "location": {
+                                        "type": "string"
+                                    },
+                                    "salary_range": {
+                                        "type": "string"
+                                    },
+                                    "employment_type": {
+                                        "type": "string"
+                                    },
+                                    "status": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Job created"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/jobs/{id}": {
+            "get": {
+                "tags": [
+                    "Jobs"
+                ],
+                "operationId": "aecad388cfcbd92e03a463d3eb1d1d7c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Job UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get single job vacancy"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Jobs"
+                ],
+                "operationId": "462c124588401e9377d735548a41cde7",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Job UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "status": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Job updated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Jobs"
+                ],
+                "operationId": "ee1d6a8a3ce7fa52714b092af69e44d2",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Job UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Job deleted"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/knowledge-base": {
+            "get": {
+                "tags": [
+                    "Knowledge Base"
+                ],
+                "operationId": "943a5d234fd971698bb86f7a4d0f44f6",
+                "parameters": [
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "Business UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get all knowledge base articles"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Knowledge Base"
+                ],
+                "operationId": "975548e805c22a78f9ee954d1eab3eeb",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "uuid_business_id": {
+                                        "type": "string"
+                                    },
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "content": {
+                                        "type": "string"
+                                    },
+                                    "category": {
+                                        "type": "string"
+                                    },
+                                    "status": {
+                                        "type": "string"
+                                    },
+                                    "article_number": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Article created"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/knowledge-base/{uuid}": {
+            "get": {
+                "tags": [
+                    "Knowledge Base"
+                ],
+                "operationId": "accdc79b4762cda08b7bdb9b20d078a4",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "Article UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get single knowledge base article"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Knowledge Base"
+                ],
+                "operationId": "63c4ad87a6a6552ee570476ddb37e133",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "Article UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Article updated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Knowledge Base"
+                ],
+                "operationId": "2ae5b7ab6a12d5206c0e003e502a8250",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "Article UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Article deleted"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/launchpad": {
+            "get": {
+                "tags": [
+                    "Launchpad"
+                ],
+                "summary": "Get user's bookmarks",
+                "operationId": "30c74af713447d7f29dc76235974632c",
+                "parameters": [
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "Business UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "uuid_user_id",
+                        "in": "query",
+                        "description": "User UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "include_shared",
+                        "in": "query",
+                        "description": "Include shared bookmarks (default: true)",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get all user bookmarks"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Launchpad"
+                ],
+                "summary": "Create a new bookmark",
+                "operationId": "740945f52fbbc8b43ce4a07c6ed6fb88",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "url",
+                                    "uuid_business_id",
+                                    "uuid_user_id"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "GitHub"
+                                    },
+                                    "url": {
+                                        "type": "string",
+                                        "example": "https://github.com"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "uuid_business_id": {
+                                        "type": "string"
+                                    },
+                                    "uuid_user_id": {
+                                        "type": "string"
+                                    },
+                                    "icon_url": {
+                                        "type": "string",
+                                        "example": "https://github.com/favicon.ico"
+                                    },
+                                    "color": {
+                                        "type": "string",
+                                        "example": "#667eea"
+                                    },
+                                    "category": {
+                                        "type": "string",
+                                        "example": "Development"
+                                    },
+                                    "tags": {
+                                        "type": "string",
+                                        "example": "code,git,repository"
+                                    },
+                                    "is_favorite": {
+                                        "type": "integer",
+                                        "example": 0
+                                    },
+                                    "is_public": {
+                                        "type": "integer",
+                                        "example": 0
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Bookmark created successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/launchpad/{uuid}": {
+            "get": {
+                "tags": [
+                    "Launchpad"
+                ],
+                "summary": "Get a single bookmark",
+                "operationId": "4abb349ee9b6288e17bbce9510b91486",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "Bookmark UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get bookmark by UUID"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Launchpad"
+                ],
+                "summary": "Update a bookmark",
+                "operationId": "6cbb982ac32367c20d4eb679ce92485d",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "Bookmark UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "url": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "color": {
+                                        "type": "string"
+                                    },
+                                    "is_favorite": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Bookmark updated successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Launchpad"
+                ],
+                "summary": "Delete a bookmark",
+                "operationId": "61773c4578ed5c65d6d6688ca8dacac0",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "Bookmark UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Bookmark deleted successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/launchpad/click/{uuid}": {
+            "post": {
+                "tags": [
+                    "Launchpad"
+                ],
+                "summary": "Record bookmark click",
+                "operationId": "746d9c51f53c299e18c761bad8c556c3",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "Bookmark UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "uuid_user_id"
+                                ],
+                                "properties": {
+                                    "uuid_user_id": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Click recorded successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/launchpad/share": {
+            "post": {
+                "tags": [
+                    "Launchpad"
+                ],
+                "summary": "Share bookmark with user",
+                "operationId": "14da0015774bfb9897e9a7c9377f9f9f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "uuid_bookmark_id",
+                                    "uuid_shared_with_user_id",
+                                    "uuid_shared_by_user_id"
+                                ],
+                                "properties": {
+                                    "uuid_bookmark_id": {
+                                        "type": "string"
+                                    },
+                                    "uuid_shared_with_user_id": {
+                                        "type": "string"
+                                    },
+                                    "uuid_shared_by_user_id": {
+                                        "type": "string"
+                                    },
+                                    "can_edit": {
+                                        "type": "integer",
+                                        "example": 0
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Bookmark shared successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/launchpad/recent": {
+            "get": {
+                "tags": [
+                    "Launchpad"
+                ],
+                "summary": "Get recently clicked bookmarks",
+                "operationId": "8838b65b27e7dd5f535f79ea5119333d",
+                "parameters": [
+                    {
+                        "name": "uuid_user_id",
+                        "in": "query",
+                        "description": "User UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "Business UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Number of results (default: 10)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get recent bookmarks"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/menu": {
+            "get": {
+                "tags": [
+                    "Menu"
+                ],
+                "operationId": "3308e5ae7a67ff5e97f2f2f3873cea15",
+                "responses": {
+                    "200": {
+                        "description": "Get the menues data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Menu"
+                ],
+                "operationId": "f80e9f152ee137aa3b359906dd65aa69",
+                "parameters": [
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "business uuid required",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Created a menu data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/menu/{uuid}": {
+            "get": {
+                "tags": [
+                    "Menu"
+                ],
+                "operationId": "9e67cfeaf887adb97df9a12daf29cde6",
+                "responses": {
+                    "200": {
+                        "description": "Get the single menu data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Menu"
+                ],
+                "operationId": "69ded22640616dd3e57e62214e8fd3b5",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "query",
+                        "description": "The menu uuid",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated a menu data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Menu"
+                ],
+                "operationId": "74553ceca702b27474ad9c9f108ee0ea",
+                "responses": {
+                    "200": {
+                        "description": "Delete a menu"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/products": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "operationId": "a0874365f221043dc0541bef9d424bca",
+                "parameters": [
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "Business UUID",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get all products"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Products"
+                ],
+                "operationId": "29c69ad8b3191194bc50fdeb2e442552",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "uuid_business_id": {
+                                        "type": "string"
+                                    },
+                                    "product_name": {
+                                        "type": "string"
+                                    },
+                                    "product_code": {
+                                        "type": "string"
+                                    },
+                                    "product_description": {
+                                        "type": "string"
+                                    },
+                                    "product_category": {
+                                        "type": "string"
+                                    },
+                                    "product_price": {
+                                        "type": "number",
+                                        "format": "decimal"
+                                    },
+                                    "product_cost": {
+                                        "type": "number",
+                                        "format": "decimal"
+                                    },
+                                    "stock_quantity": {
+                                        "type": "integer"
+                                    },
+                                    "product_status": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Product created"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/products/{id}": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "operationId": "7cfdbd974e3c18ad57aecc621b002f39",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Product ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get single product"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Products"
+                ],
+                "operationId": "c7fa157108e04080a55c3a5a1a93844b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Product ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "product_name": {
+                                        "type": "string"
+                                    },
+                                    "product_description": {
+                                        "type": "string"
+                                    },
+                                    "product_price": {
+                                        "type": "number",
+                                        "format": "decimal"
+                                    },
+                                    "stock_quantity": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Product updated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Producs"
+                ],
+                "operationId": "8f708f3775a9a6f70f26de0653dd598b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Product ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Product deleted"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/projects": {
+            "get": {
+                "tags": [
+                    "Projects"
+                ],
+                "operationId": "cc1ce7b2550b5e938f3f48afab8f1f0c",
+                "responses": {
+                    "200": {
+                        "description": "Get the projects data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Projects"
+                ],
+                "operationId": "300d9429c7ee083893ef12d24c7c00c6",
+                "responses": {
+                    "200": {
+                        "description": "Created a sprint data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/projects/{uuid}": {
+            "get": {
+                "tags": [
+                    "Projects"
+                ],
+                "operationId": "805c432685b64a8da9ad4e64504d2688",
+                "responses": {
+                    "200": {
+                        "description": "Get the single project data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Projects"
+                ],
+                "operationId": "0636de2d670158fd139ada30754dcfc1",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "query",
+                        "description": "The project uuid",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated a project data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Projects"
+                ],
+                "operationId": "e543185c0f6303e2905351a05b3303f7",
+                "responses": {
+                    "200": {
+                        "description": "Delete a project"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/roles": {
+            "get": {
+                "tags": [
+                    "Roles"
+                ],
+                "operationId": "50eee38a079c5dbc4ba8064897e263f7",
+                "responses": {
+                    "200": {
+                        "description": "Get all roles"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Roles"
+                ],
+                "operationId": "d091b53e2eb866eb6de27f4f159c1165",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "role_name": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Role created"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/roles/{uuid}": {
+            "get": {
+                "tags": [
+                    "Roles"
+                ],
+                "operationId": "c30a6635caa971af061ae4d260502e88",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "Role UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get single role"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Roles"
+                ],
+                "operationId": "d03e5b8ebb81b29ffbe254fb624b186a",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "Role UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Role updated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Roles"
+                ],
+                "operationId": "f94ac7cbacaf73af76ab5ddf3073c195",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "Role UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Role deleted"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/sprints": {
+            "get": {
+                "tags": [
+                    "Sprints"
+                ],
+                "operationId": "16291458227f67c60522ce41af9e47a2",
+                "responses": {
+                    "200": {
+                        "description": "Get the sprints data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Sprints"
+                ],
+                "operationId": "345021615e5531821aa53f215d4c38e0",
+                "parameters": [
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "business uuid required",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Created a sprint data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/sprints/{uuid}": {
+            "get": {
+                "tags": [
+                    "Sprints"
+                ],
+                "operationId": "30075a06390d178ecbe74cfde8afd043",
+                "responses": {
+                    "200": {
+                        "description": "Get the single sprint data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Sprints"
+                ],
+                "operationId": "c81142d5269acaa4a4be73dae4eb3163",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "query",
+                        "description": "The sprint uuid",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated a sprint data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Sprints"
+                ],
+                "operationId": "d4a39b6e913a3e685cd33926cf4e3eb3",
+                "responses": {
+                    "200": {
+                        "description": "Delete a sprint"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/tags": {
+            "get": {
+                "tags": [
+                    "Tags"
+                ],
+                "operationId": "2ddd05b74a62834fe6d81b85cb8868a4",
+                "parameters": [
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "Business UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get all tags"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Tags"
+                ],
+                "operationId": "772cc1c9673c0639a33491c67cffe155",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "uuid_business_id": {
+                                        "type": "string"
+                                    },
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "color": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Tag created"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/tags/{id}": {
+            "get": {
+                "tags": [
+                    "Tags"
+                ],
+                "operationId": "565b510f4971cdfc9144205bd7ab5c44",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Tag ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get single tag"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Tags"
+                ],
+                "operationId": "c79eda512967cd7ba2d068854790846a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Tag ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tag updated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Tags"
+                ],
+                "operationId": "8d64dbaf875ffc97747646faca52274a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Tag ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tag deleted"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/tasks": {
+            "get": {
+                "tags": [
+                    "Tasks"
+                ],
+                "operationId": "f692e8554a9105e2bbf242b3f9385e25",
+                "responses": {
+                    "200": {
+                        "description": "Get the tasks data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Tasks"
+                ],
+                "operationId": "e7a851e37c3db94137a4abbb20bf5375",
+                "parameters": [
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "business uuid required",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Created a task"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/tasks/{uuid}": {
+            "get": {
+                "tags": [
+                    "Tasks"
+                ],
+                "operationId": "e10591153bce6c12d31e79fd941a7ce9",
+                "responses": {
+                    "200": {
+                        "description": "Get the single task data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Tasks"
+                ],
+                "operationId": "cd8782a3b132e5df66cfa521aac2aa13",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "query",
+                        "description": "The task uuid",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated a task data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Tasks"
+                ],
+                "operationId": "5f1f3430fde5874b784e0cf5fdfb702f",
+                "responses": {
+                    "200": {
+                        "description": "Delete a task"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/templates": {
+            "get": {
+                "tags": [
+                    "Templates"
+                ],
+                "operationId": "19fa1fce0dc629cce0b9e0279f2a60d1",
+                "parameters": [
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "Business UUID",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get all templates"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Templates"
+                ],
+                "operationId": "5b9ab676bf1a67b53b222b677ad4b180",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "uuid_business_id": {
+                                        "type": "string"
+                                    },
+                                    "code": {
+                                        "type": "string"
+                                    },
+                                    "subject": {
+                                        "type": "string"
+                                    },
+                                    "template_content": {
+                                        "type": "string"
+                                    },
+                                    "comment": {
+                                        "type": "string"
+                                    },
+                                    "template_type": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Template created"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/templates/{id}": {
+            "get": {
+                "tags": [
+                    "Templates"
+                ],
+                "operationId": "a0316a79fa702f56e7ab332309cfe0a2",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Template code",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get single template"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Templates"
+                ],
+                "operationId": "96635fa66ab0f13e6219532af1253da1",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Template code",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "subject": {
+                                        "type": "string"
+                                    },
+                                    "template_content": {
+                                        "type": "string"
+                                    },
+                                    "comment": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Template updated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Templates"
+                ],
+                "operationId": "86f63306de0dcced4ff36b098b1da876",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Template code",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Template deleted"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/tenants": {
+            "get": {
+                "tags": [
+                    "Tenants"
+                ],
+                "operationId": "d7852771b6610a57b8b71b4c99da6692",
+                "parameters": [
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "Business UUID",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get all tenants"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Tenants"
+                ],
+                "operationId": "6fd5be1711d3179f536abe37f5d27962",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "uuid_business_id": {
+                                        "type": "string"
+                                    },
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "address": {
+                                        "type": "string"
+                                    },
+                                    "contact_name": {
+                                        "type": "string"
+                                    },
+                                    "contact_email": {
+                                        "type": "string"
+                                    },
+                                    "contact_phone": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Tenant created"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/tenants/{id}": {
+            "get": {
+                "tags": [
+                    "Tenants"
+                ],
+                "operationId": "ec390db6b2223bff51f11356e3c4592d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Tenant UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get single tenant"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Tenants"
+                ],
+                "operationId": "d8a9cdf8be73afb4eb53c929549a3540",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Tenant UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "address": {
+                                        "type": "string"
+                                    },
+                                    "contact_name": {
+                                        "type": "string"
+                                    },
+                                    "contact_email": {
+                                        "type": "string"
+                                    },
+                                    "contact_phone": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Tenant updated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Tenants"
+                ],
+                "operationId": "a9ebc5492a200602d312452cad7cf463",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Tenant UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tenant deleted"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/timeslips": {
+            "get": {
+                "tags": [
+                    "Timeslips"
+                ],
+                "operationId": "6aaa6f91af3c9fbdcea0a694b875f14e",
+                "responses": {
+                    "200": {
+                        "description": "Get the timeslips data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Timeslips"
+                ],
+                "operationId": "8cc618ae2ce84f1f33d1d48f153ade68",
+                "parameters": [
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "business uuid required",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Created a timeslip"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/timeslips/{uuid}": {
+            "get": {
+                "tags": [
+                    "Timeslips"
+                ],
+                "operationId": "9e8976d9280a563e3cf926124596715d",
+                "responses": {
+                    "200": {
+                        "description": "Get the single timeslip data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Timeslips"
+                ],
+                "operationId": "12861d5f8a491e0081492dfa92c67506",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "query",
+                        "description": "The timeslip uuid",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated a timeslip data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Timeslips"
+                ],
+                "operationId": "bcb4902390fa605778118727b89d35c9",
+                "responses": {
+                    "200": {
+                        "description": "Delete a timeslip"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/users": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "operationId": "f561d7788845a6ffd53e28d7d7d3d653",
+                "responses": {
+                    "200": {
+                        "description": "Get the users data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "operationId": "95be060476f39f091f0fcfc44ee6d88b",
+                "parameters": [
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "business uuid required",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated a user data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/users/{uuid}": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "operationId": "22d3f47459f1f276578256b407f9418f",
+                "responses": {
+                    "200": {
+                        "description": "Get the single user data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "User"
+                ],
+                "operationId": "c25a72b16eab131e90c0dc2074a4d55a",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "query",
+                        "description": "The user uuid",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated a user data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "User"
+                ],
+                "operationId": "65835a6df2405d533e78a15d58fb1d2e",
+                "responses": {
+                    "200": {
+                        "description": "Delete a user"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/vat-returns": {
+            "get": {
+                "tags": [
+                    "VAT Returns"
+                ],
+                "operationId": "ccf526fd8a32634a6c8b7d8e43c5190c",
+                "parameters": [
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "Business UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get all VAT returns"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "VAT Returns"
+                ],
+                "operationId": "bd1cd9dea76d3e9f6f4a6f04d126243f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "uuid_business_id": {
+                                        "type": "string"
+                                    },
+                                    "period_key": {
+                                        "type": "string"
+                                    },
+                                    "vat_due_sales": {
+                                        "type": "number"
+                                    },
+                                    "vat_due_acquisitions": {
+                                        "type": "number"
+                                    },
+                                    "total_vat_due": {
+                                        "type": "number"
+                                    },
+                                    "vat_reclaimed_curr_period": {
+                                        "type": "number"
+                                    },
+                                    "net_vat_due": {
+                                        "type": "number"
+                                    },
+                                    "total_value_sales_ex_vat": {
+                                        "type": "number"
+                                    },
+                                    "total_value_purchases_ex_vat": {
+                                        "type": "number"
+                                    },
+                                    "total_value_goods_supplied_ex_vat": {
+                                        "type": "number"
+                                    },
+                                    "total_acquisitions_ex_vat": {
+                                        "type": "number"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "VAT return created"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/vat-returns/{uuid}": {
+            "get": {
+                "tags": [
+                    "VAT Returns"
+                ],
+                "operationId": "ac8f2e94a4b57b7563bfa0a5dd313ab1",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "VAT Return UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get single VAT return"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "VAT Returns"
+                ],
+                "operationId": "c5b4325d81231587b4effd7684f57572",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "VAT Return UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "VAT return updated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "VAT Returns"
+                ],
+                "operationId": "86661cd08a5808a52da14b30b9017d41",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "VAT Return UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "VAT return deleted"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/webpages": {
+            "get": {
+                "tags": [
+                    "Webpages"
+                ],
+                "operationId": "778ede45cdbd88ab0a3c20abddba4607",
+                "responses": {
+                    "200": {
+                        "description": "Get the webpage data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/webpages/{uuid}": {
+            "get": {
+                "tags": [
+                    "Webpages"
+                ],
+                "operationId": "53c08e9566aa0276992bfdf1d8ab4681",
+                "responses": {
+                    "200": {
+                        "description": "Get the single webpage data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "description": "Enter your JWT token in the format: Bearer {token}",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Deployments",
+            "description": "API endpoints for managing service deployments across DTAP environments"
+        },
+        {
+            "name": "Launchpad",
+            "description": "API endpoints for managing bookmarks and quick links"
+        },
+        {
+            "name": "Blog Comments",
+            "description": "Blog Comments"
+        },
+        {
+            "name": "Businesses",
+            "description": "Businesses"
+        },
+        {
+            "name": "Categories",
+            "description": "Categories"
+        },
+        {
+            "name": "Contacts",
+            "description": "Contacts"
+        },
+        {
+            "name": "Customers",
+            "description": "Customers"
+        },
+        {
+            "name": "Domains",
+            "description": "Domains"
+        },
+        {
+            "name": "Email Campaigns",
+            "description": "Email Campaigns"
+        },
+        {
+            "name": "Employee",
+            "description": "Employee"
+        },
+        {
+            "name": "Incidents",
+            "description": "Incidents"
+        },
+        {
+            "name": "Interviews",
+            "description": "Interviews"
+        },
+        {
+            "name": "Jobs",
+            "description": "Jobs"
+        },
+        {
+            "name": "Knowledge Base",
+            "description": "Knowledge Base"
+        },
+        {
+            "name": "Menu",
+            "description": "Menu"
+        },
+        {
+            "name": "Products",
+            "description": "Products"
+        },
+        {
+            "name": "Producs",
+            "description": "Producs"
+        },
+        {
+            "name": "Projects",
+            "description": "Projects"
+        },
+        {
+            "name": "Roles",
+            "description": "Roles"
+        },
+        {
+            "name": "Sprints",
+            "description": "Sprints"
+        },
+        {
+            "name": "Tags",
+            "description": "Tags"
+        },
+        {
+            "name": "Tasks",
+            "description": "Tasks"
+        },
+        {
+            "name": "Templates",
+            "description": "Templates"
+        },
+        {
+            "name": "Tenants",
+            "description": "Tenants"
+        },
+        {
+            "name": "Timeslips",
+            "description": "Timeslips"
+        },
+        {
+            "name": "User",
+            "description": "User"
+        },
+        {
+            "name": "VAT Returns",
+            "description": "VAT Returns"
+        },
+        {
+            "name": "Webpages",
+            "description": "Webpages"
+        }
+    ]
 }

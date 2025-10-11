@@ -7,7 +7,7 @@ use CodeIgniter\Controller;
 /**
  * @OA\Info(
  *     version="2.0.0",
- *     title="MyWorkstation API Documentation",
+ *     title="WebAImpetus API Documentation",
  *     description="Complete API documentation for MyWorkstation application with CRUD operations for all resources",
  *     @OA\Contact(
  *         email="support@myworkstation.com"

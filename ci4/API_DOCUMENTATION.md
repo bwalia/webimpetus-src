@@ -1,4 +1,4 @@
-# MyWorkstation API Documentation
+# WebAImpetus API Documentation
 
 ## Overview
 

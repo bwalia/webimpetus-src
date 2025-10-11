@@ -3,11 +3,41 @@
 <style>
     /* All core JIRA theme styles now loaded globally from jira-theme.css */
     /* Only task-specific overrides remain here */
+
+    /* Increase overall font size by 2-3px */
+    .kanban-board-container {
+        font-size: 15px;
+    }
+
+    .task-card {
+        font-size: 14px;
+    }
+
+    .task-title {
+        font-size: 15px !important;
+    }
+
+    .task-description {
+        font-size: 13px !important;
+    }
+
+    .kanban-column-title {
+        font-size: 16px !important;
+    }
+
+    .task-meta, .task-footer {
+        font-size: 13px !important;
+    }
+
+    .jira-filter-select {
+        font-size: 14px !important;
+    }
+
     .task-project {
         padding: 2px 6px;
         background: #f3f4f6;
         border-radius: 4px;
-        font-size: 0.7rem;
+        font-size: 12px;
     }
 </style>
 
@@ -257,7 +287,7 @@ function createTaskCard(task) {
 // Initialize drag and drop
 function initializeDragDrop() {
     const cards = document.querySelectorAll('.task-card');
-    const columns = document.querySelectorAll('.column-body');
+    const columns = document.querySelectorAll('.kanban-column-body');
 
     cards.forEach(card => {
         card.addEventListener('dragstart', handleDragStart);
@@ -305,7 +335,7 @@ function handleDrop(e) {
     }
     e.preventDefault();
 
-    const columnBody = e.target.closest('.column-body');
+    const columnBody = e.target.closest('.kanban-column-body');
     if (!columnBody) return;
 
     const newStatus = columnBody.dataset.status;

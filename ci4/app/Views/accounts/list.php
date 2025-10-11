@@ -1,5 +1,8 @@
 <?php require_once(APPPATH . 'Views/common/list-title.php'); ?>
 
+<!-- SweetAlert2 CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
 <style>
     .account-badge {
         padding: 4px 12px;
@@ -98,6 +101,9 @@
 </div>
 
 <?php require_once(APPPATH . 'Views/common/footer.php'); ?>
+
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
     const columnRenderers = {
