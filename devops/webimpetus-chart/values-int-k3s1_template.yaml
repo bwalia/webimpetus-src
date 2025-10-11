@@ -44,7 +44,7 @@ resources: {  }
 storageSettings:
     storageClassName: longhorn
     accessModes: ReadWriteOnce
-    diskSize: 10Gi
+    diskSize: 16Gi
 autoscaling:
     enabled: false
     minReplicas: 3
