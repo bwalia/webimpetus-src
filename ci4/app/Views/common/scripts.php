@@ -5,6 +5,9 @@
 
 <!-- bootstarp js -->
 <script src="/assets/js/bootstrap.min.js"></script>
+
+<!-- ApexCharts for modern, beautiful charts -->
+<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.45.1/dist/apexcharts.min.js"></script>
 <!-- sidebar menu  -->
 <script src="/assets/js/metisMenu.js"></script>
 <script src="/assets/js/select2.min.js"></script>
@@ -197,57 +200,83 @@
 	}
 
 	function initializeGridTable({ ...params }) {
-		const { columnsTitle, tableName, apiPath, selector, columnsMachineName } = params;
+		const { columnsTitle, tableName, apiPath, selector, columnsMachineName, customFormatters } = params;
 		let allColumns = ['uuid'].concat(columnsMachineName);
 		allColumns = allColumns.concat([null]);
 		let token = "<?php echo session("jwt_token"); ?>";
 		let businessUUID = "<?php echo session("uuid_business"); ?>";
 
+		// Build columns with custom formatters if provided
+		const columns = [
+			{
+				name: "uuid",
+				hidden: true
+			}
+		];
+
+		// Add data columns with custom formatters
+		columnsTitle.forEach((title, index) => {
+			const columnName = columnsMachineName[index];
+			const column = {
+				name: title
+			};
+
+			// Apply custom formatter if provided
+			if (customFormatters && customFormatters[columnName]) {
+				column.formatter = customFormatters[columnName];
+			}
+
+			columns.push(column);
+		});
+
+		// Add actions column - check if uuid has custom formatter
+		const actionsColumn = {
+			name: 'Actions',
+			sort: false
+		};
+
+		if (customFormatters && customFormatters['uuid']) {
+			actionsColumn.formatter = customFormatters['uuid'];
+		} else {
+			actionsColumn.formatter = (cell, row) => {
+				return gridjs.html(
+					`<div class="header_more_tool">
+					<div class="dropdown">
+						<span class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown">
+							<i class="ti-more-alt"></i>
+						</span>
+						<div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+							<a class="dropdown-item" onclick="return confirm('Are you sure want to delete?');"
+								href="/${tableName}/deleterow/${row.cells[0].data}"> <i class="ti-trash"></i>
+								Delete
+							</a>
+							<a class="dropdown-item" href="/${tableName}/edit/${row.cells[0].data}"> <i
+								class="fas fa-edit"></i>
+								Edit
+							</a>
+							${(
+								tableName === 'companies' ||
+								tableName === 'contacts' ||
+								tableName === 'customers' ||
+								tableName === 'blog' ||
+								tableName === 'templates'
+							) ? `
+								<a class="dropdown-item" href="/${tableName}/clone/${row.cells[0].data}"> <i
+									class="fas fa-copy"></i>
+									Clone
+								</a>
+							` : ''}
+						</div>
+					</div>
+				</div>`
+				);
+			};
+		}
+
+		columns.push(actionsColumn);
+
 		const grid = new gridjs.Grid({
-			columns: [
-				{
-					name: "uuid",
-					hidden: true
-				},
-				...columnsTitle,
-				{
-					name: 'Actions',
-					sort: false,
-					formatter: (cell, row) => {
-						return gridjs.html(
-							`<div class="header_more_tool">
-							<div class="dropdown">
-								<span class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown">
-									<i class="ti-more-alt"></i>
-								</span>
-								<div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-									<a class="dropdown-item" onclick="return confirm('Are you sure want to delete?');"
-										href="/${tableName}/deleterow/${row.cells[0].data}"> <i class="ti-trash"></i>
-										Delete
-									</a>
-									<a class="dropdown-item" href="/${tableName}/edit/${row.cells[0].data}"> <i
-										class="fas fa-edit"></i>
-										Edit
-									</a>
-									${(
-										tableName === 'companies' ||
-										tableName === 'contacts' ||
-										tableName === 'customers' ||
-										tableName === 'blog' ||
-										tableName === 'templates'
-									) ? `
-										<a class="dropdown-item" href="/${tableName}/clone/${row.cells[0].data}"> <i
-											class="fas fa-copy"></i>
-											Clone
-										</a>
-									` : ''}
-								</div>
-							</div>
-						</div>`
-						);
-					}
-				},
-			],
+			columns: columns,
 			pagination: {
 				limit: 20,
 				server: {
@@ -352,12 +381,14 @@
 	});
 
 
-	CKEDITOR.replace('content', {
-		filebrowserBrowseUrl: '/assets/ckfinder/ckfinder.html',
-		filebrowserUploadUrl: '/assets/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files',
-		filebrowserWindowWidth: '900',
-		filebrowserWindowHeight: '700'
-	});
+	if (document.getElementById('content')) {
+		CKEDITOR.replace('content', {
+			filebrowserBrowseUrl: '/assets/ckfinder/ckfinder.html',
+			filebrowserUploadUrl: '/assets/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files',
+			filebrowserWindowWidth: '900',
+			filebrowserWindowHeight: '700'
+		});
+	}
 
 	function fillupBillToAddress(e) {
 		var clientId = e.target.value;

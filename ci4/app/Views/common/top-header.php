@@ -23,11 +23,11 @@ $roles = isset($_SESSION['role']) ? getResultWithoutBusiness("roles", ["uuid" =>
 
                 <div class="header_search">
                     <form action="/dashboard" class="header_search_form" style="margin: 0;">
-                        <div class="business-uuid-selector ml-3 mr-3" style="max-width: 300px;">
+                        <div class="business-uuid-selector ml-3 mr-3" style="max-width: 600px;">
                             <input type="search" class="form-control" name="search"
                                 value="<?php echo isset($_GET['search']) ? $_GET['search'] : '' ?>"
                                 placeholder="Search..."
-                                style="width: 100%; max-width: 300px;" />
+                                style="width: 100%; max-width: 600px;" />
                         </div>
                     </form>
                     <div class="search-icon">
@@ -131,64 +131,6 @@ $roles = isset($_SESSION['role']) ? getResultWithoutBusiness("roles", ["uuid" =>
         -webkit-appearance: searchfield-cancel-button;
     }
 </style>
-
-<script>
-    $(document).ready(function() {
-        // Language Switcher Handler
-        $('#languageSwitcher').on('change', function() {
-            const selectedLanguage = $(this).val();
-
-            // Save language preference via AJAX
-            $.ajax({
-                url: '/dashboard/setLanguage',
-                method: 'POST',
-                data: { language: selectedLanguage },
-                success: function(response) {
-                    // Reload page to apply new language
-                    window.location.reload();
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error switching language:', error);
-                }
-            });
-        });
-
-        // Font Size Controls
-        let currentFontSize = localStorage.getItem('fontSize') ? parseInt(localStorage.getItem('fontSize')) : 100;
-
-        // Apply saved font size on page load
-        function applyFontSize(size) {
-            document.documentElement.style.fontSize = size + '%';
-            $('#fontSizeDisplay').text(size + '%');
-            localStorage.setItem('fontSize', size);
-        }
-
-        // Initialize with saved size
-        applyFontSize(currentFontSize);
-
-        // Increase font size
-        $('#increaseFontSize').on('click', function() {
-            if (currentFontSize < 150) { // Max 150%
-                currentFontSize += 10;
-                applyFontSize(currentFontSize);
-            }
-        });
-
-        // Decrease font size
-        $('#decreaseFontSize').on('click', function() {
-            if (currentFontSize > 70) { // Min 70%
-                currentFontSize -= 10;
-                applyFontSize(currentFontSize);
-            }
-        });
-
-        // Reset font size on double-click of display
-        $('#fontSizeDisplay').on('dblclick', function() {
-            currentFontSize = 100;
-            applyFontSize(currentFontSize);
-        });
-    });
-</script>
 
 <style>
     /* Make business selector dropdown wider */

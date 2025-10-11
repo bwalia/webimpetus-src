@@ -37,6 +37,10 @@ $routes->get('google-logout', 'Auth::googleLogout');
 // route since we don't have to scan directories.
 $routes->get('/', 'Home::index');
 
+// Debug permissions route
+$routes->get('debug-permissions', 'DebugPermissions::index');
+$routes->get('debug_permissions', 'DebugPermissions::index');
+
 $routes->get('users/delete/(:num)', 'Users::delete/$1');
 //$routes->post('users/update/(:num)', 'Users::update');
 

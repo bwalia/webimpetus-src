@@ -85,6 +85,7 @@
 <?php require_once(APPPATH . 'Views/common/footer.php'); ?>
 
 <script>
+$(document).ready(function() {
     let columnsTitle = ['ID', 'Name', 'Subject', 'Status', 'Recipients', 'Sent', 'Failed', 'Created', 'Actions'];
     let columnsMachineName = ['id', 'name', 'subject', 'status', 'total_recipients', 'total_sent', 'total_failed', 'created_at', 'uuid'];
 
@@ -123,7 +124,7 @@
         columnsTitle,
         columnsMachineName,
         tableName: "email_campaigns",
-        apiPath: "email_campaigns/campaignsList",
+        apiPath: "/email_campaigns/campaignsList",
         selector: "campaignsTable",
         customFormatters: {
             'status': statusFormatter,
@@ -158,13 +159,14 @@
 
     loadCampaignStatistics();
 
-    function deleteCampaign(uuid) {
+    // Make functions global so they can be called from onclick handlers
+    window.deleteCampaign = function(uuid) {
         if (confirm('Are you sure you want to delete this campaign?')) {
             window.location.href = '/email_campaigns/delete/' + uuid;
         }
-    }
+    };
 
-    function sendCampaign(uuid) {
+    window.sendCampaign = function(uuid) {
         if (confirm('Are you sure you want to send this campaign? This will send emails to all customers with the selected tags.')) {
             $.ajax({
                 url: '/email_campaigns/sendCampaign',
@@ -184,7 +186,8 @@
                 }
             });
         }
-    }
+    };
+});
 </script>
 
 <style>
