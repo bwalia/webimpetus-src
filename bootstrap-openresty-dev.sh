@@ -123,7 +123,7 @@
             echo "APP_FULL_BUILD_NO='$APP_FULL_BUILD_NO'" >> $FILE
             export APP_FULL_VERSION_NO=$APP_FULL_VERSION_NO
             export APP_FULL_BUILD_NO=$APP_FULL_BUILD_NO
-            APP_RELEASE_NOTES_DOC_URL="https://webimpetus.cloud/docs/"
+            APP_RELEASE_NOTES_DOC_URL="https://webaimpetus.com/docs/"
             export APP_RELEASE_NOTES_DOC_URL=$APP_RELEASE_NOTES_DOC_URL
             DATE_GEN_VERSION=$(date +"%Y%m%d%I%M%S")
             export DATE_GEN_VERSION=$(date +"%Y%m%d%I%M%S")

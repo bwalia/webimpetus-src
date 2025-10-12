@@ -173,28 +173,42 @@ class Dashboard_model extends Model
 	}
 
 	public function getIncidentsPerCustomer(){
-		// Get top 5 customers with most incidents
+		// Get top 5 customers with most incidents, grouped by priority
 		$builder = $this->db->table("incidents as i");
-		$builder->select("c.company_name, COUNT(i.id) as incident_count");
+		$builder->select("c.company_name, i.customer_id,
+			SUM(CASE WHEN i.priority = 'critical' THEN 1 ELSE 0 END) as critical_count,
+			SUM(CASE WHEN i.priority = 'high' THEN 1 ELSE 0 END) as high_count,
+			SUM(CASE WHEN i.priority = 'medium' THEN 1 ELSE 0 END) as medium_count,
+			SUM(CASE WHEN i.priority = 'low' THEN 1 ELSE 0 END) as low_count,
+			COUNT(i.id) as total_count");
 		$builder->join('customers c', 'c.id = i.customer_id', 'left');
 		$builder->where("i.uuid_business_id", $this->businessUuid);
 		$builder->where("i.customer_id IS NOT NULL");
 		$builder->groupBy("i.customer_id, c.company_name");
-		$builder->orderBy("incident_count", "DESC");
+		$builder->orderBy("total_count", "DESC");
 		$builder->limit(5);
 		$result = $builder->get()->getResultArray();
 
 		$customers = [];
-		$counts = [];
+		$critical = [];
+		$high = [];
+		$medium = [];
+		$low = [];
 
 		foreach ($result as $row) {
 			$customers[] = $row['company_name'] ?? 'Unknown';
-			$counts[] = (int)$row['incident_count'];
+			$critical[] = (int)$row['critical_count'];
+			$high[] = (int)$row['high_count'];
+			$medium[] = (int)$row['medium_count'];
+			$low[] = (int)$row['low_count'];
 		}
 
 		return [
 			'customers' => $customers,
-			'counts' => $counts
+			'critical' => $critical,
+			'high' => $high,
+			'medium' => $medium,
+			'low' => $low
 		];
 	}
 

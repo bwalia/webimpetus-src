@@ -44,7 +44,7 @@ data:
         chmod 777 -R /var/www/html/writable/
         chmod 777 -R /var/www/html/writable/cache/
         chmod 777 -R /var/www/html/writable/session/
-        APP_RELEASE_NOTES_DOC_URL="https://webimpetus.cloud/docs/"
+        APP_RELEASE_NOTES_DOC_URL="https://webaimpetus.com/docs/"
         export APP_RELEASE_NOTES_DOC_URL=$APP_RELEASE_NOTES_DOC_URL
         DATE_GEN_VERSION=$(date +"%Y%m%d%I%M%S")
         export DATE_GEN_VERSION=$(date +"%Y%m%d%I%M%S")

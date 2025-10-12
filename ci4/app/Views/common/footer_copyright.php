@@ -1,5 +1,5 @@
 <!-- footer div part -->
-<div class="DOCKER_REGISTRYpart" style="position: relative;">
+<div class="footer_part" style="position: relative;">
     <!-- Font Size Controls - Bottom Right -->
     <div class="font-size-controls-footer">
         <style>
@@ -58,7 +58,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-12">
-                <div class="DOCKER_REGISTRYiner text-center">
+                <div class="footer_iner text-center">
                     <?php
 
                     function auto_copyright($year = 'auto')
@@ -69,7 +69,7 @@
                         if(intval($year) > date('Y')){ echo "<!--" . date('Y') . "-->";}
                     }
  
-                    $appReleaseNotesDocURL = getenv('APP_RELEASE_NOTES_DOC_URL') ?: "https://webimpetus.cloud/";
+                    $appReleaseNotesDocURL = getenv('APP_RELEASE_NOTES_DOC_URL') ?: "https://webaimpetus.com/";
                     $appEnvironment = getenv('APP_ENVIRONMENT') ?: "dev";
                     $targetCluster = getenv('APP_TARGET_CLUSTER') ?: "k3s0";
                     $hostName = getenv('HOSTNAME') ?: "hostname-env-var-not-set";
@@ -91,7 +91,7 @@
                     <p class="typography small"><?php auto_copyright("2009"); ?>&nbsp;&copy;&nbsp;Workstation</p>
                     <p class="typography small">© All rights reserved.<br /></p>
                     <p class="typography small"><br /></p>
-                    <p class="typography small">Powered&nbsp;by&nbsp;<a href="https://webimpetus.cloud/"> <i class="ti-heart"></i>&nbsp;Webimpetus</a></p>
+                    <p class="typography small">Powered&nbsp;by&nbsp;<a href="https://webaimpetus.com/"> <i class="ti-heart"></i>&nbsp;Webimpetus</a></p>
                     <p class="typography small">WebImpetus <a target="_blank" href="<?php echo $appReleaseNotesDocURL; ?>">v <?php echo getenv('APP_FULL_VERSION_NO') . " build " . getenv('APP_FULL_BUILD_NO'); ?></a></p>
                     <p class="typography small"><br /></p>
                     <p class="typography small"><?php echo $webImpetusCopyRight; ?></p>

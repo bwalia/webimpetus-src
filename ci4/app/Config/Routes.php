@@ -91,6 +91,26 @@ $routes->get('api/v2/launchpad/recent', 'Api\V2\Launchpad::recent');
 $routes->resource('scim/v2/Users', ['controller' => 'Api\V2\ScimUserController']);
 $routes->resource('scim/v2/Groups', ['controller' => 'Api\V2\ScimGroupController']);
 
+// New API v2 endpoints - added for complete menu coverage
+$routes->resource('api/v2/tenants');
+$routes->resource('api/v2/domains');
+$routes->resource('api/v2/blog-comments', ['controller' => 'Api\v2\BlogComments']);
+$routes->resource('api/v2/jobs');
+$routes->resource('api/v2/job-applications', ['controller' => 'Api\v2\JobApplications']);
+$routes->resource('api/v2/templates');
+$routes->resource('api/v2/interviews');
+$routes->resource('api/v2/products');
+$routes->resource('api/v2/payments');
+$routes->resource('api/v2/receipts');
+
+// Hospital Management System APIs
+$routes->resource('api/v2/hospital_staff');
+$routes->resource('api/v2/patient_logs');
+$routes->get('api/v2/patient_logs/timeline/(:num)', 'Api\V2\PatientLogs::timeline/$1');
+$routes->get('api/v2/patient_logs/flagged', 'Api\V2\PatientLogs::flagged');
+$routes->get('api/v2/patient_logs/medications/(:num)', 'Api\V2\PatientLogs::medications/$1');
+$routes->get('api/v2/patient_logs/vital-signs/(:num)', 'Api\V2\PatientLogs::vitalSigns/$1');
+
 // List project by business Id
 $routes->get('api/v2/business/(:segment)/projects', 'Api\V2\Projects::projectsByBId/$1');
 // Timeslip by UUID Id
@@ -163,6 +183,59 @@ $routes->group('accounting_periods', function($routes) {
     $routes->post('set-current/(:segment)', 'AccountingPeriods::setCurrent/$1');
     $routes->post('close-period/(:segment)', 'AccountingPeriods::closePeriod/$1');
     $routes->get('periodsList', 'AccountingPeriods::periodsList');
+});
+
+// Payments Routes
+$routes->group('payments', function($routes) {
+    $routes->get('/', 'Payments::index');
+    $routes->get('edit/(:segment)', 'Payments::edit/$1');
+    $routes->get('edit', 'Payments::edit');
+    $routes->post('update', 'Payments::update');
+    $routes->post('delete/(:segment)', 'Payments::delete/$1');
+    $routes->get('paymentsList', 'Payments::paymentsList');
+    $routes->post('post/(:segment)', 'Payments::post/$1');
+    $routes->get('pdf/(:segment)', 'Payments::printRemittance/$1');
+    $routes->get('download/(:segment)', 'Payments::downloadPDF/$1');
+});
+
+// Receipts Routes
+$routes->group('receipts', function($routes) {
+    $routes->get('/', 'Receipts::index');
+    $routes->get('edit/(:segment)', 'Receipts::edit/$1');
+    $routes->get('edit', 'Receipts::edit');
+    $routes->post('update', 'Receipts::update');
+    $routes->post('delete/(:segment)', 'Receipts::delete/$1');
+    $routes->get('receiptsList', 'Receipts::receiptsList');
+    $routes->post('post/(:segment)', 'Receipts::post/$1');
+    $routes->get('pdf/(:segment)', 'Receipts::printReceipt/$1');
+    $routes->get('download/(:segment)', 'Receipts::downloadPDF/$1');
+});
+
+// Hospital Staff Routes
+$routes->group('hospital_staff', function($routes) {
+    $routes->get('/', 'HospitalStaff::index');
+    $routes->get('edit/(:segment)', 'HospitalStaff::edit/$1');
+    $routes->get('edit', 'HospitalStaff::edit');
+    $routes->post('update', 'HospitalStaff::update');
+    $routes->post('delete/(:segment)', 'HospitalStaff::delete/$1');
+    $routes->get('staffList', 'HospitalStaff::staffList');
+    $routes->get('dashboard', 'HospitalStaff::dashboard');
+    $routes->get('byDepartment/(:segment)', 'HospitalStaff::byDepartment/$1');
+});
+
+// Patient Logs Routes
+$routes->group('patient_logs', function($routes) {
+    $routes->get('/', 'PatientLogs::index');
+    $routes->get('edit/(:segment)', 'PatientLogs::edit/$1');
+    $routes->get('edit', 'PatientLogs::edit');
+    $routes->post('update', 'PatientLogs::update');
+    $routes->post('delete/(:segment)', 'PatientLogs::delete/$1');
+    $routes->get('logsList', 'PatientLogs::logsList');
+    $routes->get('timeline/(:num)', 'PatientLogs::timeline/$1');
+    $routes->get('flagged', 'PatientLogs::flagged');
+    $routes->get('scheduled', 'PatientLogs::scheduled');
+    $routes->get('quickLog', 'PatientLogs::quickLog');
+    $routes->post('saveQuickLog', 'PatientLogs::saveQuickLog');
 });
 
 // Financial Reports Routes

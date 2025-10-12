@@ -33,7 +33,7 @@ fi
 
 if [[ "$targetEnv" == "prod" ]]; then
 
-APP_RELEASE_NOTES_DOC_URL="https://webimpetus.cloud/docs/"
+APP_RELEASE_NOTES_DOC_URL="https://webaimpetus.com/docs/"
 
 fi
 

@@ -405,16 +405,11 @@
         }
     }
 
-    // Auto-focus search on page load and keyboard shortcuts
+    // Optional: Add keyboard shortcut to focus search (but don't auto-focus)
     document.addEventListener('DOMContentLoaded', function() {
         var searchInput = document.getElementById("myInput");
 
-        // Focus on page load
-        if (searchInput) {
-            searchInput.focus();
-        }
-
-        // Re-focus on "/" key press (common search shortcut)
+        // Focus search when "/" is pressed (common search shortcut)
         document.addEventListener('keydown', function(e) {
             // Focus search when "/" is pressed (unless already in an input field)
             if (e.key === '/' && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
@@ -434,17 +429,5 @@
                 }
             }
         });
-
-        // Maintain focus when clicking menu items
-        if (searchInput) {
-            searchInput.addEventListener('blur', function() {
-                // Re-focus after a short delay unless user clicked something else
-                setTimeout(function() {
-                    if (!['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON', 'A'].includes(document.activeElement.tagName)) {
-                        searchInput.focus();
-                    }
-                }, 100);
-            });
-        }
     });
 </script>

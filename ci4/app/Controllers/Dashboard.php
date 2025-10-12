@@ -195,4 +195,79 @@ class Dashboard extends CommonController
 			'message' => 'Language updated successfully'
 		]);
 	}
+
+	public function saveMemberInvitation()
+	{
+		$firstName = $this->request->getPost('first_name');
+		$lastName = $this->request->getPost('last_name');
+		$email = $this->request->getPost('email');
+		$role = $this->request->getPost('role');
+
+		// Validation
+		if (empty($firstName) || empty($email)) {
+			return $this->response->setJSON([
+				'status' => false,
+				'message' => 'First name and email are required'
+			]);
+		}
+
+		// Validate email format
+		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+			return $this->response->setJSON([
+				'status' => false,
+				'message' => 'Invalid email address'
+			]);
+		}
+
+		// Check if email already exists
+		$db = \Config\Database::connect();
+		$existing = $db->table('email_campaign_recipients')
+			->where('email', $email)
+			->where('uuid_business_id', $this->businessUuid)
+			->get()
+			->getRow();
+
+		if ($existing) {
+			return $this->response->setJSON([
+				'status' => false,
+				'message' => 'This email address is already registered'
+			]);
+		}
+
+		// Generate UUID
+		$uuid = \App\Libraries\UUID::v5(\App\Libraries\UUID::v4(), 'email_campaign_recipients');
+
+		// Insert into email_campaign_recipients table
+		$data = [
+			'uuid' => $uuid,
+			'uuid_business_id' => $this->businessUuid,
+			'first_name' => $firstName,
+			'last_name' => $lastName,
+			'email' => $email,
+			'role' => $role ?? 'member',
+			'status' => 'active',
+			'source' => 'dashboard',
+			'created_at' => date('Y-m-d H:i:s'),
+			'updated_at' => date('Y-m-d H:i:s')
+		];
+
+		$result = $db->table('email_campaign_recipients')->insert($data);
+
+		if ($result) {
+			return $this->response->setJSON([
+				'status' => true,
+				'message' => 'Member invitation saved successfully! They will be included in future email campaigns.',
+				'data' => [
+					'name' => $firstName . ' ' . $lastName,
+					'email' => $email,
+					'role' => $role ?? 'member'
+				]
+			]);
+		} else {
+			return $this->response->setJSON([
+				'status' => false,
+				'message' => 'Failed to save member invitation'
+			]);
+		}
+	}
 }

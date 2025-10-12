@@ -645,33 +645,38 @@
                                     <img src="/img/table.svg" alt="" class="img-fluid">
                                 </div>
                                 <div class="common_form">
-                                    <form action="#">
+                                    <form id="memberInvitationForm">
                                         <div class="row">
                                             <div class="col-lg-6">
                                                 <div class="common_input mb_15">
-                                                    <input type="text" placeholder="First Name">
+                                                    <input type="text" name="first_name" id="first_name" placeholder="First Name" required>
                                                 </div>
                                             </div>
                                             <div class="col-lg-6">
                                                 <div class="common_input mb_15">
-                                                    <input type="text" placeholder="Last Name">
+                                                    <input type="text" name="last_name" id="last_name" placeholder="Last Name">
                                                 </div>
                                             </div>
                                             <div class="col-lg-12">
                                                 <div class="common_input mb_15">
-                                                    <input type="text" placeholder="Email">
+                                                    <input type="email" name="email" id="member_email" placeholder="Email" required>
                                                 </div>
                                             </div>
                                             <div class="col-lg-12">
-                                                <select class="select2 col-lg-12">
-                                                    <option value="1">Role</option>
-                                                    <option value="1">Member</option>
-                                                    <option value="1">Editor</option>
+                                                <select class="select2 col-lg-12" name="role" id="member_role">
+                                                    <option value="">Select Role</option>
+                                                    <option value="member">Member</option>
+                                                    <option value="editor">Editor</option>
+                                                    <option value="subscriber">Subscriber</option>
+                                                    <option value="vip">VIP</option>
                                                 </select>
                                             </div>
                                             <div class="col-12">
+                                                <div id="invitationMessage" style="display: none; margin-top: 15px;"></div>
                                                 <div class="create_report_btn mt_30">
-                                                    <a href="#" class="btn_1 radius_btn d-block text-center">Send the invitation link</a>
+                                                    <button type="submit" class="btn_1 radius_btn d-block text-center" id="submitInvitation">
+                                                        <i class="fas fa-paper-plane"></i> Save to Email Campaigns
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
@@ -682,12 +687,12 @@
                     </div>
 
                     <div class="col-xl-4">
-                        <div class="white_card mb_30">
+                        <div class="white_card mb_30 incidents-chart-card">
                             <div class="white_card_header">
                                 <div class="box_header m-0">
                                     <div class="main-title">
-                                        <h3 class="m-0">Incidents by Customer</h3>
-                                        <p class="mb-0 text-muted" style="font-size: 12px; margin-top: 4px;">Top 5 customers with most incidents</p>
+                                        <h3 class="m-0">Incidents by Customer & Priority</h3>
+                                        <p class="mb-0 text-muted" style="font-size: 12px; margin-top: 4px;">Top 5 customers by incident count</p>
                                     </div>
                                     <div class="header_more_tool dropInr">
                                         <div class="dropdown">
@@ -702,7 +707,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="white_card_body" style="padding-top: 10px;">
+                            <div class="white_card_body" style="padding: 16px 20px 20px 20px;">
                                 <div id="incidents_customer_chart"></div>
                             </div>
                         </div>
@@ -732,23 +737,29 @@
         lastWeek: <?= $weekly_sales['last_week'] ?>
     };
 
-    // Pass incidents per customer data
+    // Pass incidents per customer data with priority breakdown
     window.incidentsCustomerData = {
         customers: <?= json_encode($incidents_per_customer['customers']) ?>,
-        counts: <?= json_encode($incidents_per_customer['counts']) ?>
+        critical: <?= json_encode($incidents_per_customer['critical']) ?>,
+        high: <?= json_encode($incidents_per_customer['high']) ?>,
+        medium: <?= json_encode($incidents_per_customer['medium']) ?>,
+        low: <?= json_encode($incidents_per_customer['low']) ?>
     };
 </script>
 
 <script>
-    // Create incidents per customer chart - Professional Design
+    // Create incidents per customer chart - Stacked by Priority
     if (document.querySelector("#incidents_customer_chart")) {
         var incidentsData = window.incidentsCustomerData || {
             customers: [],
-            counts: []
+            critical: [],
+            high: [],
+            medium: [],
+            low: []
         };
 
         // Check if there's data
-        if (incidentsData.customers.length === 0 || incidentsData.counts.length === 0) {
+        if (incidentsData.customers.length === 0) {
             document.querySelector("#incidents_customer_chart").innerHTML = `
                 <div style="text-align: center; padding: 60px 20px; color: #94a3b8;">
                     <i class="fas fa-inbox" style="font-size: 48px; opacity: 0.3; margin-bottom: 16px; display: block;"></i>
@@ -757,30 +768,43 @@
                 </div>
             `;
         } else {
-            // Limit to top 5 customers for better visibility
-            var topCustomers = incidentsData.customers.slice(0, 5);
-            var topCounts = incidentsData.counts.slice(0, 5);
+            // Prepare data for stacked bar chart
+            var customers = incidentsData.customers;
+            var critical = incidentsData.critical;
+            var high = incidentsData.high;
+            var medium = incidentsData.medium;
+            var low = incidentsData.low;
 
-            // Calculate total for percentage
-            var totalIncidents = topCounts.reduce((a, b) => a + b, 0);
-
-            // Professional gradient colors
-            var gradientColors = [
-                { from: '#f43f5e', to: '#ec4899' },  // Rose to Pink
-                { from: '#f59e0b', to: '#f97316' },  // Amber to Orange
-                { from: '#8b5cf6', to: '#6366f1' },  // Violet to Indigo
-                { from: '#3b82f6', to: '#0ea5e9' },  // Blue to Sky
-                { from: '#10b981', to: '#14b8a6' }   // Emerald to Teal
-            ];
+            // Calculate totals for each priority
+            var totalCritical = critical.reduce((a, b) => a + b, 0);
+            var totalHigh = high.reduce((a, b) => a + b, 0);
+            var totalMedium = medium.reduce((a, b) => a + b, 0);
+            var totalLow = low.reduce((a, b) => a + b, 0);
+            var grandTotal = totalCritical + totalHigh + totalMedium + totalLow;
 
             var incidentsChartOptions = {
-                series: [{
-                    name: 'Incidents',
-                    data: topCounts
-                }],
+                series: [
+                    {
+                        name: 'Critical',
+                        data: critical
+                    },
+                    {
+                        name: 'High',
+                        data: high
+                    },
+                    {
+                        name: 'Medium',
+                        data: medium
+                    },
+                    {
+                        name: 'Low',
+                        data: low
+                    }
+                ],
                 chart: {
                     type: 'bar',
-                    height: 340,
+                    height: 380,
+                    stacked: true,
                     toolbar: {
                         show: false
                     },
@@ -791,73 +815,69 @@
                         animateGradually: {
                             enabled: true,
                             delay: 150
-                        },
-                        dynamicAnimation: {
-                            enabled: true,
-                            speed: 350
                         }
                     }
                 },
                 plotOptions: {
                     bar: {
                         horizontal: true,
-                        borderRadius: 8,
-                        barHeight: '70%',
-                        distributed: true,
+                        borderRadius: 10,
+                        borderRadiusApplication: 'end',
+                        barHeight: '75%',
                         dataLabels: {
-                            position: 'top'
+                            total: {
+                                enabled: true,
+                                offsetX: 5,
+                                style: {
+                                    fontSize: '13px',
+                                    fontWeight: 700,
+                                    color: '#1e293b'
+                                }
+                            }
                         }
                     }
                 },
                 dataLabels: {
                     enabled: true,
-                    textAnchor: 'start',
-                    offsetX: 8,
-                    formatter: function(val, opt) {
-                        var percentage = ((val / totalIncidents) * 100).toFixed(1);
-                        return val + ' (' + percentage + '%)';
+                    formatter: function(val) {
+                        return val > 0 ? val : '';
                     },
                     style: {
-                        fontSize: '13px',
+                        fontSize: '11px',
                         fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-                        fontWeight: '600',
-                        colors: ['#1e293b']
+                        fontWeight: 600,
+                        colors: ['#fff']
                     },
-                    background: {
+                    dropShadow: {
                         enabled: true,
-                        foreColor: '#fff',
-                        padding: 6,
-                        borderRadius: 4,
-                        borderWidth: 0,
-                        opacity: 0.95,
-                        dropShadow: {
-                            enabled: true,
-                            top: 1,
-                            left: 1,
-                            blur: 2,
-                            color: '#000',
-                            opacity: 0.1
-                        }
+                        top: 1,
+                        left: 1,
+                        blur: 1,
+                        color: '#000',
+                        opacity: 0.3
                     }
                 },
-                colors: gradientColors.map(c => c.from),
+                colors: ['#dc2626', '#ea580c', '#ca8a04', '#16a34a'],
                 fill: {
                     type: 'gradient',
                     gradient: {
                         shade: 'light',
                         type: 'horizontal',
-                        shadeIntensity: 0.4,
-                        gradientToColors: gradientColors.map(c => c.to),
+                        shadeIntensity: 0.25,
+                        gradientToColors: ['#ef4444', '#f97316', '#eab308', '#22c55e'],
                         inverseColors: false,
                         opacityFrom: 1,
-                        opacityTo: 0.9,
+                        opacityTo: 0.95,
                         stops: [0, 100]
                     }
                 },
+                stroke: {
+                    width: 1,
+                    colors: ['#fff']
+                },
                 xaxis: {
-                    categories: topCustomers,
+                    categories: customers,
                     labels: {
-                        show: true,
                         style: {
                             fontSize: '11px',
                             fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
@@ -875,7 +895,7 @@
                 yaxis: {
                     labels: {
                         show: true,
-                        maxWidth: 180,
+                        maxWidth: 160,
                         style: {
                             fontSize: '13px',
                             fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
@@ -883,9 +903,8 @@
                             colors: '#334155'
                         },
                         formatter: function(val) {
-                            // Truncate long customer names
-                            if (val && val.length > 22) {
-                                return val.substring(0, 22) + '...';
+                            if (val && val.length > 20) {
+                                return val.substring(0, 20) + '...';
                             }
                             return val;
                         }
@@ -908,63 +927,111 @@
                     },
                     padding: {
                         top: 0,
-                        right: 20,
+                        right: 10,
                         bottom: 0,
-                        left: 10
+                        left: 5
                     }
                 },
                 legend: {
-                    show: false
+                    show: true,
+                    position: 'top',
+                    horizontalAlign: 'left',
+                    offsetY: -5,
+                    fontSize: '12px',
+                    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                    fontWeight: 600,
+                    markers: {
+                        width: 12,
+                        height: 12,
+                        radius: 3
+                    },
+                    itemMargin: {
+                        horizontal: 12,
+                        vertical: 0
+                    },
+                    labels: {
+                        colors: '#334155',
+                        useSeriesColors: false
+                    }
                 },
                 tooltip: {
                     enabled: true,
+                    shared: true,
+                    intersect: false,
+                    y: {
+                        formatter: function(val, opts) {
+                            if (!val) return '';
+                            var total = opts.w.globals.stackedSeriesTotals[opts.dataPointIndex];
+                            var percentage = ((val / total) * 100).toFixed(1);
+                            return val + ' (' + percentage + '%)';
+                        }
+                    },
+                    style: {
+                        fontSize: '12px',
+                        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+                    },
                     custom: function({series, seriesIndex, dataPointIndex, w}) {
-                        var value = series[seriesIndex][dataPointIndex];
                         var customer = w.globals.labels[dataPointIndex];
-                        var percentage = ((value / totalIncidents) * 100).toFixed(1);
+                        var criticalVal = series[0][dataPointIndex];
+                        var highVal = series[1][dataPointIndex];
+                        var mediumVal = series[2][dataPointIndex];
+                        var lowVal = series[3][dataPointIndex];
+                        var total = criticalVal + highVal + mediumVal + lowVal;
 
                         return `
-                            <div style="
-                                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                                padding: 12px 16px;
-                                border-radius: 8px;
-                                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-                                min-width: 200px;
-                            ">
-                                <div style="color: #fff; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; opacity: 0.9;">
-                                    Customer
-                                </div>
-                                <div style="color: #fff; font-size: 14px; font-weight: 700; margin-bottom: 8px;">
+                            <div style="background: white; padding: 12px 14px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); min-width: 220px; border: 1px solid #e5e7eb;">
+                                <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; color: #6b7280;">
                                     ${customer}
                                 </div>
-                                <div style="border-top: 1px solid rgba(255, 255, 255, 0.2); padding-top: 8px; display: flex; justify-content: space-between; align-items: center;">
-                                    <div>
-                                        <div style="color: rgba(255, 255, 255, 0.8); font-size: 10px; margin-bottom: 2px;">Incidents</div>
-                                        <div style="color: #fff; font-size: 18px; font-weight: 700;">${value}</div>
-                                    </div>
-                                    <div style="text-align: right;">
-                                        <div style="color: rgba(255, 255, 255, 0.8); font-size: 10px; margin-bottom: 2px;">Share</div>
-                                        <div style="color: #fff; font-size: 18px; font-weight: 700;">${percentage}%</div>
+                                <div style="border-top: 1px solid #e5e7eb; padding-top: 8px;">
+                                    ${criticalVal > 0 ? `<div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                        <span style="display: flex; align-items: center; font-size: 12px; color: #374151;">
+                                            <span style="width: 8px; height: 8px; background: #dc2626; border-radius: 2px; margin-right: 6px; display: inline-block;"></span>
+                                            Critical
+                                        </span>
+                                        <span style="font-weight: 600; font-size: 12px; color: #111827;">${criticalVal}</span>
+                                    </div>` : ''}
+                                    ${highVal > 0 ? `<div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                        <span style="display: flex; align-items: center; font-size: 12px; color: #374151;">
+                                            <span style="width: 8px; height: 8px; background: #ea580c; border-radius: 2px; margin-right: 6px; display: inline-block;"></span>
+                                            High
+                                        </span>
+                                        <span style="font-weight: 600; font-size: 12px; color: #111827;">${highVal}</span>
+                                    </div>` : ''}
+                                    ${mediumVal > 0 ? `<div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                        <span style="display: flex; align-items: center; font-size: 12px; color: #374151;">
+                                            <span style="width: 8px; height: 8px; background: #ca8a04; border-radius: 2px; margin-right: 6px; display: inline-block;"></span>
+                                            Medium
+                                        </span>
+                                        <span style="font-weight: 600; font-size: 12px; color: #111827;">${mediumVal}</span>
+                                    </div>` : ''}
+                                    ${lowVal > 0 ? `<div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                        <span style="display: flex; align-items: center; font-size: 12px; color: #374151;">
+                                            <span style="width: 8px; height: 8px; background: #16a34a; border-radius: 2px; margin-right: 6px; display: inline-block;"></span>
+                                            Low
+                                        </span>
+                                        <span style="font-weight: 600; font-size: 12px; color: #111827;">${lowVal}</span>
+                                    </div>` : ''}
+                                    <div style="border-top: 1px solid #e5e7eb; margin-top: 6px; padding-top: 6px; display: flex; justify-content: space-between;">
+                                        <span style="font-size: 12px; font-weight: 700; color: #111827;">Total</span>
+                                        <span style="font-size: 12px; font-weight: 700; color: #111827;">${total}</span>
                                     </div>
                                 </div>
                             </div>
                         `;
-                    },
-                    fixed: {
-                        enabled: false
                     }
                 },
                 states: {
                     hover: {
                         filter: {
                             type: 'darken',
-                            value: 0.85
+                            value: 0.88
                         }
                     },
                     active: {
                         filter: {
                             type: 'darken',
-                            value: 0.8
+                            value: 0.85
                         }
                     }
                 }
@@ -1018,6 +1085,69 @@
     }
 </script>
 
+<script>
+$(document).ready(function() {
+    // Handle member invitation form submission
+    $('#memberInvitationForm').on('submit', function(e) {
+        e.preventDefault();
+
+        var formData = {
+            first_name: $('#first_name').val(),
+            last_name: $('#last_name').val(),
+            email: $('#member_email').val(),
+            role: $('#member_role').val()
+        };
+
+        // Disable submit button
+        $('#submitInvitation').prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Saving...');
+
+        $.ajax({
+            url: '/dashboard/saveMemberInvitation',
+            method: 'POST',
+            data: formData,
+            dataType: 'json',
+            success: function(response) {
+                $('#submitInvitation').prop('disabled', false).html('<i class="fas fa-paper-plane"></i> Save to Email Campaigns');
+
+                if (response.status) {
+                    // Show success message
+                    $('#invitationMessage')
+                        .removeClass('alert-danger')
+                        .addClass('alert alert-success')
+                        .html('<i class="fas fa-check-circle"></i> ' + response.message)
+                        .slideDown();
+
+                    // Reset form
+                    $('#memberInvitationForm')[0].reset();
+                    $('#member_role').val('').trigger('change');
+
+                    // Hide message after 5 seconds
+                    setTimeout(function() {
+                        $('#invitationMessage').slideUp();
+                    }, 5000);
+                } else {
+                    // Show error message
+                    $('#invitationMessage')
+                        .removeClass('alert-success')
+                        .addClass('alert alert-danger')
+                        .html('<i class="fas fa-exclamation-circle"></i> ' + response.message)
+                        .slideDown();
+                }
+            },
+            error: function(xhr, status, error) {
+                $('#submitInvitation').prop('disabled', false).html('<i class="fas fa-paper-plane"></i> Save to Email Campaigns');
+
+                $('#invitationMessage')
+                    .removeClass('alert-success')
+                    .addClass('alert alert-danger')
+                    .html('<i class="fas fa-exclamation-circle"></i> An error occurred. Please try again.')
+                    .slideDown();
+            }
+        });
+    });
+});
+</script>
+
 <style>
     .white_card .white_card_body {
         padding: 10px !important;
@@ -1025,5 +1155,83 @@
 
     .row .col-xxl-2:nth-of-type(1n+9) {
         display: none;
+    }
+
+    /* Enhanced Incidents Chart Card Styling */
+    .incidents-chart-card {
+        background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+        transition: all 0.3s ease;
+        overflow: visible;
+    }
+
+    .incidents-chart-card:hover {
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.06);
+        transform: translateY(-2px);
+    }
+
+    .incidents-chart-card .white_card_header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 8px 8px 0 0;
+        padding: 16px 20px;
+        border-bottom: none;
+    }
+
+    .incidents-chart-card .white_card_header h3 {
+        color: #ffffff;
+        font-size: 16px;
+        font-weight: 700;
+        margin: 0;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .incidents-chart-card .white_card_header .text-muted {
+        color: rgba(255, 255, 255, 0.85) !important;
+        font-size: 11px;
+        font-weight: 500;
+    }
+
+    .incidents-chart-card .dropdown-toggle {
+        color: #ffffff;
+    }
+
+    .incidents-chart-card .dropdown-toggle:hover {
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 4px;
+    }
+
+    /* ApexCharts Legend Customization */
+    .incidents-chart-card .apexcharts-legend {
+        padding: 0 0 8px 0 !important;
+    }
+
+    .incidents-chart-card .apexcharts-legend-series {
+        display: inline-flex !important;
+        align-items: center;
+    }
+
+    .incidents-chart-card .apexcharts-legend-marker {
+        margin-right: 6px !important;
+    }
+
+    /* Custom scrollbar for chart area if needed */
+    .incidents-chart-card #incidents_customer_chart::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+
+    .incidents-chart-card #incidents_customer_chart::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 3px;
+    }
+
+    .incidents-chart-card #incidents_customer_chart::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 3px;
+    }
+
+    .incidents-chart-card #incidents_customer_chart::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
     }
 </style>
