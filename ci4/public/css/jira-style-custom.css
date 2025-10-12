@@ -1,0 +1,591 @@
+/**
+ * JIRA-Style Design System
+ * Consistent styling across all application modules
+ * Based on Atlassian Design System
+ */
+
+/* ============================================
+   TYPOGRAPHY & FONTS
+   ============================================ */
+:root {
+    /* JIRA Color Palette */
+    --jira-blue-primary: #0052cc;
+    --jira-blue-hover: #0065ff;
+    --jira-blue-light: #deebff;
+    --jira-text-primary: #172b4d;
+    --jira-text-secondary: #5e6c84;
+    --jira-text-subtle: #8993a4;
+    --jira-border: #dfe1e6;
+    --jira-bg-subtle: #f4f5f7;
+    --jira-bg-white: #ffffff;
+
+    /* Status Colors */
+    --jira-green: #00875a;
+    --jira-green-light: #e3fcef;
+    --jira-yellow: #ff991f;
+    --jira-yellow-light: #fff4e5;
+    --jira-red: #de350b;
+    --jira-red-light: #ffebe6;
+    --jira-purple: #6554c0;
+    --jira-purple-light: #eae6ff;
+
+    /* Spacing */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 12px;
+    --spacing-lg: 16px;
+    --spacing-xl: 20px;
+    --spacing-xxl: 24px;
+
+    /* Border Radius */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 1px rgba(9, 30, 66, 0.08);
+    --shadow-md: 0 4px 8px rgba(9, 30, 66, 0.15);
+    --shadow-lg: 0 8px 16px rgba(9, 30, 66, 0.2);
+}
+
+body,
+.dashboard_part {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background: var(--jira-bg-subtle) !important;
+    color: var(--jira-text-primary);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    color: var(--jira-text-primary);
+    margin-bottom: var(--spacing-lg);
+}
+
+h1 { font-size: 29px; line-height: 32px; }
+h2 { font-size: 24px; line-height: 28px; }
+h3 { font-size: 20px; line-height: 24px; }
+h4 { font-size: 16px; line-height: 20px; }
+h5 { font-size: 14px; line-height: 20px; }
+h6 { font-size: 12px; line-height: 16px; }
+
+p {
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--jira-text-primary);
+    margin-bottom: var(--spacing-md);
+}
+
+/* ============================================
+   CARDS & CONTAINERS
+   ============================================ */
+.white_card {
+    background: var(--jira-bg-white);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--jira-border);
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow 0.2s ease;
+    margin-bottom: var(--spacing-xl);
+}
+
+.white_card:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.white_card_header {
+    padding: var(--spacing-lg) var(--spacing-xl);
+    border-bottom: 2px solid var(--jira-bg-subtle);
+    background: var(--jira-bg-white);
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+
+.white_card_header h3,
+.white_card_header h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--jira-text-primary);
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.white_card_header h3 i,
+.white_card_header h4 i {
+    margin-right: var(--spacing-sm);
+    color: var(--jira-blue-primary);
+}
+
+.white_card_body {
+    padding: var(--spacing-xl);
+    background: var(--jira-bg-white);
+}
+
+/* ============================================
+   SUMMARY CARDS (Dashboard Stats)
+   ============================================ */
+.summary-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xxl);
+}
+
+.summary-card {
+    background: var(--jira-bg-white);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-xl);
+    border: 2px solid var(--jira-border);
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.summary-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--jira-blue-primary);
+    transition: width 0.2s ease;
+}
+
+.summary-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--jira-blue-primary);
+}
+
+.summary-card:hover::before {
+    width: 6px;
+}
+
+.summary-card.blue::before { background: var(--jira-blue-primary); }
+.summary-card.green::before { background: var(--jira-green); }
+.summary-card.orange::before { background: var(--jira-yellow); }
+.summary-card.red::before { background: var(--jira-red); }
+.summary-card.purple::before { background: var(--jira-purple); }
+
+.summary-card-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--jira-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: var(--spacing-sm);
+    display: flex;
+    align-items: center;
+}
+
+.summary-card-title i {
+    margin-right: var(--spacing-sm);
+    font-size: 14px;
+}
+
+.summary-card-value {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--jira-text-primary);
+    line-height: 1.2;
+    margin-bottom: var(--spacing-xs);
+}
+
+.summary-card-subtitle {
+    font-size: 13px;
+    color: var(--jira-text-subtle);
+    margin-top: var(--spacing-sm);
+}
+
+/* ============================================
+   BUTTONS
+   ============================================ */
+.btn {
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    transition: all 0.2s ease;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    line-height: 20px;
+}
+
+.btn i {
+    font-size: 14px;
+}
+
+.btn-primary {
+    background: var(--jira-blue-primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--jira-blue-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 82, 204, 0.3);
+    color: white;
+}
+
+.btn-secondary {
+    background: var(--jira-bg-subtle);
+    color: var(--jira-text-primary);
+}
+
+.btn-secondary:hover {
+    background: var(--jira-border);
+}
+
+.btn-success {
+    background: var(--jira-green);
+    color: white;
+}
+
+.btn-success:hover {
+    background: #007a4d;
+    color: white;
+}
+
+.btn-danger {
+    background: var(--jira-red);
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #c32500;
+    color: white;
+}
+
+.btn-warning {
+    background: var(--jira-yellow);
+    color: white;
+}
+
+.btn-warning:hover {
+    background: #ff8b00;
+    color: white;
+}
+
+.btn-info {
+    background: var(--jira-purple);
+    color: white;
+}
+
+.btn-info:hover {
+    background: #5243aa;
+    color: white;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 12px;
+}
+
+.btn-lg {
+    padding: 12px 24px;
+    font-size: 16px;
+}
+
+/* ============================================
+   BADGES & STATUS
+   ============================================ */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    line-height: 1;
+}
+
+.badge i {
+    margin-right: 4px;
+    font-size: 10px;
+}
+
+.badge-primary {
+    background: var(--jira-blue-light);
+    color: var(--jira-blue-primary);
+}
+
+.badge-success {
+    background: var(--jira-green-light);
+    color: var(--jira-green);
+}
+
+.badge-warning {
+    background: var(--jira-yellow-light);
+    color: #974f0c;
+}
+
+.badge-danger {
+    background: var(--jira-red-light);
+    color: var(--jira-red);
+}
+
+.badge-info {
+    background: var(--jira-purple-light);
+    color: var(--jira-purple);
+}
+
+.badge-secondary {
+    background: var(--jira-bg-subtle);
+    color: var(--jira-text-secondary);
+}
+
+/* ============================================
+   TABLES
+   ============================================ */
+.table {
+    width: 100%;
+    font-size: 14px;
+    color: var(--jira-text-primary);
+}
+
+.table thead th {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--jira-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid var(--jira-border);
+    padding: 12px 16px;
+    background: var(--jira-bg-subtle);
+}
+
+.table tbody td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--jira-bg-subtle);
+    vertical-align: middle;
+}
+
+.table tbody tr:hover {
+    background: var(--jira-bg-subtle);
+}
+
+.table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* DataTables JIRA Style */
+.dataTables_wrapper {
+    font-family: inherit;
+}
+
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter {
+    font-size: 14px;
+    color: var(--jira-text-primary);
+}
+
+.dataTables_wrapper .dataTables_length select,
+.dataTables_wrapper .dataTables_filter input {
+    border: 2px solid var(--jira-border);
+    border-radius: var(--radius-sm);
+    padding: 6px 12px;
+    font-size: 14px;
+    transition: border-color 0.2s ease;
+}
+
+.dataTables_wrapper .dataTables_filter input:focus {
+    border-color: var(--jira-blue-primary);
+    outline: none;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    border-radius: var(--radius-sm);
+    padding: 6px 12px;
+    margin: 0 2px;
+    border: 1px solid var(--jira-border);
+    background: white;
+    color: var(--jira-text-primary);
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background: var(--jira-blue-primary);
+    color: white;
+    border-color: var(--jira-blue-primary);
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background: var(--jira-blue-primary);
+    color: white;
+    border-color: var(--jira-blue-primary);
+}
+
+/* ============================================
+   FORMS
+   ============================================ */
+.form-control {
+    font-family: inherit;
+    font-size: 14px;
+    padding: 8px 12px;
+    border: 2px solid var(--jira-border);
+    border-radius: var(--radius-sm);
+    transition: all 0.2s ease;
+    background: white;
+    color: var(--jira-text-primary);
+}
+
+.form-control:focus {
+    border-color: var(--jira-blue-primary);
+    box-shadow: 0 0 0 1px var(--jira-blue-primary);
+    outline: none;
+}
+
+.form-control::placeholder {
+    color: var(--jira-text-subtle);
+}
+
+.form-group label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--jira-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: var(--spacing-sm);
+    display: block;
+}
+
+.form-text {
+    font-size: 12px;
+    color: var(--jira-text-subtle);
+    margin-top: var(--spacing-xs);
+}
+
+.form-check-label {
+    font-size: 14px;
+    color: var(--jira-text-primary);
+    margin-left: var(--spacing-sm);
+}
+
+/* ============================================
+   BREADCRUMBS & NAVIGATION
+   ============================================ */
+.breadcrumb {
+    background: transparent;
+    padding: 0;
+    margin-bottom: var(--spacing-lg);
+}
+
+.breadcrumb-item {
+    font-size: 14px;
+    color: var(--jira-text-secondary);
+}
+
+.breadcrumb-item a {
+    color: var(--jira-blue-primary);
+    text-decoration: none;
+}
+
+.breadcrumb-item a:hover {
+    color: var(--jira-blue-hover);
+    text-decoration: underline;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    color: var(--jira-text-subtle);
+}
+
+/* ============================================
+   ALERTS & NOTIFICATIONS
+   ============================================ */
+.alert {
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    border: none;
+    font-size: 14px;
+    margin-bottom: var(--spacing-lg);
+}
+
+.alert-success {
+    background: var(--jira-green-light);
+    color: var(--jira-green);
+}
+
+.alert-danger {
+    background: var(--jira-red-light);
+    color: var(--jira-red);
+}
+
+.alert-warning {
+    background: var(--jira-yellow-light);
+    color: #974f0c;
+}
+
+.alert-info {
+    background: var(--jira-purple-light);
+    color: var(--jira-purple);
+}
+
+/* ============================================
+   MODALS
+   ============================================ */
+.modal-content {
+    border-radius: var(--radius-md);
+    border: none;
+    box-shadow: var(--shadow-lg);
+}
+
+.modal-header {
+    background: var(--jira-bg-white);
+    border-bottom: 2px solid var(--jira-bg-subtle);
+    padding: var(--spacing-lg) var(--spacing-xl);
+}
+
+.modal-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--jira-text-primary);
+}
+
+.modal-body {
+    padding: var(--spacing-xl);
+}
+
+.modal-footer {
+    background: var(--jira-bg-subtle);
+    border-top: none;
+    padding: var(--spacing-lg) var(--spacing-xl);
+}
+
+/* ============================================
+   UTILITIES
+   ============================================ */
+.text-primary { color: var(--jira-text-primary) !important; }
+.text-secondary { color: var(--jira-text-secondary) !important; }
+.text-subtle { color: var(--jira-text-subtle) !important; }
+.text-blue { color: var(--jira-blue-primary) !important; }
+.text-green { color: var(--jira-green) !important; }
+.text-red { color: var(--jira-red) !important; }
+.text-yellow { color: var(--jira-yellow) !important; }
+
+.bg-subtle { background: var(--jira-bg-subtle) !important; }
+.bg-white { background: var(--jira-bg-white) !important; }
+
+.border-subtle { border-color: var(--jira-border) !important; }
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+    .summary-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .white_card_body {
+        padding: var(--spacing-lg);
+    }
+
+    .summary-card-value {
+        font-size: 24px;
+    }
+}

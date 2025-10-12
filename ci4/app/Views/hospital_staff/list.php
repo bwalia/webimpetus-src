@@ -1,105 +1,86 @@
 <?php require_once(APPPATH . 'Views/common/list-title.php'); ?>
-<style>
-    .status-badge {
-        padding: 4px 12px;
-        border-radius: 12px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        display: inline-block;
-        text-transform: capitalize;
-    }
 
-    .status-active {
-        background-color: #d1fae5;
-        color: #065f46;
-    }
+<!-- Include JIRA-Style CSS -->
+<link rel="stylesheet" href="/css/jira-style-custom.css">
 
-    .status-on-leave {
-        background-color: #fef3c7;
-        color: #92400e;
-    }
-
-    .status-inactive {
-        background-color: #fee2e2;
-        color: #991b1b;
-    }
-
-    .status-suspended {
-        background-color: #e5e7eb;
-        color: #374151;
-    }
-
-    .department-badge {
-        background-color: #e0e7ff;
-        color: #3730a3;
-        padding: 3px 10px;
-        border-radius: 10px;
-        font-size: 0.7rem;
-    }
-
-    .training-status {
-        font-size: 0.75rem;
-    }
-
-    .training-uptodate {
-        color: #065f46;
-    }
-
-    .training-overdue {
-        color: #991b1b;
-    }
-</style>
+<!-- Page Header -->
+<div class="white_card">
+    <div class="white_card_header">
+        <h3><i class="fa fa-hospital"></i> Hospital Staff Management</h3>
+    </div>
+</div>
 
 <!-- Action Buttons -->
-<div class="white_card_body">
-    <div class="d-flex justify-content-between mb-3">
-        <div>
-            <a href="/hospital_staff/dashboard" class="btn btn-info mr-2">
-                <i class="fa fa-tachometer-alt"></i> Dashboard
-            </a>
-        </div>
-        <div>
-            <button type="button" onclick="window.location.reload();" class="btn btn-primary mr-2">
-                <i class="fa fa-refresh"></i> Refresh
-            </button>
-            <a href="/hospital_staff/edit" class="btn btn-primary">
-                <i class="fa fa-plus"></i> Add New Staff
-            </a>
+<div class="white_card">
+    <div class="white_card_body">
+        <div class="d-flex justify-content-between align-items-center mb-0">
+            <div>
+                <a href="/hospital_staff/dashboard" class="btn btn-info">
+                    <i class="fa fa-tachometer-alt"></i>
+                    Dashboard
+                </a>
+            </div>
+            <div>
+                <button type="button" onclick="window.location.reload();" class="btn btn-secondary mr-2">
+                    <i class="fa fa-sync-alt"></i>
+                    Refresh
+                </button>
+                <a href="/hospital_staff/edit" class="btn btn-primary">
+                    <i class="fa fa-plus"></i>
+                    Add New Staff
+                </a>
+            </div>
         </div>
     </div>
 </div>
 
 <!-- Summary Cards -->
-<div class="white_card_body">
-    <div class="summary-cards">
-        <div class="summary-card blue">
-            <div class="summary-card-title"><i class="fa fa-users"></i> Total Staff</div>
-            <div class="summary-card-value"><?= $total_staff ?></div>
-            <div class="summary-card-subtitle">all staff members</div>
+<div class="summary-cards">
+    <div class="summary-card blue">
+        <div class="summary-card-title">
+            <i class="fa fa-users"></i>
+            Total Staff
         </div>
+        <div class="summary-card-value"><?= $total_staff ?></div>
+        <div class="summary-card-subtitle">all staff members</div>
+    </div>
 
-        <div class="summary-card green">
-            <div class="summary-card-title"><i class="fa fa-check-circle"></i> Active</div>
-            <div class="summary-card-value"><?= $active_staff ?></div>
-            <div class="summary-card-subtitle">currently working</div>
+    <div class="summary-card green">
+        <div class="summary-card-title">
+            <i class="fa fa-check-circle"></i>
+            Active
         </div>
+        <div class="summary-card-value"><?= $active_staff ?></div>
+        <div class="summary-card-subtitle">currently working</div>
+    </div>
 
-        <div class="summary-card orange">
-            <div class="summary-card-title"><i class="fa fa-plane"></i> On Leave</div>
-            <div class="summary-card-value"><?= $on_leave ?></div>
-            <div class="summary-card-subtitle">staff members</div>
+    <div class="summary-card orange">
+        <div class="summary-card-title">
+            <i class="fa fa-plane"></i>
+            On Leave
         </div>
+        <div class="summary-card-value"><?= $on_leave ?></div>
+        <div class="summary-card-subtitle">staff members</div>
+    </div>
 
-        <div class="summary-card red">
-            <div class="summary-card-title"><i class="fa fa-exclamation-triangle"></i> Expiring Soon</div>
-            <div class="summary-card-value"><?= count($expiring_soon) ?></div>
-            <div class="summary-card-subtitle">registrations</div>
+    <div class="summary-card red">
+        <div class="summary-card-title">
+            <i class="fa fa-exclamation-triangle"></i>
+            Expiring Soon
         </div>
+        <div class="summary-card-value"><?= count($expiring_soon) ?></div>
+        <div class="summary-card-subtitle">registrations</div>
     </div>
 </div>
 
-<div class="white_card_body">
-    <div class="QA_table" id="hospitalStaffTable"></div>
+<!-- Staff Table -->
+<div class="white_card">
+    <div class="white_card_header">
+        <h4><i class="fa fa-list"></i> Staff Directory</h4>
+    </div>
+    <div class="white_card_body">
+        <div class="table-responsive" id="hospitalStaffTable"></div>
+    </div>
 </div>
 
 <?php require_once(APPPATH . 'Views/common/footer.php'); ?>
@@ -111,7 +92,7 @@
     // Custom column renderers
     const columnRenderers = {
         staff_number: function(data, type, row) {
-            return '<strong style="color: #667eea;">' + data + '</strong>';
+            return '<strong style="color: var(--jira-blue-primary); font-weight: 600;">' + data + '</strong>';
         },
         name: function(data, type, row) {
             const userName = row.user_name || row.contact_name || row.employee_name || '-';
@@ -122,7 +103,15 @@
         },
         department: function(data, type, row) {
             if (!data) return '-';
-            return '<span class="department-badge">' + data + '</span>';
+            const icons = {
+                'cardiology': 'heart',
+                'emergency': 'ambulance',
+                'surgery': 'cut',
+                'pediatrics': 'baby',
+                'radiology': 'x-ray'
+            };
+            const icon = icons[data.toLowerCase()] || 'hospital';
+            return '<span class="badge badge-info"><i class="fa fa-' + icon + '"></i> ' + data + '</span>';
         },
         job_title: function(data, type, row) {
             if (!data) return '-';
@@ -156,7 +145,14 @@
             return html;
         },
         employment_type: function(data, type, row) {
-            return data || '-';
+            if (!data) return '-';
+            const colors = {
+                'Full-time': 'success',
+                'Part-time': 'info',
+                'Contract': 'warning',
+                'Locum': 'secondary'
+            };
+            return '<span class="badge badge-' + (colors[data] || 'secondary') + '">' + data + '</span>';
         },
         mandatory_training_status: function(data, type, row) {
             if (!data) return '-';
@@ -171,18 +167,14 @@
             return '<span class="training-status ' + statusClass + '">' + icon + ' ' + data + '</span>';
         },
         status: function(data, type, row) {
-            let badgeClass = 'status-active';
-            let statusText = data || 'Active';
-
-            if (statusText.toLowerCase() === 'on leave') {
-                badgeClass = 'status-on-leave';
-            } else if (statusText.toLowerCase() === 'inactive') {
-                badgeClass = 'status-inactive';
-            } else if (statusText.toLowerCase() === 'suspended') {
-                badgeClass = 'status-suspended';
-            }
-
-            return '<span class="status-badge ' + badgeClass + '">' + statusText + '</span>';
+            if (!data) data = 'Active';
+            const statusMap = {
+                'Active': 'success',
+                'On Leave': 'warning',
+                'Inactive': 'danger',
+                'Suspended': 'secondary'
+            };
+            return '<span class="badge badge-' + (statusMap[data] || 'secondary') + '">' + data + '</span>';
         }
     };
 
