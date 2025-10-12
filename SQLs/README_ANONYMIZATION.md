@@ -26,23 +26,24 @@ docker exec -i webimpetus-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev 
 
 ## ⛔ Preserved Data
 
-These tables are **NOT** anonymized:
-- admin@admin.com user
-- Companies
-- Contacts
-- Sales Invoices & Invoice Items
-- Timeslips
+**ONLY** preserved:
+- admin@admin.com user account
 
 ## ✅ Anonymized Data
 
-All other tables with PII are anonymized:
+**ALL** tables with PII are anonymized (35+ tables):
 - Users (except admin)
 - Businesses
 - Employees
 - Hospital Staff
 - Patient Logs
 - Customers
-- And 20+ more tables...
+- **Companies** ⚠️ NOW ANONYMIZED
+- **Contacts** ⚠️ NOW ANONYMIZED
+- **Sales Invoices** ⚠️ NOW ANONYMIZED
+- **Sales Invoice Items** ⚠️ NOW ANONYMIZED
+- **Timeslips** ⚠️ NOW ANONYMIZED
+- And 25+ more tables...
 
 ## 🔐 Demo Credentials
 

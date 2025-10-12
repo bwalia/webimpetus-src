@@ -12,7 +12,7 @@ This guide provides instructions for anonymizing PII (Personally Identifiable In
 
 ## 📋 What Gets Anonymized
 
-### ✅ Tables with PII Data (ANONYMIZED)
+### ✅ ALL Tables with PII Data (ANONYMIZED)
 - **Users** (except admin@admin.com)
 - **Businesses**
 - **Employees**
@@ -39,14 +39,14 @@ This guide provides instructions for anonymizing PII (Personally Identifiable In
 - **Tenants**
 - **Deployments**
 - **Knowledge Base**
+- **Companies** ⚠️ NOW ANONYMIZED
+- **Contacts** ⚠️ NOW ANONYMIZED
+- **Sales Invoices** ⚠️ NOW ANONYMIZED
+- **Sales Invoice Items** ⚠️ NOW ANONYMIZED
+- **Timeslips** ⚠️ NOW ANONYMIZED
 
-### ⛔ Tables PRESERVED (Not Anonymized)
-- **admin@admin.com** user account
-- **Companies**
-- **Contacts**
-- **Sales Invoices**
-- **Sales Invoice Items**
-- **Timeslips**
+### ⛔ Only Preserved (Not Anonymized)
+- **admin@admin.com** user account ONLY
 
 ---
 
@@ -241,6 +241,34 @@ docker exec -i webimpetus-db mariadb \
 | Real medication names | Medication_123 |
 | Actual lab results | Result_123 |
 | Doctor's private notes | Doctor note 123 |
+
+### Companies (NOW ANONYMIZED)
+| Original | Anonymized |
+|----------|------------|
+| Real Company Ltd | Anonymous Company 123 |
+| info@realcompany.com | company_123@example.com |
+| 123 Real Business Park | 123 Business Street |
+
+### Contacts (NOW ANONYMIZED)
+| Original | Anonymized |
+|----------|------------|
+| John Smith | Contact123 Person123 |
+| j.smith@company.com | contact_123@example.com |
+| 07712 345678 | 555-CON-0123 |
+
+### Sales Invoices (NOW ANONYMIZED)
+| Original | Anonymized |
+|----------|------------|
+| Invoice #12345 | INV-000123 |
+| Real customer details | Anonymous Customer 123 |
+| Real project codes | PROJ-0123 |
+
+### Timeslips (NOW ANONYMIZED)
+| Original | Anonymized |
+|----------|------------|
+| Real task names | Task 123 |
+| Employee names | Employee 1 |
+| Work descriptions | Anonymized work description 123 |
 
 ---
 
