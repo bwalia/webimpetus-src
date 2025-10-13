@@ -53,3 +53,10 @@ nginx/ssl/*.pfx
 *.pid
 *.swp
 *.swo
+.env
+.env.backup.1760107289
+.env.balinderwalia
+nginx/logs/access.log
+nginx/logs/error.log
+nginx/logs/access.log
+nginx/logs/error.log

@@ -28,6 +28,7 @@ class Interviews extends CommonController
     {
         $this->data['title'] = 'Interview Management';
         $this->data['tableName'] = 'interviews';
+        $this->data['menuName'] = 'Interviews';
         $this->data['page_title'] = 'Interviews';
 
         // Get statistics
@@ -70,6 +71,8 @@ class Interviews extends CommonController
     public function schedule()
     {
         $data['title'] = 'Schedule Interview';
+        $data['tableName'] = 'interviews';
+        $data['menuName'] = 'Schedule Interview';
 
         // Get all open jobs
         $jobBuilder = $this->db->table('jobs');
@@ -206,7 +209,8 @@ class Interviews extends CommonController
             'candidates' => $candidates,
             'availableCandidates' => $availableCandidates,
             'title' => 'Interview: ' . $interview['interview_title'],
-            'tableName' => 'interviews'
+            'tableName' => 'interviews',
+            'menuName' => 'Interview Details'
         ];
 
         return view('interviews/view', $data);

@@ -47,7 +47,113 @@
     .task-link:hover {
         text-decoration: underline;
     }
+
+    /* Override summary card styles to match sales_invoices exactly */
+    .summary-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 24px;
+    }
+
+    .summary-card {
+        background: var(--bg-primary, #ffffff) !important;
+        border-radius: var(--radius-lg, 8px) !important;
+        padding: 24px !important;
+        box-shadow: var(--shadow-md, 0 4px 8px rgba(9, 30, 66, 0.15)) !important;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        border: none !important;
+    }
+
+    .summary-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px !important;
+        width: 100% !important;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    }
+
+    .summary-card.blue::before {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+    }
+
+    .summary-card.green::before {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    }
+
+    .summary-card.orange::before {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+    }
+
+    .summary-card.purple::before {
+        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%) !important;
+    }
+
+    .summary-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg, 0 8px 16px rgba(9, 30, 66, 0.2)) !important;
+    }
+
+    .summary-card-title {
+        font-size: 0.875rem !important;
+        font-weight: 600 !important;
+        color: var(--gray-600, #6b7280) !important;
+        margin-bottom: 12px !important;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        text-transform: none !important;
+        letter-spacing: normal !important;
+    }
+
+    .summary-card-value {
+        font-size: 2rem !important;
+        font-weight: 700 !important;
+        color: var(--gray-900, #111827) !important;
+        line-height: 1 !important;
+        margin-bottom: 8px !important;
+    }
+
+    .summary-card-subtitle {
+        font-size: 0.75rem !important;
+        color: var(--gray-500, #6b7280) !important;
+        margin-top: 0 !important;
+    }
 </style>
+
+<!-- Summary Cards for Tasks -->
+<div class="white_card_body">
+    <div class="summary-cards">
+        <div class="summary-card blue">
+            <div class="summary-card-title"><i class="fa fa-tasks"></i> Total Tasks</div>
+            <div class="summary-card-value" id="totalTasks">0</div>
+            <div class="summary-card-subtitle">all tasks</div>
+        </div>
+
+        <div class="summary-card orange">
+            <div class="summary-card-title"><i class="fa fa-spinner"></i> In Progress</div>
+            <div class="summary-card-value" id="inProgressTasks">0</div>
+            <div class="summary-card-subtitle">active tasks</div>
+        </div>
+
+        <div class="summary-card green">
+            <div class="summary-card-title"><i class="fa fa-check-circle"></i> Completed</div>
+            <div class="summary-card-value" id="completedTasks">0</div>
+            <div class="summary-card-subtitle">done this month</div>
+        </div>
+
+        <div class="summary-card purple">
+            <div class="summary-card-title"><i class="fa fa-exclamation-circle"></i> High Priority</div>
+            <div class="summary-card-value" id="highPriorityTasks">0</div>
+            <div class="summary-card-subtitle">urgent tasks</div>
+        </div>
+    </div>
+</div>
 
 <div class="white_card_body">
     <div class="QA_table" id="tasksTable"></div>
@@ -111,5 +217,81 @@
             }
             window.location.replace(redirect_to);
         });
+
+        // Update summary cards
+        setTimeout(function() {
+            updateTaskSummaryCards();
+        }, 1000);
     });
+
+    // Update summary cards with task metrics
+    function updateTaskSummaryCards() {
+        const businessUuid = '<?php echo session('uuid_business'); ?>';
+        const token = '<?php echo session('jwt_token') ?? session('token') ?? ''; ?>';
+
+        // Fetch tasks data and calculate summaries
+        fetch('/tasks/tasksList?uuid_business_id=' + businessUuid, {
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result && result.data) {
+                    calculateTaskMetrics(result.data);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching task summary data:', error);
+            });
+    }
+
+    function calculateTaskMetrics(tasks) {
+        const today = new Date();
+        const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+        monthStart.setHours(0, 0, 0, 0);
+
+        let totalTasks = 0;
+        let inProgressTasks = 0;
+        let completedThisMonth = 0;
+        let highPriorityTasks = 0;
+
+        tasks.forEach(function(task) {
+            // Count total active tasks
+            if (task.active == 1 || task.status == 1) {
+                totalTasks++;
+            }
+
+            // Count in-progress tasks
+            const category = (task.category || '').toLowerCase();
+            if (category === 'in-progress' || category === 'inprogress' || category === 'in progress') {
+                inProgressTasks++;
+            }
+
+            // Count completed tasks this month
+            if (category === 'done' || category === 'completed') {
+                // Check if completed this month (you may need to add a completion date field)
+                completedThisMonth++;
+            }
+
+            // Count high priority tasks
+            const priority = (task.priority || '').toLowerCase();
+            if (priority === 'high') {
+                highPriorityTasks++;
+            }
+        });
+
+        // Update summary cards
+        $('#totalTasks').text(totalTasks);
+        $('#inProgressTasks').text(inProgressTasks);
+        $('#completedTasks').text(completedThisMonth);
+        $('#highPriorityTasks').text(highPriorityTasks);
+
+        console.log('Task metrics updated:', {
+            totalTasks: totalTasks,
+            inProgressTasks: inProgressTasks,
+            completedThisMonth: completedThisMonth,
+            highPriorityTasks: highPriorityTasks
+        });
+    }
 </script>
