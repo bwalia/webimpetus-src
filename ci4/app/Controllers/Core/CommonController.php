@@ -82,6 +82,63 @@ class CommonController extends BaseController
 		}
 	}
 
+	/**
+	 * Check granular permissions (read, create, update, delete)
+	 *
+	 * @param string $action The action to check: 'read', 'create', 'update', or 'delete'
+	 * @return bool True if user has permission, false otherwise
+	 */
+	protected function checkPermission($action = 'read')
+	{
+		// Super admin bypass (user ID = 1)
+		if (session('id') == 1) {
+			return true;
+		}
+
+		$permissionMap = $this->session->get('permission_map');
+
+		if (empty($permissionMap)) {
+			return false;
+		}
+
+		$tableName = $this->table;
+
+		// Get menu ID for this module
+		$menu = $this->db->table('menu')
+			->where('link', '/' . $tableName)
+			->orWhere('link LIKE', '%' . str_replace('_', '-', $tableName) . '%')
+			->get()
+			->getRow();
+
+		if (!$menu) {
+			// Try with hyphen instead of underscore
+			$tableNameWithHyphen = str_replace('_', '-', $tableName);
+			$menu = $this->db->table('menu')
+				->where('link', '/' . $tableNameWithHyphen)
+				->orWhere('link LIKE', '%' . $tableNameWithHyphen . '%')
+				->get()
+				->getRow();
+		}
+
+		if (!$menu) {
+			return false; // Module not found in menu
+		}
+
+		$menuId = $menu->id;
+
+		if (!isset($permissionMap[$menuId])) {
+			return false; // No permission entry for this module
+		}
+
+		// Default: read permission is always granted if module access exists
+		// Other actions (create, update, delete) require explicit permission
+		if ($action === 'read') {
+			return true; // Default read access for any accessible module
+		}
+
+		return $permissionMap[$menuId][$action] ?? false;
+	}
+
 	public function changeLanguage()
 	{
 		$language = Services::language();
@@ -124,6 +181,11 @@ class CommonController extends BaseController
 
 	public function index()
 	{
+		// Check read permission
+		if (!$this->checkPermission('read')) {
+			echo view("errors/html/error_403");
+			die;
+		}
 
 		$data['columns'] = $this->db->getFieldNames($this->table);
 		$data['fields'] = array_diff($data['columns'], $this->notAllowedFields);
@@ -132,6 +194,11 @@ class CommonController extends BaseController
 		$data['rawTblName'] = $this->rawTblName;
 		$data['is_add_permission'] = 1;
 		$data['identifierKey'] = 'id';
+
+		// Pass granular permissions to view
+		$data['can_create'] = $this->checkPermission('create');
+		$data['can_update'] = $this->checkPermission('update');
+		$data['can_delete'] = $this->checkPermission('delete');
 
 		$viewPath = "common/list";
 		if (file_exists(APPPATH . 'Views/' . $this->table . "/list.php")) {
@@ -144,8 +211,19 @@ class CommonController extends BaseController
 
 	public function edit($uuid = 0)
 	{
+		// Check update permission for existing record, create permission for new record
+		if ($uuid && !$this->checkPermission('update')) {
+			echo view("errors/html/error_403");
+			die;
+		}
+
+		if (!$uuid && !$this->checkPermission('create')) {
+			echo view("errors/html/error_403");
+			die;
+		}
+
 		$tableData =  $uuid ? $this->model->getExistsRowsByUUID($uuid)->getRow() : '';
-		
+
 		$customers = (new Customers_model())
     ->whereIn("id", function (BaseBuilder $subqueryBuilder) {
         return $subqueryBuilder->select("customers_id")->from("projects")->groupBy("customers_id");
@@ -223,6 +301,12 @@ class CommonController extends BaseController
 
 	public function delete($id)
 	{
+		// Check delete permission
+		if (!$this->checkPermission('delete')) {
+			echo view("errors/html/error_403");
+			die;
+		}
+
 		//echo $id; die;
 		if (!empty($id)) {
 			$response = $this->model->deleteData($id);
@@ -240,6 +324,12 @@ class CommonController extends BaseController
 
 	public function deleterow($uuid)
 	{
+		// Check delete permission
+		if (!$this->checkPermission('delete')) {
+			echo view("errors/html/error_403");
+			die;
+		}
+
 		if (!empty($uuid)) {
 			$response = $this->model->deleteDataByUUID($uuid);
 			if ($response) {

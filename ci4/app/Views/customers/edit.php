@@ -226,12 +226,10 @@ $categories = getResultArray("categories");
                 </div>
             </div>
 
-            <div class="form-row">
-                <div class="form-group col-md-3">
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </div>
-
-            </div>
+            <?php
+                $submitButtonText = 'Save Customer';
+                include(APPPATH . 'Views/common/submit-button.php');
+            ?>
 
         </form>
         <input type="hidden" value="<?php echo @$totalContact; ?>" id="total_contacts" name="total_contacts">

@@ -182,16 +182,13 @@
                 </div>
             </div>
 
+            <?php
+                $submitButtonText = 'Save Receipt';
+                include(APPPATH . 'Views/common/submit-button.php');
+            ?>
+
             <div class="row">
                 <div class="col-md-12">
-                    <hr>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fa fa-save"></i> Save Receipt
-                    </button>
-                    <a href="/receipts" class="btn btn-secondary">
-                        <i class="fa fa-times"></i> Cancel
-                    </a>
-
                     <?php if (!empty($receipt->uuid) && !empty($receipt->is_posted)): ?>
                         <span class="badge badge-info ml-2" style="font-size: 1rem; padding: 8px 12px;">
                             <i class="fa fa-check"></i> Posted to Journal

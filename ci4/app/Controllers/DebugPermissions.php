@@ -8,6 +8,9 @@ class DebugPermissions extends Controller
 {
     public function index()
     {
+        // Load global helper for isUUID function
+        helper('global');
+
         $session = \Config\Services::session();
 
         if (!$session->get('uuid')) {
@@ -34,11 +37,13 @@ class DebugPermissions extends Controller
         echo "</div>";
 
         echo "<div class='alert alert-info' style='background: #e3f2fd; padding: 15px; border-left: 4px solid #2196f3; margin: 20px 0;'>";
-        echo "<strong>ℹ️ How Permissions Work:</strong><br>";
+        echo "<strong>ℹ️ How Granular Permissions Work:</strong><br>";
         echo "<ul style='margin-top: 10px; margin-bottom: 0;'>";
-        echo "<li><strong>Role Permissions:</strong> If you're assigned to a role, you inherit all permissions from that role</li>";
-        echo "<li><strong>Additional Permissions:</strong> Any modules directly assigned to you are ADDED to your role's permissions</li>";
-        echo "<li><strong>Final Access:</strong> You get ALL modules from your role + any additional modules = Maximum access</li>";
+        echo "<li><strong>Role Permissions:</strong> If you're assigned to a role, you inherit all permissions from that role (with Read/Create/Update/Delete access levels)</li>";
+        echo "<li><strong>User Override Permissions:</strong> User-specific permissions in the user_permissions table OVERRIDE role permissions</li>";
+        echo "<li><strong>Read Access Default:</strong> Read permission is automatically granted for any module you have access to</li>";
+        echo "<li><strong>Action Permissions:</strong> Create, Update, and Delete require explicit permission grants</li>";
+        echo "<li><strong>View-Only Mode:</strong> If you only have Read permission, you'll see \"View Only\" badge and no action buttons</li>";
         echo "</ul>";
         echo "</div>";
 
@@ -56,24 +61,59 @@ class DebugPermissions extends Controller
         // Permissions from session
         echo "<h2>2. Permissions Loaded in Session</h2>";
         $permissions = $session->get('permissions');
+        $permissionMap = $session->get('permission_map');
 
         if (empty($permissions)) {
             echo "<p class='error'>⚠️ NO PERMISSIONS IN SESSION!</p>";
         } else {
             echo "<p class='success'>✓ " . count($permissions) . " permissions loaded</p>";
             echo "<table>";
-            echo "<tr><th>ID</th><th>Name</th><th>Link</th><th>Processed (lowercase, no /, - to _)</th></tr>";
+            echo "<tr>";
+            echo "<th>ID</th><th>Name</th><th>Link</th><th>Processed</th>";
+            echo "<th style='background: #2196f3;'>Read</th>";
+            echo "<th style='background: #4caf50;'>Create</th>";
+            echo "<th style='background: #ff9800;'>Update</th>";
+            echo "<th style='background: #f44336;'>Delete</th>";
+            echo "</tr>";
 
             foreach ($permissions as $perm) {
                 $processed = strtolower(str_replace(["/", "-"], ["", "_"], $perm['link']));
+                $canRead = $perm['can_read'] ?? true; // Default read to true
+                $canCreate = $perm['can_create'] ?? false;
+                $canUpdate = $perm['can_update'] ?? false;
+                $canDelete = $perm['can_delete'] ?? false;
+
                 echo "<tr>";
                 echo "<td>" . ($perm['id'] ?? 'N/A') . "</td>";
                 echo "<td>" . ($perm['name'] ?? 'N/A') . "</td>";
                 echo "<td>" . ($perm['link'] ?? 'N/A') . "</td>";
                 echo "<td><strong>" . $processed . "</strong></td>";
+                echo "<td style='text-align: center;'>" . ($canRead ? "✓" : "✗") . "</td>";
+                echo "<td style='text-align: center;'>" . ($canCreate ? "✓" : "✗") . "</td>";
+                echo "<td style='text-align: center;'>" . ($canUpdate ? "✓" : "✗") . "</td>";
+                echo "<td style='text-align: center;'>" . ($canDelete ? "✓" : "✗") . "</td>";
                 echo "</tr>";
             }
             echo "</table>";
+
+            // Show permission map
+            echo "<h3>Permission Map (Quick Lookup)</h3>";
+            if (!empty($permissionMap)) {
+                echo "<table>";
+                echo "<tr><th>Module ID</th><th>Read</th><th>Create</th><th>Update</th><th>Delete</th></tr>";
+                foreach ($permissionMap as $moduleId => $perms) {
+                    echo "<tr>";
+                    echo "<td>" . $moduleId . "</td>";
+                    echo "<td style='text-align: center;'>" . ($perms['read'] ? "✓" : "✗") . "</td>";
+                    echo "<td style='text-align: center;'>" . ($perms['create'] ? "✓" : "✗") . "</td>";
+                    echo "<td style='text-align: center;'>" . ($perms['update'] ? "✓" : "✗") . "</td>";
+                    echo "<td style='text-align: center;'>" . ($perms['delete'] ? "✓" : "✗") . "</td>";
+                    echo "</tr>";
+                }
+                echo "</table>";
+            } else {
+                echo "<p class='error'>Permission map not found in session</p>";
+            }
         }
 
         // User data from database
@@ -134,10 +174,10 @@ class DebugPermissions extends Controller
                 }
             }
 
-            // Show role permissions breakdown
+            // Show role permissions breakdown with granular permissions
             if (!empty($user['role']) && isUUID($user['role'])) {
-                echo "<h3>Role Permissions Breakdown</h3>";
-                echo "<p>You are assigned to a role. Here's the breakdown:</p>";
+                echo "<h3>Role Permissions Breakdown (Granular)</h3>";
+                echo "<p>You are assigned to a role. Here's the breakdown with granular permissions:</p>";
 
                 // Get role info
                 $roleQuery = $db->query("SELECT role_name FROM roles WHERE uuid = ?", [$user['role']]);
@@ -146,9 +186,9 @@ class DebugPermissions extends Controller
                 if ($roleInfo) {
                     echo "<p><strong>Your Role:</strong> <span class='success'>" . $roleInfo['role_name'] . "</span></p>";
 
-                    // Get role permissions
+                    // Get role permissions with granular access
                     $rolePermsQuery = $db->query(
-                        "SELECT m.id, m.name, m.link
+                        "SELECT m.id, m.name, m.link, rp.can_read, rp.can_create, rp.can_update, rp.can_delete
                          FROM menu m
                          INNER JOIN roles__permissions rp ON m.id = rp.permission_id OR m.uuid = rp.permission_id
                          WHERE rp.role_id = ?",
@@ -158,11 +198,19 @@ class DebugPermissions extends Controller
 
                     echo "<h4>Permissions from Role (" . count($rolePerms) . " modules)</h4>";
                     if (!empty($rolePerms)) {
-                        echo "<ul>";
+                        echo "<table>";
+                        echo "<tr><th>Module</th><th>Link</th><th>Read</th><th>Create</th><th>Update</th><th>Delete</th></tr>";
                         foreach ($rolePerms as $perm) {
-                            echo "<li>" . $perm['name'] . " <small>(" . $perm['link'] . ")</small></li>";
+                            echo "<tr>";
+                            echo "<td>" . $perm['name'] . "</td>";
+                            echo "<td><small>" . $perm['link'] . "</small></td>";
+                            echo "<td style='text-align: center;'>" . ($perm['can_read'] ? "✓" : "✗") . "</td>";
+                            echo "<td style='text-align: center;'>" . ($perm['can_create'] ? "✓" : "✗") . "</td>";
+                            echo "<td style='text-align: center;'>" . ($perm['can_update'] ? "✓" : "✗") . "</td>";
+                            echo "<td style='text-align: center;'>" . ($perm['can_delete'] ? "✓" : "✗") . "</td>";
+                            echo "</tr>";
                         }
-                        echo "</ul>";
+                        echo "</table>";
                     } else {
                         echo "<p class='error'>No permissions defined for this role!</p>";
                     }
@@ -192,6 +240,34 @@ class DebugPermissions extends Controller
                     }
                 }
             }
+
+            // Show user-specific granular permissions from user_permissions table
+            echo "<h3>User-Specific Granular Permissions (Override Role)</h3>";
+            $userGranularPerms = $db->table('user_permissions up')
+                ->select('up.can_read, up.can_create, up.can_update, up.can_delete, m.id, m.name, m.link')
+                ->join('menu m', 'm.id = up.menu_id')
+                ->where('up.user_id', $user['id'])
+                ->get()
+                ->getResultArray();
+
+            if (!empty($userGranularPerms)) {
+                echo "<p class='success'>✓ " . count($userGranularPerms) . " user-specific permissions found (these override role permissions)</p>";
+                echo "<table>";
+                echo "<tr><th>Module</th><th>Link</th><th>Read</th><th>Create</th><th>Update</th><th>Delete</th></tr>";
+                foreach ($userGranularPerms as $perm) {
+                    echo "<tr>";
+                    echo "<td><strong>" . $perm['name'] . "</strong></td>";
+                    echo "<td><small>" . $perm['link'] . "</small></td>";
+                    echo "<td style='text-align: center;'>" . ($perm['can_read'] ? "✓" : "✗") . "</td>";
+                    echo "<td style='text-align: center;'>" . ($perm['can_create'] ? "✓" : "✗") . "</td>";
+                    echo "<td style='text-align: center;'>" . ($perm['can_update'] ? "✓" : "✗") . "</td>";
+                    echo "<td style='text-align: center;'>" . ($perm['can_delete'] ? "✓" : "✗") . "</td>";
+                    echo "</tr>";
+                }
+                echo "</table>";
+            } else {
+                echo "<p>No user-specific granular permissions set. Using role defaults.</p>";
+            }
         } else {
             echo "<p class='error'>User not found in database!</p>";
         }
@@ -217,14 +293,42 @@ class DebugPermissions extends Controller
             }
         }
 
-        // Show all accessible modules
-        echo "<h2>5. All Modules You Can Access</h2>";
+        // Show all accessible modules with granular permissions
+        echo "<h2>5. All Modules You Can Access (With Actions)</h2>";
         if (!empty($permissions)) {
-            echo "<ul>";
+            echo "<table>";
+            echo "<tr><th>Module</th><th>URL Segment</th><th>Read</th><th>Create</th><th>Update</th><th>Delete</th></tr>";
             foreach ($permissions as $perm) {
                 $processed = strtolower(str_replace(["/", "-"], ["", "_"], $perm['link']));
-                echo "<li><a href='" . $perm['link'] . "'>" . $perm['name'] . "</a> (URL segment: <code>$processed</code>)</li>";
+                $canRead = $perm['can_read'] ?? true;
+                $canCreate = $perm['can_create'] ?? false;
+                $canUpdate = $perm['can_update'] ?? false;
+                $canDelete = $perm['can_delete'] ?? false;
+
+                echo "<tr>";
+                echo "<td><a href='" . $perm['link'] . "'>" . $perm['name'] . "</a></td>";
+                echo "<td><code>$processed</code></td>";
+                echo "<td style='text-align: center; background: " . ($canRead ? "#e8f5e9" : "#ffebee") . ";'>" . ($canRead ? "✓" : "✗") . "</td>";
+                echo "<td style='text-align: center; background: " . ($canCreate ? "#e8f5e9" : "#ffebee") . ";'>" . ($canCreate ? "✓" : "✗") . "</td>";
+                echo "<td style='text-align: center; background: " . ($canUpdate ? "#e8f5e9" : "#ffebee") . ";'>" . ($canUpdate ? "✓" : "✗") . "</td>";
+                echo "<td style='text-align: center; background: " . ($canDelete ? "#e8f5e9" : "#ffebee") . ";'>" . ($canDelete ? "✓" : "✗") . "</td>";
+                echo "</tr>";
             }
+            echo "</table>";
+
+            // Add a summary
+            $readOnly = array_filter($permissions, function($p) {
+                return ($p['can_read'] ?? true) && !($p['can_create'] ?? false) && !($p['can_update'] ?? false) && !($p['can_delete'] ?? false);
+            });
+            $fullAccess = array_filter($permissions, function($p) {
+                return ($p['can_read'] ?? true) && ($p['can_create'] ?? false) && ($p['can_update'] ?? false) && ($p['can_delete'] ?? false);
+            });
+
+            echo "<p><strong>Summary:</strong></p>";
+            echo "<ul>";
+            echo "<li>Total modules: " . count($permissions) . "</li>";
+            echo "<li>View-only access: " . count($readOnly) . " modules</li>";
+            echo "<li>Full access (CRUD): " . count($fullAccess) . " modules</li>";
             echo "</ul>";
         } else {
             echo "<p class='error'>No accessible modules!</p>";

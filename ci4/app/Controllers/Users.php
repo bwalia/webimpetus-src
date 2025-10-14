@@ -77,6 +77,10 @@ class Users extends CommonController
 					'language_code' => $this->request->getPost('language_code'),
 				);
 				$this->userModel->updateUser($data, $id);
+
+				// Save granular permissions (read, create, update, delete)
+				$this->saveGranularPermissions($id);
+
 				session()->setFlashdata('message', 'Data updated Successfully!');
 				session()->setFlashdata('alert-class', 'alert-success');
 			}
@@ -119,12 +123,54 @@ class Users extends CommonController
 						'uuid' => $userBsUuid
 					];
 					$this->userBusinessModel->saveUserbusines($userBsData);
+
+					// Save granular permissions for new user
+					$this->saveGranularPermissions($saveUserId);
+
 					session()->setFlashdata('message', 'Data entered Successfully!');
 					session()->setFlashdata('alert-class', 'alert-success');
 				}
 			}
 		}
 		return redirect()->to('/users');
+	}
+
+	/**
+	 * Save granular permissions (read, create, update, delete) for a user
+	 *
+	 * @param int $userId The user ID
+	 * @return void
+	 */
+	private function saveGranularPermissions($userId)
+	{
+		$perms = $this->request->getPost('perms');
+
+		if (!$perms || !$userId) {
+			return;
+		}
+
+		// Delete existing user permissions
+		$this->db->table('user_permissions')->where('user_id', $userId)->delete();
+
+		// Insert new permissions
+		foreach ($perms as $menuId => $actions) {
+			$data = [
+				'uuid' => UUID::v5(UUID::v4(), 'user_permissions'),
+				'user_id' => $userId,
+				'menu_id' => $menuId,
+				'can_read' => isset($actions['read']) ? 1 : 0,
+				'can_create' => isset($actions['create']) ? 1 : 0,
+				'can_update' => isset($actions['update']) ? 1 : 0,
+				'can_delete' => isset($actions['delete']) ? 1 : 0,
+				'created_at' => date('Y-m-d H:i:s'),
+				'updated_at' => date('Y-m-d H:i:s'),
+			];
+
+			// Only save if at least one permission is granted
+			if ($data['can_read'] || $data['can_create'] || $data['can_update'] || $data['can_delete']) {
+				$this->db->table('user_permissions')->insert($data);
+			}
+		}
 	}
 
 	public function savepwd()

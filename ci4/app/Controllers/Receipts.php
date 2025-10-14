@@ -6,10 +6,13 @@ use App\Controllers\Core\CommonController;
 use App\Libraries\UUID;
 use App\Models\Core\Common_model;
 use App\Models\Receipts_model;
+use App\Traits\PermissionTrait;
 use stdClass;
 
 class Receipts extends CommonController
 {
+    use PermissionTrait;
+
     private $receipt_model;
 
     function __construct()
@@ -24,15 +27,21 @@ class Receipts extends CommonController
 
     public function index()
     {
+        $this->requireReadPermission();
+
         $this->data['tableName'] = $this->table;
         $this->data['rawTblName'] = $this->rawTblName;
         $this->data['is_add_permission'] = 1;
+
+        $this->addPermissionsToView($this->data);
 
         echo view($this->table . "/list", $this->data);
     }
 
     public function edit($id = '')
     {
+        $this->requireEditPermission($id);
+
         $this->data['tableName'] = $this->table;
         $this->data['rawTblName'] = $this->rawTblName;
 
@@ -79,6 +88,8 @@ class Receipts extends CommonController
     public function update()
     {
         $uuid = $this->request->getPost('uuid');
+        $this->requireEditPermission($uuid, true);
+
         $data = $this->request->getPost();
 
         // Generate UUID for new receipt
@@ -109,6 +120,8 @@ class Receipts extends CommonController
 
     public function delete($uuid)
     {
+        $this->requireDeletePermission(true);
+
         $receipt = $this->receipt_model->where('uuid', $uuid)->first();
 
         if (!$receipt) {
