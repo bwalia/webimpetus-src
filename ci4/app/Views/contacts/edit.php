@@ -264,7 +264,11 @@ if (preg_match($customerPatt, $previousUrl)) {
                                 </div>
                             </div>
 
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <?php
+                                $submitButtonText = 'Save Contact';
+                                $showCancelButton = false; // Don't show cancel as this is in tabs
+                                include(APPPATH . 'Views/common/submit-button.php');
+                            ?>
                         </div>
 
                         <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">

@@ -130,7 +130,10 @@ $businesses = getWithOutUuidResultArray("businesses");
 
             </div>
 
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <?php
+                $submitButtonText = 'Save Employee';
+                include(APPPATH . 'Views/common/submit-button.php');
+            ?>
         </form>
     </div>
 </div>

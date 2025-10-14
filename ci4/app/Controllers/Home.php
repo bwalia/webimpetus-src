@@ -16,9 +16,11 @@ class Home extends BaseController
 	private $menu_model;
 	private $Email_model;
 	private $cmodel;
+	protected $db;
 	public function __construct()
 	{
 		$this->session = \Config\Services::session();
+		$this->db = \Config\Database::connect();
 		$this->model = new Users_model();
 		$this->meta_model = new Meta_model();
 		$this->menu_model = new Menu_model();
@@ -126,46 +128,92 @@ class Home extends BaseController
 					// Super admin gets all permissions
 					$userMenus = $this->menu_model->getRows();
 				} else {
-					// Start with an empty array for merged permissions
-					$mergedMenuIds = [];
+					// Load Granular Permissions (read, create, update, delete)
+					$granularPermissions = [];
 
-					// Step 1: Get permissions from role (if assigned)
+					// Step 1: Get role-based granular permissions
 					if (isUUID($row->role) && !empty($row->role)) {
-						$menuArray = getResultWithoutBusiness('roles__permissions', ['role_id' => $row->role]);
-						$roleMenuIds = array_map(function($val, $key) {
-							return $val['permission_id'];
-						}, $menuArray, array_keys($menuArray));
-						$mergedMenuIds = $roleMenuIds;
+						$rolePerms = $this->db->table('roles__permissions rp')
+							->select('rp.permission_id, rp.can_read, rp.can_create, rp.can_update, rp.can_delete, m.id, m.name, m.link')
+							->join('menu m', 'm.id = rp.permission_id OR m.uuid = rp.permission_id')
+							->where('rp.role_id', $row->role)
+							->get()
+							->getResultArray();
+
+						foreach ($rolePerms as $perm) {
+							$granularPermissions[$perm['id']] = [
+								'id' => $perm['id'],
+								'name' => $perm['name'],
+								'link' => $perm['link'],
+								'can_read' => (bool)$perm['can_read'],
+								'can_create' => (bool)$perm['can_create'],
+								'can_update' => (bool)$perm['can_update'],
+								'can_delete' => (bool)$perm['can_delete'],
+							];
+						}
 					}
 
-					// Step 2: Get user's direct permissions (these override role)
+					// Step 2: Add/Override with user-specific granular permissions
+					$userPerms = $this->db->table('user_permissions up')
+						->select('up.menu_id, up.can_read, up.can_create, up.can_update, up.can_delete, m.id, m.name, m.link')
+						->join('menu m', 'm.id = up.menu_id')
+						->where('up.user_id', $row->id)
+						->get()
+						->getResultArray();
+
+					foreach ($userPerms as $perm) {
+						// User permissions override role permissions
+						$granularPermissions[$perm['id']] = [
+							'id' => $perm['id'],
+							'name' => $perm['name'],
+							'link' => $perm['link'],
+							'can_read' => (bool)$perm['can_read'],
+							'can_create' => (bool)$perm['can_create'],
+							'can_update' => (bool)$perm['can_update'],
+							'can_delete' => (bool)$perm['can_delete'],
+						];
+					}
+
+					// Step 3: Handle legacy permissions (from users.permissions JSON field)
 					if (!empty($row->permissions)) {
-						$userPermissionIds = json_decode($row->permissions, true);
-						if (is_array($userPermissionIds) && !empty($userPermissionIds)) {
-							// Merge: user permissions override/extend role permissions
-							$mergedMenuIds = array_unique(array_merge($mergedMenuIds, $userPermissionIds));
+						$legacyPermIds = json_decode($row->permissions, true);
+						if (is_array($legacyPermIds) && !empty($legacyPermIds)) {
+							$legacyMenus = $this->menu_model->getWherein($legacyPermIds);
+							foreach ($legacyMenus as $menu) {
+								if (!isset($granularPermissions[$menu['id']])) {
+									// Add with full permissions if not already defined
+									$granularPermissions[$menu['id']] = [
+										'id' => $menu['id'],
+										'name' => $menu['name'],
+										'link' => $menu['link'],
+										'can_read' => true,
+										'can_create' => true,
+										'can_update' => true,
+										'can_delete' => true,
+									];
+								}
+							}
 						}
 					}
 
-					// Step 3: Fetch menu items for all merged permission IDs
-					if (!empty($mergedMenuIds)) {
-						// Remove any non-numeric values
-						$mergedMenuIds = array_filter($mergedMenuIds, function($id) {
-							return is_numeric($id) || isUUID($id);
-						});
-
-						// Check if IDs are UUIDs or integers
-						if (isset($mergedMenuIds[0]) && isUUID($mergedMenuIds[0])) {
-							$userMenus = $this->menu_model->getWhereinByUUID($mergedMenuIds);
-						} else {
-							$userMenus = $this->menu_model->getWherein($mergedMenuIds);
-						}
-					} else {
-						$userMenus = [];
-					}
+					// Step 4: Convert to format for session storage
+					$userMenus = array_values($granularPermissions);
 				}
 
+				// Store both regular permissions and granular permissions in session
 				$this->session->set('permissions', $userMenus);
+
+				// Also store a simple permission map for quick access checks
+				$permissionMap = [];
+				foreach ($userMenus as $perm) {
+					$permissionMap[$perm['id']] = [
+						'read' => $perm['can_read'] ?? true,
+						'create' => $perm['can_create'] ?? true,
+						'update' => $perm['can_update'] ?? true,
+						'delete' => $perm['can_delete'] ?? true,
+					];
+				}
+				$this->session->set('permission_map', $permissionMap);
 
 				$redirectAfterLogin = $this->request->getPost('redirectAfterLogin');
 				if ($lastPathURL != '') {
@@ -225,35 +273,38 @@ class Home extends BaseController
 								// Super admin gets all permissions
 								$userMenus = $this->menu_model->getRows();
 							} else {
-								// Start with an empty array for merged permissions
+								// Permission Strategy: Additive (User + Role permissions combined)
 								$mergedMenuIds = [];
 
-								// Step 1: Get permissions from role (if assigned)
+								// Step 1: Get role permissions (if user is assigned to a role)
 								if (isUUID($row->role) && !empty($row->role)) {
 									$menuArray = getResultWithoutBusiness('roles__permissions', ['role_id' => $row->role]);
 									$roleMenuIds = array_map(function($val, $key) {
 										return $val['permission_id'];
 									}, $menuArray, array_keys($menuArray));
-									$mergedMenuIds = $roleMenuIds;
+									if (!empty($roleMenuIds)) {
+										$mergedMenuIds = $roleMenuIds;
+									}
 								}
 
-								// Step 2: Get user's direct permissions (these override role)
+								// Step 2: Add user's direct permissions (these extend role permissions)
 								if (!empty($row->permissions)) {
 									$userPermissionIds = json_decode($row->permissions, true);
 									if (is_array($userPermissionIds) && !empty($userPermissionIds)) {
-										// Merge: user permissions override/extend role permissions
+										// Merge user permissions with role permissions
+										// This creates a union: user gets ALL permissions from both sources
 										$mergedMenuIds = array_unique(array_merge($mergedMenuIds, $userPermissionIds));
 									}
 								}
 
-								// Step 3: Fetch menu items for all merged permission IDs
+								// Step 3: Fetch menu items for all permission IDs
 								if (!empty($mergedMenuIds)) {
-									// Remove any non-numeric values
+									// Remove any non-numeric/non-UUID values
 									$mergedMenuIds = array_filter($mergedMenuIds, function($id) {
 										return is_numeric($id) || isUUID($id);
 									});
 
-									// Check if IDs are UUIDs or integers
+									// Check if IDs are UUIDs or integers and fetch accordingly
 									if (isset($mergedMenuIds[0]) && isUUID($mergedMenuIds[0])) {
 										$userMenus = $this->menu_model->getWhereinByUUID($mergedMenuIds);
 									} else {

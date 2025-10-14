@@ -6,10 +6,13 @@ use App\Controllers\Core\CommonController;
 use App\Libraries\UUID;
 use App\Models\Core\Common_model;
 use App\Models\Payments_model;
+use App\Traits\PermissionTrait;
 use stdClass;
 
 class Payments extends CommonController
 {
+    use PermissionTrait;
+
     private $payment_model;
 
     function __construct()
@@ -24,15 +27,22 @@ class Payments extends CommonController
 
     public function index()
     {
+        $this->requireReadPermission();
+
         $this->data['tableName'] = $this->table;
         $this->data['rawTblName'] = $this->rawTblName;
         $this->data['is_add_permission'] = 1;
+
+        // Pass granular permissions to view
+        $this->addPermissionsToView($this->data);
 
         echo view($this->table . "/list", $this->data);
     }
 
     public function edit($id = '')
     {
+        $this->requireEditPermission($id);
+
         $this->data['tableName'] = $this->table;
         $this->data['rawTblName'] = $this->rawTblName;
 
@@ -79,6 +89,8 @@ class Payments extends CommonController
     public function update()
     {
         $uuid = $this->request->getPost('uuid');
+        $this->requireEditPermission($uuid, true); // true = redirect with message
+
         $data = $this->request->getPost();
 
         // Generate UUID for new payment
@@ -109,6 +121,8 @@ class Payments extends CommonController
 
     public function delete($uuid)
     {
+        $this->requireDeletePermission(true); // true = redirect with message
+
         $payment = $this->payment_model->where('uuid', $uuid)->first();
 
         if (!$payment) {

@@ -20,20 +20,26 @@
                         <td class="f_s_12 f_w_400"><?= $row[ $field ];?></td>
                         <?php } ?>
                         <td class="f_s_12 f_w_400 text-right">
+                            <?php if (($can_update ?? false) || ($can_delete ?? false)): ?>
                             <div class="header_more_tool">
                                 <div class="dropdown">
                                     <span class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown">
                                         <i class="ti-more-alt"></i>
                                     </span>
                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                                        
-                                        <a class="dropdown-item" onclick="return confirm('Are you sure want to delete?');" href="/<?php echo $tableName; ?>/delete/<?= $row[ $identifierKey ];?>"> <i class="ti-trash"></i> Delete</a>
+                                        <?php if ($can_update ?? false): ?>
                                         <a class="dropdown-item" href="/<?php echo $tableName; ?>/edit/<?= $row[ $identifierKey ];?>"> <i class="fas fa-edit"></i> Edit</a>
-                                        
-                                        
+                                        <?php endif; ?>
+
+                                        <?php if ($can_delete ?? false): ?>
+                                        <a class="dropdown-item" onclick="return confirm('Are you sure want to delete?');" href="/<?php echo $tableName; ?>/delete/<?= $row[ $identifierKey ];?>"> <i class="ti-trash"></i> Delete</a>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </div>
+                            <?php elseif (!($can_update ?? false) && !($can_delete ?? false)): ?>
+                            <span class="badge badge-info">View Only</span>
+                            <?php endif; ?>
                         </td>                                       
                     </tr>
                 <?php } ?>  

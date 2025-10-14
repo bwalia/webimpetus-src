@@ -313,8 +313,11 @@ require_once(APPPATH . 'Views/common/edit-title.php'); ?>
                     </div>
                 </div>
             </div>
-            <br>
-            <button type="submit" class="btn btn-primary">Submit</button>
+
+            <?php
+                $submitButtonText = 'Save Task';
+                include(APPPATH . 'Views/common/submit-button.php');
+            ?>
         </form>
     </div>
 </div>

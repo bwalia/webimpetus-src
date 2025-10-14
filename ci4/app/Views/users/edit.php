@@ -181,9 +181,138 @@ $roles = getResultWithoutBusiness("roles", ["uuid" => $_SESSION['role']], false)
                 .select2-permissions {
                     font-size: 14px;
                 }
+                .permission-matrix-table {
+                    font-size: 13px;
+                }
+                .permission-matrix-table th {
+                    background: #f8f9fa;
+                    font-weight: 600;
+                    text-transform: uppercase;
+                    font-size: 11px;
+                    letter-spacing: 0.5px;
+                    padding: 12px 8px;
+                }
+                .permission-matrix-table td {
+                    padding: 10px 8px;
+                    vertical-align: middle;
+                }
+                .permission-matrix-table input[type="checkbox"] {
+                    width: 18px;
+                    height: 18px;
+                    cursor: pointer;
+                }
+                .permission-matrix-table tbody tr:hover {
+                    background: #f8f9fa;
+                }
             </style>
 
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <!-- Step 3: Granular Permissions (Read/Create/Update/Delete) -->
+            <div class="form-row mt-4">
+                <div class="col-md-12">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0"><i class="fa fa-key"></i> Granular Permissions (Read/Create/Update/Delete)</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="alert alert-info mb-4">
+                                <i class="fa fa-info-circle"></i> <strong>Fine-Grained Access Control:</strong>
+                                <p class="mb-0 mt-2">
+                                    Control exactly what this user can do within each module. <strong>Read access is granted by default</strong> for all accessible modules.
+                                    These permissions <strong>override</strong> role permissions. Leave unchecked to use role defaults.
+                                </p>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover permission-matrix-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 40%;">Module</th>
+                                            <th class="text-center" style="width: 15%;"><i class="fa fa-eye"></i> Read</th>
+                                            <th class="text-center" style="width: 15%;"><i class="fa fa-plus"></i> Create</th>
+                                            <th class="text-center" style="width: 15%;"><i class="fa fa-edit"></i> Update</th>
+                                            <th class="text-center" style="width: 15%;"><i class="fa fa-trash"></i> Delete</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        // Get existing user permissions
+                                        $user_perms = [];
+                                        if (!empty($user->id)) {
+                                            $db = \Config\Database::connect();
+                                            $userPermsQuery = $db->table('user_permissions')
+                                                ->where('user_id', $user->id)
+                                                ->get()
+                                                ->getResultArray();
+
+                                            foreach ($userPermsQuery as $perm) {
+                                                $user_perms[$perm['menu_id']] = [
+                                                    'can_read' => $perm['can_read'],
+                                                    'can_create' => $perm['can_create'],
+                                                    'can_update' => $perm['can_update'],
+                                                    'can_delete' => $perm['can_delete'],
+                                                ];
+                                            }
+                                        }
+
+                                        foreach ($menu as $module):
+                                        ?>
+                                        <tr>
+                                            <td><strong><?= htmlspecialchars($module['name']) ?></strong></td>
+                                            <td class="text-center">
+                                                <input type="checkbox" name="perms[<?= $module['id'] ?>][read]" value="1"
+                                                    <?= (!isset($user_perms[$module['id']]['can_read']) || $user_perms[$module['id']]['can_read']) ? 'checked' : '' ?>>
+                                            </td>
+                                            <td class="text-center">
+                                                <input type="checkbox" name="perms[<?= $module['id'] ?>][create]" value="1"
+                                                    <?= (isset($user_perms[$module['id']]['can_create']) && $user_perms[$module['id']]['can_create']) ? 'checked' : '' ?>>
+                                            </td>
+                                            <td class="text-center">
+                                                <input type="checkbox" name="perms[<?= $module['id'] ?>][update]" value="1"
+                                                    <?= (isset($user_perms[$module['id']]['can_update']) && $user_perms[$module['id']]['can_update']) ? 'checked' : '' ?>>
+                                            </td>
+                                            <td class="text-center">
+                                                <input type="checkbox" name="perms[<?= $module['id'] ?>][delete]" value="1"
+                                                    <?= (isset($user_perms[$module['id']]['can_delete']) && $user_perms[$module['id']]['can_delete']) ? 'checked' : '' ?>>
+                                            </td>
+                                        </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="mt-3">
+                                <button type="button" class="btn btn-sm btn-outline-primary" onclick="checkAllPerms('read')">
+                                    <i class="fa fa-check-square"></i> Check All Read
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-success" onclick="checkAllPerms('create')">
+                                    <i class="fa fa-check-square"></i> Check All Create
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-info" onclick="checkAllPerms('update')">
+                                    <i class="fa fa-check-square"></i> Check All Update
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-danger" onclick="checkAllPerms('delete')">
+                                    <i class="fa fa-check-square"></i> Check All Delete
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="uncheckAllPerms()">
+                                    <i class="fa fa-square-o"></i> Clear All
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                function checkAllPerms(type) {
+                    document.querySelectorAll(`input[name*="[${type}]"]`).forEach(cb => cb.checked = true);
+                }
+
+                function uncheckAllPerms() {
+                    document.querySelectorAll('.permission-matrix-table input[type="checkbox"]').forEach(cb => cb.checked = false);
+                }
+            </script>
+
+            <button type="submit" class="btn btn-primary mt-3">Submit</button>
         </form>
 
         <?php if (!empty($user->id)) { ?>
