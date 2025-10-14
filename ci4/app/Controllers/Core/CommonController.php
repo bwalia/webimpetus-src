@@ -55,9 +55,16 @@ class CommonController extends BaseController
 		$currentPath = $uri->getPath();
 		if (!empty($permissions)) {
 			$user_permissions = array_map(function ($perm) {
-				return strtolower(str_replace("/", "", $perm['link']));
+				// Remove slashes and convert to lowercase
+				// Also replace hyphens with underscores for comparison
+				$processed = strtolower(str_replace(["/", "-"], ["", "_"], $perm['link']));
+				return $processed;
 			}, $permissions);
-			if (!in_array($this->table, $user_permissions) && $currentPath !== "/dashboard") {
+
+			// Normalize the table name by replacing hyphens with underscores
+			$normalizedTable = str_replace("-", "_", $this->table);
+
+			if (!in_array($normalizedTable, $user_permissions) && $currentPath !== "/dashboard") {
 				echo view("errors/html/error_403");
 				die;
 			}

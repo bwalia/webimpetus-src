@@ -123,20 +123,48 @@ class Home extends BaseController
 				}
 				$this->session->set('jwt_token', $token);
 				if ($row->id == "1") {
+					// Super admin gets all permissions
 					$userMenus = $this->menu_model->getRows();
 				} else {
-					if (isUUID($row->role)) {
+					// Start with an empty array for merged permissions
+					$mergedMenuIds = [];
+
+					// Step 1: Get permissions from role (if assigned)
+					if (isUUID($row->role) && !empty($row->role)) {
 						$menuArray = getResultWithoutBusiness('roles__permissions', ['role_id' => $row->role]);
-						$menuIds = array_map(function($val, $key) {
+						$roleMenuIds = array_map(function($val, $key) {
 							return $val['permission_id'];
 						}, $menuArray, array_keys($menuArray));
-						$userMenus = $this->menu_model->getWhereinByUUID($menuIds);
+						$mergedMenuIds = $roleMenuIds;
+					}
+
+					// Step 2: Get user's direct permissions (these override role)
+					if (!empty($row->permissions)) {
+						$userPermissionIds = json_decode($row->permissions, true);
+						if (is_array($userPermissionIds) && !empty($userPermissionIds)) {
+							// Merge: user permissions override/extend role permissions
+							$mergedMenuIds = array_unique(array_merge($mergedMenuIds, $userPermissionIds));
+						}
+					}
+
+					// Step 3: Fetch menu items for all merged permission IDs
+					if (!empty($mergedMenuIds)) {
+						// Remove any non-numeric values
+						$mergedMenuIds = array_filter($mergedMenuIds, function($id) {
+							return is_numeric($id) || isUUID($id);
+						});
+
+						// Check if IDs are UUIDs or integers
+						if (isset($mergedMenuIds[0]) && isUUID($mergedMenuIds[0])) {
+							$userMenus = $this->menu_model->getWhereinByUUID($mergedMenuIds);
+						} else {
+							$userMenus = $this->menu_model->getWherein($mergedMenuIds);
+						}
 					} else {
-						$arr = json_decode($row->permissions, true); // Convert to array instead of object
-						$userMenus = $this->menu_model->getWherein($arr);
+						$userMenus = [];
 					}
 				}
-				
+
 				$this->session->set('permissions', $userMenus);
 
 				$redirectAfterLogin = $this->request->getPost('redirectAfterLogin');
@@ -194,17 +222,45 @@ class Home extends BaseController
 							}
 							$this->session->set('jwt_token', $token);
 							if ($row->id == "1") {
+								// Super admin gets all permissions
 								$userMenus = $this->menu_model->getRows();
 							} else {
-								if (isUUID($row->role)) {
+								// Start with an empty array for merged permissions
+								$mergedMenuIds = [];
+
+								// Step 1: Get permissions from role (if assigned)
+								if (isUUID($row->role) && !empty($row->role)) {
 									$menuArray = getResultWithoutBusiness('roles__permissions', ['role_id' => $row->role]);
-									$menuIds = array_map(function ($val, $key) {
+									$roleMenuIds = array_map(function($val, $key) {
 										return $val['permission_id'];
 									}, $menuArray, array_keys($menuArray));
-									$userMenus = $this->menu_model->getWhereinByUUID($menuIds);
+									$mergedMenuIds = $roleMenuIds;
+								}
+
+								// Step 2: Get user's direct permissions (these override role)
+								if (!empty($row->permissions)) {
+									$userPermissionIds = json_decode($row->permissions, true);
+									if (is_array($userPermissionIds) && !empty($userPermissionIds)) {
+										// Merge: user permissions override/extend role permissions
+										$mergedMenuIds = array_unique(array_merge($mergedMenuIds, $userPermissionIds));
+									}
+								}
+
+								// Step 3: Fetch menu items for all merged permission IDs
+								if (!empty($mergedMenuIds)) {
+									// Remove any non-numeric values
+									$mergedMenuIds = array_filter($mergedMenuIds, function($id) {
+										return is_numeric($id) || isUUID($id);
+									});
+
+									// Check if IDs are UUIDs or integers
+									if (isset($mergedMenuIds[0]) && isUUID($mergedMenuIds[0])) {
+										$userMenus = $this->menu_model->getWhereinByUUID($mergedMenuIds);
+									} else {
+										$userMenus = $this->menu_model->getWherein($mergedMenuIds);
+									}
 								} else {
-									$arr = json_decode($row->permissions, true); // Convert to array instead of object
-									$userMenus = $this->menu_model->getWherein($arr);
+									$userMenus = [];
 								}
 							}
 
