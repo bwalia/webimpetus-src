@@ -61,52 +61,127 @@ $roles = getResultWithoutBusiness("roles", ["uuid" => $_SESSION['role']], false)
                     </select>
                 </div>
             </div>
-            
-            <?php if ((isset($_SESSION['role']) && isset($roles['role_name']) && $roles['role_name'] == "Administrator") || session('uuid') == 1) { ?>
-                <div class="form-row">
-                    <div class="form-group col-md-12">
-                        <label for="userRole">Set User Role</label>
-                        <select name="role" id="userRole" class="form-control">
-                        <option value="">--Select--</option>
-                        <?php if (!empty($user_roles) && $user_roles) { ?>
-                            <?php foreach ($user_roles as $key => $row): ?>
-                                <option value="<?= $row['uuid']; ?>" <?= @$user->role == $row['uuid'] ? 'selected="selected"' : ''; ?>>
-                                    <?= $row['role_name']; ?>
-                                </option>
-                            <?php endforeach; ?>
+
+            <!-- Permissions Section with Improved UI -->
+            <div class="form-row mt-4">
+                <div class="col-md-12">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0"><i class="fa fa-shield"></i> Access Control & Permissions</h5>
+                        </div>
+                        <div class="card-body">
+                            <!-- Important Notice -->
+                            <div class="alert alert-info mb-4">
+                                <i class="fa fa-info-circle"></i> <strong>How Permissions Work:</strong>
+                                <ul class="mb-0 mt-2" style="padding-left: 20px;">
+                                    <li><strong>Role-Based:</strong> Assign a role to give the user a predefined set of module permissions</li>
+                                    <li><strong>Additional Modules:</strong> Select extra modules below to extend beyond the role's permissions</li>
+                                    <li><strong>Final Access:</strong> User gets access to ALL modules from their role + any additional modules selected</li>
+                                    <li class="text-danger"><strong>Important:</strong> User must logout and login for changes to take effect</li>
+                                </ul>
+                            </div>
+
+                            <?php if ((isset($_SESSION['role']) && isset($roles['role_name']) && $roles['role_name'] == "Administrator") || session('uuid') == 1) { ?>
+                            <!-- Step 1: Role Assignment -->
+                            <div class="permission-section mb-4">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="step-badge">1</div>
+                                    <h6 class="mb-0 ml-3">
+                                        <i class="fa fa-user-tag text-primary"></i> Assign User to Role (Optional)
+                                    </h6>
+                                </div>
+                                <div class="pl-5">
+                                    <select name="role" id="userRole" class="form-control form-control-lg">
+                                        <option value="">-- No Role (Use Individual Permissions Only) --</option>
+                                        <?php if (!empty($user_roles) && $user_roles) { ?>
+                                            <?php foreach ($user_roles as $key => $row): ?>
+                                                <option value="<?= $row['uuid']; ?>" <?= @$user->role == $row['uuid'] ? 'selected="selected"' : ''; ?>>
+                                                    <?= $row['role_name']; ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        <?php } ?>
+                                    </select>
+                                    <small class="form-text text-muted mt-2">
+                                        <i class="fa fa-lightbulb-o"></i>
+                                        Roles provide a baseline set of permissions. Leave empty if you want to manage all permissions individually.
+                                    </small>
+                                </div>
+                            </div>
                             <?php } ?>
-                        </select>
+
+                            <!-- Step 2: Additional Modules -->
+                            <div class="permission-section">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="step-badge">2</div>
+                                    <h6 class="mb-0 ml-3">
+                                        <i class="fa fa-plus-circle text-success"></i> Grant Additional Module Access
+                                    </h6>
+                                </div>
+                                <div class="pl-5">
+                                    <div class="mb-3">
+                                        <button type="button" class="btn btn-sm btn-outline-primary" id="selectAllModules">
+                                            <i class="fa fa-check-square"></i> Select All Modules
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary" id="deselectAllModules">
+                                            <i class="fa fa-square-o"></i> Clear Selection
+                                        </button>
+                                    </div>
+                                    <select id="sid" name="sid[]" multiple class="form-control select2-permissions" style="height: 200px;" data-placeholder="Select additional modules...">
+                                        <?php
+                                            $arr = (isset($user) && (!empty($user->permissions))) ? json_decode(@$user->permissions, true) : false;
+                                            foreach ($menu as $row): ?>
+                                                <option value="<?= $row['id']; ?>" <?php if ($arr && is_array($arr))
+                                                      echo
+                                                          in_array($row['id'], $arr) ? 'selected="selected"' : '' ?>><?= $row['name']; ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                    </select>
+                                    <small class="form-text text-muted mt-2">
+                                        <i class="fa fa-lightbulb-o"></i>
+                                        These modules will be <strong>added to</strong> any permissions from the role above.
+                                        If no role is assigned, these are the only modules the user can access.
+                                    </small>
+                                </div>
+                            </div>
+
+                            <!-- Permission Summary -->
+                            <div class="alert alert-success mt-4 mb-0">
+                                <i class="fa fa-check-circle"></i> <strong>Final Permissions:</strong>
+                                <p class="mb-0 mt-2">This user will have access to:</p>
+                                <ul class="mb-0" style="padding-left: 20px;">
+                                    <li>All modules from their assigned role (if any)</li>
+                                    <li><strong>PLUS</strong> any additional modules selected above</li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            <?php } ?>
-            <div class="form-row">
-                <div class="form-group col-md-12">
-                    <label for="inputState">
-                        <i class="fa fa-shield"></i> Set User Module Permissions
-                    </label>
-                    <div class="mb-2">
-                        <button type="button" class="btn btn-sm btn-outline-primary" id="selectAllModules">
-                            <i class="fa fa-check-square"></i> Select All
-                        </button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary" id="deselectAllModules">
-                            <i class="fa fa-square-o"></i> Clear All
-                        </button>
-                    </div>
-                    <select id="sid" name="sid[]" multiple class="form-control select2-permissions" data-placeholder="Select modules to grant access...">
-                        <?php
-                            $arr = (isset($user) && (!empty($user->permissions))) ? json_decode(@$user->permissions, true) : false;
-                            foreach ($menu as $row): ?>
-                                <option value="<?= $row['id']; ?>" <?php if ($arr && is_array($arr))
-                                      echo
-                                          in_array($row['id'], $arr) ? 'selected="selected"' : '' ?>><?= $row['name']; ?>
-                                </option>
-                            <?php endforeach; ?>
-                    </select>
-                    <small class="form-text text-muted">
-                        <i class="fa fa-info-circle"></i> Select all modules this user should have access to. Changes take effect on next login.
-                    </small>
                 </div>
             </div>
+
+            <style>
+                .step-badge {
+                    width: 32px;
+                    height: 32px;
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    color: white;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-weight: bold;
+                    font-size: 16px;
+                }
+                .permission-section {
+                    border-left: 3px solid #e9ecef;
+                    padding-left: 0;
+                }
+                .card-header h5 {
+                    font-weight: 600;
+                }
+                .select2-permissions {
+                    font-size: 14px;
+                }
+            </style>
 
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
