@@ -349,9 +349,6 @@
         },
         project_name: function(data, type, row) {
             let html = data || '-';
-            if (row.project_code) {
-                html = '<span style="color: #667eea; font-weight: 600;">[' + row.project_code + ']</span> ' + html;
-            }
             return html;
         },
         task_name: function(data, type, row) {
