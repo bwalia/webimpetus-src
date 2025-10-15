@@ -205,11 +205,15 @@ class ProjectJobs_model extends Model
     }
 
     /**
-     * Get job by UUID
+     * Get job by UUID with project details
      */
     public function getJobByUuid($uuid)
     {
-        return $this->where('uuid', $uuid)->first();
+        $builder = $this->db->table('project_jobs');
+        $builder->select('project_jobs.*, projects.name as project_name');
+        $builder->join('projects', 'projects.uuid = project_jobs.uuid_project_id', 'left');
+        $builder->where('project_jobs.uuid', $uuid);
+        return $builder->get()->getRow();
     }
 
     /**

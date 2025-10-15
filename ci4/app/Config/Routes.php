@@ -82,6 +82,7 @@ $routes->group('project_jobs', function($routes) {
 // Project Job Phases routes
 $routes->group('project_job_phases', function($routes) {
     $routes->get('index/(:segment)', 'ProjectJobPhases::index/$1');
+    $routes->get('phasesList/(:segment)', 'ProjectJobPhases::phasesList/$1');
     $routes->get('edit/(:segment)/(:segment)', 'ProjectJobPhases::edit/$1/$2');
     $routes->get('edit/(:segment)', 'ProjectJobPhases::edit/$1');
     $routes->post('update', 'ProjectJobPhases::update');
@@ -164,6 +165,11 @@ $routes->resource('api/v2/interviews');
 $routes->resource('api/v2/products');
 $routes->resource('api/v2/payments');
 $routes->resource('api/v2/receipts');
+
+// Project Jobs API endpoints
+$routes->resource('api/v2/project_jobs');
+$routes->resource('api/v2/project_job_phases');
+$routes->resource('api/v2/project_job_scheduler');
 
 // Hospital Management System APIs
 $routes->resource('api/v2/hospital_staff');

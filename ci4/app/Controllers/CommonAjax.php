@@ -165,7 +165,7 @@ class CommonAjax extends ResourceController
             $businessUuid = session('uuid_business');
 
             $builder = $this->db->table('projects');
-            $builder->select('projects.id, projects.name, projects.customers_id, customers.company_name as customer_name');
+            $builder->select('projects.id, projects.uuid, projects.name, projects.customers_id, customers.company_name as customer_name');
             $builder->join('customers', 'customers.id = projects.customers_id', 'left');
             $builder->where('projects.uuid_business_id', $businessUuid);
 

@@ -7,7 +7,6 @@ use App\Models\ProjectJobScheduler_model;
 use App\Models\ProjectJobs_model;
 use App\Models\ProjectJobPhases_model;
 use App\Models\Users_model;
-use App\Models\Employees_model;
 use App\Libraries\UUID;
 use CodeIgniter\API\ResponseTrait;
 
@@ -19,7 +18,7 @@ class ProjectJobScheduler extends CommonController
     protected $projectJobs_model;
     protected $projectJobPhases_model;
     protected $users_model;
-    protected $employees_model;
+    protected $db;
 
     function __construct()
     {
@@ -29,7 +28,7 @@ class ProjectJobScheduler extends CommonController
         $this->projectJobs_model = new ProjectJobs_model();
         $this->projectJobPhases_model = new ProjectJobPhases_model();
         $this->users_model = new Users_model();
-        $this->employees_model = new Employees_model();
+        $this->db = \Config\Database::connect();
     }
 
     public function calendar()
@@ -37,7 +36,10 @@ class ProjectJobScheduler extends CommonController
         $data['tableName'] = 'project_job_scheduler';
         $data['rawTblName'] = 'project_job_schedule';
         $data['users'] = $this->users_model->findAll();
-        $data['employees'] = $this->employees_model->where('uuid_business_id', session('uuid_business'))->findAll();
+        $data['employees'] = $this->db->table('employees')
+            ->where('uuid_business_id', session('uuid_business'))
+            ->get()
+            ->getResult();
 
         echo view('project_job_scheduler/calendar', $data);
     }
@@ -59,7 +61,7 @@ class ProjectJobScheduler extends CommonController
 
     public function createEvent()
     {
-        $uuid = UUID::v5(time());
+        $uuid = UUID::v5(UUID::v4(), 'project_job_scheduler');
 
         $data = [
             'uuid' => $uuid,

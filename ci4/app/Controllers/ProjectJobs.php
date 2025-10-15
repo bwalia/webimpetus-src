@@ -7,7 +7,6 @@ use App\Models\ProjectJobs_model;
 use App\Models\ProjectJobPhases_model;
 use App\Models\Projects_model;
 use App\Models\Users_model;
-use App\Models\Employees_model;
 use App\Libraries\UUID;
 use CodeIgniter\API\ResponseTrait;
 
@@ -19,7 +18,7 @@ class ProjectJobs extends CommonController
     protected $projectJobPhases_model;
     protected $projects_model;
     protected $users_model;
-    protected $employees_model;
+    protected $db;
 
     function __construct()
     {
@@ -29,7 +28,7 @@ class ProjectJobs extends CommonController
         $this->projectJobPhases_model = new ProjectJobPhases_model();
         $this->projects_model = new Projects_model();
         $this->users_model = new Users_model();
-        $this->employees_model = new Employees_model();
+        $this->db = \Config\Database::connect();
     }
 
     public function index()
@@ -47,45 +46,62 @@ class ProjectJobs extends CommonController
 
     public function jobsList()
     {
-        $limit = (int)$this->request->getVar('limit');
-        $offset = (int)$this->request->getVar('offset');
-        $query = $this->request->getVar('query');
-        $order = $this->request->getVar('order') ?? "created_at";
-        $dir = $this->request->getVar('dir') ?? "desc";
+        try {
+            $query = $this->request->getVar('query');
 
-        $filters = [];
-        if ($projectUuid = $this->request->getVar('project_uuid')) {
-            $filters['project_uuid'] = $projectUuid;
+            $filters = [];
+            if ($projectUuid = $this->request->getVar('project_uuid')) {
+                $filters['project_uuid'] = $projectUuid;
+            }
+            if ($status = $this->request->getVar('status')) {
+                $filters['status'] = $status;
+            }
+            if ($jobType = $this->request->getVar('job_type')) {
+                $filters['job_type'] = $jobType;
+            }
+
+            $businessUuid = session('uuid_business');
+            if (!$businessUuid) {
+                log_message('error', 'ProjectJobs::jobsList - No business UUID in session');
+                return $this->response->setJSON([
+                    'error' => 'No business UUID in session',
+                    'data' => []
+                ]);
+            }
+
+            $jobs = $this->projectJobs_model->getJobsWithDetails($businessUuid, $filters);
+
+            // Filter by query if provided
+            if ($query) {
+                $jobs = array_filter($jobs, function ($job) use ($query) {
+                    return stripos($job->job_name, $query) !== false ||
+                           stripos($job->job_number, $query) !== false ||
+                           stripos($job->project_name, $query) !== false;
+                });
+            }
+
+            // Convert to array with reindexed keys
+            $jobs = array_values($jobs);
+            $total = count($jobs);
+
+            $data = [
+                'rawTblName' => 'project_job',
+                'tableName' => 'project_jobs',
+                'data' => $jobs,
+                'recordsTotal' => $total,
+                'recordsFiltered' => $total,
+            ];
+
+            return $this->response->setJSON($data);
+        } catch (\Exception $e) {
+            log_message('error', 'ProjectJobs::jobsList - Exception: ' . $e->getMessage());
+            return $this->response->setJSON([
+                'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'data' => []
+            ]);
         }
-        if ($status = $this->request->getVar('status')) {
-            $filters['status'] = $status;
-        }
-        if ($jobType = $this->request->getVar('job_type')) {
-            $filters['job_type'] = $jobType;
-        }
-
-        $jobs = $this->projectJobs_model->getJobsWithDetails(session('uuid_business'), $filters);
-
-        // Filter by query if provided
-        if ($query) {
-            $jobs = array_filter($jobs, function ($job) use ($query) {
-                return stripos($job->job_name, $query) !== false ||
-                       stripos($job->job_number, $query) !== false ||
-                       stripos($job->project_name, $query) !== false;
-            });
-        }
-
-        $total = count($jobs);
-        $jobs = array_slice($jobs, $offset, $limit);
-
-        $data = [
-            'rawTblName' => 'project_job',
-            'tableName' => 'project_jobs',
-            'data' => $jobs,
-            'recordsTotal' => $total,
-        ];
-
-        return $this->response->setJSON($data);
     }
 
     public function edit($uuid = 0)
@@ -94,10 +110,13 @@ class ProjectJobs extends CommonController
 
         $data['tableName'] = 'project_jobs';
         $data['rawTblName'] = 'project_job';
-        $data['project_job'] = $jobData;
+        $data['job'] = $jobData;
         $data['projects'] = $this->projects_model->where('uuid_business_id', session('uuid_business'))->findAll();
         $data['users'] = $this->users_model->findAll();
-        $data['employees'] = $this->employees_model->where('uuid_business_id', session('uuid_business'))->findAll();
+        $data['employees'] = $this->db->table('employees')
+            ->where('uuid_business_id', session('uuid_business'))
+            ->get()
+            ->getResult();
 
         // If editing, get phases
         if ($jobData) {
@@ -114,7 +133,7 @@ class ProjectJobs extends CommonController
         $isNew = empty($uuid);
 
         if ($isNew) {
-            $uuid = UUID::v5(time());
+            $uuid = UUID::v5(UUID::v4(), 'project_jobs');
             $jobNumber = $this->projectJobs_model->getNextJobNumber(
                 session('uuid_business'),
                 $this->request->getPost('uuid_project_id')
@@ -122,6 +141,21 @@ class ProjectJobs extends CommonController
         } else {
             $jobNumber = $this->request->getPost('job_number');
         }
+
+        // Helper function to convert date from m/d/Y to Y-m-d
+        $convertDate = function($dateStr) {
+            if (empty($dateStr)) return null;
+            // Try parsing as m/d/Y first
+            $date = \DateTime::createFromFormat('m/d/Y', $dateStr);
+            if ($date) {
+                return $date->format('Y-m-d');
+            }
+            // If already in Y-m-d format, return as is
+            if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateStr)) {
+                return $dateStr;
+            }
+            return null;
+        };
 
         $data = [
             'uuid' => $uuid,
@@ -135,10 +169,10 @@ class ProjectJobs extends CommonController
             'status' => $this->request->getPost('status'),
             'assigned_to_user_id' => $this->request->getPost('assigned_to_user_id') ?: null,
             'assigned_to_employee_id' => $this->request->getPost('assigned_to_employee_id') ?: null,
-            'planned_start_date' => $this->request->getPost('planned_start_date') ?: null,
-            'planned_end_date' => $this->request->getPost('planned_end_date') ?: null,
-            'actual_start_date' => $this->request->getPost('actual_start_date') ?: null,
-            'actual_end_date' => $this->request->getPost('actual_end_date') ?: null,
+            'planned_start_date' => $convertDate($this->request->getPost('planned_start_date')),
+            'planned_end_date' => $convertDate($this->request->getPost('planned_end_date')),
+            'actual_start_date' => $convertDate($this->request->getPost('actual_start_date')),
+            'actual_end_date' => $convertDate($this->request->getPost('actual_end_date')),
             'estimated_hours' => $this->request->getPost('estimated_hours') ?: null,
             'estimated_cost' => $this->request->getPost('estimated_cost') ?: null,
             'billable' => $this->request->getPost('billable') ? 1 : 0,

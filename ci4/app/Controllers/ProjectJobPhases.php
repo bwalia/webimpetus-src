@@ -6,7 +6,6 @@ use App\Controllers\Core\CommonController;
 use App\Models\ProjectJobPhases_model;
 use App\Models\ProjectJobs_model;
 use App\Models\Users_model;
-use App\Models\Employees_model;
 use App\Libraries\UUID;
 use CodeIgniter\API\ResponseTrait;
 
@@ -17,7 +16,7 @@ class ProjectJobPhases extends CommonController
     protected $projectJobPhases_model;
     protected $projectJobs_model;
     protected $users_model;
-    protected $employees_model;
+    protected $db;
 
     function __construct()
     {
@@ -26,7 +25,7 @@ class ProjectJobPhases extends CommonController
         $this->projectJobPhases_model = new ProjectJobPhases_model();
         $this->projectJobs_model = new ProjectJobs_model();
         $this->users_model = new Users_model();
-        $this->employees_model = new Employees_model();
+        $this->db = \Config\Database::connect();
     }
 
     public function index($jobUuid = null)
@@ -34,7 +33,7 @@ class ProjectJobPhases extends CommonController
         $data['tableName'] = 'project_job_phases';
         $data['rawTblName'] = 'project_job_phase';
         $data['is_add_permission'] = 1;
-        $data['job_uuid'] = $jobUuid;
+        $data['jobUuid'] = $jobUuid;
 
         if ($jobUuid) {
             $data['job'] = $this->projectJobs_model->getJobByUuid($jobUuid);
@@ -45,22 +44,62 @@ class ProjectJobPhases extends CommonController
         echo view('project_job_phases/list', $data);
     }
 
+    public function phasesList($jobUuid)
+    {
+        try {
+            $businessUuid = session('uuid_business');
+            if (!$businessUuid) {
+                return $this->response->setJSON([
+                    'error' => 'No business UUID in session',
+                    'data' => []
+                ]);
+            }
+
+            $phases = $this->projectJobPhases_model->getPhasesWithDependencies($jobUuid);
+
+            // Convert to array with reindexed keys
+            $phases = array_values($phases);
+            $total = count($phases);
+
+            $data = [
+                'rawTblName' => 'project_job_phase',
+                'tableName' => 'project_job_phases',
+                'data' => $phases,
+                'recordsTotal' => $total,
+                'recordsFiltered' => $total,
+            ];
+
+            return $this->response->setJSON($data);
+        } catch (\Exception $e) {
+            log_message('error', 'ProjectJobPhases::phasesList - Exception: ' . $e->getMessage());
+            return $this->response->setJSON([
+                'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'data' => []
+            ]);
+        }
+    }
+
     public function edit($uuid = 0, $jobUuid = null)
     {
         $phaseData = $uuid ? $this->projectJobPhases_model->getPhaseByUuid($uuid) : null;
 
         $data['tableName'] = 'project_job_phases';
         $data['rawTblName'] = 'project_job_phase';
-        $data['project_job_phase'] = $phaseData;
-        $data['job_uuid'] = $jobUuid ?: ($phaseData ? $phaseData->uuid_project_job_id : null);
+        $data['phase'] = $phaseData;
+        $data['jobUuid'] = $jobUuid ?: ($phaseData ? $phaseData->uuid_project_job_id : null);
 
-        if ($data['job_uuid']) {
-            $data['job'] = $this->projectJobs_model->getJobByUuid($data['job_uuid']);
-            $data['phases'] = $this->projectJobPhases_model->getPhasesByJob($data['job_uuid']);
+        if ($data['jobUuid']) {
+            $data['job'] = $this->projectJobs_model->getJobByUuid($data['jobUuid']);
+            $data['availablePhases'] = $this->projectJobPhases_model->getPhasesByJob($data['jobUuid']);
         }
 
         $data['users'] = $this->users_model->findAll();
-        $data['employees'] = $this->employees_model->where('uuid_business_id', session('uuid_business'))->findAll();
+        $data['employees'] = $this->db->table('employees')
+            ->where('uuid_business_id', session('uuid_business'))
+            ->get()
+            ->getResult();
 
         echo view('project_job_phases/edit', $data);
     }
@@ -72,7 +111,7 @@ class ProjectJobPhases extends CommonController
         $isNew = empty($uuid);
 
         if ($isNew) {
-            $uuid = UUID::v5(time());
+            $uuid = UUID::v5(UUID::v4(), 'project_job_phases');
             $phaseNumber = $this->projectJobPhases_model->getNextPhaseNumber(
                 session('uuid_business'),
                 $jobUuid
@@ -80,6 +119,21 @@ class ProjectJobPhases extends CommonController
         } else {
             $phaseNumber = $this->request->getPost('phase_number');
         }
+
+        // Helper function to convert date from m/d/Y to Y-m-d
+        $convertDate = function($dateStr) {
+            if (empty($dateStr)) return null;
+            // Try parsing as m/d/Y first
+            $date = \DateTime::createFromFormat('m/d/Y', $dateStr);
+            if ($date) {
+                return $date->format('Y-m-d');
+            }
+            // If already in Y-m-d format, return as is
+            if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateStr)) {
+                return $dateStr;
+            }
+            return null;
+        };
 
         $data = [
             'uuid' => $uuid,
@@ -92,10 +146,10 @@ class ProjectJobPhases extends CommonController
             'status' => $this->request->getPost('status'),
             'assigned_to_user_id' => $this->request->getPost('assigned_to_user_id') ?: null,
             'assigned_to_employee_id' => $this->request->getPost('assigned_to_employee_id') ?: null,
-            'planned_start_date' => $this->request->getPost('planned_start_date') ?: null,
-            'planned_end_date' => $this->request->getPost('planned_end_date') ?: null,
-            'actual_start_date' => $this->request->getPost('actual_start_date') ?: null,
-            'actual_end_date' => $this->request->getPost('actual_end_date') ?: null,
+            'planned_start_date' => $convertDate($this->request->getPost('planned_start_date')),
+            'planned_end_date' => $convertDate($this->request->getPost('planned_end_date')),
+            'actual_start_date' => $convertDate($this->request->getPost('actual_start_date')),
+            'actual_end_date' => $convertDate($this->request->getPost('actual_end_date')),
             'estimated_hours' => $this->request->getPost('estimated_hours') ?: null,
             'depends_on_phase_uuid' => $this->request->getPost('depends_on_phase_uuid') ?: null,
             'completion_percentage' => $this->request->getPost('completion_percentage') ?: 0,
