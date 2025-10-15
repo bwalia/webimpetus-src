@@ -129,7 +129,7 @@ Accounting (Category)
 
 ```sql
 -- Add Accounting Module Routes to Menu
-USE myworkstation_dev;
+-- USE myworkstation_dev;
 
 -- Get the next available sort order
 SET @next_sort = (SELECT COALESCE(MAX(sort_order), 0) + 1 FROM menu);
