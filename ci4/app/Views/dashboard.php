@@ -821,17 +821,17 @@
                 plotOptions: {
                     bar: {
                         horizontal: true,
-                        borderRadius: 10,
+                        borderRadius: 4,
                         borderRadiusApplication: 'end',
-                        barHeight: '75%',
+                        barHeight: '70%',
                         dataLabels: {
                             total: {
                                 enabled: true,
                                 offsetX: 5,
                                 style: {
-                                    fontSize: '13px',
-                                    fontWeight: 700,
-                                    color: '#1e293b'
+                                    fontSize: '12px',
+                                    fontWeight: 600,
+                                    color: '#172b4d'
                                 }
                             }
                         }
@@ -857,19 +857,10 @@
                         opacity: 0.3
                     }
                 },
-                colors: ['#dc2626', '#ea580c', '#ca8a04', '#16a34a'],
+                colors: ['#ff5630', '#ffab00', '#2684ff', '#36b37e'],
                 fill: {
-                    type: 'gradient',
-                    gradient: {
-                        shade: 'light',
-                        type: 'horizontal',
-                        shadeIntensity: 0.25,
-                        gradientToColors: ['#ef4444', '#f97316', '#eab308', '#22c55e'],
-                        inverseColors: false,
-                        opacityFrom: 1,
-                        opacityTo: 0.95,
-                        stops: [0, 100]
-                    }
+                    type: 'solid',
+                    opacity: 0.95
                 },
                 stroke: {
                     width: 1,
@@ -881,12 +872,14 @@
                         style: {
                             fontSize: '11px',
                             fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-                            fontWeight: 500,
-                            colors: '#64748b'
+                            fontWeight: 400,
+                            colors: '#5e6c84'
                         }
                     },
                     axisBorder: {
-                        show: false
+                        show: true,
+                        color: '#dfe1e6',
+                        height: 1
                     },
                     axisTicks: {
                         show: false
@@ -897,10 +890,10 @@
                         show: true,
                         maxWidth: 160,
                         style: {
-                            fontSize: '13px',
+                            fontSize: '12px',
                             fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-                            fontWeight: 600,
-                            colors: '#334155'
+                            fontWeight: 500,
+                            colors: '#172b4d'
                         },
                         formatter: function(val) {
                             if (val && val.length > 20) {
@@ -912,8 +905,8 @@
                 },
                 grid: {
                     show: true,
-                    borderColor: '#f1f5f9',
-                    strokeDashArray: 3,
+                    borderColor: '#ebecf0',
+                    strokeDashArray: 0,
                     position: 'back',
                     xaxis: {
                         lines: {
@@ -937,20 +930,21 @@
                     position: 'top',
                     horizontalAlign: 'left',
                     offsetY: -5,
-                    fontSize: '12px',
+                    fontSize: '11px',
                     fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-                    fontWeight: 600,
+                    fontWeight: 500,
                     markers: {
-                        width: 12,
-                        height: 12,
-                        radius: 3
+                        width: 10,
+                        height: 10,
+                        radius: 2,
+                        offsetX: -2
                     },
                     itemMargin: {
-                        horizontal: 12,
+                        horizontal: 16,
                         vertical: 0
                     },
                     labels: {
-                        colors: '#334155',
+                        colors: '#172b4d',
                         useSeriesColors: false
                     }
                 },
@@ -979,42 +973,42 @@
                         var total = criticalVal + highVal + mediumVal + lowVal;
 
                         return `
-                            <div style="background: white; padding: 12px 14px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); min-width: 220px; border: 1px solid #e5e7eb;">
-                                <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; color: #6b7280;">
+                            <div style="background: white; padding: 12px 14px; border-radius: 3px; box-shadow: 0 4px 16px rgba(9,30,66,0.25); min-width: 220px; border: 1px solid #dfe1e6;">
+                                <div style="font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; color: #5e6c84;">
                                     ${customer}
                                 </div>
-                                <div style="border-top: 1px solid #e5e7eb; padding-top: 8px;">
+                                <div style="border-top: 1px solid #ebecf0; padding-top: 8px;">
                                     ${criticalVal > 0 ? `<div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-                                        <span style="display: flex; align-items: center; font-size: 12px; color: #374151;">
-                                            <span style="width: 8px; height: 8px; background: #dc2626; border-radius: 2px; margin-right: 6px; display: inline-block;"></span>
+                                        <span style="display: flex; align-items: center; font-size: 12px; color: #42526e;">
+                                            <span style="width: 8px; height: 8px; background: #ff5630; border-radius: 2px; margin-right: 6px; display: inline-block;"></span>
                                             Critical
                                         </span>
-                                        <span style="font-weight: 600; font-size: 12px; color: #111827;">${criticalVal}</span>
+                                        <span style="font-weight: 600; font-size: 12px; color: #172b4d;">${criticalVal}</span>
                                     </div>` : ''}
                                     ${highVal > 0 ? `<div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-                                        <span style="display: flex; align-items: center; font-size: 12px; color: #374151;">
-                                            <span style="width: 8px; height: 8px; background: #ea580c; border-radius: 2px; margin-right: 6px; display: inline-block;"></span>
+                                        <span style="display: flex; align-items: center; font-size: 12px; color: #42526e;">
+                                            <span style="width: 8px; height: 8px; background: #ffab00; border-radius: 2px; margin-right: 6px; display: inline-block;"></span>
                                             High
                                         </span>
-                                        <span style="font-weight: 600; font-size: 12px; color: #111827;">${highVal}</span>
+                                        <span style="font-weight: 600; font-size: 12px; color: #172b4d;">${highVal}</span>
                                     </div>` : ''}
                                     ${mediumVal > 0 ? `<div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-                                        <span style="display: flex; align-items: center; font-size: 12px; color: #374151;">
-                                            <span style="width: 8px; height: 8px; background: #ca8a04; border-radius: 2px; margin-right: 6px; display: inline-block;"></span>
+                                        <span style="display: flex; align-items: center; font-size: 12px; color: #42526e;">
+                                            <span style="width: 8px; height: 8px; background: #2684ff; border-radius: 2px; margin-right: 6px; display: inline-block;"></span>
                                             Medium
                                         </span>
-                                        <span style="font-weight: 600; font-size: 12px; color: #111827;">${mediumVal}</span>
+                                        <span style="font-weight: 600; font-size: 12px; color: #172b4d;">${mediumVal}</span>
                                     </div>` : ''}
                                     ${lowVal > 0 ? `<div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-                                        <span style="display: flex; align-items: center; font-size: 12px; color: #374151;">
-                                            <span style="width: 8px; height: 8px; background: #16a34a; border-radius: 2px; margin-right: 6px; display: inline-block;"></span>
+                                        <span style="display: flex; align-items: center; font-size: 12px; color: #42526e;">
+                                            <span style="width: 8px; height: 8px; background: #36b37e; border-radius: 2px; margin-right: 6px; display: inline-block;"></span>
                                             Low
                                         </span>
-                                        <span style="font-weight: 600; font-size: 12px; color: #111827;">${lowVal}</span>
+                                        <span style="font-weight: 600; font-size: 12px; color: #172b4d;">${lowVal}</span>
                                     </div>` : ''}
-                                    <div style="border-top: 1px solid #e5e7eb; margin-top: 6px; padding-top: 6px; display: flex; justify-content: space-between;">
-                                        <span style="font-size: 12px; font-weight: 700; color: #111827;">Total</span>
-                                        <span style="font-size: 12px; font-weight: 700; color: #111827;">${total}</span>
+                                    <div style="border-top: 1px solid #ebecf0; margin-top: 6px; padding-top: 6px; display: flex; justify-content: space-between;">
+                                        <span style="font-size: 12px; font-weight: 600; color: #172b4d;">Total</span>
+                                        <span style="font-size: 12px; font-weight: 600; color: #172b4d;">${total}</span>
                                     </div>
                                 </div>
                             </div>
@@ -1025,13 +1019,13 @@
                     hover: {
                         filter: {
                             type: 'darken',
-                            value: 0.88
+                            value: 0.92
                         }
                     },
                     active: {
                         filter: {
                             type: 'darken',
-                            value: 0.85
+                            value: 0.88
                         }
                     }
                 }
@@ -1159,46 +1153,51 @@ $(document).ready(function() {
 
     /* Enhanced Incidents Chart Card Styling */
     .incidents-chart-card {
-        background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
-        border: 1px solid #e2e8f0;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
-        transition: all 0.3s ease;
+        background: #ffffff;
+        border: 1px solid #dfe1e6;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(9, 30, 66, 0.08);
+        transition: all 0.2s ease;
         overflow: visible;
     }
 
     .incidents-chart-card:hover {
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.06);
-        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(9, 30, 66, 0.15);
+        border-color: #c1c7d0;
     }
 
     .incidents-chart-card .white_card_header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: #ffffff;
         border-radius: 8px 8px 0 0;
-        padding: 16px 20px;
-        border-bottom: none;
+        padding: 18px 20px 16px 20px;
+        border-bottom: 1px solid #ebecf0;
     }
 
     .incidents-chart-card .white_card_header h3 {
-        color: #ffffff;
-        font-size: 16px;
-        font-weight: 700;
+        color: #172b4d;
+        font-size: 15px;
+        font-weight: 600;
         margin: 0;
-        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        letter-spacing: -0.01em;
     }
 
     .incidents-chart-card .white_card_header .text-muted {
-        color: rgba(255, 255, 255, 0.85) !important;
+        color: #5e6c84 !important;
         font-size: 11px;
-        font-weight: 500;
+        font-weight: 400;
     }
 
     .incidents-chart-card .dropdown-toggle {
-        color: #ffffff;
+        color: #5e6c84;
+        padding: 4px;
+        cursor: pointer;
+        transition: all 0.2s ease;
     }
 
     .incidents-chart-card .dropdown-toggle:hover {
-        background: rgba(255, 255, 255, 0.15);
-        border-radius: 4px;
+        background: #f4f5f7;
+        border-radius: 3px;
+        color: #172b4d;
     }
 
     /* ApexCharts Legend Customization */
