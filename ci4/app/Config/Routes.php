@@ -41,6 +41,68 @@ $routes->get('/', 'Home::index');
 $routes->get('debug-permissions', 'DebugPermissions::index');
 $routes->get('debug_permissions', 'DebugPermissions::index');
 
+// Common AJAX search endpoints (used by all modules)
+$routes->group('common', function($routes) {
+    $routes->get('test', 'CommonAjax::test');
+    $routes->get('searchEmployees', 'CommonAjax::searchEmployees');
+    $routes->get('searchCustomers', 'CommonAjax::searchCustomers');
+    $routes->get('searchContacts', 'CommonAjax::searchContacts');
+    $routes->get('searchProjects', 'CommonAjax::searchProjects');
+    $routes->get('searchTasks', 'CommonAjax::searchTasks');
+    $routes->get('searchUsers', 'CommonAjax::searchUsers');
+    $routes->get('searchBusinesses', 'CommonAjax::searchBusinesses');
+    $routes->get('searchCategories', 'CommonAjax::searchCategories');
+    $routes->get('searchSprints', 'CommonAjax::searchSprints');
+    $routes->get('searchTemplates', 'CommonAjax::searchTemplates');
+    $routes->get('searchRoles', 'CommonAjax::searchRoles');
+    $routes->get('searchTags', 'CommonAjax::searchTags');
+    $routes->get('searchServices', 'CommonAjax::searchServices');
+    $routes->get('searchPurchaseInvoices', 'CommonAjax::searchPurchaseInvoices');
+    $routes->get('searchSalesInvoices', 'CommonAjax::searchSalesInvoices');
+    $routes->get('searchDomains', 'CommonAjax::searchDomains');
+    $routes->get('searchWorkOrders', 'CommonAjax::searchWorkOrders');
+    $routes->get('searchProjectJobs', 'CommonAjax::searchProjectJobs');
+    $routes->get('searchProjectJobPhases', 'CommonAjax::searchProjectJobPhases');
+});
+
+// Project Jobs routes
+$routes->group('project_jobs', function($routes) {
+    $routes->get('/', 'ProjectJobs::index');
+    $routes->get('index', 'ProjectJobs::index');
+    $routes->get('edit/(:segment)', 'ProjectJobs::edit/$1');
+    $routes->get('edit', 'ProjectJobs::edit');
+    $routes->post('update', 'ProjectJobs::update');
+    $routes->get('delete/(:segment)', 'ProjectJobs::delete/$1');
+    $routes->get('jobsList', 'ProjectJobs::jobsList');
+    $routes->get('byProject/(:segment)', 'ProjectJobs::byProject/$1');
+    $routes->post('assign/(:segment)', 'ProjectJobs::assign/$1');
+    $routes->post('updateProgress/(:segment)', 'ProjectJobs::updateProgress/$1');
+});
+
+// Project Job Phases routes
+$routes->group('project_job_phases', function($routes) {
+    $routes->get('index/(:segment)', 'ProjectJobPhases::index/$1');
+    $routes->get('phasesList/(:segment)', 'ProjectJobPhases::phasesList/$1');
+    $routes->get('edit/(:segment)/(:segment)', 'ProjectJobPhases::edit/$1/$2');
+    $routes->get('edit/(:segment)', 'ProjectJobPhases::edit/$1');
+    $routes->post('update', 'ProjectJobPhases::update');
+    $routes->get('delete/(:segment)', 'ProjectJobPhases::delete/$1');
+    $routes->get('phasesByJob/(:segment)', 'ProjectJobPhases::phasesByJob/$1');
+    $routes->post('updateStatus/(:segment)', 'ProjectJobPhases::updateStatus/$1');
+    $routes->get('checkDependencies/(:segment)', 'ProjectJobPhases::checkDependencies/$1');
+    $routes->post('reorder', 'ProjectJobPhases::reorder');
+});
+
+// Project Job Scheduler routes
+$routes->group('project_job_scheduler', function($routes) {
+    $routes->get('calendar', 'ProjectJobScheduler::calendar');
+    $routes->get('getEvents', 'ProjectJobScheduler::getEvents');
+    $routes->post('createEvent', 'ProjectJobScheduler::createEvent');
+    $routes->post('updateEvent/(:segment)', 'ProjectJobScheduler::updateEvent/$1');
+    $routes->post('deleteEvent/(:segment)', 'ProjectJobScheduler::deleteEvent/$1');
+    $routes->post('dragDrop', 'ProjectJobScheduler::dragDrop');
+});
+
 $routes->get('users/delete/(:num)', 'Users::delete/$1');
 //$routes->post('users/update/(:num)', 'Users::update');
 
@@ -51,6 +113,7 @@ $routes->get('/api/v1/ping', 'Home::ping');
 //Users Request API
 $routes->resource('api/v2/users');
 $routes->resource('api/v2/timeslips');
+$routes->resource('api/v2/timesheets');
 $routes->resource('api/v2/webpages');
 $routes->resource('api/v2/tasks');
 $routes->resource('api/v2/customers');
@@ -102,6 +165,11 @@ $routes->resource('api/v2/interviews');
 $routes->resource('api/v2/products');
 $routes->resource('api/v2/payments');
 $routes->resource('api/v2/receipts');
+
+// Project Jobs API endpoints
+$routes->resource('api/v2/project_jobs');
+$routes->resource('api/v2/project_job_phases');
+$routes->resource('api/v2/project_job_scheduler');
 
 // Hospital Management System APIs
 $routes->resource('api/v2/hospital_staff');
@@ -209,6 +277,24 @@ $routes->group('receipts', function($routes) {
     $routes->post('post/(:segment)', 'Receipts::post/$1');
     $routes->get('pdf/(:segment)', 'Receipts::printReceipt/$1');
     $routes->get('download/(:segment)', 'Receipts::downloadPDF/$1');
+});
+
+// Timesheets Routes
+$routes->group('timesheets', function($routes) {
+    $routes->get('/', 'Timesheets::index');
+    $routes->get('edit/(:segment)', 'Timesheets::edit/$1');
+    $routes->get('edit', 'Timesheets::edit');
+    $routes->post('update', 'Timesheets::update');
+    $routes->post('delete/(:segment)', 'Timesheets::delete/$1');
+    $routes->get('timesheetsList', 'Timesheets::timesheetsList');
+    $routes->post('startTimer', 'Timesheets::startTimer');
+    $routes->post('stopTimer/(:segment)', 'Timesheets::stopTimer/$1');
+    $routes->post('createInvoice', 'Timesheets::createInvoice');
+    // AJAX search endpoints
+    $routes->get('searchEmployeesAjax', 'Timesheets::searchEmployeesAjax');
+    $routes->get('searchCustomersAjax', 'Timesheets::searchCustomersAjax');
+    $routes->get('searchProjectsAjax', 'Timesheets::searchProjectsAjax');
+    $routes->get('searchTasksAjax', 'Timesheets::searchTasksAjax');
 });
 
 // Hospital Staff Routes
