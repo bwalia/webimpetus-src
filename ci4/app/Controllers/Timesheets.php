@@ -175,6 +175,9 @@ class Timesheets extends CommonController
      */
     public function timesheetsList()
     {
+        // Check read permission
+        $this->requireReadPermission();
+
         $filters = [];
 
         if ($this->request->getGet('status')) {
@@ -197,9 +200,12 @@ class Timesheets extends CommonController
             $filters['to_date'] = $this->request->getGet('to_date');
         }
 
-        $timesheets = $this->timesheet_model->getTimesheetsWithDetails(session('uuid_business'), $filters);
+        // Get business UUID from request parameter or session
+        $businessUuid = $this->request->getGet('uuid_business_id') ?? session('uuid_business');
 
-        echo json_encode(['data' => $timesheets]);
+        $timesheets = $this->timesheet_model->getTimesheetsWithDetails($businessUuid, $filters);
+
+        return $this->respond(['data' => $timesheets]);
     }
 
     /**

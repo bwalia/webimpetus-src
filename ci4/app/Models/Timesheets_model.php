@@ -91,7 +91,7 @@ class Timesheets_model extends Model
                 e.first_name as employee_first_name,
                 e.surname as employee_surname,
                 p.name as project_name,
-                p.project_code as project_code,
+                p.id as project_id_name,
                 task.name as task_name,
                 c.company_name as customer_name,
                 CONCAT(e.first_name, " ", e.surname) as employee_full_name')
@@ -100,7 +100,7 @@ class Timesheets_model extends Model
             ->join('tasks task', 'task.id = t.task_id', 'left')
             ->join('customers c', 'c.id = t.customer_id', 'left')
             ->where('t.uuid_business_id', $businessUuid)
-            ->where('t.deleted_at IS NULL');
+            ->where('t.deleted_at IS NULL', null, false);
 
         // Apply filters
         if (!empty($filters['status'])) {
