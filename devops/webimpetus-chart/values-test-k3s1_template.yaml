@@ -77,13 +77,13 @@ adminer:
   port: 31179
   
 resources:
-    requests:
-        memory: 4Gi
-        cpu: 512m
-    limits:
-        memory: 8Gi
-        cpu: 1024m
-        
+  requests:
+    memory: 3Gi
+    cpu: 250m
+  limits:
+    memory: 6Gi
+    cpu: 1000m
+
 storageSettings:
   storageClassName: longhorn
   accessModes: ReadWriteOnce
@@ -96,6 +96,11 @@ autoscaling:
   maxUnavailable: 1
   targetCPUUtilizationPercentage: 80
 
+deploymentStrategy:
+  rollingUpdate:
+    maxSurge: 0
+    maxUnavailable: 1
+
 affinity: {}
   # affinity:
   #   nodeAffinity:
@@ -106,4 +111,6 @@ affinity: {}
   #               operator: In
   #               values:
   #                 - ssd
+
+disableDefaultNodeSelector: true
 

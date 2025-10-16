@@ -37,8 +37,8 @@ spec:
   replicas: {{ .Values.autoscaling.minReplicas }}
   strategy:
     rollingUpdate:
-      maxSurge: 1         # <2>
-      maxUnavailable: 0   # <3>
+      maxSurge:{{- if and .Values.deploymentStrategy .Values.deploymentStrategy.rollingUpdate (hasKey .Values.deploymentStrategy.rollingUpdate "maxSurge") }} {{ index .Values.deploymentStrategy.rollingUpdate "maxSurge" }}{{ else }} 1{{ end }}
+      maxUnavailable:{{- if and .Values.deploymentStrategy .Values.deploymentStrategy.rollingUpdate (hasKey .Values.deploymentStrategy.rollingUpdate "maxUnavailable") }} {{ index .Values.deploymentStrategy.rollingUpdate "maxUnavailable" }}{{ else }} 0{{ end }}
     type: RollingUpdate   # <1>
   selector:
     matchLabels:
@@ -118,7 +118,12 @@ spec:
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml .Values.nodeSelector | nindent 8 }}
+      {{- else if not .Values.disableDefaultNodeSelector }}
       nodeSelector:
         node: slworker00
         environment: production
         workload: production
+      {{- end }}

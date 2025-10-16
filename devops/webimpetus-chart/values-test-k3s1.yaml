@@ -34,6 +34,26 @@ service:
   type: ClusterIP
   port: 80
 
+serviceAdminer:
+  enabled: true
+  type: ClusterIP
+  port: 8080
+
+ingressAdminer:
+  enabled: false
+  annotations: {}
+  hosts:
+    - host: test-adminer.workstation.co.uk
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+storageSettings:
+  storageClassName: longhorn
+  accessModes: ReadWriteOnce
+  diskSize: 1Gi
+
 ingress:
   enabled: true
   className: "nginx"
@@ -53,11 +73,24 @@ ingress:
 adminer:
   port: 30880
   
-resources: {}
+resources:
+  requests:
+    memory: 3Gi
+    cpu: 250m
+  limits:
+    memory: 6Gi
+    cpu: 1000m
 
 autoscaling:
   enabled: false
-  minReplicas: 2
-  maxReplicas: 10
+  minReplicas: 1
+  maxReplicas: 2
   maxUnavailable: 1
   targetCPUUtilizationPercentage: 80
+
+deploymentStrategy:
+  rollingUpdate:
+    maxSurge: 0
+    maxUnavailable: 1
+
+disableDefaultNodeSelector: true
