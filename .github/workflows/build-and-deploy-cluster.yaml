@@ -167,7 +167,7 @@ jobs:
             --create-namespace
               
         - name: Helm Deploy - Release Production Workstation CRM to K3S2 Rancher
-          if: ${{ env.DEPLOYMENT_TYPE == 'deploy' || env.DEPLOYMENT_TYPE == 'build-and-deploy' && env.TARGET_ENV != "prod" }}
+          if: ${{ env.DEPLOYMENT_TYPE == 'deploy' || env.DEPLOYMENT_TYPE == 'build-and-deploy' && env.TARGET_ENV == "int" || env.TARGET_ENV == "test" || env.TARGET_ENV == "acc" }}
           run: |
             helm upgrade -i wsl-${{ env.TARGET_ENV }} \
             ./devops/webimpetus-chart \
