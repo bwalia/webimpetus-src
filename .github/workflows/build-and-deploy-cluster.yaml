@@ -183,6 +183,12 @@ jobs:
         - name: Helm Deploy - Build and Deploy DTA Workstation CRM to K3S2 Rancher
           if: ${{ env.DEPLOYMENT_TYPE == 'build-and-deploy' && env.TARGET_ENV == 'int' || env.TARGET_ENV == 'test' || env.TARGET_ENV == 'acc' }}
           run: |
+            helm lint ./devops/webimpetus-chart -f devops/webimpetus-chart/values-${{ env.TARGET_ENV }}-${{ env.TARGET_CLUSTER }}.yaml \
+             --set-string targetImage="${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}" \
+            --set-string targetImageTag="${{ env.TARGET_IMAGE_TAG }}" \
+            --namespace ${{ env.TARGET_ENV }} \
+            --create-namespace
+
             helm upgrade -i wsl-${{ env.TARGET_ENV }} \
             ./devops/webimpetus-chart \
             -f devops/webimpetus-chart/values-${{ env.TARGET_ENV }}-${{ env.TARGET_CLUSTER }}.yaml \
@@ -195,6 +201,12 @@ jobs:
         - name: Helm Deploy - Deploy DTA Workstation CRM to K3S2 Rancher
           if: ${{ env.DEPLOYMENT_TYPE == 'deploy' && env.TARGET_ENV == 'int' || env.TARGET_ENV == 'test' || env.TARGET_ENV == 'acc' }}
           run: |
+            helm lint ./devops/webimpetus-chart -f devops/webimpetus-chart/values-${{ env.TARGET_ENV }}-${{ env.TARGET_CLUSTER }}.yaml \
+             --set-string targetImage="${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}" \
+            --set-string targetImageTag="latest" \
+            --namespace ${{ env.TARGET_ENV }} \
+            --create-namespace
+
             helm upgrade -i wsl-${{ env.TARGET_ENV }} \
             ./devops/webimpetus-chart \
             -f devops/webimpetus-chart/values-${{ env.TARGET_ENV }}-${{ env.TARGET_CLUSTER }}.yaml \

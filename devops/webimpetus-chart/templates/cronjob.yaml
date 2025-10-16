@@ -30,9 +30,6 @@ spec:
                 value: wsl-{{ .Values.targetEnv }}-db-backup-hourly
               - name: BACKUP_FREQUENCY
                 value: hourly
-            envFrom:
-            resources:
-              null
             volumeMounts:
               - name: wslenv-vol-{{ .Values.targetEnv }}-backup
                 mountPath: "/tmp/secrets"
@@ -84,9 +81,6 @@ spec:
                 value: wsl-{{ .Values.targetEnv }}-db-backup-daily
               - name: BACKUP_FREQUENCY
                 value: daily
-            envFrom:
-            resources:
-              null
             volumeMounts:
               - name: wslenv-vol-{{ .Values.targetEnv }}-backup
                 mountPath: "/tmp/secrets"
@@ -137,9 +131,6 @@ spec:
                 value: wsl-{{ .Values.targetEnv }}-housekeeping-daily
               - name: RUN_FREQUENCY
                 value: daily
-            envFrom:
-            resources:
-              null
             volumeMounts:
               - name: wslenv-vol-{{ .Values.targetEnv }}-backup
                 mountPath: "/tmp/secrets"
