@@ -103,7 +103,7 @@ jobs:
           shell: bash
 
         - name: Build WebImpetus Latest Docker image based on the TARGET PLATFORM Image and push to Docker Hub
-          if: ${{ env.DEPLOYMENT_TYPE == 'build' || env.DEPLOYMENT_TYPE == 'build-and-deploy' && env.TARGET_ENV == "prod" }}
+          if: ${{ env.DEPLOYMENT_TYPE == 'build' || env.DEPLOYMENT_TYPE == 'build-and-deploy' && env.TARGET_ENV == 'prod' }}
           run: |
             echo "WebImpetus Latest Docker image builder!"
             echo "Also tagging the image as latest for production environment"
@@ -156,7 +156,7 @@ jobs:
           shell: bash
 
         - name: Helm Deploy - Release Production Workstation CRM to K3S2 Rancher
-          if: ${{ env.DEPLOYMENT_TYPE == 'deploy' || env.DEPLOYMENT_TYPE == 'build-and-deploy' && env.TARGET_ENV == "prod" }}
+          if: ${{ env.DEPLOYMENT_TYPE == 'deploy' || env.DEPLOYMENT_TYPE == 'build-and-deploy' && env.TARGET_ENV == 'prod' }}
           run: |
             helm upgrade -i wsl-${{ env.TARGET_ENV }} \
             ./devops/webimpetus-chart \
@@ -167,7 +167,7 @@ jobs:
             --create-namespace
               
         - name: Helm Deploy - Release Production Workstation CRM to K3S2 Rancher
-          if: ${{ env.DEPLOYMENT_TYPE == 'deploy' || env.DEPLOYMENT_TYPE == 'build-and-deploy' && env.TARGET_ENV != "prod" }}
+          if: ${{ env.DEPLOYMENT_TYPE == 'deploy' || env.DEPLOYMENT_TYPE == 'build-and-deploy' && env.TARGET_ENV == 'int' || env.TARGET_ENV == 'test' || env.TARGET_ENV == 'acc' }}
           run: |
             helm upgrade -i wsl-${{ env.TARGET_ENV }} \
             ./devops/webimpetus-chart \
