@@ -31,6 +31,21 @@ on:
           - acc
           - prod
 
+      TARGET_IMAGE_TAG:
+        type: choice
+        description: 'Please choose the image tag'
+        default: 'latest'
+        required: true
+        options:
+          - latest
+          - sha
+          - stable
+          - hotfix
+          - int
+          - test
+          - acc
+          - prod
+
       TARGET_CLUSTER:
         type: choice
         description: 'Please choose the cluster'
@@ -165,15 +180,27 @@ jobs:
             --set-string targetImageTag="latest" \
             --namespace ${{ env.TARGET_ENV }} \
             --create-namespace
-              
+
         - name: Helm Deploy - Release Production Workstation CRM to K3S2 Rancher
-          if: ${{ env.DEPLOYMENT_TYPE == 'deploy' || env.DEPLOYMENT_TYPE == 'build-and-deploy' && env.TARGET_ENV == 'int' || env.TARGET_ENV == 'test' || env.TARGET_ENV == 'acc' }}
+          if: ${{ env.DEPLOYMENT_TYPE == 'build-and-deploy' && env.TARGET_ENV == 'int' || env.TARGET_ENV == 'test' || env.TARGET_ENV == 'acc' }}
           run: |
             helm upgrade -i wsl-${{ env.TARGET_ENV }} \
             ./devops/webimpetus-chart \
             -f devops/webimpetus-chart/values-${{ env.TARGET_ENV }}-${{ env.TARGET_CLUSTER }}.yaml \
             --set-string targetImage="${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}" \
             --set-string targetImageTag="${{ env.TARGET_IMAGE_TAG }}" \
+            --namespace ${{ env.TARGET_ENV }} \
+            --create-namespace
+
+
+        - name: Helm Deploy - Release Production Workstation CRM to K3S2 Rancher
+          if: ${{ env.DEPLOYMENT_TYPE == 'deploy' && env.TARGET_ENV == 'int' || env.TARGET_ENV == 'test' || env.TARGET_ENV == 'acc' }}
+          run: |
+            helm upgrade -i wsl-${{ env.TARGET_ENV }} \
+            ./devops/webimpetus-chart \
+            -f devops/webimpetus-chart/values-${{ env.TARGET_ENV }}-${{ env.TARGET_CLUSTER }}.yaml \
+            --set-string targetImage="${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}" \
+            --set-string targetImageTag="latest" \
             --namespace ${{ env.TARGET_ENV }} \
             --create-namespace
 
