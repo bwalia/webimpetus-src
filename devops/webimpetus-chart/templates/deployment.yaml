@@ -100,11 +100,11 @@ spec:
                 command: ["/bin/sh", "-c", "stat -c %a /tmp && ls -la /tmp && cp /tmp/configmap/bootstrap-{{ .Values.architecture.http_server_type }}.sh /usr/local/bin/bootstrap-{{ .Values.architecture.http_server_type }}.sh && chmod +x /usr/local/bin/bootstrap-{{ .Values.architecture.http_server_type }}.sh && bash /usr/local/bin/bootstrap-{{ .Values.architecture.http_server_type }}.sh"]
           resources:
             requests:
-              memory: "{{ .Values.resources.requests.memory | default "1024Mi" }}"
-              cpu: "{{ .Values.resources.requests.cpu | default "4Gi" }}"
+              memory: "{{ .Values.resources.requests.memory }}"
+              cpu: "{{ .Values.resources.requests.cpu }}"
             limits:
-              memory: "{{ .Values.resources.limits.memory | default "4096Mi" }}"
-              cpu: "{{ .Values.resources.limits.cpu | default "20Gi" }}"
+              memory: "{{ .Values.resources.limits.memory }}"
+              cpu: "{{ .Values.resources.limits.cpu }}"
           volumeMounts:
             - name: wsl-{{ .Values.targetEnv }}-pvc
               mountPath: /var/www/html  
