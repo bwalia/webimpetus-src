@@ -74,7 +74,13 @@ ingressAdminer:
 adminer:
   port: 30883
   
-resources: {}
+resources:
+  requests:
+    memory: 4Gi
+    cpu: 500m
+  limits:
+    memory: 8Gi
+    cpu: 1000m
 
 storageSettings:
   storageClassName: longhorn
@@ -83,7 +89,14 @@ storageSettings:
 
 autoscaling:
   enabled: false
-  minReplicas: 2
-  maxReplicas: 10
+  minReplicas: 1
+  maxReplicas: 4
   maxUnavailable: 1
   targetCPUUtilizationPercentage: 80
+
+deploymentStrategy:
+  rollingUpdate:
+    maxSurge: 0
+    maxUnavailable: 1
+
+disableDefaultNodeSelector: true

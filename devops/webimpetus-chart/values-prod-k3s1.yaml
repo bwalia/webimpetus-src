@@ -76,7 +76,13 @@ ingressAdminer:
 adminer:
   port: 30881
   
-resources: {}
+resources:
+  requests:
+    memory: 8Gi
+    cpu: 750m
+  limits:
+    memory: 16Gi
+    cpu: 1500m
 
 storageSettings:
   storageClassName: longhorn
@@ -90,10 +96,14 @@ autoscaling:
   maxUnavailable: 1
   targetCPUUtilizationPercentage: 80
 
-nodeSelector:
-  node: slworker00
-  workload: production
-  disktype: ssd
+deploymentStrategy:
+  rollingUpdate:
+    maxSurge: 0
+    maxUnavailable: 1
+
+disableDefaultNodeSelector: true
+
+nodeSelector: {}
 affinity: {}
   # affinity:
   #   nodeAffinity:
