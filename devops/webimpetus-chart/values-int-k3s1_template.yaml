@@ -40,7 +40,13 @@ ingressAdminer:
     tls: {  }
 adminer:
     port: 30882
-resources: {  }
+resources:
+    requests:
+        memory: 2Gi
+        cpu: 1024m
+    limits:
+        memory: 4Gi
+        cpu: 2048m
 storageSettings:
     storageClassName: longhorn
     accessModes: ReadWriteOnce

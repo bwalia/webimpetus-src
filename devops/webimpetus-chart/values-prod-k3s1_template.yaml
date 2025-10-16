@@ -76,7 +76,13 @@ ingressAdminer:
 adminer:
   port: 30881
   
-resources: {}
+resources:
+    requests:
+        memory: 8Gi
+        cpu: 2048m
+    limits:
+        memory: 16Gi
+        cpu: 4096m
 
 storageSettings:
   storageClassName: longhorn
