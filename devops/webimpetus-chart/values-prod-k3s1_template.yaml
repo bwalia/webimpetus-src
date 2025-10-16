@@ -77,12 +77,12 @@ adminer:
   port: 30881
   
 resources:
-    requests:
-        memory: 8Gi
-        cpu: 512m
-    limits:
-        memory: 16Gi
-        cpu: 2048m
+  requests:
+    memory: 8Gi
+    cpu: 750m
+  limits:
+    memory: 16Gi
+    cpu: 1500m
 
 storageSettings:
   storageClassName: longhorn
@@ -95,6 +95,13 @@ autoscaling:
   maxReplicas: 2
   maxUnavailable: 1
   targetCPUUtilizationPercentage: 80
+
+deploymentStrategy:
+  rollingUpdate:
+    maxSurge: 0
+    maxUnavailable: 1
+
+disableDefaultNodeSelector: true
 
 affinity: {}
   # affinity:

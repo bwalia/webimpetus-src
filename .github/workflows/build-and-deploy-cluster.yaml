@@ -1,4 +1,4 @@
-name: "Build Workstation CRM Docker Image and Deploy to K3S Cluster"
+name: "-> Build Workstation CRM Docker Image and Deploy to K3S Cluster"
 
 on:
   push:
@@ -100,8 +100,12 @@ jobs:
             docker build -f $(pwd)/devops/docker/Dockerfile --build-arg TAG=${{ env.TARGET_IMAGE_TAG }} -t wsl-${{ env.TARGET_STACK }} . --no-cache
             docker tag wsl-${{ env.TARGET_STACK }} ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TARGET_IMAGE_TAG }}
             docker push ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TARGET_IMAGE_TAG }}
+            if [ "${{ env.TARGET_ENV }}" == "prod" ]; then
+              echo "Also tagging the image as latest for production environment"
+              docker tag wsl-${{ env.TARGET_STACK }} ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+              docker push ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+            fi
           shell: bash
-
 
     deploy:
         name: Deploy the build docker image to the given Environment using Helm
