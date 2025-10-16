@@ -69,8 +69,7 @@ on:
           - build-and-deploy
               
 env:
-  IMAGE_TAG: "latest"
-  TARGET_IMAGE_TAG: ${{ github.sha }}
+  TARGET_IMAGE_TAG: ${{ github.event.inputs.TARGET_IMAGE_TAG || 'latest' }}
   TARGET_STACK: openresty_php
   IMAGE_NAME: webimpetus
   TARGET_ENV: ${{ github.event.inputs.TARGET_ENV || 'int' }}
