@@ -100,12 +100,17 @@ jobs:
             docker build -f $(pwd)/devops/docker/Dockerfile --build-arg TAG=${{ env.TARGET_IMAGE_TAG }} -t wsl-${{ env.TARGET_STACK }} . --no-cache
             docker tag wsl-${{ env.TARGET_STACK }} ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TARGET_IMAGE_TAG }}
             docker push ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TARGET_IMAGE_TAG }}
-            if [ "${{ env.TARGET_ENV }}" == "prod" ]; then
-              echo "Also tagging the image as latest for production environment"
-              docker tag wsl-${{ env.TARGET_STACK }} ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-              docker push ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-            fi
           shell: bash
+
+        - name: Build WebImpetus Latest Docker image based on the TARGET PLATFORM Image and push to Docker Hub
+          if: ${{ env.DEPLOYMENT_TYPE == 'build' || env.DEPLOYMENT_TYPE == 'build-and-deploy' }} && ${{ env.TARGET_ENV == "prod" }}
+          run: |
+            echo "WebImpetus Latest Docker image builder!"
+            echo "Also tagging the image as latest for production environment"
+            docker tag wsl-${{ env.TARGET_STACK }} ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+            docker push ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          shell: bash
+
 
     deploy:
         name: Deploy the build docker image to the given Environment using Helm
@@ -149,9 +154,20 @@ jobs:
                 ./devops/kubeseal/kubeseal_automation.sh ${{ secrets.DOT_WSL_ENV_INT }} "int"
             fi
           shell: bash
-                    
-        - name: Helm Deploy - Release Workstation CRM to K3S2 Rancher
-          if: ${{ env.DEPLOYMENT_TYPE == 'deploy' || env.DEPLOYMENT_TYPE == 'build-and-deploy' }}
+
+        - name: Helm Deploy - Release Production Workstation CRM to K3S2 Rancher
+          if: ${{ env.DEPLOYMENT_TYPE == 'deploy' || env.DEPLOYMENT_TYPE == 'build-and-deploy' }} && ${{ env.TARGET_ENV == "prod" }}
+          run: |
+            helm upgrade -i wsl-${{ env.TARGET_ENV }} \
+            ./devops/webimpetus-chart \
+            -f devops/webimpetus-chart/values-${{ env.TARGET_ENV }}-${{ env.TARGET_CLUSTER }}.yaml \
+            --set-string targetImage="${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}" \
+            --set-string targetImageTag="latest" \
+            --namespace ${{ env.TARGET_ENV }} \
+            --create-namespace
+              
+        - name: Helm Deploy - Release Production Workstation CRM to K3S2 Rancher
+          if: ${{ env.DEPLOYMENT_TYPE == 'deploy' || env.DEPLOYMENT_TYPE == 'build-and-deploy' }} && ${{ env.TARGET_ENV != "prod" }}
           run: |
             helm upgrade -i wsl-${{ env.TARGET_ENV }} \
             ./devops/webimpetus-chart \
@@ -160,16 +176,6 @@ jobs:
             --set-string targetImageTag="${{ env.TARGET_IMAGE_TAG }}" \
             --namespace ${{ env.TARGET_ENV }} \
             --create-namespace
-              
-        # - name: Delete default ingress from the chart, Deploy API Gateway Ingress overriding the ingress from the chart
-        #   if: ${{ env.DEPLOYMENT_TYPE == 'deploy' || env.DEPLOYMENT_TYPE == 'build-and-deploy' }}
-        #   run: |
-        #     kubectl delete ing wsl-ingress-int -n int        
-
-        # - name: Install API Gateway Ingress overriding the ingress from the chart
-        #   if: ${{ env.DEPLOYMENT_TYPE == 'deploy' || env.DEPLOYMENT_TYPE == 'build-and-deploy' }}       
-        #   run: |
-        #     kubectl apply -f devops/kubernetes/ingress-override-manifests.yaml
 
         - name: Restart Workstation CRM Pods using Kubectl
           if: ${{ env.DEPLOYMENT_TYPE == 'deploy' || env.DEPLOYMENT_TYPE == 'build-and-deploy' }}
