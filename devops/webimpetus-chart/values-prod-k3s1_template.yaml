@@ -79,10 +79,10 @@ adminer:
 resources:
     requests:
         memory: 8Gi
-        cpu: 2048m
+        cpu: 512m
     limits:
         memory: 16Gi
-        cpu: 4096m
+        cpu: 2048m
 
 storageSettings:
   storageClassName: longhorn

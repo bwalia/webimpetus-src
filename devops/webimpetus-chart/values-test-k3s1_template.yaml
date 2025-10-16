@@ -79,11 +79,11 @@ adminer:
 resources:
     requests:
         memory: 4Gi
-        cpu: 1024m
+        cpu: 512m
     limits:
         memory: 8Gi
-        cpu: 2048m
-
+        cpu: 1024m
+        
 storageSettings:
   storageClassName: longhorn
   accessModes: ReadWriteOnce
