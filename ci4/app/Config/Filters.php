@@ -44,7 +44,15 @@ class Filters extends BaseConfig
             'options'
         ],
         'after' => [
-            'toolbar',
+            'toolbar' => [
+                'except' => [
+                    'swagger',
+                    'swagger/json',
+                    'swagger/yaml',
+                    'api-docs',
+                    'api/docs'
+                ]
+            ],
             // 'honeypot',
         ],
     ];
