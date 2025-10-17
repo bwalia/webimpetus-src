@@ -18,11 +18,12 @@ class JWTAuthenticationFilter implements FilterInterface
         // echo '<pre>'; print_r($_SERVER); echo '</pre>'; die;
         $pos = strpos($_SERVER['REQUEST_URI'], "api/sendEmail") ?? false;
         $ping = strpos($_SERVER['REQUEST_URI'], "api/v1/ping") ?? false;
+        $token = strpos($_SERVER['REQUEST_URI'], "api/v2/token") ?? false;
         $enquiry = strpos($_SERVER['REQUEST_URI'], "api/v2/enquiries") ?? false;
         $publicBlog = $this->isMatchingPattern($_SERVER['REQUEST_URI']);
         $method = $_SERVER['REQUEST_METHOD'];
 
-        if ($pos  ===  false && $ping  ===  false && $publicBlog === false && ($enquiry === false || $method === "POST")) {
+        if ($pos  ===  false && $ping  ===  false && $token  ===  false && $publicBlog === false && ($enquiry === false || $method === "POST")) {
 
             $authenticationHeader = $request->getServer('HTTP_AUTHORIZATION');
             try {
