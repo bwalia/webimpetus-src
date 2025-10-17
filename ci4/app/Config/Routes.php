@@ -113,6 +113,9 @@ $routes->get('users/delete/(:num)', 'Users::delete/$1');
 $routes->get('/api/v1/ping', 'Home::ping');
 
 //API V2
+//Authentication - Token endpoint
+$routes->post('api/v2/token', 'Auth::apiToken');
+
 //Users Request API
 $routes->resource('api/v2/users');
 $routes->resource('api/v2/timeslips');
