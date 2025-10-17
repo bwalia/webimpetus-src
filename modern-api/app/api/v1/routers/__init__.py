@@ -3,6 +3,7 @@
 from fastapi import APIRouter
 
 from . import (
+    auth,
     businesses,
     contacts,
     journal_entries,
@@ -15,6 +16,7 @@ from . import (
 
 router = APIRouter(prefix="/api/v1")
 
+router.include_router(auth.router)
 router.include_router(businesses.router)
 router.include_router(contacts.router)
 router.include_router(projects.router)
