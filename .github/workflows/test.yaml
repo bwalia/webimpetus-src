@@ -1,0 +1,81 @@
+name: "Test Workflow"
+
+on:
+  push:
+    branches: [ main ]
+  workflow_run:
+    workflows: ["Test Workflow"]
+    types:
+      - completed
+    
+  workflow_dispatch:
+    inputs:
+      TARGET_IMAGE_TAG:
+        type: choice
+        description: 'Please choose the image tag'
+        default: 'latest'
+        required: true
+        options:
+          - latest
+          - sha
+          - stable
+          - hotfix
+          - int
+          - test
+          - acc
+          - prod
+
+      TEST_TYPE:
+        type: choice
+        description: 'Please select the type of test'
+        default: 'openapi-spec-validator'
+        required: true
+        options:
+          - openapi-spec-validator
+              
+env:
+  IMAGE_TAG: "latest"
+  TEST_TYPE: ${{ github.event.inputs.TEST_TYPE || 'openapi-spec-validator' }}
+
+jobs:
+    build:
+        name: Build the Image and push to Docker Hub
+        runs-on: 'ubuntu-latest'
+        steps:
+
+        - name: Checkout this repo
+          if: ${{ env.DEPLOYMENT_TYPE == 'build' || env.DEPLOYMENT_TYPE == 'build-and-deploy' }}
+          uses: actions/checkout@v3
+
+        - name: Validate OpenAPI Spec
+          if: ${{ env.DEPLOYMENT_TYPE == 'build' || env.DEPLOYMENT_TYPE == 'build-and-deploy' }}
+          run: python3 --version && python3 -m pip install --user openapi-spec-validator
+          run: |
+            echo "Validating OpenAPI Spec"
+            python3 - <<'PY'
+            import yaml
+            print('PyYAML available')
+            PY
+          run: |
+            echo "Validating OpenAPI Spec"
+            ~/.local/bin/openapi-spec-validator --version
+            python3 - <<'PY'
+            import yaml
+            from pathlib import Path
+            path=Path('ci4/openapi.yaml')
+            with path.open() as fh:
+                data=yaml.safe_load(fh)
+            print('OpenAPI version:', data.get('openapi'))
+            print('Path count:', len(data.get('paths', {})))
+            missing=[]
+            for tag in data.get('tags', []):
+                name=tag['name']
+                present=any(name in (op.get('tags') or []) for path in data['paths'].values() for op in path.values() if isinstance(op, dict))
+                if not present:
+                    missing.append(name)
+            print('Tags without paths:', missing)
+            PY
+
+          run: |
+            echo "Running OpenAPI Spec Validation"
+            ~/.local/bin/openapi-spec-validator --validate-spec ci4/openapi.yaml
