@@ -54,12 +54,14 @@ class Swagger extends Controller
 
             header('Content-Type: application/x-yaml');
             echo $openapi->toYaml();
+            exit; // Prevent debug toolbar from appending
         } catch (\Exception $e) {
             header('Content-Type: text/plain');
             echo "Error generating OpenAPI documentation:\n\n";
             echo $e->getMessage() . "\n\n";
             echo "File: " . $e->getFile() . "\n";
             echo "Line: " . $e->getLine();
+            exit; // Prevent debug toolbar from appending
         }
     }
 
@@ -81,7 +83,7 @@ class Swagger extends Controller
                 'documentation' => 'See API_DOCUMENTATION.md for manual API documentation',
                 'temporary_solution' => 'Use /api-docs to view the interactive UI (requires swagger.json to be manually created)'
             ], JSON_PRETTY_PRINT);
-            return;
+            exit; // Prevent debug toolbar from appending
         }
 
         try {
@@ -107,6 +109,7 @@ class Swagger extends Controller
 
             header('Content-Type: application/json');
             echo $openapi->toJson();
+            exit; // Prevent debug toolbar from appending
         } catch (\Exception $e) {
             header('Content-Type: application/json');
             echo json_encode([
@@ -114,6 +117,7 @@ class Swagger extends Controller
                 'file' => $e->getFile(),
                 'line' => $e->getLine()
             ], JSON_PRETTY_PRINT);
+            exit; // Prevent debug toolbar from appending
         }
     }
 
@@ -147,12 +151,14 @@ class Swagger extends Controller
 
             header('Content-Type: application/x-yaml');
             echo $openapi->toYaml();
+            exit; // Prevent debug toolbar from appending
         } catch (\Exception $e) {
             header('Content-Type: text/plain');
             echo "Error generating OpenAPI documentation:\n\n";
             echo $e->getMessage() . "\n\n";
             echo "File: " . $e->getFile() . "\n";
             echo "Line: " . $e->getLine();
+            exit; // Prevent debug toolbar from appending
         }
     }
 
