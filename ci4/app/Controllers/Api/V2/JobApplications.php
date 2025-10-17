@@ -9,9 +9,7 @@ use CodeIgniter\RESTful\ResourceController;
  * @OA\Get(
  *     path="/api/v2/job-applications",
  *     tags={"Job Applications"},
- *     security={
- *       {"bearerAuth": {}}
- *     },
+ *     security={{"bearerAuth": {}}},
  *     @OA\Parameter(
  *          name="job_uuid",
  *          in="query",
@@ -35,9 +33,7 @@ use CodeIgniter\RESTful\ResourceController;
  * @OA\Get(
  *     path="/api/v2/job-applications/{id}",
  *     tags={"Job Applications"},
- *     security={
- *       {"bearerAuth": {}}
- *     },
+ *     security={{"bearerAuth": {}}},
  *     @OA\Parameter(
  *          name="id",
  *          in="path",
@@ -54,9 +50,7 @@ use CodeIgniter\RESTful\ResourceController;
  * @OA\Post(
  *     path="/api/v2/job-applications",
  *     tags={"Job Applications"},
- *     security={
- *       {"bearerAuth": {}}
- *     },
+ *     security={{"bearerAuth": {}}},
  *     @OA\RequestBody(
  *         required=true,
  *         @OA\JsonContent(
@@ -79,16 +73,14 @@ use CodeIgniter\RESTful\ResourceController;
  * @OA\Put(
  *     path="/api/v2/job-applications/{id}",
  *     tags={"Job Applications"},
- *     security={
- *       {"bearerAuth": {}}
- *     },
+ *     security={{"bearerAuth": {}}},
  *     @OA\Parameter(
  *          name="id",
  *          in="path",
  *          required=true,
  *          description="Application UUID",
  *          @OA\Schema(type="string")
- *     },
+ *     ),
  *     @OA\RequestBody(
  *         required=true,
  *         @OA\JsonContent(
@@ -105,9 +97,7 @@ use CodeIgniter\RESTful\ResourceController;
  * @OA\Delete(
  *     path="/api/v2/job-applications/{id}",
  *     tags={"Job Applications"},
- *     security={
- *       {"bearerAuth": {}}
- *     },
+ *     security={{"bearerAuth": {}}},
  *     @OA\Parameter(
  *          name="id",
  *          in="path",

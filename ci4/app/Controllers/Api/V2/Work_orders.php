@@ -5,13 +5,66 @@ namespace App\Controllers\Api\V2;
 use App\Controllers\Api_v2;
 use App\Models\Work_orders_model;
 use CodeIgniter\RESTful\ResourceController;
+use OpenApi\Annotations as OA;
 
+/**
+ * @OA\Tag(
+ *     name="WorkOrders",
+ *     description="Manage work orders raised for suppliers."
+ * )
+ */
 class Work_orders extends ResourceController
 {
     /**
      * Return an array of resource objects, themselves in array format
      *
      * @return mixed
+     *
+     * @OA\Get(
+     *     path="/api/v2/work_orders",
+     *     tags={"WorkOrders"},
+     *     summary="List work orders",
+     *     description="Returns paginated work orders for a business. Supports the list filter payload used by the front-end and QA harness.",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="_format",
+     *         in="query",
+     *         description="Optional response format override (defaults to json).",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="params",
+     *         in="query",
+     *         description="JSON encoded object supporting pagination, sorting, and filter keys (uuid_business_id, q).",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Paginated list of work orders",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="uuid", type="string"),
+     *                     @OA\Property(property="id", type="integer"),
+     *                     @OA\Property(property="order_number", type="string"),
+     *                     @OA\Property(property="date", type="string", format="date"),
+     *                     @OA\Property(property="project_code", type="string"),
+     *                     @OA\Property(property="total", type="number", format="float"),
+     *                     @OA\Property(property="balance_due", type="number", format="float"),
+     *                     @OA\Property(property="paid_date", type="string", format="date", nullable=true),
+     *                     @OA\Property(property="status", type="string")
+     *                 )
+     *             ),
+     *             @OA\Property(property="recordsTotal", type="integer")
+     *         )
+     *     ),
+     *     @OA\Response(response=403, description="Missing business identifier"),
+     *     @OA\Response(response=401, description="Unauthorized")
+     * )
      */
     public function index()
     {
@@ -71,6 +124,30 @@ class Work_orders extends ResourceController
      * Return the properties of a resource object
      *
      * @return mixed
+     *
+     * @OA\Get(
+     *     path="/api/v2/work_orders/{uuid}",
+     *     tags={"WorkOrders"},
+     *     summary="Retrieve a work order",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="uuid",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Work order details",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="data", type="object"),
+     *             @OA\Property(property="message", type="integer")
+     *         )
+     *     ),
+     *     @OA\Response(response=404, description="Work order not found"),
+     *     @OA\Response(response=401, description="Unauthorized")
+     * )
      */
     public function show($id = null)
     {
@@ -94,6 +171,39 @@ class Work_orders extends ResourceController
      * Create a new resource object, from "posted" parameters
      *
      * @return mixed
+     *
+     * @OA\Post(
+     *     path="/api/v2/work_orders",
+     *     tags={"WorkOrders"},
+     *     summary="Create a work order",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 required={"client_id","uuid_business_id"},
+     *                 @OA\Property(property="client_id", type="string", description="Customer identifier."),
+     *                 @OA\Property(property="uuid_business_id", type="string", description="Business UUID."),
+     *                 @OA\Property(property="bill_to", type="string"),
+     *                 @OA\Property(property="order_number", type="string"),
+     *                 @OA\Property(property="date", type="string", format="date"),
+     *                 @OA\Property(property="project_code", type="string"),
+     *                 @OA\Property(property="status", type="string")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Work order created",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="data", type="object", @OA\Property(property="uuid", type="string"))
+     *         )
+     *     ),
+     *     @OA\Response(response=400, description="Validation error"),
+     *     @OA\Response(response=401, description="Unauthorized")
+     * )
      */
     public function create()
     {
@@ -115,6 +225,46 @@ class Work_orders extends ResourceController
      * Add or update a model resource, from "posted" properties
      *
      * @return mixed
+     *
+     * @OA\Put(
+     *     path="/api/v2/work_orders/{uuid}",
+     *     tags={"WorkOrders"},
+     *     summary="Update a work order",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="uuid",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 required={"uuid","uuid_business_id","client_id"},
+     *                 @OA\Property(property="uuid", type="string"),
+     *                 @OA\Property(property="uuid_business_id", type="string"),
+     *                 @OA\Property(property="client_id", type="string"),
+     *                 @OA\Property(property="bill_to", type="string"),
+     *                 @OA\Property(property="status", type="string"),
+     *                 @OA\Property(property="project_code", type="string"),
+     *                 @OA\Property(property="date", type="string", format="date")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Work order updated",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(response=400, description="Validation error"),
+     *     @OA\Response(response=404, description="Work order not found"),
+     *     @OA\Response(response=401, description="Unauthorized")
+     * )
      */
     public function update($id = null)
     {
@@ -126,6 +276,30 @@ class Work_orders extends ResourceController
      * Delete the designated resource object from the model
      *
      * @return mixed
+     *
+     * @OA\Delete(
+     *     path="/api/v2/work_orders/{uuid}",
+     *     tags={"WorkOrders"},
+     *     summary="Delete a work order",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="uuid",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Deletion result",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="data", type="boolean"),
+     *             @OA\Property(property="status", type="integer")
+     *         )
+     *     ),
+     *     @OA\Response(response=404, description="Work order not found"),
+     *     @OA\Response(response=401, description="Unauthorized")
+     * )
      */
     public function delete($id = null)
     {

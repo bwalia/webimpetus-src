@@ -1,0 +1,8 @@
+fastapi>=0.110,<0.112
+uvicorn[standard]>=0.29,<0.31
+sqlalchemy>=2.0,<2.1
+pydantic>=2.7,<3.0
+pydantic-settings>=2.2,<2.3
+python-jose[cryptography]>=3.3,<4.0
+alembic>=1.13,<1.14
+pytest>=7.4,<8.0

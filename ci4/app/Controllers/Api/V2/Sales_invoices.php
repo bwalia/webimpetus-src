@@ -6,13 +6,52 @@ use App\Controllers\Api_v2;
 
 use App\Models\Sales_invoice_model;
 use CodeIgniter\RESTful\ResourceController;
+use OpenApi\Annotations as OA;
 
+/**
+ * @OA\Tag(
+ *     name="SalesInvoices",
+ *     description="Manage customer sales invoices."
+ * )
+ */
 class Sales_invoices extends ResourceController
 {
     /**
      * Return an array of resource objects, themselves in array format
      *
      * @return mixed
+     *
+     * @OA\Get(
+     *     path="/api/v2/sales_invoices",
+     *     tags={"SalesInvoices"},
+     *    
+     *     summary="List sales invoices",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="_format",
+     *         in="query",
+     *         description="Optional response format override",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="params",
+     *         in="query",
+     *         description="JSON encoded payload controlling pagination, sorting and filters.",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Paginated collection of sales invoices",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="data", type="array", @OA\Items(type="object")),
+     *             @OA\Property(property="total", type="integer"),
+     *             @OA\Property(property="message", type="integer")
+     *         )
+     *     ),
+     *     @OA\Response(response=403, description="Missing business identifier"),
+     *     @OA\Response(response=401, description="Unauthorized")
+     * )
      */
     public function index()
     {
@@ -111,6 +150,38 @@ class Sales_invoices extends ResourceController
      * Create a new resource object, from "posted" parameters
      *
      * @return mixed
+     *
+     * @OA\Post(
+     *     path="/api/v2/sales_invoices",
+     *     tags={"SalesInvoices"},
+     *     summary="Create a sales invoice",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 required={"terms","uuid_business_id","date","due_date","supplier"},
+     *                 @OA\Property(property="terms", type="string"),
+     *                 @OA\Property(property="uuid_business_id", type="string"),
+     *                 @OA\Property(property="date", type="string"),
+     *                 @OA\Property(property="due_date", type="string"),
+     *                 @OA\Property(property="supplier", type="string"),
+     *                 @OA\Property(property="project_code", type="string")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Sales invoice created",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(response=400, description="Validation error"),
+     *     @OA\Response(response=401, description="Unauthorized")
+     * )
      */
     public function create()
     {
@@ -120,6 +191,30 @@ class Sales_invoices extends ResourceController
 
     /**
      * Return the editable properties of a resource object
+     *
+     * @OA\Get(
+     *     path="/api/v2/sales_invoices/{uuid}",
+     *     tags={"SalesInvoices"},
+     *     summary="Retrieve a sales invoice",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="uuid",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Sales invoice details",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="data", type="object"),
+     *             @OA\Property(property="message", type="integer")
+     *         )
+     *     ),
+     *     @OA\Response(response=404, description="Invoice not found"),
+     *     @OA\Response(response=401, description="Unauthorized")
+     * )
      *
      * @return mixed
      */
@@ -132,6 +227,43 @@ class Sales_invoices extends ResourceController
      * Add or update a model resource, from "posted" properties
      *
      * @return mixed
+     *
+     * @OA\Put(
+     *     path="/api/v2/sales_invoices/{uuid}",
+     *     tags={"SalesInvoices"},
+     *     summary="Update a sales invoice",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="uuid",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 required={"uuid","uuid_business_id"},
+     *                 @OA\Property(property="uuid", type="string"),
+     *                 @OA\Property(property="uuid_business_id", type="string"),
+     *                 @OA\Property(property="terms", type="string"),
+     *                 @OA\Property(property="project_code", type="string")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Sales invoice updated",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(response=400, description="Validation error"),
+     *     @OA\Response(response=404, description="Invoice not found"),
+     *     @OA\Response(response=401, description="Unauthorized")
+     * )
      */
     public function update($id = null)
     {
@@ -143,6 +275,30 @@ class Sales_invoices extends ResourceController
      * Delete the designated resource object from the model
      *
      * @return mixed
+     *
+     * @OA\Delete(
+     *     path="/api/v2/sales_invoices/{uuid}",
+     *     tags={"SalesInvoices"},
+     *     summary="Delete a sales invoice",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="uuid",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Deletion status",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="data", type="boolean"),
+     *             @OA\Property(property="status", type="integer")
+     *         )
+     *     ),
+     *     @OA\Response(response=404, description="Invoice not found"),
+     *     @OA\Response(response=401, description="Unauthorized")
+     * )
      */
     public function delete($id = null)
     {
