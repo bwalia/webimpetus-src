@@ -1357,6 +1357,331 @@
                 ]
             }
         },
+        "/api/v2/hospital_staff": {
+            "get": {
+                "tags": [
+                    "Hospital Staff"
+                ],
+                "summary": "Get list of hospital staff",
+                "description": "Returns paginated list of hospital staff with details",
+                "operationId": "bd416b4057a55d790255a8f889d66ec2",
+                "parameters": [
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "Business UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Filter by status (Active, On Leave, Inactive, Suspended)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "department",
+                        "in": "query",
+                        "description": "Filter by department",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "job_title",
+                        "in": "query",
+                        "description": "Filter by job title",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number for pagination",
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Number of records per page",
+                        "schema": {
+                            "type": "integer",
+                            "default": 50
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Hospital staff retrieved successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "uuid": {
+                                                        "type": "string"
+                                                    },
+                                                    "staff_number": {
+                                                        "type": "string"
+                                                    },
+                                                    "user_name": {
+                                                        "type": "string"
+                                                    },
+                                                    "department": {
+                                                        "type": "string"
+                                                    },
+                                                    "job_title": {
+                                                        "type": "string"
+                                                    },
+                                                    "status": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "pagination": {
+                                            "properties": {
+                                                "total": {
+                                                    "type": "integer"
+                                                },
+                                                "page": {
+                                                    "type": "integer"
+                                                },
+                                                "limit": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Hospital Staff"
+                ],
+                "summary": "Create new hospital staff",
+                "description": "Creates a new hospital staff record",
+                "operationId": "b4be4b9146147385d359b2c75609795d",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "uuid_business_id",
+                                    "department",
+                                    "job_title",
+                                    "employment_type",
+                                    "status"
+                                ],
+                                "properties": {
+                                    "uuid_business_id": {
+                                        "type": "string"
+                                    },
+                                    "user_id": {
+                                        "type": "integer"
+                                    },
+                                    "contact_id": {
+                                        "type": "integer"
+                                    },
+                                    "employee_id": {
+                                        "type": "integer"
+                                    },
+                                    "department": {
+                                        "type": "string"
+                                    },
+                                    "job_title": {
+                                        "type": "string"
+                                    },
+                                    "specialization": {
+                                        "type": "string"
+                                    },
+                                    "gmc_number": {
+                                        "type": "string"
+                                    },
+                                    "nmc_number": {
+                                        "type": "string"
+                                    },
+                                    "employment_type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Full-time",
+                                            "Part-time",
+                                            "Contract",
+                                            "Locum"
+                                        ]
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Active",
+                                            "On Leave",
+                                            "Inactive",
+                                            "Suspended"
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Hospital staff created successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/hospital_staff/{uuid}": {
+            "get": {
+                "tags": [
+                    "Hospital Staff"
+                ],
+                "summary": "Get hospital staff by UUID",
+                "description": "Returns a single hospital staff record with details",
+                "operationId": "61210d944c0afae848eeeca91f126f4f",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "Staff UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "Staff not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Hospital Staff"
+                ],
+                "summary": "Update hospital staff",
+                "description": "Updates an existing hospital staff record",
+                "operationId": "49972101ee1abbb16cea2151847b177c",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "Staff UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "department": {
+                                        "type": "string"
+                                    },
+                                    "job_title": {
+                                        "type": "string"
+                                    },
+                                    "status": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Hospital staff updated successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Hospital Staff"
+                ],
+                "summary": "Delete hospital staff",
+                "description": "Deletes a hospital staff record",
+                "operationId": "bd2902948a1d569e2ff864922a270b74",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "Staff UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Hospital staff deleted successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/v2/incidents": {
             "get": {
                 "tags": [
@@ -1716,6 +2041,197 @@
                 "responses": {
                     "200": {
                         "description": "Interview deleted"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/job-applications": {
+            "get": {
+                "tags": [
+                    "Job Applications"
+                ],
+                "operationId": "a3485ae74b3a42534f402e5fd8fcf410",
+                "parameters": [
+                    {
+                        "name": "job_uuid",
+                        "in": "query",
+                        "description": "Filter by job UUID",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "Business UUID",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get all job applications"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Job Applications"
+                ],
+                "operationId": "c09a63008455b96f2ac1e1ee137abf1a",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "uuid_business_id": {
+                                        "type": "string"
+                                    },
+                                    "job_uuid": {
+                                        "type": "string"
+                                    },
+                                    "applicant_name": {
+                                        "type": "string"
+                                    },
+                                    "applicant_email": {
+                                        "type": "string"
+                                    },
+                                    "applicant_phone": {
+                                        "type": "string"
+                                    },
+                                    "resume_path": {
+                                        "type": "string"
+                                    },
+                                    "cover_letter": {
+                                        "type": "string"
+                                    },
+                                    "status": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Application created"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/job-applications/{id}": {
+            "get": {
+                "tags": [
+                    "Job Applications"
+                ],
+                "operationId": "3e209eab931f756514b49a67ffb0e527",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Application UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get single job application"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Job Applications"
+                ],
+                "operationId": "a1152d9d8268727a4c95de35ad8d4d43",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Application UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "status": {
+                                        "type": "string"
+                                    },
+                                    "notes": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Application updated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Job Applications"
+                ],
+                "operationId": "414294c56c0312b8c45929638586552e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Application UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Application deleted"
                     }
                 },
                 "security": [
@@ -2556,6 +3072,754 @@
                 ]
             }
         },
+        "/api/v2/patient_logs": {
+            "get": {
+                "tags": [
+                    "Patient Logs"
+                ],
+                "summary": "Get list of patient logs",
+                "description": "Returns paginated list of patient logs with filters",
+                "operationId": "ed92da29d2ffaad361eb2bc046d6f9c4",
+                "parameters": [
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "Business UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "patient_contact_id",
+                        "in": "query",
+                        "description": "Filter by patient contact ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "log_category",
+                        "in": "query",
+                        "description": "Filter by category",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "General",
+                                "Medication",
+                                "Vital Signs",
+                                "Treatment/Procedure",
+                                "Lab Result",
+                                "Admission",
+                                "Discharge"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "staff_uuid",
+                        "in": "query",
+                        "description": "Filter by staff UUID",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "is_flagged",
+                        "in": "query",
+                        "description": "Filter flagged logs only",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "from_date",
+                        "in": "query",
+                        "description": "Filter from date (Y-m-d)",
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "to_date",
+                        "in": "query",
+                        "description": "Filter to date (Y-m-d)",
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Patient logs retrieved successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "uuid": {
+                                                        "type": "string"
+                                                    },
+                                                    "log_number": {
+                                                        "type": "string"
+                                                    },
+                                                    "patient_name": {
+                                                        "type": "string"
+                                                    },
+                                                    "log_category": {
+                                                        "type": "string"
+                                                    },
+                                                    "performed_datetime": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    },
+                                                    "status": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Patient Logs"
+                ],
+                "summary": "Create new patient log",
+                "description": "Creates a new patient log entry",
+                "operationId": "63d347b44827b8d1f46a0673d6824f3a",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "uuid_business_id",
+                                    "patient_contact_id",
+                                    "staff_uuid",
+                                    "log_category",
+                                    "performed_datetime"
+                                ],
+                                "properties": {
+                                    "uuid_business_id": {
+                                        "type": "string"
+                                    },
+                                    "patient_contact_id": {
+                                        "type": "integer"
+                                    },
+                                    "staff_uuid": {
+                                        "type": "string"
+                                    },
+                                    "log_category": {
+                                        "type": "string"
+                                    },
+                                    "log_type": {
+                                        "type": "string"
+                                    },
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "performed_datetime": {
+                                        "type": "string",
+                                        "format": "date-time"
+                                    },
+                                    "priority": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Normal",
+                                            "High",
+                                            "Urgent"
+                                        ]
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Draft",
+                                            "Scheduled",
+                                            "In Progress",
+                                            "Completed",
+                                            "Cancelled"
+                                        ]
+                                    },
+                                    "is_flagged": {
+                                        "type": "boolean"
+                                    },
+                                    "flag_reason": {
+                                        "type": "string"
+                                    },
+                                    "medication_name": {
+                                        "description": "For Medication category",
+                                        "type": "string"
+                                    },
+                                    "dosage": {
+                                        "description": "For Medication category",
+                                        "type": "string"
+                                    },
+                                    "route": {
+                                        "description": "For Medication category",
+                                        "type": "string"
+                                    },
+                                    "frequency": {
+                                        "description": "For Medication category",
+                                        "type": "string"
+                                    },
+                                    "blood_pressure_systolic": {
+                                        "description": "For Vital Signs category",
+                                        "type": "integer"
+                                    },
+                                    "blood_pressure_diastolic": {
+                                        "description": "For Vital Signs category",
+                                        "type": "integer"
+                                    },
+                                    "heart_rate": {
+                                        "description": "For Vital Signs category",
+                                        "type": "integer"
+                                    },
+                                    "temperature": {
+                                        "description": "For Vital Signs category",
+                                        "type": "number"
+                                    },
+                                    "oxygen_saturation": {
+                                        "description": "For Vital Signs category",
+                                        "type": "integer"
+                                    },
+                                    "test_name": {
+                                        "description": "For Lab Result category",
+                                        "type": "string"
+                                    },
+                                    "test_result": {
+                                        "description": "For Lab Result category",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Patient log created successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/patient_logs/{uuid}": {
+            "get": {
+                "tags": [
+                    "Patient Logs"
+                ],
+                "summary": "Get patient log by UUID",
+                "description": "Returns a single patient log record",
+                "operationId": "13e2b3b37dd0f63ec3b9590643c467a9",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "Log UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "Log not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Patient Logs"
+                ],
+                "summary": "Update patient log",
+                "description": "Updates an existing patient log",
+                "operationId": "2a7dcb02062578d8cc36f6577f69358b",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "Log UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "status": {
+                                        "type": "string"
+                                    },
+                                    "is_flagged": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Patient log updated successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Patient Logs"
+                ],
+                "summary": "Delete patient log",
+                "description": "Deletes a patient log record",
+                "operationId": "c2a1b0dc880be0c3b1e2f37cfe31c77d",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "Log UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Patient log deleted successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/patient_logs/timeline/{patient_contact_id}": {
+            "get": {
+                "tags": [
+                    "Patient Logs"
+                ],
+                "summary": "Get patient timeline",
+                "description": "Returns complete patient activity timeline",
+                "operationId": "e116a12d1d93698571c9c9955332f561",
+                "parameters": [
+                    {
+                        "name": "patient_contact_id",
+                        "in": "path",
+                        "description": "Patient contact ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "Business UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/patient_logs/flagged": {
+            "get": {
+                "tags": [
+                    "Patient Logs"
+                ],
+                "summary": "Get flagged logs",
+                "description": "Returns all flagged patient logs",
+                "operationId": "53fd77bd0b453a6e58068a6125b37648",
+                "parameters": [
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "Business UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/patient_logs/medications/{patient_contact_id}": {
+            "get": {
+                "tags": [
+                    "Patient Logs"
+                ],
+                "summary": "Get medication history",
+                "description": "Returns patient medication history",
+                "operationId": "db37b0c6a8f2bd811f02f32f47552891",
+                "parameters": [
+                    {
+                        "name": "patient_contact_id",
+                        "in": "path",
+                        "description": "Patient contact ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "Business UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/patient_logs/vital-signs/{patient_contact_id}": {
+            "get": {
+                "tags": [
+                    "Patient Logs"
+                ],
+                "summary": "Get vital signs history",
+                "description": "Returns patient vital signs history",
+                "operationId": "e7c3cdde1eb445c28d1c1bbc3c553d7c",
+                "parameters": [
+                    {
+                        "name": "patient_contact_id",
+                        "in": "path",
+                        "description": "Patient contact ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "Business UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "days",
+                        "in": "query",
+                        "description": "Number of days to retrieve (default 7)",
+                        "schema": {
+                            "type": "integer",
+                            "default": 7
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/payments": {
+            "get": {
+                "tags": [
+                    "Payments"
+                ],
+                "operationId": "1d93ac645059611207223b274caaa0a4",
+                "parameters": [
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "Business UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Limit number of results",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "Offset for pagination",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get all payments"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Payments"
+                ],
+                "operationId": "7075d8ccd0db1627f078d21641a15c7f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "uuid_business_id": {
+                                        "type": "string"
+                                    },
+                                    "payment_date": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "payment_type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Supplier Payment",
+                                            "Expense Payment",
+                                            "Refund",
+                                            "Other"
+                                        ]
+                                    },
+                                    "payee_name": {
+                                        "type": "string"
+                                    },
+                                    "amount": {
+                                        "type": "number",
+                                        "format": "decimal"
+                                    },
+                                    "currency": {
+                                        "type": "string",
+                                        "enum": [
+                                            "GBP",
+                                            "USD",
+                                            "EUR",
+                                            "INR"
+                                        ]
+                                    },
+                                    "payment_method": {
+                                        "type": "string"
+                                    },
+                                    "bank_account_uuid": {
+                                        "type": "string"
+                                    },
+                                    "reference": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Draft",
+                                            "Pending",
+                                            "Completed",
+                                            "Cancelled"
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Payment created"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/payments/{uuid}": {
+            "get": {
+                "tags": [
+                    "Payments"
+                ],
+                "operationId": "37a8d212095d8dcfb26e83f2b46db690",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "Payment UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get single payment"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Payments"
+                ],
+                "operationId": "9042a5e20da9257dd42c78d308a5647f",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "Payment UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Payment updated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Payments"
+                ],
+                "operationId": "8a66aeb2ef4712ab66c8b94ec2487536",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "Payment UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Payment deleted"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/v2/products": {
             "get": {
                 "tags": [
@@ -2750,6 +4014,513 @@
                 ]
             }
         },
+        "/api/v2/project_job_phases": {
+            "get": {
+                "tags": [
+                    "Project Job Phases"
+                ],
+                "operationId": "0bd1981532e83b7035928a4d14705811",
+                "parameters": [
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "Business UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "uuid_project_job_id",
+                        "in": "query",
+                        "description": "Job UUID to filter phases",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get all project job phases"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Project Job Phases"
+                ],
+                "operationId": "d28bc519b5f804a830f82164e6cae12a",
+                "parameters": [
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "Business UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "uuid_project_job_id",
+                        "in": "query",
+                        "description": "Job UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "phase_name",
+                        "in": "query",
+                        "description": "Phase Name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Create a project job phase"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/project_job_phases/{uuid}": {
+            "get": {
+                "tags": [
+                    "Project Job Phases"
+                ],
+                "operationId": "cc3a8ddba41826430be2c38c54889388",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "Phase UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get single project job phase"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Project Job Phases"
+                ],
+                "operationId": "b88eb0e181f479c8f66602bf760b673d",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "Phase UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Update a project job phase"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Project Job Phases"
+                ],
+                "operationId": "70ad2e39d03ce400892dbb8f07a1fb10",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "Phase UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Delete a project job phase"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/project_job_scheduler": {
+            "get": {
+                "tags": [
+                    "Project Job Scheduler"
+                ],
+                "operationId": "dd0403d081a8a83e23484a89e58a3805",
+                "parameters": [
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "Business UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "start_date",
+                        "in": "query",
+                        "description": "Filter by start date (YYYY-MM-DD)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "end_date",
+                        "in": "query",
+                        "description": "Filter by end date (YYYY-MM-DD)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get all scheduled events"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Project Job Scheduler"
+                ],
+                "operationId": "63a56e9c7eb45224886e5e9009128306",
+                "parameters": [
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "Business UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "uuid_project_job_id",
+                        "in": "query",
+                        "description": "Job UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "title",
+                        "in": "query",
+                        "description": "Event Title",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "schedule_date",
+                        "in": "query",
+                        "description": "Schedule Date (YYYY-MM-DD)",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Create a scheduled event"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/project_job_scheduler/{uuid}": {
+            "get": {
+                "tags": [
+                    "Project Job Scheduler"
+                ],
+                "operationId": "4f780dddc9ef5a1e069345f6cc95710a",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "Event UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get single scheduled event"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Project Job Scheduler"
+                ],
+                "operationId": "34aa0620608782b45911dab00a2689a5",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "Event UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Update a scheduled event"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Project Job Scheduler"
+                ],
+                "operationId": "93a0d711749519d816164ecc53cd2f54",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "Event UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Delete a scheduled event"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/project_jobs": {
+            "get": {
+                "tags": [
+                    "Project Jobs"
+                ],
+                "operationId": "1044341d672f8a6bedfea41da66e9144",
+                "parameters": [
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "Business UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get all project jobs"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Project Jobs"
+                ],
+                "operationId": "00e421f6aff9915be57c7686fd9e1ec9",
+                "parameters": [
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "Business UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "uuid_project_id",
+                        "in": "query",
+                        "description": "Project UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "job_name",
+                        "in": "query",
+                        "description": "Job Name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Create a project job"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/project_jobs/{uuid}": {
+            "get": {
+                "tags": [
+                    "Project Jobs"
+                ],
+                "operationId": "3b36c31d451824e781a44d3ac2e2eb6d",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "Job UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get single project job"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Project Jobs"
+                ],
+                "operationId": "58fa7af0561a14539da5085b9f350f05",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "Job UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Update a project job"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Project Jobs"
+                ],
+                "operationId": "6e501533c0ccab423602e5cffd750393",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "Job UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Delete a project job"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/v2/projects": {
             "get": {
                 "tags": [
@@ -2836,6 +4607,217 @@
                 "responses": {
                     "200": {
                         "description": "Delete a project"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/receipts": {
+            "get": {
+                "tags": [
+                    "Receipts"
+                ],
+                "operationId": "e242d9ff4a0edf8a310e1e5fbfa01df0",
+                "parameters": [
+                    {
+                        "name": "uuid_business_id",
+                        "in": "query",
+                        "description": "Business UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Limit number of results",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "Offset for pagination",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get all receipts"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Receipts"
+                ],
+                "operationId": "a5f323a9fb5cc308bbbba251a416c7ef",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "uuid_business_id": {
+                                        "type": "string"
+                                    },
+                                    "receipt_date": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "receipt_type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Customer Payment",
+                                            "Sales Receipt",
+                                            "Deposit",
+                                            "Other"
+                                        ]
+                                    },
+                                    "payer_name": {
+                                        "type": "string"
+                                    },
+                                    "amount": {
+                                        "type": "number",
+                                        "format": "decimal"
+                                    },
+                                    "currency": {
+                                        "type": "string",
+                                        "enum": [
+                                            "GBP",
+                                            "USD",
+                                            "EUR",
+                                            "INR"
+                                        ]
+                                    },
+                                    "payment_method": {
+                                        "type": "string"
+                                    },
+                                    "bank_account_uuid": {
+                                        "type": "string"
+                                    },
+                                    "reference": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Draft",
+                                            "Pending",
+                                            "Cleared",
+                                            "Cancelled"
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Receipt created"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/receipts/{uuid}": {
+            "get": {
+                "tags": [
+                    "Receipts"
+                ],
+                "operationId": "5dc32840241d6bc21ef283a9d6248ebd",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "Receipt UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get single receipt"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Receipts"
+                ],
+                "operationId": "ef3a18f01fab18a05837c8da5e396088",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "Receipt UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Receipt updated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Receipts"
+                ],
+                "operationId": "61a0e59784653761bd3746ed45d678f3",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "Receipt UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Receipt deleted"
                     }
                 },
                 "security": [
@@ -2971,6 +4953,321 @@
                 "responses": {
                     "200": {
                         "description": "Role deleted"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/sales_invoices": {
+            "get": {
+                "tags": [
+                    "SalesInvoices"
+                ],
+                "summary": "List sales invoices",
+                "description": "Return an array of resource objects, themselves in array format",
+                "operationId": "b7b94244265d6a6e9bdab89c0d215d6f",
+                "parameters": [
+                    {
+                        "name": "_format",
+                        "in": "query",
+                        "description": "Optional response format override",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "params",
+                        "in": "query",
+                        "description": "JSON encoded payload controlling pagination, sorting and filters.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated collection of sales invoices",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        },
+                                        "total": {
+                                            "type": "integer"
+                                        },
+                                        "message": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Missing business identifier"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "SalesInvoices"
+                ],
+                "summary": "Create a sales invoice",
+                "description": "Create a new resource object, from \"posted\" parameters",
+                "operationId": "f34b47139a95a22913e002d6f1d481fe",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "terms",
+                                    "uuid_business_id",
+                                    "date",
+                                    "due_date",
+                                    "supplier"
+                                ],
+                                "properties": {
+                                    "terms": {
+                                        "type": "string"
+                                    },
+                                    "uuid_business_id": {
+                                        "type": "string"
+                                    },
+                                    "date": {
+                                        "type": "string"
+                                    },
+                                    "due_date": {
+                                        "type": "string"
+                                    },
+                                    "supplier": {
+                                        "type": "string"
+                                    },
+                                    "project_code": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Sales invoice created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/sales_invoices/{uuid}": {
+            "get": {
+                "tags": [
+                    "SalesInvoices"
+                ],
+                "summary": "Retrieve a sales invoice",
+                "description": "Return the editable properties of a resource object",
+                "operationId": "7d81e02e0499d6b9231242b0490b0743",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Sales invoice details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Invoice not found"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "SalesInvoices"
+                ],
+                "summary": "Update a sales invoice",
+                "description": "Add or update a model resource, from \"posted\" properties",
+                "operationId": "0e9f5bebb56d73329b83bc43dbdee68b",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "uuid",
+                                    "uuid_business_id"
+                                ],
+                                "properties": {
+                                    "uuid": {
+                                        "type": "string"
+                                    },
+                                    "uuid_business_id": {
+                                        "type": "string"
+                                    },
+                                    "terms": {
+                                        "type": "string"
+                                    },
+                                    "project_code": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Sales invoice updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error"
+                    },
+                    "404": {
+                        "description": "Invoice not found"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "SalesInvoices"
+                ],
+                "summary": "Delete a sales invoice",
+                "description": "Delete the designated resource object from the model",
+                "operationId": "bd5e7ad2105efb24e8d244fb5b8b146e",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Deletion status",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "boolean"
+                                        },
+                                        "status": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Invoice not found"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
                     }
                 },
                 "security": [
@@ -3708,6 +6005,334 @@
                 ]
             }
         },
+        "/api/v2/timesheets": {
+            "get": {
+                "tags": [
+                    "Timesheets"
+                ],
+                "summary": "List timesheets",
+                "description": "Returns paginated timesheets for a business with optional filters (status, employee, project, dates, invoicing).",
+                "operationId": "e0911777e91e42013007e38b258a9a45",
+                "parameters": [
+                    {
+                        "name": "format",
+                        "in": "query",
+                        "description": "Optional response format (default: json).",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "params",
+                        "in": "query",
+                        "description": "JSON encoded pagination, sorting, and filtering options.",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Timesheets matching the supplied filters.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaginatedResponse"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Business identifier missing"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Timesheets"
+                ],
+                "summary": "Create a timesheet",
+                "description": "Create a new timesheet entry.",
+                "operationId": "8741a67f1d3620c012e205bb1ff3c79b",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TimesheetCreateRequest"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TimesheetCreateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Timesheet created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TimesheetResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/timesheets/{uuid}": {
+            "get": {
+                "tags": [
+                    "Timesheets"
+                ],
+                "summary": "Retrieve a timesheet",
+                "description": "Retrieve a single timesheet by UUID.",
+                "operationId": "72a5a9a73b124e391a4eb30ca9da0c3e",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "Timesheet UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Timesheet detail",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TimesheetResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Timesheet not found"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Timesheets"
+                ],
+                "summary": "Update a timesheet",
+                "description": "Update an existing timesheet.",
+                "operationId": "3d3a9550316c8d4f327ab3941fa752d0",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "Timesheet UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TimesheetUpdateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Timesheet updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TimesheetResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error"
+                    },
+                    "404": {
+                        "description": "Timesheet not found"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Timesheets"
+                ],
+                "summary": "Delete a timesheet",
+                "description": "Delete a timesheet (soft delete).",
+                "operationId": "1c56e14688ab289113b64eb0fa4893b4",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "Timesheet UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Deletion status",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DeleteConfirmation"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Timesheet not found"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/timesheets/start": {
+            "post": {
+                "tags": [
+                    "Timesheets"
+                ],
+                "summary": "Start a timesheet timer",
+                "description": "Start a running timer.",
+                "operationId": "76eb9f6f3c17929049d9c633a4ea8bc0",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TimesheetStartRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Timer started",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TimesheetResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/timesheets/{uuid}/stop": {
+            "post": {
+                "tags": [
+                    "Timesheets"
+                ],
+                "summary": "Stop a timesheet timer",
+                "description": "Stop a running timer.",
+                "operationId": "bd2000cad04e290a724e3b56ea3ec18b",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "Timesheet UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Timer stopped",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TimesheetResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Timesheet not found or not running"
+                    },
+                    "400": {
+                        "description": "Unable to stop timer"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/v2/timeslips": {
             "get": {
                 "tags": [
@@ -4128,9 +6753,806 @@
                     }
                 ]
             }
+        },
+        "/api/v2/work_orders": {
+            "get": {
+                "tags": [
+                    "WorkOrders"
+                ],
+                "summary": "List work orders",
+                "description": "Returns paginated work orders for a business. Supports the list filter payload used by the front-end and QA harness.",
+                "operationId": "56a2628b1de36e18c6150c4a7b82516b",
+                "parameters": [
+                    {
+                        "name": "_format",
+                        "in": "query",
+                        "description": "Optional response format override (defaults to json).",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "params",
+                        "in": "query",
+                        "description": "JSON encoded object supporting pagination, sorting, and filter keys (uuid_business_id, q).",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated list of work orders",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "uuid": {
+                                                        "type": "string"
+                                                    },
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "order_number": {
+                                                        "type": "string"
+                                                    },
+                                                    "date": {
+                                                        "type": "string",
+                                                        "format": "date"
+                                                    },
+                                                    "project_code": {
+                                                        "type": "string"
+                                                    },
+                                                    "total": {
+                                                        "type": "number",
+                                                        "format": "float"
+                                                    },
+                                                    "balance_due": {
+                                                        "type": "number",
+                                                        "format": "float"
+                                                    },
+                                                    "paid_date": {
+                                                        "type": "string",
+                                                        "format": "date",
+                                                        "nullable": true
+                                                    },
+                                                    "status": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "recordsTotal": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Missing business identifier"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "WorkOrders"
+                ],
+                "summary": "Create a work order",
+                "description": "Create a new resource object, from \"posted\" parameters",
+                "operationId": "5b7ec8a8cac85a0ddbd64e8a62108fed",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "client_id",
+                                    "uuid_business_id"
+                                ],
+                                "properties": {
+                                    "client_id": {
+                                        "description": "Customer identifier.",
+                                        "type": "string"
+                                    },
+                                    "uuid_business_id": {
+                                        "description": "Business UUID.",
+                                        "type": "string"
+                                    },
+                                    "bill_to": {
+                                        "type": "string"
+                                    },
+                                    "order_number": {
+                                        "type": "string"
+                                    },
+                                    "date": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "project_code": {
+                                        "type": "string"
+                                    },
+                                    "status": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Work order created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "uuid": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/work_orders/{uuid}": {
+            "get": {
+                "tags": [
+                    "WorkOrders"
+                ],
+                "summary": "Retrieve a work order",
+                "description": "Return the properties of a resource object",
+                "operationId": "4a0192c2b698df60f497bcdf9b780e5b",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Work order details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Work order not found"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "WorkOrders"
+                ],
+                "summary": "Update a work order",
+                "description": "Add or update a model resource, from \"posted\" properties",
+                "operationId": "fb9a52fc6590639a438d932ba070caf8",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "uuid",
+                                    "uuid_business_id",
+                                    "client_id"
+                                ],
+                                "properties": {
+                                    "uuid": {
+                                        "type": "string"
+                                    },
+                                    "uuid_business_id": {
+                                        "type": "string"
+                                    },
+                                    "client_id": {
+                                        "type": "string"
+                                    },
+                                    "bill_to": {
+                                        "type": "string"
+                                    },
+                                    "status": {
+                                        "type": "string"
+                                    },
+                                    "project_code": {
+                                        "type": "string"
+                                    },
+                                    "date": {
+                                        "type": "string",
+                                        "format": "date"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Work order updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error"
+                    },
+                    "404": {
+                        "description": "Work order not found"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "WorkOrders"
+                ],
+                "summary": "Delete a work order",
+                "description": "Delete the designated resource object from the model",
+                "operationId": "b21ec9fd572e65928985a011a790a622",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Deletion result",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "boolean"
+                                        },
+                                        "status": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Work order not found"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
         }
     },
     "components": {
+        "schemas": {
+            "Pagination": {
+                "properties": {
+                    "page": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "example": 1
+                    },
+                    "perPage": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "example": 20
+                    },
+                    "total": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "example": 120
+                    },
+                    "lastPage": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "example": 6
+                    }
+                },
+                "type": "object"
+            },
+            "Timesheet": {
+                "required": [
+                    "uuid",
+                    "uuid_business_id",
+                    "employee_id",
+                    "start_time",
+                    "status"
+                ],
+                "properties": {
+                    "uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "2bb2ebf2-5420-4f4d-b0f8-6caa7846b662"
+                    },
+                    "uuid_business_id": {
+                        "type": "string",
+                        "example": "6b232df1-886d-4ab1-9cf5-9d537454fd04"
+                    },
+                    "employee_id": {
+                        "type": "string",
+                        "example": "EMP-123"
+                    },
+                    "project_id": {
+                        "type": "string",
+                        "example": "PRJ-456",
+                        "nullable": true
+                    },
+                    "task_id": {
+                        "type": "string",
+                        "example": "TSK-789",
+                        "nullable": true
+                    },
+                    "customer_id": {
+                        "type": "string",
+                        "example": "CUST-555",
+                        "nullable": true
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "On-site consultation",
+                        "nullable": true
+                    },
+                    "start_time": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-02-20T09:00:00Z"
+                    },
+                    "end_time": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-02-20T11:30:00Z",
+                        "nullable": true
+                    },
+                    "duration_minutes": {
+                        "type": "integer",
+                        "example": 150,
+                        "nullable": true
+                    },
+                    "billable_hours": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 2.5,
+                        "nullable": true
+                    },
+                    "hourly_rate": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 120,
+                        "nullable": true
+                    },
+                    "total_amount": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 300,
+                        "nullable": true
+                    },
+                    "is_billable": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "is_running": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "is_invoiced": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "invoice_id": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "completed"
+                    },
+                    "notes": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "tags": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "created_by": {
+                        "type": "string",
+                        "example": "user@example.com",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "employee_full_name": {
+                        "type": "string",
+                        "example": "Ada Lovelace",
+                        "nullable": true
+                    },
+                    "employee_first_name": {
+                        "type": "string",
+                        "example": "Ada",
+                        "nullable": true
+                    },
+                    "employee_surname": {
+                        "type": "string",
+                        "example": "Lovelace",
+                        "nullable": true
+                    },
+                    "project_name": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "task_name": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "customer_name": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "TimesheetResponse": {
+                "required": [
+                    "data"
+                ],
+                "properties": {
+                    "data": {
+                        "$ref": "#/components/schemas/Timesheet"
+                    }
+                },
+                "type": "object"
+            },
+            "PaginatedResponse": {
+                "required": [
+                    "data",
+                    "meta"
+                ],
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Timesheet"
+                        }
+                    },
+                    "meta": {
+                        "properties": {
+                            "pagination": {
+                                "$ref": "#/components/schemas/Pagination"
+                            },
+                            "sort": {
+                                "properties": {
+                                    "field": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "order": {
+                                        "type": "string",
+                                        "example": "DESC",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "filter": {
+                                "type": "object",
+                                "nullable": true,
+                                "additionalProperties": true
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "TimesheetCreateRequest": {
+                "required": [
+                    "uuid_business_id",
+                    "employee_id",
+                    "start_time"
+                ],
+                "properties": {
+                    "uuid_business_id": {
+                        "type": "string",
+                        "example": "6b232df1-886d-4ab1-9cf5-9d537454fd04"
+                    },
+                    "employee_id": {
+                        "type": "string",
+                        "example": "EMP-123"
+                    },
+                    "start_time": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-02-20T09:00:00Z"
+                    },
+                    "end_time": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "project_id": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "task_id": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "customer_id": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "hourly_rate": {
+                        "type": "number",
+                        "format": "float",
+                        "nullable": true
+                    },
+                    "is_billable": {
+                        "type": "boolean",
+                        "example": true,
+                        "nullable": true
+                    },
+                    "is_running": {
+                        "type": "boolean",
+                        "example": false,
+                        "nullable": true
+                    },
+                    "is_invoiced": {
+                        "type": "boolean",
+                        "example": false,
+                        "nullable": true
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "draft",
+                        "nullable": true
+                    },
+                    "notes": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "tags": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "TimesheetUpdateRequest": {
+                "properties": {
+                    "start_time": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "end_time": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "project_id": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "task_id": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "customer_id": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "hourly_rate": {
+                        "type": "number",
+                        "format": "float",
+                        "nullable": true
+                    },
+                    "is_billable": {
+                        "type": "boolean",
+                        "nullable": true
+                    },
+                    "is_running": {
+                        "type": "boolean",
+                        "nullable": true
+                    },
+                    "is_invoiced": {
+                        "type": "boolean",
+                        "nullable": true
+                    },
+                    "status": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "notes": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "tags": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "TimesheetStartRequest": {
+                "required": [
+                    "uuid_business_id",
+                    "employee_id"
+                ],
+                "properties": {
+                    "uuid_business_id": {
+                        "type": "string",
+                        "example": "6b232df1-886d-4ab1-9cf5-9d537454fd04"
+                    },
+                    "employee_id": {
+                        "type": "string",
+                        "example": "EMP-123"
+                    },
+                    "project_id": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "task_id": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "customer_id": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "hourly_rate": {
+                        "type": "number",
+                        "format": "float",
+                        "nullable": true
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "running",
+                        "nullable": true
+                    },
+                    "is_billable": {
+                        "type": "boolean",
+                        "example": true,
+                        "nullable": true
+                    },
+                    "created_by": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "DeleteConfirmation": {
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "type": "boolean"
+                        },
+                        "example": [
+                            true
+                        ]
+                    }
+                },
+                "type": "object"
+            }
+        },
         "securitySchemes": {
             "bearerAuth": {
                 "type": "http",
@@ -4146,8 +7568,28 @@
             "description": "API endpoints for managing service deployments across DTAP environments"
         },
         {
+            "name": "Hospital Staff",
+            "description": "Hospital staff management endpoints"
+        },
+        {
             "name": "Launchpad",
             "description": "API endpoints for managing bookmarks and quick links"
+        },
+        {
+            "name": "Patient Logs",
+            "description": "Patient activity logging endpoints"
+        },
+        {
+            "name": "SalesInvoices",
+            "description": "Manage customer sales invoices."
+        },
+        {
+            "name": "Timesheets",
+            "description": "Track billable and non-billable time entries."
+        },
+        {
+            "name": "WorkOrders",
+            "description": "Manage work orders raised for suppliers."
         },
         {
             "name": "Blog Comments",
@@ -4190,6 +7632,10 @@
             "description": "Interviews"
         },
         {
+            "name": "Job Applications",
+            "description": "Job Applications"
+        },
+        {
             "name": "Jobs",
             "description": "Jobs"
         },
@@ -4202,6 +7648,10 @@
             "description": "Menu"
         },
         {
+            "name": "Payments",
+            "description": "Payments"
+        },
+        {
             "name": "Products",
             "description": "Products"
         },
@@ -4210,8 +7660,24 @@
             "description": "Producs"
         },
         {
+            "name": "Project Job Phases",
+            "description": "Project Job Phases"
+        },
+        {
+            "name": "Project Job Scheduler",
+            "description": "Project Job Scheduler"
+        },
+        {
+            "name": "Project Jobs",
+            "description": "Project Jobs"
+        },
+        {
             "name": "Projects",
             "description": "Projects"
+        },
+        {
+            "name": "Receipts",
+            "description": "Receipts"
         },
         {
             "name": "Roles",

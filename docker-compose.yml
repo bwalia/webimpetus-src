@@ -57,6 +57,25 @@ services:
         CI_ENVIRONMENT: 'development'
         app.baseURL: 'http://localhost:5500/'
 
+  modern-api:
+    container_name: "modern-api"
+    build:
+      context: ./modern-api
+    restart: always
+    depends_on:
+      - webimpetus-db
+    environment:
+      DATABASE_URL: ${MODERN_API_DATABASE_URL:-sqlite:///./modern_api.db}
+    volumes:
+      - ./modern-api/app:/app/app
+      - ./modern-api/migrations:/app/migrations
+      - ./modern-api/seeds:/app/seeds
+      - ./modern-api/.env:/app/.env:ro
+    ports:
+      - "8989:8000"
+    networks:
+      - webimpetus-network
+
 # Add Keycloak service
   keycloak:
     container_name: keycloak

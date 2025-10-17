@@ -11,16 +11,14 @@ use CodeIgniter\RESTful\ResourceController;
  * @OA\Get(
  *     path="/api/v2/project_job_scheduler",
  *     tags={"Project Job Scheduler"},
- *     security={
- *       {"bearerAuth": {}}
- *     },
+ *     security={{"bearerAuth": {}}},
  *     @OA\Parameter(
  *          name="uuid_business_id",
  *          in="query",
  *          required=true,
  *          description="Business UUID",
  *          @OA\Schema(type="string")
- *     },
+ *     ),
  *     @OA\Parameter(
  *          name="start_date",
  *          in="query",
@@ -44,9 +42,7 @@ use CodeIgniter\RESTful\ResourceController;
  * @OA\Get(
  *     path="/api/v2/project_job_scheduler/{uuid}",
  *     tags={"Project Job Scheduler"},
- *     security={
- *       {"bearerAuth": {}}
- *     },
+ *     security={{"bearerAuth": {}}},
  *     @OA\Parameter(
  *          name="uuid",
  *          in="path",
@@ -63,9 +59,7 @@ use CodeIgniter\RESTful\ResourceController;
  * @OA\Post(
  *     path="/api/v2/project_job_scheduler",
  *     tags={"Project Job Scheduler"},
- *     security={
- *       {"bearerAuth": {}}
- *     },
+ *     security={{"bearerAuth": {}}},
  *     @OA\Parameter(
  *          name="uuid_business_id",
  *          in="query",
@@ -103,9 +97,7 @@ use CodeIgniter\RESTful\ResourceController;
  * @OA\Put(
  *     path="/api/v2/project_job_scheduler/{uuid}",
  *     tags={"Project Job Scheduler"},
- *     security={
- *       {"bearerAuth": {}}
- *     },
+ *     security={{"bearerAuth": {}}},
  *     @OA\Parameter(
  *          name="uuid",
  *          in="path",
@@ -122,9 +114,7 @@ use CodeIgniter\RESTful\ResourceController;
  * @OA\Delete(
  *     path="/api/v2/project_job_scheduler/{uuid}",
  *     tags={"Project Job Scheduler"},
- *     security={
- *       {"bearerAuth": {}}
- *     },
+ *     security={{"bearerAuth": {}}},
  *     @OA\Parameter(
  *          name="uuid",
  *          in="path",

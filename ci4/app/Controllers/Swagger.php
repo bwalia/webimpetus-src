@@ -222,3 +222,148 @@ class Swagger extends Controller
         ], JSON_PRETTY_PRINT);
     }
 }
+
+/**
+ * @OA\Schema(
+ *     schema="Pagination",
+ *     type="object",
+ *     @OA\Property(property="page", type="integer", example=1, minimum=1),
+ *     @OA\Property(property="perPage", type="integer", example=20, minimum=1),
+ *     @OA\Property(property="total", type="integer", example=120, minimum=0),
+ *     @OA\Property(property="lastPage", type="integer", example=6, minimum=1)
+ * )
+ *
+ * @OA\Schema(
+ *     schema="Timesheet",
+ *     type="object",
+ *     required={"uuid","uuid_business_id","employee_id","start_time","status"},
+ *     @OA\Property(property="uuid", type="string", format="uuid", example="2bb2ebf2-5420-4f4d-b0f8-6caa7846b662"),
+ *     @OA\Property(property="uuid_business_id", type="string", example="6b232df1-886d-4ab1-9cf5-9d537454fd04"),
+ *     @OA\Property(property="employee_id", type="string", example="EMP-123"),
+ *     @OA\Property(property="project_id", type="string", nullable=true, example="PRJ-456"),
+ *     @OA\Property(property="task_id", type="string", nullable=true, example="TSK-789"),
+ *     @OA\Property(property="customer_id", type="string", nullable=true, example="CUST-555"),
+ *     @OA\Property(property="description", type="string", nullable=true, example="On-site consultation"),
+ *     @OA\Property(property="start_time", type="string", format="date-time", example="2024-02-20T09:00:00Z"),
+ *     @OA\Property(property="end_time", type="string", format="date-time", nullable=true, example="2024-02-20T11:30:00Z"),
+ *     @OA\Property(property="duration_minutes", type="integer", nullable=true, example=150),
+ *     @OA\Property(property="billable_hours", type="number", format="float", nullable=true, example=2.5),
+ *     @OA\Property(property="hourly_rate", type="number", format="float", nullable=true, example=120.0),
+ *     @OA\Property(property="total_amount", type="number", format="float", nullable=true, example=300.0),
+ *     @OA\Property(property="is_billable", type="boolean", example=true),
+ *     @OA\Property(property="is_running", type="boolean", example=false),
+ *     @OA\Property(property="is_invoiced", type="boolean", example=false),
+ *     @OA\Property(property="invoice_id", type="string", nullable=true),
+ *     @OA\Property(property="status", type="string", example="completed"),
+ *     @OA\Property(property="notes", type="string", nullable=true),
+ *     @OA\Property(property="tags", type="string", nullable=true),
+ *     @OA\Property(property="created_by", type="string", nullable=true, example="user@example.com"),
+ *     @OA\Property(property="created_at", type="string", format="date-time", nullable=true),
+ *     @OA\Property(property="updated_at", type="string", format="date-time", nullable=true),
+ *     @OA\Property(property="employee_full_name", type="string", nullable=true, example="Ada Lovelace"),
+ *     @OA\Property(property="employee_first_name", type="string", nullable=true, example="Ada"),
+ *     @OA\Property(property="employee_surname", type="string", nullable=true, example="Lovelace"),
+ *     @OA\Property(property="project_name", type="string", nullable=true),
+ *     @OA\Property(property="task_name", type="string", nullable=true),
+ *     @OA\Property(property="customer_name", type="string", nullable=true)
+ * )
+ *
+ * @OA\Schema(
+ *     schema="TimesheetResponse",
+ *     type="object",
+ *     required={"data"},
+ *     @OA\Property(property="data", ref="#/components/schemas/Timesheet")
+ * )
+ *
+ * @OA\Schema(
+ *     schema="PaginatedResponse",
+ *     type="object",
+ *     required={"data","meta"},
+ *     @OA\Property(
+ *         property="data",
+ *         type="array",
+ *         @OA\Items(ref="#/components/schemas/Timesheet")
+ *     ),
+ *     @OA\Property(
+ *         property="meta",
+ *         type="object",
+ *         @OA\Property(property="pagination", ref="#/components/schemas/Pagination"),
+ *         @OA\Property(
+ *             property="sort",
+ *             type="object",
+ *             @OA\Property(property="field", type="string", nullable=true),
+ *             @OA\Property(property="order", type="string", nullable=true, example="DESC")
+ *         ),
+ *         @OA\Property(property="filter", type="object", nullable=true, additionalProperties=true)
+ *     )
+ * )
+ *
+ * @OA\Schema(
+ *     schema="TimesheetCreateRequest",
+ *     type="object",
+ *     required={"uuid_business_id","employee_id","start_time"},
+ *     @OA\Property(property="uuid_business_id", type="string", example="6b232df1-886d-4ab1-9cf5-9d537454fd04"),
+ *     @OA\Property(property="employee_id", type="string", example="EMP-123"),
+ *     @OA\Property(property="start_time", type="string", format="date-time", example="2024-02-20T09:00:00Z"),
+ *     @OA\Property(property="end_time", type="string", format="date-time", nullable=true),
+ *     @OA\Property(property="project_id", type="string", nullable=true),
+ *     @OA\Property(property="task_id", type="string", nullable=true),
+ *     @OA\Property(property="customer_id", type="string", nullable=true),
+ *     @OA\Property(property="description", type="string", nullable=true),
+ *     @OA\Property(property="hourly_rate", type="number", format="float", nullable=true),
+ *     @OA\Property(property="is_billable", type="boolean", nullable=true, example=true),
+ *     @OA\Property(property="is_running", type="boolean", nullable=true, example=false),
+ *     @OA\Property(property="is_invoiced", type="boolean", nullable=true, example=false),
+ *     @OA\Property(property="status", type="string", nullable=true, example="draft"),
+ *     @OA\Property(property="notes", type="string", nullable=true),
+ *     @OA\Property(property="tags", type="string", nullable=true)
+ * )
+ *
+ * @OA\Schema(
+ *     schema="TimesheetUpdateRequest",
+ *     type="object",
+ *     @OA\Property(property="start_time", type="string", format="date-time", nullable=true),
+ *     @OA\Property(property="end_time", type="string", format="date-time", nullable=true),
+ *     @OA\Property(property="project_id", type="string", nullable=true),
+ *     @OA\Property(property="task_id", type="string", nullable=true),
+ *     @OA\Property(property="customer_id", type="string", nullable=true),
+ *     @OA\Property(property="description", type="string", nullable=true),
+ *     @OA\Property(property="hourly_rate", type="number", format="float", nullable=true),
+ *     @OA\Property(property="is_billable", type="boolean", nullable=true),
+ *     @OA\Property(property="is_running", type="boolean", nullable=true),
+ *     @OA\Property(property="is_invoiced", type="boolean", nullable=true),
+ *     @OA\Property(property="status", type="string", nullable=true),
+ *     @OA\Property(property="notes", type="string", nullable=true),
+ *     @OA\Property(property="tags", type="string", nullable=true)
+ * )
+ *
+ * @OA\Schema(
+ *     schema="TimesheetStartRequest",
+ *     type="object",
+ *     required={"uuid_business_id","employee_id"},
+ *     @OA\Property(property="uuid_business_id", type="string", example="6b232df1-886d-4ab1-9cf5-9d537454fd04"),
+ *     @OA\Property(property="employee_id", type="string", example="EMP-123"),
+ *     @OA\Property(property="project_id", type="string", nullable=true),
+ *     @OA\Property(property="task_id", type="string", nullable=true),
+ *     @OA\Property(property="customer_id", type="string", nullable=true),
+ *     @OA\Property(property="description", type="string", nullable=true),
+ *     @OA\Property(property="hourly_rate", type="number", format="float", nullable=true),
+ *     @OA\Property(property="status", type="string", nullable=true, example="running"),
+ *     @OA\Property(property="is_billable", type="boolean", nullable=true, example=true),
+ *     @OA\Property(property="created_by", type="string", nullable=true)
+ * )
+ *
+ * @OA\Schema(
+ *     schema="DeleteConfirmation",
+ *     type="object",
+ *     @OA\Property(
+ *         property="data",
+ *         type="array",
+ *         @OA\Items(type="boolean"),
+ *         example={true}
+ *     )
+ * )
+ */
+class SwaggerSchemaDefinitions
+{
+}

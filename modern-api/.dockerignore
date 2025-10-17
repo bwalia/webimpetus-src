@@ -1,0 +1,10 @@
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+migrations/versions/__pycache__
+.env
+.git
+.gitignore
+.idea
+.vscode

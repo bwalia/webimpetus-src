@@ -2,11 +2,14 @@
 
 namespace Config;
 
+use CodeIgniter\Config\Services;
+
 // Create a new instance of our RouteCollection class.
 $routes = Services::routes();
 
 // Load the system's routing file first, so that the app and ENVIRONMENT
 // can override as needed.
+
 if (file_exists(SYSTEMPATH . 'Config/Routes.php')) {
     require SYSTEMPATH . 'Config/Routes.php';
 }
@@ -114,6 +117,8 @@ $routes->get('/api/v1/ping', 'Home::ping');
 $routes->resource('api/v2/users');
 $routes->resource('api/v2/timeslips');
 $routes->resource('api/v2/timesheets');
+$routes->post('api/v2/timesheets/start', 'Api\V2\Timesheets::startTimer');
+$routes->post('api/v2/timesheets/(:segment)/stop', 'Api\V2\Timesheets::stopTimer/$1');
 $routes->resource('api/v2/webpages');
 $routes->resource('api/v2/tasks');
 $routes->resource('api/v2/customers');
@@ -278,89 +283,3 @@ $routes->group('receipts', function($routes) {
     $routes->get('pdf/(:segment)', 'Receipts::printReceipt/$1');
     $routes->get('download/(:segment)', 'Receipts::downloadPDF/$1');
 });
-
-// Timesheets Routes
-$routes->group('timesheets', function($routes) {
-    $routes->get('/', 'Timesheets::index');
-    $routes->get('edit/(:segment)', 'Timesheets::edit/$1');
-    $routes->get('edit', 'Timesheets::edit');
-    $routes->post('update', 'Timesheets::update');
-    $routes->post('delete/(:segment)', 'Timesheets::delete/$1');
-    $routes->get('timesheetsList', 'Timesheets::timesheetsList');
-    $routes->post('startTimer', 'Timesheets::startTimer');
-    $routes->post('stopTimer/(:segment)', 'Timesheets::stopTimer/$1');
-    $routes->post('createInvoice', 'Timesheets::createInvoice');
-    // AJAX search endpoints
-    $routes->get('searchEmployeesAjax', 'Timesheets::searchEmployeesAjax');
-    $routes->get('searchCustomersAjax', 'Timesheets::searchCustomersAjax');
-    $routes->get('searchProjectsAjax', 'Timesheets::searchProjectsAjax');
-    $routes->get('searchTasksAjax', 'Timesheets::searchTasksAjax');
-});
-
-// Hospital Staff Routes
-$routes->group('hospital_staff', function($routes) {
-    $routes->get('/', 'HospitalStaff::index');
-    $routes->get('edit/(:segment)', 'HospitalStaff::edit/$1');
-    $routes->get('edit', 'HospitalStaff::edit');
-    $routes->post('update', 'HospitalStaff::update');
-    $routes->post('delete/(:segment)', 'HospitalStaff::delete/$1');
-    $routes->get('staffList', 'HospitalStaff::staffList');
-    $routes->get('dashboard', 'HospitalStaff::dashboard');
-    $routes->get('byDepartment/(:segment)', 'HospitalStaff::byDepartment/$1');
-});
-
-// Patient Logs Routes
-$routes->group('patient_logs', function($routes) {
-    $routes->get('/', 'PatientLogs::index');
-    $routes->get('edit/(:segment)', 'PatientLogs::edit/$1');
-    $routes->get('edit', 'PatientLogs::edit');
-    $routes->post('update', 'PatientLogs::update');
-    $routes->post('delete/(:segment)', 'PatientLogs::delete/$1');
-    $routes->get('logsList', 'PatientLogs::logsList');
-    $routes->get('timeline/(:num)', 'PatientLogs::timeline/$1');
-    $routes->get('flagged', 'PatientLogs::flagged');
-    $routes->get('scheduled', 'PatientLogs::scheduled');
-    $routes->get('quickLog', 'PatientLogs::quickLog');
-    $routes->post('saveQuickLog', 'PatientLogs::saveQuickLog');
-});
-
-// Financial Reports Routes
-$routes->get('balance-sheet', 'BalanceSheet::index');
-$routes->get('balance-sheet/export-pdf', 'BalanceSheet::exportPDF');
-$routes->get('trial-balance', 'TrialBalance::index');
-$routes->get('profit-loss', 'ProfitLoss::index');
-$routes->get('cash-flow', 'CashFlow::index');
-$routes->post('cash-flow/generate', 'CashFlow::generate');
-$routes->get('cash-flow/exportPDF', 'CashFlow::exportPDF');
-
-// Deployments Routes
-$routes->group('deployments', function($routes) {
-    $routes->get('/', 'Deployments::index');
-    $routes->get('edit/(:segment)', 'Deployments::edit/$1');
-    $routes->get('edit', 'Deployments::edit');
-    $routes->post('update', 'Deployments::update');
-    $routes->post('delete/(:segment)', 'Deployments::delete/$1');
-    $routes->get('deploymentsList', 'Deployments::deploymentsList');
-    $routes->post('checkDeploymentAccess', 'Deployments::checkDeploymentAccess');
-    $routes->post('executeDeployment', 'Deployments::executeDeployment');
-    $routes->get('managePermissions', 'Deployments::managePermissions');
-    $routes->post('savePermission', 'Deployments::savePermission');
-    $routes->post('generatePasscode', 'Deployments::generatePasscode');
-});
-
-/*
- * --------------------------------------------------------------------
- * Additional Routing
- * --------------------------------------------------------------------
- *
- * There will often be times that you need additional routing and you
- * need it to be able to override any defaults in this file. Environment
- * based routes is one such time. require() additional route files here
- * to make that happen.
- *
- * You will have access to the $routes object within that file without
- * needing to reload it.
- */
-if (file_exists(APPPATH . 'Config/' . ENVIRONMENT . '/Routes.php')) {
-    require APPPATH . 'Config/' . ENVIRONMENT . '/Routes.php';
-}

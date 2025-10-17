@@ -14,6 +14,25 @@ use Config\Services;
 class Auth extends BaseController
 {
     /**
+     * API endpoint to generate a JWT token for API access (enquiries, contacts, customers, etc.)
+     * POST /api/v2/token
+     * Body: { "email": "...", "password": "...", "type": "contacts|customers|enquiries|users|employees" }
+     */
+    public function apiToken()
+    {
+        $input = $this->getRequestInput($this->request);
+        $type = isset($input['type']) ? $input['type'] : 'contacts';
+        $email = isset($input['email']) ? $input['email'] : null;
+        $password = isset($input['password']) ? $input['password'] : null;
+        if (!$email || !$password) {
+            return $this->getResponse([
+                'error' => 'Email and password are required.'
+            ], ResponseInterface::HTTP_BAD_REQUEST);
+        }
+        return $this->getJWTForUser($email, $password, $type);
+    }
+
+    /**
      * Register a new user
      * @return Response
      * @throws ReflectionException
