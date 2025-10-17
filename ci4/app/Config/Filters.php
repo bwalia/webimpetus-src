@@ -76,8 +76,14 @@ class Filters extends BaseConfig
         'before' => [
             'api/*',
             'api'
+        ],
+        'except' => [
+            'api/v2/token',
+            '/api/v2/token',
+            'api/v1/ping',
+            '/api/v1/ping'
+        ]
       ],
-    ],
     'options' => ['before' => ['api/*']]
   ];
 }
