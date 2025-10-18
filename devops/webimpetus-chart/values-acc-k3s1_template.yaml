@@ -76,5 +76,5 @@ affinity: {}
   #           operator: In
   #           values:
   #           - ssd
-  #           - hdd
-disableDefaultNodeSelector: true
+  #           - hdd slworker00
+disableDefaultNodeSelector: false
