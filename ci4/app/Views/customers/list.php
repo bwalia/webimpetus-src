@@ -156,63 +156,29 @@
         columnRenderers: columnRenderers
     });
 
-    // Update summary cards
+    // Update summary cards - using server-side calculated metrics for accuracy
     function updateCustomerSummaryCards() {
-        const businessUuid = '<?php echo session('uuid_business'); ?>';
-
-        fetch('/customers/customersList?limit=10000&offset=0&uuid_business_id=' + businessUuid)
+        fetch('/customers/summary')
             .then(response => response.json())
             .then(result => {
-                if (result && result.data) {
-                    calculateCustomerMetrics(result.data);
+                if (result) {
+                    // Update all summary cards with accurate counts from database
+                    $('#totalCustomers').text(result.total || 0);
+                    $('#activeCustomers').text(result.active || 0);
+                    $('#newThisMonth').text(result.newThisMonth || 0);
+                    $('#suppliersCount').text(result.suppliers || 0);
+
+                    console.log('Customer metrics updated:', {
+                        total: result.total,
+                        active: result.active,
+                        newThisMonth: result.newThisMonth,
+                        suppliers: result.suppliers
+                    });
                 }
             })
             .catch(error => {
                 console.error('Error fetching customer summary:', error);
             });
-    }
-
-    function calculateCustomerMetrics(customers) {
-        const today = new Date();
-        const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
-
-        let totalCount = customers.length;
-        let activeCount = 0;
-        let newThisMonth = 0;
-        let suppliersCount = 0;
-
-        customers.forEach(function(customer) {
-            // Count active customers
-            if (customer.status == 1 || customer.status === true) {
-                activeCount++;
-            }
-
-            // Count suppliers
-            if (customer.supplier == 1 || customer.supplier === true) {
-                suppliersCount++;
-            }
-
-            // Count new this month
-            if (customer.created_at) {
-                const createdDate = new Date(customer.created_at);
-                if (createdDate >= monthStart) {
-                    newThisMonth++;
-                }
-            }
-        });
-
-        // Update cards
-        $('#totalCustomers').text(totalCount);
-        $('#activeCustomers').text(activeCount);
-        $('#newThisMonth').text(newThisMonth);
-        $('#suppliersCount').text(suppliersCount);
-
-        console.log('Customer metrics updated:', {
-            total: totalCount,
-            active: activeCount,
-            newThisMonth: newThisMonth,
-            suppliers: suppliersCount
-        });
     }
 
     $(document).ready(function() {
