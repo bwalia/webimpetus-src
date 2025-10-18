@@ -48,7 +48,7 @@ resources:
         memory: 4Gi
         cpu: 1024m
 storageSettings:
-    storageClassName: local-path
+    storageClassName: longhorn
     accessModes: ReadWriteOnce
     diskSize: 16Gi
 autoscaling:
