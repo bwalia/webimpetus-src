@@ -112,5 +112,5 @@ affinity: {}
   #               values:
   #                 - ssd
 
-disableDefaultNodeSelector: true
+disableDefaultNodeSelector: false
 

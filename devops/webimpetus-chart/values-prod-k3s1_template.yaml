@@ -101,7 +101,7 @@ deploymentStrategy:
     maxSurge: 0
     maxUnavailable: 1
 
-disableDefaultNodeSelector: true
+disableDefaultNodeSelector: false
 
 affinity: {}
   # affinity:
