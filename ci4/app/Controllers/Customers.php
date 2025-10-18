@@ -81,6 +81,42 @@ class Customers extends CommonController
         return $this->response->setJSON($data);
     }
 
+    public function summary()
+    {
+        $businessUuid = session('uuid_business');
+
+        // Get total count
+        $totalCount = $this->customerModel
+            ->where(['uuid_business_id' => $businessUuid])
+            ->countAllResults();
+
+        // Get active customers count
+        $activeCount = $this->customerModel
+            ->where(['uuid_business_id' => $businessUuid, 'status' => 1])
+            ->countAllResults();
+
+        // Get suppliers count
+        $suppliersCount = $this->customerModel
+            ->where(['uuid_business_id' => $businessUuid, 'supplier' => 1])
+            ->countAllResults();
+
+        // Get new this month count
+        $monthStart = date('Y-m-01 00:00:00');
+        $newThisMonth = $this->customerModel
+            ->where(['uuid_business_id' => $businessUuid])
+            ->where('created_at >=', $monthStart)
+            ->countAllResults();
+
+        $data = [
+            'total' => $totalCount,
+            'active' => $activeCount,
+            'suppliers' => $suppliersCount,
+            'newThisMonth' => $newThisMonth
+        ];
+
+        return $this->response->setJSON($data);
+    }
+
     public function edit($uuid = 0)
 	{
 		$tableData =  $uuid ? $this->model->getExistsRowsByUUID($uuid)->getRow() : '';
