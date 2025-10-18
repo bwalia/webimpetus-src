@@ -53,8 +53,8 @@ storageSettings:
     diskSize: 16Gi
 autoscaling:
     enabled: false
-    minReplicas: 3
-    maxReplicas: 6
+    minReplicas: 1
+    maxReplicas: 1
     maxUnavailable: 1
     targetCPUUtilizationPercentage: 80
 affinity: {}
