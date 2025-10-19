@@ -1,102 +1,80 @@
 service_name: wsl
-
 targetCluster: k3s1
 targetEnv: acc
 targetNS: acc
-
 envPreferences:
-  timeZone: Europe/London
-  codeIgniterEnv: production
-
+    timeZone: Europe/London
+    codeIgniterEnv: production
 architecture:
-  http_server_type: openresty   # apache2 | openresty are supported
-
-targetImage: "bwalia/webimpetus"
-targetImageTag: "latest"
-
-safeSealedSecret: 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
-
+    http_server_type: openresty
+targetImage: bwalia/webimpetus
+targetImageTag: latest
+safeSealedSecret: null
 serviceAccount:
-  # Specifies whether a service account should be created
-  create: true
-# ports
-svcAccessPort: 31192
-
-# mysql / mariadb
+    create: true
+svcAccessPort: 31176
 db:
-    hostname: AgC7rxy7onwI/DeTTUYz1odKs5TxJAKAET07oewZ1rkXQaGkK2CdImFKJHOcnFKE22KaZIqc2uPC97udsUWmByzvCDjCoYJlvyA7UVVkhhX5VZ21kIwNv2DH2fQqzsQkO3c2D/oiXOYmCtdj5FNhX0ACUFf156nTJW0Z1zXiW0DoE2p5i426VfUY466djiTCjmOxFBU1OYKbPu+zyP/eToZHi35m14TsB6vFnXkL43k4V0CVSocebuJZwxzihUBWB6AbTJ6ueDJzVoJ5E9cGoZkMnFsBmYU/Q9pvYGJbVQugSIzKplZjjvm9xzFffjY9s3iPpkbL77TqF/wniG1q7pEmxUEQ23JbqcRz7zQctQcgeuDJGSjGnj6AG0lA9ADo4ZDhtOUsd4pLku7NqAzrNRWG5KS0ktT3MzFBU8EgMAUMIYxF2etK1MOwDCG60h5SXAHMwlWQXAExTyBd6CGtSungHT7Ek/6RyTJxDXj7+IxcU3IiGrTFaXnPwtC+SZmo2wfY0mAz1VPO8cjd4w39frQdKVwd3ElWZshGTKZOrqmZ2m4T3xP1fzQgWtpoclgTuHwBiGa2J1Zl0O1y+VBks1WlStyFFAtn2FmhHt92Y/GucCr1Oq/f1H/+VX6Xz5lESnETo1g2lF/h5a5ZcS4m19xjOf9txrXSPGl1jW0GaV1/ZLIQjW2HkyrKtoZR6SuXdnrfjeyLlc6mdy0=
-    password: AgDRdbmVf/6YJtqeZjD++GbqPYiqtTkLgZ27HflNxLUKS6qjQYbrsdP3+MnLGuKmfZOcueQOUAfUni+QZsARndBrkxu6ogkwLmGnL3+GA9ZKMwZg8C4NDJjG4SC0Or56S6J0c8T8Om9N/Mm5GiCMnB6f+agtr4UvShuhdyhPzKqKwuEKZRAm+MR7CKRP/2C2f3bBEQ5bkQ5XOyQ9Zv26UstaPZnRURwB+/jqUvXzPdRxiDTYuDPR1TMO/tYrr3GziHYRnBrLU0FhDvMnVwIbrXqpoaDKmrX3CyyjTmghUJIGP4gkLDzIKB47cZbr98+gsxrr9ElFSuXyw0aMDT8HBBW+fRlCpQ0rlTYIyta2MPcptUoCF0jthotV9IRRSCD2RgWw9j+en4xVk7bslAiTnmyUMprBXHOgJlXVTfKrYw8SePmE9SkZDbObU8B/p7Bn5PWD2dVzFMk/ultJV+EI7fsG1DXOMI58ITLUHVmKgG8YNP9Qjk2DENYTrl1Xe+mbP0y621YF4nZ0EFX7NYHCqYM//Wqwx+0G88bPMlV38huaVOYucrroHjDaRBvgEzUkpj6PqrlkhSKvmlwkgBesZ/gZPhsDlyjaEOLsAN9bpMMddEwJeocsMMSE79mU00ib/8532QjJhcxiD5Y44uO4DzQbhfTMTJ7G6+JK1C3izxnKXrmNjzOginffLviNcfoiYdAbERm1Gv23ekU=
-    port: AgA2UvCPLV3AwOGzu4YdX2OwgJ5gwKWVxCQMifczY/a3F2tBwIRZ3zTkTFaSPEyqMbMqKFy7On+km0OSLmYtDzL3wP7nAYyfNvY+bCSocT8V05s1/gpgAqXYuoNhIiWj5Pxb7WyasLTAIDS7Vrc4b4lvZMRktG8Wau9gCgnhnbmEyUhHFOmKSdDwfLNhZCKNxY/+H7ARkP3LAn/hhWB1vgeUbscSir201SKEcm6jGIpYnlW1yAWGSQheyAN4hfOPOymnvym6og3IUpfzVjw8VqN1UvinwK+OyDdnIT477+oEwrO81+aD9qSt63BoCug59dpaBGhQhcWZj2tTpmPTiGz8ckoTEB0ofNn0rKhSyJr+YUq6RDHXrubVwN1G/Jfpsvsm+fiFFZU4OjArO+CoSngSV7lnJwpLnv2tUvzsSDHWSdos4Dl5vbXDmJkeYwVAqfJk0t9GVY88RIjYVpjUiiJTLzaBbNBIonkE1q2HkQa0Ubaz39c0MfPWDP3T8pb3htvTpg7z3K1xi2ULyOKZbfk9cXjsha4ejYkjEncGBf0aQfnyQteOn68Ikd5ozIu3RWLCIna0wVPLanpD2MlRirt3rdY2KJRv9jIocwb1t2pUDG2KuOQcPFH93K/ok57IOghVZNs8yL2aeCY6dEpy63e04PQJ7VkloU+ulsyk/u1DD+Q/lfXacumPDLvTgu2u/A0JldgL
-    rootPassword: AgC6003zjfqO8gCukMdwTDdF3ZNbx7G2u7rKVF2+32ah+t9mFaAQw6OdjyYGyhkU2Vnass1sgRSmNs6XUZuz2WT23S1W+bkr+YLcnjI60UITUD+8DHwWT9d7tVZqLjzPxYHIUzNXsGWOd8+YnSojHPFpeK7C4lE3ud2Jga59uic34p4PZ21pROtvDnj+4FCKxJUzf4+QYWc20hZEgvGVrM3AfzGoewQ4UaNS4gGt0Wx2RS53skDMe9woUnBd7gjz/N+qE6xVUqtE7n9EQLXzBEF7d4w+aQ1r0jQLCNQwktnvT4l9yRMrdvSlUxET3/DhYV9uHJxFuAl061tj/8kDOVGvp69IAHwWMvj6GH5RiJQP/btbCevgwC+zu432a+CJ/qx7yh9jPcuqdfGo/KwkiIhK/QwkMQrX/Tu98DA2GGxCo5C7UtIOPrlKHJKWBmYCzrbXEuB47qFzO2dpAuLQ4hivV1AleWsWFFVXlIo6eCihthvBy4g2f7bX07FTyJv6TPQlK+aFnPfeH5XVaQT3A7A+Bz05ms31KPbq1w1OTq8ZwBInsvtsOuvwVBUgNd/9bbdKVdf3KX6AGcLRQcQlPQmQ88CPfYJThcCE/2a4e/X5tONlFGKur55YarRK4N5jWgmmkNy6Y4Z/9Erwe9Dwwb+rrPjwElD2ulfflrKIby7iOit08ujcIfCy2ViUFj/s00EWj6C157NxLF4=
-    username: AgC5XSYPcYJSqj+yohT5Lod0njfhwS7VJht3n9Kmj4HOIT9AujEFrUYRXZr64xcQNWFoYQKO31612/0Z81AqKMyzh427Io/Hu+YTUQdzJkAuFaLJUxhKqv6RfLTES4uSFQT4+GprtficzK201vOMjpiRTAo337juGC4LHjqiAYpoyuIrd28bj3hukEbFddPzeaMCbHHxgkWDBPAtfQtFcLzfKJLSOQ+u6fYsCEULpmBUUJaa+206bMziiVnZL7q51fn9bt/4Do+4rv1Cx/veC1GexfKT7bIrrEE77uf7p8bfmdODABdbATfoaPSVolTesi/JUN5okX3Cpi/XB+0fyMYYF3HGZ/XuBJhytnctmcnmkFmyi3ltXvatyhra6E9D1R/d/qkgXrWlHHmdUk/VlvUAOzUv2IE3emxbo4nsJwOwrcb7gR2KSRLvy2K8SmFFZA+a9RvZhEfUH4WN7EAyu6RKw7l6ua0My1RTOGfINTCTayo4nIJxRrFbEsKC1M3TJO5bo0BRo9Jt/WuqTPMmUxKEhklw/g8BxjuQOWd5+aNoK1HHq3btCng7MOyGjMJHv03OcEphITjbT7DQReAJnN4RRqOF6gdafwlzK/sgrZC5K4AInC0MfJUDkg+5v/yIwSByGAkuvccFv4YE4MvvZbfwEYSnY3Cd0XPORjT9ak2qRnNr45aK54GD8boWCthD5mw9wiHn
-
+    hostname: AgCiAbd9xsr3dNna0b7XmgTMeUB+mQvxCfwEKOjDtDzlVagXcrHXZ+E3cGPSHC9O1P9MVT+3xabG3F9PiAcJ8xzDBTWJLFYW5FL398XlOVggnoLrotuXumjPkuRoDToVMu7ooRGQHz5qGlEw8DyEmHBTsc7LrWPK8iTPkEqJGjw8nJo/WNOhnmHhWf4uAFBs9Mn08IgijKpFWW+dmdYqsgzGlK75kb/lw+g9aSnz8ATaEDvF305WYFwqP+DWetNzCXQwBOrC0dch7TgDQWl2UqKGZNnkbzqVLp+2itqpFHi0RAhfzT08MsK5/zuXrEGCxTGDB2D9tW9WcdGSJpbi0pd5Np9Q+3jCJd3TMjO8+zEDNcrCwzMFMwKwk/wKhRWjN+hV+EKH0idli9A7+QruL8tGutaTcrW07CLzbQ4BVoisf4ClW79+4+kS3MtkO3lUl4SAdfUfB/o8wEgl0VILy27hZ9KWBCS/JGtCX4wNSLmZBGi40AosHaj8rpTKx0N7kyMIbn/8AL8i/YdsN9k1Wk38nAlql0YTfRU4w4NFHqsE6tABre34d3uYdr7uEqBBAVneqPKgEYJJDi4L3sCDOxoYUZFpcl7r1cLP+MUmH+A+DXMLq7tWIBj0jC+sETxTzxb9hV8cPg0aUMMiLKEQRdvU4844Sklpceyi5I+Vgj8v9l1Q5dd/2GmorVBGxbLCfpQI8V0Q/6IyMGs=
+    password: AgAXs1KlkCTwUxAGkeYy+GJvdPzpO8MRuiFTsUr/CmFgbs3UVXJiqfwom/GNwe19vjzthTsswQS7byjO2katoMwcD9qWxH7m7gRM3Z2U1bgvMeolNkYrjoXe18GbtPv4uE3bepVRZbWxZDbo20pHGwqqN9UZwHEbEIYY6OiLT7WjnipwnP9b7rin88qM9REoI5tgFbN9j37MKlUabf/Q/yiNzuum7OxdXr3NeH7pp3/rAUz2beX8PXohgBYbJCjrAWRFYXW9TTUwd80PuC2lBVeYvsD+RVgomJxHEpElRiZAol0DVWV6NE9JFZCJGpZrf+yGS5p4flonbQdlqMv9E7e1vXGKvDvnSL0POEGcBYCq6HE+rp1DzyaKKEm61ICBnyE9ulgovYQHIGOsCAwZUMXKE1nZYPn3tBGmxrUFPu4KU0BwIKYAakQgOYQiHmLBtJy6JCe19Ep26JLLA+Y9QThSebMDTrLdMP8F0NnpAXiro+CjP2KKJ2V3YxoXIjPWRPMD3C7VrjxM4tKa3cZ1AnkJDbh659uC47G4okDKuDBrQhMwVRkzOOVIXbQ740Awv9h5iIK0MxxYzohbbYWFCJcJIZOOzEJhUNpgioLkfIk6mIGMeYb1h2ruLGbNZBEmeRjc1/zCI2+Q9jmSA4LRry2+1toEdWMgj6INTVjmAQEgSXih6sn6Mqp0HdrKIKu0gWMSijQ5PwkmRls=
+    port: AgCFroyai9hc1VXHhsxZmndan9pftboCmfEcep8PkhhRU8OEAeFlYjQ6BRw0bJpmIJuELoMc/R/K872Vk9UeQc3SS9FWlKpZ9GSNVo7ggJHGeEYbon7yQhy/IZB1G1iyg8ZBZ+BG3faLj6YddFNZ+p1gnLz7bZOBkBvuc5jrpZYccTe8MPp4tSG1AEioeVElymuFt2J8jNx2eLCb72iNsKGCY8cKgdNUA59MMZf9f38HgETlY1vKuUypdDpzmH5kN2liCLZ6zpzomnal75ImEURLGTl0HdG3Y6BNL3/BGOMrviPlHGqWweH4V30XbtZQrsngIevB3EtKj6G77NAZvyR1XoGdsQcmnK1O5nu2xsCCCJ2v1aWLQ8rP3NrcCWo9L381V+EK4OGZyv1nt2SDu+5Iu/6ilxqVWTTZ6Qp8KDMle7KwKMF+Pq8jzn+LVy+qsIQkKjjvv0EjjJ7e81eaHq/JbwuGzT6+iCZ5TAd9jAu8xpGNlVXmrhjeIEVv8FHg4KEhw0RC0dytdVkka5Z9K5xnfV0XYa2SS/0w+ZtPoPHV1T6xyrGHT6uQixKJwczEybpothgZdOfFmUb1MCdnUtNUo9cxQTEi2s0wyHgsPZE3esVPz99ESGGO0f5VRe8S5JxCq2l/VIW3a6tEKeLWW996qkr5XF04ZeXGBx55Liah9efkfcQzSUbaVr+3DnNTFCgopVFE
+    rootPassword: AgC6Q/YAdDwEjv7dXK7XwF/5LRB83k+jm1Av6iOKwzuTng75YBce9C5a2vPjqsWJbpIDu6ckKY6mWXud7Ea5Dfj91b138lDZtZcSI2h0ckf13EFyXQB0lmLcIEWI+aoPGhhmS3+2UXoUn5ppxe3kHHh6E16eydXWhDdPU4HI5nR2+j6u8qUUyp9pcJXE5zViuWo5+UcOMUar4lmDOSAYZndKoult9bBxhRevpU7j+kLY6XrW733rqduNywBxy2DUgCzfwHH+71+ITWAnKyLlT/AAgJ5VXaaIaUxb85MbJYCUerfK9kdhuhVyTXDxq2rFRfHOfBNFLl60/UavsVbJc54XTCRWSHrmszP7EjkK7F3WZC4Sthw0rh3i9UNw5n7dU/TQoJaMldTWjgSEA5a8FvUM1pmETkCBIWdoKhuaWflYudsuXRAg02rILRebSjGa2TFNnCHFVEDpBSWovHAKit4B4at0DyT1T3BdxAtmywp8qRJyC7X80iZtBmf/mLOeQ/kCGO5GEimmvg6F26WpE/VrWrQ1o73gsHoO7Z3dZT3osCCjDQVXg946uPrW83CgTT6YSaBNd6kQ/vUV7z738xozm+bCxC8hHsbJWfVB/MaEmbAR4Zs6JGccR35MnA4gTdHrnsCBPghxFRPSe3d9b+9n/uhvveZZH22pt12kCGoZPuKmEQNcsba3K9E/pEE0MJ93bvXg1KgVy5A=
+    username: AgAFUu7/nBF6XK2x8Z7ll+J2mdZtLXK1X+j3wIZzxPGXIz/1wtIZtYfuSAllpFuN4EhA74JC/iyK6x52vdFpycNnkfylI4GkRIBm8JnRCoL/sxHHdD1VbpULtnWe+QVWSZH5oyhxSsadD9m7VkQuoLTlU5+OljWvSSmEjgGq1TvjDV/5Mg96aT3SAe5P8a2+r+qPdJkXrlLGxhJ5a4jyqSwNGT0sUx+EHGwSQ7XukpmuwNp3PvrKcTGzUjtCzz1uil5Syn1AfmQbGVCA12ylx/A0GP7nyNQCy2oUpVr8dcm6YmDL4EnvauHMIjFLYZVXo3EqxuLXLGehhjwBZHDMUzPvqLFcAMxhFKrUYlXBdl+aPNrqoG/u0wwl29MHlZ+5yAZSVKDi90bCPYTfPNzF5q5F4TuTPeW0dX7PQh6su2UEQqCABbGJQ5tkUbhganqoArznPwPxAWlZ9ELpRI5+E6xcBqzhsSEdAY+6XIGTMfCB5claEmGEh9cADgdfA5hLqGThja/uShbyP+FCR5z5w+TRqXyJ4nUGrlxo0x15G46abG3oRVfrEMIiTvWENodSmoNMv4gt93PObgSs9C2zk3jvT7U85xd6bVC/81ZTH99cwmxNbsQavEqypBt/I9p75UtaNVQRng2FoRTqIpyjcB/9+q2x6fQH6+nryI0N5+RkmpRFMbkWi+q3p8LBM+EyYaTBIytu
 service:
-  type: ClusterIP
-  port: 80
-
+    type: ClusterIP
+    port: 80
 serviceAdminer:
-  type: ClusterIP
-  port: 8080
-  enabled: true
-
+    enabled: true
+    type: ClusterIP
+    port: 8080
 ingress:
-  enabled: true
-  className: "nginx"
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: acc-my.workstation.co.uk
-      paths:
-        - path: /
-          pathType: Prefix
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
-
+    enabled: true
+    className: nginx
+    annotations: {  }
+    hosts: [{ host: acc-my.workstation.co.uk, paths: [{ path: /, pathType: Prefix }] }]
+    tls: {  }
 ingressAdminer:
-  enabled: true
-  className: "nginx"
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: acc-adminer.workstation.co.uk
-      paths:
-        - path: /
-          pathType: Prefix
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
-
+    enabled: true
+    className: nginx
+    annotations: {  }
+    hosts: [{ host: acc-adminer.workstation.co.uk, paths: [{ path: /, pathType: Prefix }] }]
+    tls: {  }
 adminer:
-  port: 30883
-  
+    port: 30883
 resources:
-  requests:
-    memory: 4Gi
-    cpu: 500m
-  limits:
-    memory: 8Gi
-    cpu: 1000m
-
+    requests:
+        memory: 4Gi
+        cpu: 1024m
+    limits:
+        memory: 8Gi
+        cpu: 2048m
 storageSettings:
-  storageClassName: longhorn
-  accessModes: ReadWriteOnce
-  diskSize: 1Gi
-
+    storageClassName: longhorn
+    accessModes: ReadWriteOnce
+    diskSize: 56Gi
 autoscaling:
-  enabled: false
-  minReplicas: 1
-  maxReplicas: 4
-  maxUnavailable: 1
-  targetCPUUtilizationPercentage: 80
-
-deploymentStrategy:
-  rollingUpdate:
-    maxSurge: 0
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 1
     maxUnavailable: 1
-
+    targetCPUUtilizationPercentage: 80
+affinity: {}
+  # affinity:
+  #   nodeAffinity:
+  #     requiredDuringSchedulingIgnoredDuringExecution:
+  #       nodeSelectorTerms:
+  #       - matchExpressions:
+  #         - key: node
+  #           operator: In
+  #           values:
+  #           - slworker00
+  #           - slworker01
+  #     preferredDuringSchedulingIgnoredDuringExecution:
+  #     - weight: 1
+  #       preference:
+  #         matchExpressions:
+  #         - key: disktype
+  #           operator: In
+  #           values:
+  #           - ssd
+  #           - hdd slworker00
 disableDefaultNodeSelector: false
