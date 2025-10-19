@@ -78,14 +78,14 @@ adminer:
   
 resources:
   requests:
-    memory: 8Gi
-    cpu: 750m
+    memory: 2Gi
+    cpu: 256m
   limits:
-    memory: 16Gi
-    cpu: 1500m
+    memory: 6Gi
+    cpu: 1024m
 
 storageSettings:
-  storageClassName: longhorn
+  storageClassName: local-path
   accessModes: ReadWriteOnce
   diskSize: 20Gi
 

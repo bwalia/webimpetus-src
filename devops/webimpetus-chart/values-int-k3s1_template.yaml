@@ -42,13 +42,13 @@ adminer:
     port: 30882
 resources:
     requests:
+        memory: 1Gi
+        cpu: 256m
+    limits:
         memory: 2Gi
         cpu: 512m
-    limits:
-        memory: 4Gi
-        cpu: 1024m
 storageSettings:
-    storageClassName: longhorn
+    storageClassName: local-path
     accessModes: ReadWriteOnce
     diskSize: 16Gi
 autoscaling:
