@@ -34,7 +34,9 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
     echo "✓ Running on Linux"
     OS_TYPE="linux"
-
+elif [[ "$OSTYPE" == "linux"* ]]; then
+    echo "✓ Running on Linux"
+    OS_TYPE="linux"
     # Check if it's Ubuntu specifically
     if [ -f /etc/os-release ]; then
         . /etc/os-release
