@@ -76,16 +76,17 @@ spec:
         app: adminer-{{ .Values.targetNS }}
     spec:
       containers:
-        - image: adminer
-          name: adminer-{{ .Values.targetNS }}
-          ports:
-          - containerPort: 8080
-          resources: {}
-          volumeMounts:
-          - mountPath: /sessions
-            name: adminer-pvc-{{ .Values.targetNS }}
-          #- mountPath: /usr/local/etc/php/conf.d/php-adminer.ini
-          #  name: adminer-claim
+        image: adminer
+        name: adminer-{{ .Values.targetNS }}
+        ports:
+        - containerPort: 8080
+
+        resources: {}
+        volumeMounts:
+        - mountPath: /sessions
+          name: adminer-pvc-{{ .Values.targetNS }}
+        #- mountPath: /usr/local/etc/php/conf.d/php-adminer.ini
+        #  name: adminer-claim
       restartPolicy: Always
       volumes:
       - name: adminer-pvc-{{ .Values.targetNS }}
