@@ -7,7 +7,7 @@
 // Database configuration
 $host = 'workerra-ci-db';
 $dbname = 'myworkstation_dev';
-$username = 'wsl_dev';
+$username = 'workerra-ci-dev';
 $password = 'CHANGE_ME';
 
 // Create connection

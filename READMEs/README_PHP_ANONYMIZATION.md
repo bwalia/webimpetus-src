@@ -75,7 +75,7 @@ ls -lh backups/
 gunzip backups/myworkstation_dev_before_anonymization_*.sql.gz
 
 # Restore
-docker exec -i workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' \
+docker exec -i workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' \
   myworkstation_dev < backups/myworkstation_dev_before_anonymization_*.sql
 ```
 
@@ -99,7 +99,7 @@ See [PHP_ANONYMIZATION_GUIDE.md](PHP_ANONYMIZATION_GUIDE.md) for:
 
 ```bash
 # Check database
-docker exec workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' -e "SELECT DATABASE();"
+docker exec workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' -e "SELECT DATABASE();"
 
 # Make scripts executable
 chmod +x *.php

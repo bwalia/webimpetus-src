@@ -18,7 +18,7 @@ require_once __DIR__ . '/../ci4/app/Config/Database.php';
 // Database connection parameters
 $config = [
     'hostname' => getenv('database.default.hostname') ?: 'workerra-ci-db',
-    'username' => getenv('database.default.username') ?: 'wsl_dev',
+    'username' => getenv('database.default.username') ?: 'workerra-ci-dev',
     'password' => getenv('database.default.password') ?: 'CHANGE_ME',
     'database' => getenv('database.default.database') ?: 'myworkstation_dev',
 ];

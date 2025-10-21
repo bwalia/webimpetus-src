@@ -113,12 +113,12 @@ After:  Task 123, Employee 1, Anonymized work description 123
 ```bash
 cd /home/bwalia/workerra-ci/SQLs
 ./backup_before_anonymize.sh
-docker exec -i workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < anonymize_dev_data.sql
+docker exec -i workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev < anonymize_dev_data.sql
 ```
 
 ### Option 2: Create Demo Environment
 ```bash
-docker exec -i workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < create_demo_environment.sql
+docker exec -i workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev < create_demo_environment.sql
 ```
 
 ---
@@ -128,7 +128,7 @@ docker exec -i workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev
 After running, verify anonymization:
 
 ```bash
-docker exec workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev -e "
+docker exec workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev -e "
 SELECT 'Companies' AS Table_Name,
        COUNT(*) AS Total,
        SUM(CASE WHEN email LIKE '%@example.com' OR email LIKE '%@demo%' THEN 1 ELSE 0 END) AS Anonymized
@@ -203,7 +203,7 @@ If you need to preserve some real data:
 
 1. Export specific records before anonymizing:
 ```bash
-docker exec workerra-ci-db mariadb-dump -u wsl_dev -p'CHANGE_ME' myworkstation_dev \
+docker exec workerra-ci-db mariadb-dump -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev \
   companies contacts sales_invoices sales_invoice_items timeslips \
   --where="id IN (1,2,3)" > /tmp/preserved_records.sql
 ```
@@ -212,7 +212,7 @@ docker exec workerra-ci-db mariadb-dump -u wsl_dev -p'CHANGE_ME' myworkstation_d
 
 3. Re-import preserved records:
 ```bash
-docker exec -i workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < /tmp/preserved_records.sql
+docker exec -i workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev < /tmp/preserved_records.sql
 ```
 
 ---
@@ -247,7 +247,7 @@ ls -lh /home/bwalia/workerra-ci/backups/
 gunzip /home/bwalia/workerra-ci/backups/[backup_file].sql.gz
 
 # Restore
-docker exec -i workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' \
+docker exec -i workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' \
   myworkstation_dev < /home/bwalia/workerra-ci/backups/[backup_file].sql
 ```
 

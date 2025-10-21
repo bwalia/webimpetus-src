@@ -265,7 +265,7 @@ ls -lh /home/bwalia/workerra-ci/backups/
 gunzip /home/bwalia/workerra-ci/backups/myworkstation_dev_before_anonymization_TIMESTAMP.sql.gz
 
 # Restore
-docker exec -i workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < \
+docker exec -i workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev < \
   /home/bwalia/workerra-ci/backups/myworkstation_dev_before_anonymization_TIMESTAMP.sql
 ```
 
@@ -279,7 +279,7 @@ All scripts use the same configuration:
 // Database connection
 define('DB_HOST', 'workerra-ci-db');
 define('DB_NAME', 'myworkstation_dev');
-define('DB_USER', 'wsl_dev');
+define('DB_USER', 'workerra-ci-dev');
 define('DB_PASS', 'CHANGE_ME');
 
 // Backup settings
@@ -313,7 +313,7 @@ docker ps | grep workerra-ci-db
 
 **Verify credentials:**
 ```bash
-docker exec workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' -e "SELECT DATABASE();"
+docker exec workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' -e "SELECT DATABASE();"
 ```
 
 ### Issue: Backup Failed
@@ -337,7 +337,7 @@ php scripts/verify_anonymization.php
 
 **Check for table existence:**
 ```bash
-docker exec workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev -e "SHOW TABLES;"
+docker exec workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev -e "SHOW TABLES;"
 ```
 
 ### Issue: Script Hangs or Crashes
@@ -407,7 +407,7 @@ Employee: John Smith → Employee: Employee 1
 
 ```bash
 # Check current database
-docker exec workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' -e "SELECT DATABASE();"
+docker exec workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' -e "SELECT DATABASE();"
 
 # Should output: myworkstation_dev
 # If not, DO NOT RUN SCRIPTS!
@@ -507,7 +507,7 @@ After running scripts:
 
 ```bash
 # Check a few random records
-docker exec workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev -e "
+docker exec workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev -e "
 SELECT id, email, phone FROM users LIMIT 5;
 SELECT id, company_name, email FROM companies LIMIT 5;
 SELECT id, first_name, surname, email FROM contacts LIMIT 5;
@@ -547,7 +547,7 @@ php scripts/backup_database.php && php scripts/anonymize_database.php && php scr
 # Restore latest backup
 LATEST=$(ls -t backups/*.sql.gz | head -1)
 gunzip $LATEST
-docker exec -i workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < ${LATEST%.gz}
+docker exec -i workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev < ${LATEST%.gz}
 ```
 
 ### Exit Codes

@@ -4,7 +4,7 @@
 
 ```bash
 # Option 1: SQL Script (fastest)
-docker exec workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < SQLs/grant_all_permissions_to_admin_id19.sql
+docker exec workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev < SQLs/grant_all_permissions_to_admin_id19.sql
 
 # Option 2: PHP Script (more detailed output)
 php SQLs/grant_all_permissions_to_admin_id19.php

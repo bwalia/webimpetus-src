@@ -12,7 +12,7 @@ echo "==========================================================================
 $config = [
     'hostname' => '127.0.0.1',
     'port' => 3309,
-    'username' => 'wsl_dev',
+    'username' => 'workerra-ci-dev',
     'password' => 'CHANGE_ME',
     'database' => 'myworkstation_dev',
 ];
@@ -98,7 +98,7 @@ try {
     echo "   docker port workerra-ci-db\n\n";
 
     echo "3. Test connection manually:\n";
-    echo "   mysql -h 127.0.0.1 -P 3309 -u wsl_dev -p'CHANGE_ME' myworkstation_dev\n\n";
+    echo "   mysql -h 127.0.0.1 -P 3309 -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev\n\n";
 
     echo "4. Check database credentials in .env file:\n";
     echo "   grep database.default .env\n\n";

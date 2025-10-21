@@ -82,7 +82,7 @@ This script dynamically fetches all menu IDs and assigns them to the admin user.
 
 **Usage:**
 ```bash
-docker exec workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < SQLs/grant_all_menu_permissions_to_admin.sql
+docker exec workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev < SQLs/grant_all_menu_permissions_to_admin.sql
 ```
 
 ### 2. PHP Script

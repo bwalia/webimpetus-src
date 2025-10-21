@@ -52,7 +52,7 @@ php SQLs/add_missing_routes_to_menu.php
 SQL script to grant all menu permissions to admin user.
 
 ```bash
-docker exec workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < SQLs/grant_all_menu_permissions_to_admin.sql
+docker exec workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev < SQLs/grant_all_menu_permissions_to_admin.sql
 ```
 
 ### 4. Grant All Permissions to Admin (PHP)
@@ -70,7 +70,7 @@ php SQLs/grant_all_menu_permissions_to_admin.php
 Pure SQL script to add accounting routes (no PHP required).
 
 ```bash
-docker exec workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < SQLs/add_accounting_routes_to_menu.sql
+docker exec workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev < SQLs/add_accounting_routes_to_menu.sql
 ```
 
 ## Typical Workflow
@@ -150,7 +150,7 @@ All scripts use environment variables or these defaults:
 ```php
 $config = [
     'hostname' => 'workerra-ci-db',
-    'username' => 'wsl_dev',
+    'username' => 'workerra-ci-dev',
     'password' => 'CHANGE_ME',
     'database' => 'myworkstation_dev',
 ];
@@ -284,7 +284,7 @@ Solution: Check if admin@admin.com exists in users table
 
 2. Backup database:
    ```bash
-   docker exec workerra-ci-db mysqldump -u wsl_dev -p'CHANGE_ME' myworkstation_dev > backup.sql
+   docker exec workerra-ci-db mysqldump -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev > backup.sql
    ```
 
 3. Run on test environment first
@@ -292,10 +292,10 @@ Solution: Check if admin@admin.com exists in users table
 4. Verify results:
    ```bash
    # Check menu count
-   docker exec workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev -e "SELECT COUNT(*) FROM menu;"
+   docker exec workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev -e "SELECT COUNT(*) FROM menu;"
 
    # Check admin permissions
-   docker exec workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev -e "SELECT JSON_LENGTH(permissions) FROM users WHERE email = 'admin@admin.com';"
+   docker exec workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev -e "SELECT JSON_LENGTH(permissions) FROM users WHERE email = 'admin@admin.com';"
    ```
 
 ## Related Documentation

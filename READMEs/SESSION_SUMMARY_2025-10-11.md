@@ -224,7 +224,7 @@ Pure SQL version without PHP dependency.
 
 **Usage:**
 ```bash
-docker exec workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < SQLs/add_accounting_routes_to_menu.sql
+docker exec workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev < SQLs/add_accounting_routes_to_menu.sql
 ```
 
 #### 4. Shell Wrapper
@@ -399,21 +399,21 @@ Runs PHP scripts via Docker (for systems without PHP).
 
 #### Option 2: Using SQL Script
 ```bash
-docker exec workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < SQLs/add_accounting_routes_to_menu.sql
-docker exec workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < SQLs/grant_all_menu_permissions_to_admin.sql
+docker exec workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev < SQLs/add_accounting_routes_to_menu.sql
+docker exec workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev < SQLs/grant_all_menu_permissions_to_admin.sql
 ```
 
 ### Verify Changes
 
 ```bash
 # Check menu count
-docker exec workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev -e "SELECT COUNT(*) as total FROM menu;"
+docker exec workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev -e "SELECT COUNT(*) as total FROM menu;"
 
 # Check admin permissions
-docker exec workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev -e "SELECT JSON_LENGTH(permissions) as count FROM users WHERE email = 'admin@admin.com';"
+docker exec workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev -e "SELECT JSON_LENGTH(permissions) as count FROM users WHERE email = 'admin@admin.com';"
 
 # List new menu items
-docker exec workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev -e "SELECT id, name, link FROM menu WHERE id > 45 ORDER BY id;"
+docker exec workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev -e "SELECT id, name, link FROM menu WHERE id > 45 ORDER BY id;"
 ```
 
 ---
@@ -528,10 +528,10 @@ docker exec workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev -e
 **Issue: Interview module not visible in sidebar**
 ```bash
 # Check menu entry
-docker exec workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev -e "SELECT * FROM menu WHERE link = '/interviews';"
+docker exec workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev -e "SELECT * FROM menu WHERE link = '/interviews';"
 
 # Check permissions
-docker exec workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev -e "SELECT permissions FROM users WHERE email = 'admin@admin.com';"
+docker exec workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev -e "SELECT permissions FROM users WHERE email = 'admin@admin.com';"
 ```
 
 **Issue: Sidebar not resizing**

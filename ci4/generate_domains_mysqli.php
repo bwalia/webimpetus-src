@@ -8,7 +8,7 @@
 echo "=== Domain Test Data Generator ===\n\n";
 
 // Database connection
-$mysqli = new mysqli('workerra-ci-db', 'wsl_dev', 'CHANGE_ME', 'myworkstation_dev');
+$mysqli = new mysqli('workerra-ci-db', 'workerra-ci-dev', 'CHANGE_ME', 'myworkstation_dev');
 
 if ($mysqli->connect_error) {
     die("Connection failed: " . $mysqli->connect_error . "\n");

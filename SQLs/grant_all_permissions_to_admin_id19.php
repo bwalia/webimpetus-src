@@ -18,7 +18,7 @@
 $config = [
     'hostname' => '127.0.0.1',
     'port' => 3309,
-    'username' => 'wsl_dev',
+    'username' => 'workerra-ci-dev',
     'password' => 'CHANGE_ME',
     'database' => 'myworkstation_dev',
 ];

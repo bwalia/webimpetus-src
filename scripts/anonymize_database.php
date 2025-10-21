@@ -14,7 +14,7 @@
 // Configuration
 define('DB_HOST', 'workerra-ci-db');
 define('DB_NAME', 'myworkstation_dev');
-define('DB_USER', 'wsl_dev');
+define('DB_USER', 'workerra-ci-dev');
 define('DB_PASS', 'CHANGE_ME');
 define('ADMIN_EMAIL', 'admin@admin.com');
 

@@ -33,7 +33,7 @@ Updated all PHP scripts to:
 // OLD (didn't work)
 $config = [
     'hostname' => 'workerra-ci-db',
-    'username' => 'wsl_dev',
+    'username' => 'workerra-ci-dev',
     'password' => 'CHANGE_ME',
     'database' => 'myworkstation_dev',
 ];
@@ -42,7 +42,7 @@ $config = [
 $config = [
     'hostname' => '127.0.0.1',
     'port' => 3309,
-    'username' => 'wsl_dev',
+    'username' => 'workerra-ci-dev',
     'password' => 'CHANGE_ME',
     'database' => 'myworkstation_dev',
 ];
@@ -199,7 +199,7 @@ Test the setup:
 # Should connect successfully and show missing routes
 
 # 3. Test database connection manually
-php -r "new mysqli('127.0.0.1', 'wsl_dev', 'CHANGE_ME', 'myworkstation_dev', 3309) or die('Connection failed');"
+php -r "new mysqli('127.0.0.1', 'workerra-ci-dev', 'CHANGE_ME', 'myworkstation_dev', 3309) or die('Connection failed');"
 
 # Should output nothing (success) or error message
 ```
@@ -296,7 +296,7 @@ New/Updated files:
 ```php
 Host: 127.0.0.1
 Port: 3309
-User: wsl_dev
+User: workerra-ci-dev
 Pass: CHANGE_ME
 DB:   myworkstation_dev
 ```
@@ -311,7 +311,7 @@ DB:   myworkstation_dev
 
 ### Test Connection
 ```bash
-php -r "new mysqli('127.0.0.1', 'wsl_dev', 'CHANGE_ME', 'myworkstation_dev', 3309) or die('Failed');"
+php -r "new mysqli('127.0.0.1', 'workerra-ci-dev', 'CHANGE_ME', 'myworkstation_dev', 3309) or die('Failed');"
 ```
 
 ---

@@ -61,10 +61,10 @@ Test domains created: 3000
 
 ```bash
 # Using MariaDB CLI
-docker exec workerra-ci-db mariadb -u wsl_dev -pCHANGE_ME myworkstation_dev < ci4/cleanup_test_domains.sql
+docker exec workerra-ci-db mariadb -u workerra-ci-dev -pCHANGE_ME myworkstation_dev < ci4/cleanup_test_domains.sql
 
 # Using MySQL CLI
-docker exec workerra-ci-db mysql -u wsl_dev -pCHANGE_ME myworkstation_dev < ci4/cleanup_test_domains.sql
+docker exec workerra-ci-db mysql -u workerra-ci-dev -pCHANGE_ME myworkstation_dev < ci4/cleanup_test_domains.sql
 ```
 
 **Expected Output:**
@@ -172,7 +172,7 @@ The cleanup script:
 If needed, regenerate test data:
 ```bash
 # Clean old test data
-docker exec workerra-ci-db mariadb -u wsl_dev -pCHANGE_ME myworkstation_dev < ci4/cleanup_test_domains.sql
+docker exec workerra-ci-db mariadb -u workerra-ci-dev -pCHANGE_ME myworkstation_dev < ci4/cleanup_test_domains.sql
 
 # Generate fresh test data
 docker exec workerra-ci-dev php /var/www/html/generate_domains_mysqli.php

@@ -64,13 +64,13 @@ All accessible to admin@admin.com:
 
 ```bash
 # 1. Add routes to menu table
-docker exec workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < SQLs/add_accounting_routes_to_menu.sql
+docker exec workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev < SQLs/add_accounting_routes_to_menu.sql
 
 # 2. Update admin permissions
-docker exec workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < SQLs/grant_all_menu_permissions_to_admin.sql
+docker exec workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev < SQLs/grant_all_menu_permissions_to_admin.sql
 
 # 3. Verify
-docker exec workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev -e "SELECT COUNT(*) as total FROM menu;"
+docker exec workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev -e "SELECT COUNT(*) as total FROM menu;"
 ```
 
 ### Expected Result:

@@ -2,8 +2,8 @@
 
 # 1. Export connection URIs (or edit inside the script)
 # Note: Database is running in Docker and mapped to localhost:3309
-export DEV_DB_URI="mysql+pymysql://wsl_dev:CHANGE_ME@localhost:3309/myworkstation_dev"
-export INT_DB_URI="mysql+pymysql://wsl_dev:CHANGE_ME@localhost:3309/wsl-int-db"
+export DEV_DB_URI="mysql+pymysql://workerra-ci-dev:CHANGE_ME@localhost:3309/myworkstation_dev"
+export INT_DB_URI="mysql+pymysql://workerra-ci-dev:CHANGE_ME@localhost:3309/wsl-int-db"
 
 # 2. Install dependencies using python3.11
 echo "Installing Python dependencies..."

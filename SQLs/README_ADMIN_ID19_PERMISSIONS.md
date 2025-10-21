@@ -20,10 +20,10 @@ Pure SQL script that grants all permissions without requiring PHP.
 **Usage:**
 ```bash
 # Via Docker (recommended)
-docker exec workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < SQLs/grant_all_permissions_to_admin_id19.sql
+docker exec workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev < SQLs/grant_all_permissions_to_admin_id19.sql
 
 # Or directly if you have MySQL client
-mysql -h 127.0.0.1 -P 3309 -u wsl_dev -p'CHANGE_ME' myworkstation_dev < SQLs/grant_all_permissions_to_admin_id19.sql
+mysql -h 127.0.0.1 -P 3309 -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev < SQLs/grant_all_permissions_to_admin_id19.sql
 ```
 
 ### 2. PHP Script
@@ -254,7 +254,7 @@ SELECT id, email, name FROM users WHERE id = 19;
 ```bash
 php spark migrate
 # Or use the SQL file
-docker exec workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < SQLs/add_granular_permissions.sql
+docker exec workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev < SQLs/add_granular_permissions.sql
 ```
 
 ### Issue: User still can't access some menus

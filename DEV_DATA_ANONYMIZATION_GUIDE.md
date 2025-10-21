@@ -60,14 +60,14 @@ cd /home/bwalia/workerra-ci/SQLs
 ./backup_before_anonymize.sh
 
 # Step 2: Run anonymization script
-docker exec -i workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < anonymize_dev_data.sql
+docker exec -i workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev < anonymize_dev_data.sql
 ```
 
 ### Option 2: Create Fresh Demo Environment
 
 ```bash
 # Import demo environment (resets to demo state)
-docker exec -i workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < create_demo_environment.sql
+docker exec -i workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev < create_demo_environment.sql
 ```
 
 ---
@@ -91,7 +91,7 @@ mkdir -p /home/bwalia/workerra-ci/backups
 
 # Backup database
 docker exec workerra-ci-db mariadb-dump \
-    -u wsl_dev \
+    -u workerra-ci-dev \
     -p'CHANGE_ME' \
     --single-transaction \
     --routines \
@@ -117,7 +117,7 @@ cd /home/bwalia/workerra-ci/SQLs
 
 # Run anonymization script
 docker exec -i workerra-ci-db mariadb \
-    -u wsl_dev \
+    -u workerra-ci-dev \
     -p'CHANGE_ME' \
     myworkstation_dev < anonymize_dev_data.sql
 ```
@@ -137,7 +137,7 @@ cd /home/bwalia/workerra-ci/SQLs
 
 # Import demo environment
 docker exec -i workerra-ci-db mariadb \
-    -u wsl_dev \
+    -u workerra-ci-dev \
     -p'CHANGE_ME' \
     myworkstation_dev < create_demo_environment.sql
 ```
@@ -154,7 +154,7 @@ docker exec -i workerra-ci-db mariadb \
 
 ```bash
 # Check anonymized data
-docker exec workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev -e "
+docker exec workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev -e "
 SELECT 'Users' AS Table_Name, COUNT(*) AS Total,
        SUM(CASE WHEN email LIKE '%@example.com' OR email LIKE '%@demo.example.com' THEN 1 ELSE 0 END) AS Anonymized
 FROM users WHERE email != 'admin@admin.com'
@@ -205,7 +205,7 @@ gunzip /home/bwalia/workerra-ci/backups/[backup_file].sql.gz
 
 # Restore database
 docker exec -i workerra-ci-db mariadb \
-    -u wsl_dev \
+    -u workerra-ci-dev \
     -p'CHANGE_ME' \
     myworkstation_dev < /home/bwalia/workerra-ci/backups/[backup_file].sql
 ```
@@ -303,7 +303,7 @@ docker exec -i workerra-ci-db mariadb \
 ### Database Connection Check
 ```bash
 # Verify you're on DEV database
-docker exec workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' -e "SELECT DATABASE();"
+docker exec workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' -e "SELECT DATABASE();"
 
 # Should output: myworkstation_dev
 ```
@@ -326,7 +326,7 @@ Create a cron job to refresh demo data weekly:
 crontab -e
 
 # Add this line (runs every Monday at 2 AM)
-0 2 * * 1 /home/bwalia/workerra-ci/SQLs/backup_before_anonymize.sh && docker exec -i workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < /home/bwalia/workerra-ci/SQLs/create_demo_environment.sql
+0 2 * * 1 /home/bwalia/workerra-ci/SQLs/backup_before_anonymize.sh && docker exec -i workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev < /home/bwalia/workerra-ci/SQLs/create_demo_environment.sql
 ```
 
 ---
@@ -339,22 +339,22 @@ crontab -e
 docker ps | grep workerra-ci-db
 
 # Check database exists
-docker exec workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' -e "SHOW DATABASES;"
+docker exec workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' -e "SHOW DATABASES;"
 ```
 
 ### Issue: Anonymization Script Fails
 ```bash
 # Check SQL syntax
-docker exec -i workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev -e "SELECT VERSION();"
+docker exec -i workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev -e "SELECT VERSION();"
 
 # Run with verbose error output
-docker exec -i workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' --verbose myworkstation_dev < anonymize_dev_data.sql
+docker exec -i workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' --verbose myworkstation_dev < anonymize_dev_data.sql
 ```
 
 ### Issue: Can't Login After Anonymization
 ```bash
 # Reset admin password
-docker exec workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev -e "
+docker exec workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev -e "
 UPDATE users SET password = '\$2y\$10\$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi'
 WHERE email = 'admin@admin.com';
 "
@@ -364,7 +364,7 @@ WHERE email = 'admin@admin.com';
 ### Issue: Foreign Key Errors
 ```bash
 # Temporarily disable foreign key checks
-docker exec workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev -e "
+docker exec workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev -e "
 SET FOREIGN_KEY_CHECKS = 0;
 SOURCE /src/SQLs/anonymize_dev_data.sql;
 SET FOREIGN_KEY_CHECKS = 1;
@@ -390,7 +390,7 @@ After anonymization, verify:
 
 ### Quick Verification Script
 ```bash
-docker exec workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev -e "
+docker exec workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev -e "
 SELECT 'Real Data Check' AS Test;
 SELECT 'Users with real emails' AS Issue, COUNT(*) AS Count
 FROM users
@@ -418,16 +418,16 @@ WHERE email NOT LIKE '%@example.com'
 ./backup_before_anonymize.sh
 
 # Anonymize existing data
-docker exec -i workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < anonymize_dev_data.sql
+docker exec -i workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev < anonymize_dev_data.sql
 
 # Create demo environment
-docker exec -i workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < create_demo_environment.sql
+docker exec -i workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev < create_demo_environment.sql
 
 # Restore from backup
-docker exec -i workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < /path/to/backup.sql
+docker exec -i workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev < /path/to/backup.sql
 
 # Verify anonymization
-docker exec workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev -e "SELECT COUNT(*) FROM users WHERE email LIKE '%@example.com';"
+docker exec workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev -e "SELECT COUNT(*) FROM users WHERE email LIKE '%@example.com';"
 ```
 
 ---

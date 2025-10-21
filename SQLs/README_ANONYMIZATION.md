@@ -8,12 +8,12 @@ Quick reference for anonymizing PII data in dev environment.
 ```bash
 cd /home/bwalia/workerra-ci/SQLs
 ./backup_before_anonymize.sh
-docker exec -i workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < anonymize_dev_data.sql
+docker exec -i workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev < anonymize_dev_data.sql
 ```
 
 ### Create Demo Environment
 ```bash
-docker exec -i workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < create_demo_environment.sql
+docker exec -i workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev < create_demo_environment.sql
 ```
 
 ## 📁 Files

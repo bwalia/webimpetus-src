@@ -221,7 +221,7 @@ WHERE name LIKE '%Accounting Period%';
 
 **Database Verification:**
 ```bash
-docker exec workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev \
+docker exec workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev \
   -e "SELECT id, name, link, LOWER(REPLACE(link, '/', '')) as processed_link
       FROM menu WHERE name LIKE '%Accounting Period%';"
 ```

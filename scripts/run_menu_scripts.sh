@@ -93,7 +93,7 @@ if [ $# -eq 0 ]; then
     echo ""
     echo "Scripts connect to database via: localhost:3309"
     echo "Database: myworkstation_dev"
-    echo "User: wsl_dev"
+    echo "User: workerra-ci-dev"
     echo ""
     exit 0
 fi
