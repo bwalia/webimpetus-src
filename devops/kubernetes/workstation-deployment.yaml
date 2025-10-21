@@ -60,7 +60,7 @@ metadata:
   annotations:
     #kubernetes.io/ingress.class: nginx
 spec:
-  ingressClassName: nginx
+  ingressclassName: traefik
   rules:
   - host: my.workstation.co.uk
     http:

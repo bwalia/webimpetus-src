@@ -132,6 +132,21 @@ class Customers extends CommonController
     public function update()
     {
         $post = $this->request->getPost();
+        $uuid = $post["uuid"] ?? '';
+
+        // Check permissions: update for existing records, create for new records
+        if (!empty($uuid) && !$this->checkPermission('update')) {
+            session()->setFlashdata('message', 'You do not have permission to update records in this module!');
+            session()->setFlashdata('alert-class', 'alert-danger');
+            return redirect()->to('/' . $this->table);
+        }
+
+        if (empty($uuid) && !$this->checkPermission('create')) {
+            session()->setFlashdata('message', 'You do not have permission to create records in this module!');
+            session()->setFlashdata('alert-class', 'alert-danger');
+            return redirect()->to('/' . $this->table);
+        }
+
         $data["company_name"] = @$post["company_name"];
         $data["acc_no"] = @$post["acc_no"];
         $data["status"] = @$post["status"];
@@ -150,7 +165,7 @@ class Customers extends CommonController
         $data["categories"] = json_encode(@$post["categories"]);
         $data["uuid_business_id"] = session('uuid_business');
 
-        $data["uuid"] = $uuid = $post["uuid"];
+        $data["uuid"] = $uuid;
         if (empty($data["uuid"])) {
             $data['uuid'] = UUID::v5(UUID::v4(), 'customers');
         }

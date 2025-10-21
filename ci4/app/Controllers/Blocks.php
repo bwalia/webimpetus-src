@@ -45,6 +45,21 @@ class Blocks extends CommonController
 
 	public function update()
 	{
+		$uuid = $this->request->getPost('uuid');
+
+		// Check permissions: update for existing records, create for new records
+		if (!empty($uuid) && !$this->checkPermission('update')) {
+			session()->setFlashdata('message', 'You do not have permission to update records in this module!');
+			session()->setFlashdata('alert-class', 'alert-danger');
+			return redirect()->to('/' . $this->rawTblName);
+		}
+
+		if (empty($uuid) && !$this->checkPermission('create')) {
+			session()->setFlashdata('message', 'You do not have permission to create records in this module!');
+			session()->setFlashdata('alert-class', 'alert-danger');
+			return redirect()->to('/' . $this->rawTblName);
+		}
+
 		$role = $this->session->get('role');
 		if ($role != 2) {
 			$text = $this->request->getPost('text');
@@ -63,7 +78,6 @@ class Blocks extends CommonController
 			"uuid_business_id" => $this->businessUuid,
 		);
 
-		$uuid = $this->request->getPost('uuid');
 		if ($uuid > 0) {
 			$this->blocks_model->updateDataByUUID($uuid, $data);
 			session()->setFlashdata('message', 'Data updated Successfully!');

@@ -1,0 +1,18 @@
+{
+  "scripts": {
+    "cy:open": "cypress open",
+    "cy:run": "cypress run",
+    "cy:run:smoke": "cypress run --env grepTags=@smoke",
+    "cy:lint": "eslint cypress/"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^24.9.0",
+    "axe-core": "^4.11.0",
+    "cypress": "^15.5.0",
+    "cypress-axe": "^1.7.0",
+    "cypress-grep": "^3.0.4",
+    "cypress-real-events": "^1.15.0",
+    "typescript": "^5.9.3"
+  }
+}

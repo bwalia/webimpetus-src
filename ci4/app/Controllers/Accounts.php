@@ -72,6 +72,20 @@ class Accounts extends CommonController
     public function update()
     {
         $input = $this->request->getPost();
+        $existingId = $this->request->getPost('id');
+
+        // Check permissions: update for existing records, create for new records
+        if ($existingId && !$this->checkPermission('update')) {
+            session()->setFlashdata('message', 'You do not have permission to update records in this module!');
+            session()->setFlashdata('alert-class', 'alert-danger');
+            return redirect()->to('/accounts');
+        }
+
+        if (!$existingId && !$this->checkPermission('create')) {
+            session()->setFlashdata('message', 'You do not have permission to create records in this module!');
+            session()->setFlashdata('alert-class', 'alert-danger');
+            return redirect()->to('/accounts');
+        }
 
         // Generate UUID if new
         if (empty($input['uuid'])) {

@@ -50,3 +50,53 @@ jobs:
           go mod init myapp
           go test -v 
 
+
+  cypress-tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18, 20]
+        browser: [chrome, firefox]
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Cache node_modules and Cypress binary
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.npm
+            ~/.cache/Cypress
+          key: ${{ runner.os }}-node${{ matrix.node-version }}-cypress-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify Cypress install
+        run: npx cypress verify
+
+      - name: Run Cypress tests
+        run: npx cypress run --browser ${{ matrix.browser }} --reporter mochawesome --reporter-options reportDir=cypress/reports,overwrite=false,html=true,json=true
+        env:
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Cypress Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: cypress-artifacts
+          path: |
+            cypress/screenshots
+            cypress/videos
+            cypress/reports
+
+      - name: Publish JUnit Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: junit-report
+          path: cypress/reports/*.xml
+
