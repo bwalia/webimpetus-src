@@ -268,6 +268,19 @@ class CommonController extends BaseController
 		$id = $this->request->getPost('id');
 		$uuid = $this->request->getPost('uuid');
 
+		// Check permissions: update for existing records, create for new records
+		if ($uuid && !$this->checkPermission('update')) {
+			session()->setFlashdata('message', 'You do not have permission to update records in this module!');
+			session()->setFlashdata('alert-class', 'alert-danger');
+			return redirect()->to('/' . $this->table);
+		}
+
+		if (!$uuid && !$this->checkPermission('create')) {
+			session()->setFlashdata('message', 'You do not have permission to create records in this module!');
+			session()->setFlashdata('alert-class', 'alert-danger');
+			return redirect()->to('/' . $this->table);
+		}
+
 		$data = $this->request->getPost();
 		if (!$data['uuid'] || empty($data['uuid']) || !isset($data['uuid'])) {
 			$data['uuid'] = UUID::v5(UUID::v4(), $this->table);
@@ -346,6 +359,12 @@ class CommonController extends BaseController
 	// 
 	public function status()
 	{
+		// Check update permission
+		if (!$this->checkPermission('update')) {
+			echo json_encode(['status' => 'error', 'message' => 'You do not have permission to update records']);
+			return;
+		}
+
 		if (!empty($id = $this->request->getPost('id'))) {
 			$data = array(
 				'status' => $this->request->getPost('status')

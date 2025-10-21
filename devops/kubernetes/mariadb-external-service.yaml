@@ -1,0 +1,24 @@
+---
+# LoadBalancer service for external access to MariaDB primary
+apiVersion: v1
+kind: Service
+metadata:
+  name: mariadb-external
+  namespace: test
+  labels:
+    app: mariadb-external
+spec:
+  type: LoadBalancer
+  selector:
+    app.kubernetes.io/name: mariadb
+    app.kubernetes.io/instance: webimpetus-mariadb-ha
+    statefulset.kubernetes.io/pod-name: webimpetus-mariadb-ha-0
+  ports:
+    - name: mysql
+      port: 3306
+      targetPort: 3306
+      protocol: TCP
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800

@@ -1,0 +1,14 @@
+apiVersion: mariadb.mariadb.com/v1alpha1
+kind: MariaDB
+metadata:
+  name: webimpetus-mariadb
+  namespace: test
+spec:
+  replicas: 1
+  storage:
+    size: 10Gi
+    className: "local-path" # Use default storage class
+  username: root
+  password: testPassword
+  database: testCi4
+  port: 3306

@@ -93,6 +93,20 @@ class Sales_invoices extends CommonController
     public function update()
     {
         $uuid = $this->request->getPost('uuid');
+
+        // Check permissions: update for existing records, create for new records
+        if (!empty($uuid) && !$this->checkPermission('update')) {
+            session()->setFlashdata('message', 'You do not have permission to update records in this module!');
+            session()->setFlashdata('alert-class', 'alert-danger');
+            return redirect()->to('/' . $this->table);
+        }
+
+        if (empty($uuid) && !$this->checkPermission('create')) {
+            session()->setFlashdata('message', 'You do not have permission to create records in this module!');
+            session()->setFlashdata('alert-class', 'alert-danger');
+            return redirect()->to('/' . $this->table);
+        }
+
         $data = $this->request->getPost();
         $itemIds = @$data['item_id'];
         unset($data['item_id']);

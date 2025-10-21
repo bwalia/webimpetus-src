@@ -155,7 +155,8 @@ fi
 # cat $SEALED_SECRET_OUTPUT_PATH
 
 echo "Sealing the secret using kubeseal..."
-kubeseal --format yaml < $SEALED_SECRET_OUTPUT_PATH > sealed_secret_wsl_${ENV_REF}.yaml
+kubeseal --fetch-cert -n kube-system > kubeseal.pem
+kubeseal --cert kubeseal.pem --format yaml < $SEALED_SECRET_OUTPUT_PATH > sealed_secret_wsl_${ENV_REF}.yaml
 
 # rm -Rf $SEALED_SECRET_OUTPUT_PATH
 # cat sealed_secret_wsl_prod.yaml
@@ -183,7 +184,7 @@ fi
 
 cp $HELM_VALUES_INPUT_PATH $HELM_VALUES_OUTPUT_PATH
 
-SAFE_SEALEDSECRET_ENCRYPTED=$(<sealed_env_file_base64_wsl_${ENV_REF}.txt)
+SAFE_SEALEDSECRET_ENCRYPTED=$(cat sealed_env_file_base64_wsl_${ENV_REF}.txt)
 
 # echo $SAFE_SEALEDSECRET_ENCRYPTED
 
@@ -220,5 +221,5 @@ rm -Rf $SEALED_SECRET_OUTPUT_PATH
 rm -Rf sealed_secret_wsl_${ENV_REF}.yaml
 rm -Rf temp.txt
 rm -Rf sealed_env_file_base64_wsl_${ENV_REF}.txt
-
+rm -Rf kubeseal.pem
 

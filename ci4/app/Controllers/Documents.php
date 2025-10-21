@@ -66,6 +66,19 @@ class Documents extends CommonController
     {
         $id = $this->request->getPost('id');
 
+        // Check permissions: update for existing records, create for new records
+        if ($id && !$this->checkPermission('update')) {
+            session()->setFlashdata('message', 'You do not have permission to update records in this module!');
+            session()->setFlashdata('alert-class', 'alert-danger');
+            return redirect()->to('/' . $this->table);
+        }
+
+        if (!$id && !$this->checkPermission('create')) {
+            session()->setFlashdata('message', 'You do not have permission to create records in this module!');
+            session()->setFlashdata('alert-class', 'alert-danger');
+            return redirect()->to('/' . $this->table);
+        }
+
         $data = [
             'category_id' => $this->request->getPost('category_id'),
             'client_id' => $this->request->getPost('client_id') ?: null,

@@ -41,7 +41,7 @@ service:
 
 ingress:
   enabled: false
-  className: "traefik"
+  className: "nginx"
   annotations: {}
     # kubernetes.io/ingress.class: traefik
     # kubernetes.io/tls-acme: "true"
@@ -57,7 +57,7 @@ ingress:
 
 ingressAdminer:
   enabled: false
-  className: "traefik"
+  className: "nginx"
   annotations: {}
     # kubernetes.io/ingress.class: traefik
     # kubernetes.io/tls-acme: "true"
@@ -79,6 +79,6 @@ resources: {}
 autoscaling:
   enabled: false
   minReplicas: 2
-  maxReplicas: 10
+  maxReplicas: 1
   maxUnavailable: 1
   targetCPUUtilizationPercentage: 80

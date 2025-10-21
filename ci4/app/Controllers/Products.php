@@ -83,9 +83,24 @@ class Products extends CommonController
 
 	public function update()
 	{
+		$uuid = $this->request->getPost('uuid');
+
+		// Check permissions: update for existing records, create for new records
+		if (!empty($uuid) && !$this->checkPermission('update')) {
+			session()->setFlashdata('message', 'You do not have permission to update records in this module!');
+			session()->setFlashdata('alert-class', 'alert-danger');
+			return redirect()->to('/' . $this->table);
+		}
+
+		if (empty($uuid) && !$this->checkPermission('create')) {
+			session()->setFlashdata('message', 'You do not have permission to create records in this module!');
+			session()->setFlashdata('alert-class', 'alert-danger');
+			return redirect()->to('/' . $this->table);
+		}
+
 		// Preparing data for products -------------- >>
 		$product = [
-			'uuid'  => $this->request->getPost('uuid'),
+			'uuid'  => $uuid,
 			'name' => $this->request->getPost('name'),
 			'code' => $this->request->getPost('code'),
 			'description' => $this->request->getPost('description'),
@@ -101,7 +116,7 @@ class Products extends CommonController
 
 		// Preparing data for products -------------- >>
 		$category = array(
-			'uuid_product'  => $this->request->getPost('uuid'),
+			'uuid_product'  => $uuid,
 			'uuid_category' => $this->request->getPost('category')
 		);
 		// Preparing data for products -------------- ||
@@ -114,7 +129,7 @@ class Products extends CommonController
 		if (is_numeric($specCount) && $specCount > 0) {
 			for ($i = 0; $i < $specCount; $i++) {
 				$keyValuesData[] = [
-					"uuid_product" => $this->request->getPost('uuid'),
+					"uuid_product" => $uuid,
 					"key_name" => $this->request->getPost('spec_' . ($i + 1) . '_name'),
 					"key_value" => $this->request->getPost('spec_' . ($i + 1) . '_value'),
 				];

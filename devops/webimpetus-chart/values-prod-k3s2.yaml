@@ -79,14 +79,14 @@ adminer:
 resources: {}
 
 storageSettings:
-  storageClassName: longhorn
+  storageClassName: local-path
   accessModes: ReadWriteOnce
   diskSize: "1Gi"
 
 autoscaling:
   enabled: false
   minReplicas: 1
-  maxReplicas: 2
+  maxReplicas: 1
   maxUnavailable: 1
   targetCPUUtilizationPercentage: 80
 
