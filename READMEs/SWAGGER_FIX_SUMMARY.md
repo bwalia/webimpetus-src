@@ -110,7 +110,7 @@ The swagger.json now documents all API v2 endpoints:
 
 ```bash
 # Check file size
-ls -lh /home/bwalia/webimpetus-src/ci4/public/swagger.json
+ls -lh /home/bwalia/workstation-ci4/ci4/public/swagger.json
 
 # Validate JSON
 curl -s https://dev001.workstation.co.uk/swagger.json | python3 -m json.tool > /dev/null && echo "Valid JSON"

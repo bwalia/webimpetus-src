@@ -24,7 +24,7 @@ This directory contains scripts to generate 300 test work orders with realistic 
 
 ```bash
 # Navigate to the directory
-cd /home/bwalia/webimpetus-src/ci4/app/Database/Seeds
+cd /home/bwalia/workstation-ci4/ci4/app/Database/Seeds
 
 # Import into your database
 mysql -u root -p webimpetus-dev < work_orders_300_full.sql
@@ -44,7 +44,7 @@ mysql -u root -p'your_password' webimpetus-dev < work_orders_300_full.sql
 ### Option 3: Use CodeIgniter Seeder
 
 ```bash
-cd /home/bwalia/webimpetus-src/ci4
+cd /home/bwalia/workstation-ci4/ci4
 php spark db:seed WorkOrdersSeeder
 ```
 

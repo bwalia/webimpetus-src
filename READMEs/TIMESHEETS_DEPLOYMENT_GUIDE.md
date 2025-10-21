@@ -368,8 +368,8 @@ ON timesheets(uuid_business_id, is_invoiced, is_billable);
 
 ## Support & Documentation
 
-- **Implementation Files**: All code is in `/home/bwalia/webimpetus-src/ci4/app/`
-- **SQL Files**: Database scripts in `/home/bwalia/webimpetus-src/SQLs/`
+- **Implementation Files**: All code is in `/home/bwalia/workstation-ci4/ci4/app/`
+- **SQL Files**: Database scripts in `/home/bwalia/workstation-ci4/SQLs/`
 - **Permission System**: See `PERMISSION_TRAIT_GUIDE.md` for details
 - **Submit Button Component**: See `SUBMIT_BUTTON_GUIDE.md` for UI standards
 

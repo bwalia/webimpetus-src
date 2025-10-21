@@ -233,7 +233,7 @@ bwalia/webimpetus:2b10e43045e11416180f5f979757a41c3ec42072
 
 1. **Build New Docker Image**:
    ```bash
-   cd /path/to/webimpetus-src
+   cd /path/to/workstation-ci4
    git checkout devops-full-automation
    git pull origin devops-full-automation
    

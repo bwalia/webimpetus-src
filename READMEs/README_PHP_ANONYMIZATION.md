@@ -5,16 +5,16 @@
 ## 🚀 Quick Start
 
 ```bash
-cd /home/bwalia/webimpetus-src
+cd /home/bwalia/workstation-ci4
 
 # Step 1: Backup
-php backup_database.php
+php scripts/backup_database.php
 
 # Step 2: Anonymize
-php anonymize_database.php
+php scripts/anonymize_database.php
 
 # Step 3: Verify
-php verify_anonymization.php
+php scripts/verify_anonymization.php
 ```
 
 ## 📦 Scripts
@@ -105,9 +105,9 @@ docker exec webimpetus-db mariadb -u wsl_dev -p'CHANGE_ME' -e "SELECT DATABASE()
 chmod +x *.php
 
 # Run all-in-one
-php backup_database.php && \
-php anonymize_database.php && \
-php verify_anonymization.php
+php scripts/backup_database.php && \
+php scripts/anonymize_database.php && \
+php scripts/verify_anonymization.php
 ```
 
 ---

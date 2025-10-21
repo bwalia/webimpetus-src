@@ -36,24 +36,24 @@ This guide explains how to use the PHP scripts to anonymize your database. These
 
 ### Step 1: Backup Database
 ```bash
-cd /home/bwalia/webimpetus-src
-php backup_database.php
+cd /home/bwalia/workstation-ci4
+php scripts/backup_database.php
 ```
 
 ### Step 2: Run Anonymization
 ```bash
-php anonymize_database.php
+php scripts/anonymize_database.php
 ```
 
 ### Step 3: Verify Results
 ```bash
-php verify_anonymization.php
+php scripts/verify_anonymization.php
 ```
 
 ### All-in-One Command
 ```bash
-cd /home/bwalia/webimpetus-src
-php backup_database.php && php anonymize_database.php && php verify_anonymization.php
+cd /home/bwalia/workstation-ci4
+php scripts/backup_database.php && php scripts/anonymize_database.php && php scripts/verify_anonymization.php
 ```
 
 ---
@@ -89,7 +89,7 @@ php backup_database.php && php anonymize_database.php && php verify_anonymizatio
 ==============================================================
 
 Backup Details:
-  • File: /home/bwalia/webimpetus-src/backups/myworkstation_dev_before_anonymization_20251012_143022.sql.gz
+  • File: /home/bwalia/workstation-ci4/backups/myworkstation_dev_before_anonymization_20251012_143022.sql.gz
   • Size: 8.7MB
   • Database: myworkstation_dev
   • Timestamp: 2025-10-12 14:30:22
@@ -259,14 +259,14 @@ If something goes wrong, restore from backup:
 
 ```bash
 # Find your backup
-ls -lh /home/bwalia/webimpetus-src/backups/
+ls -lh /home/bwalia/workstation-ci4/backups/
 
 # Decompress
-gunzip /home/bwalia/webimpetus-src/backups/myworkstation_dev_before_anonymization_TIMESTAMP.sql.gz
+gunzip /home/bwalia/workstation-ci4/backups/myworkstation_dev_before_anonymization_TIMESTAMP.sql.gz
 
 # Restore
 docker exec -i webimpetus-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < \
-  /home/bwalia/webimpetus-src/backups/myworkstation_dev_before_anonymization_TIMESTAMP.sql
+  /home/bwalia/workstation-ci4/backups/myworkstation_dev_before_anonymization_TIMESTAMP.sql
 ```
 
 ---
@@ -283,7 +283,7 @@ define('DB_USER', 'wsl_dev');
 define('DB_PASS', 'CHANGE_ME');
 
 // Backup settings
-define('BACKUP_DIR', '/home/bwalia/webimpetus-src/backups');
+define('BACKUP_DIR', '/home/bwalia/workstation-ci4/backups');
 
 // Preserved data
 define('ADMIN_EMAIL', 'admin@admin.com');
@@ -301,7 +301,7 @@ define('ADMIN_EMAIL', 'admin@admin.com');
 ### Issue: Permission Denied
 
 ```bash
-chmod +x /home/bwalia/webimpetus-src/*.php
+chmod +x /home/bwalia/workstation-ci4/*.php
 ```
 
 ### Issue: Database Connection Failed
@@ -320,7 +320,7 @@ docker exec webimpetus-db mariadb -u wsl_dev -p'CHANGE_ME' -e "SELECT DATABASE()
 
 **Check disk space:**
 ```bash
-df -h /home/bwalia/webimpetus-src/backups
+df -h /home/bwalia/workstation-ci4/backups
 ```
 
 **Check Docker exec:**
@@ -332,7 +332,7 @@ docker exec webimpetus-db mariadb-dump --version
 
 **Run verification to see which tables:**
 ```bash
-php verify_anonymization.php
+php scripts/verify_anonymization.php
 ```
 
 **Check for table existence:**
@@ -429,7 +429,7 @@ docker exec webimpetus-db mariadb -u wsl_dev -p'CHANGE_ME' -e "SELECT DATABASE()
 crontab -e
 
 # Add this line (runs every Monday at 2 AM)
-0 2 * * 1 cd /home/bwalia/webimpetus-src && php backup_database.php && php anonymize_database.php
+0 2 * * 1 cd /home/bwalia/workstation-ci4 && php scripts/backup_database.php && php scripts/anonymize_database.php
 ```
 
 ### CI/CD Integration
@@ -438,13 +438,13 @@ crontab -e
 # Example GitHub Actions
 steps:
   - name: Backup Database
-    run: php backup_database.php
+    run: php scripts/backup_database.php
 
   - name: Anonymize Database
-    run: php anonymize_database.php
+    run: php scripts/anonymize_database.php
 
   - name: Verify Anonymization
-    run: php verify_anonymization.php
+    run: php scripts/verify_anonymization.php
 ```
 
 ### Shell Script Wrapper
@@ -453,16 +453,16 @@ steps:
 #!/bin/bash
 # anonymize.sh
 
-cd /home/bwalia/webimpetus-src
+cd /home/bwalia/workstation-ci4
 
 echo "Step 1: Backup..."
-php backup_database.php || exit 1
+php scripts/backup_database.php || exit 1
 
 echo "Step 2: Anonymize..."
-php anonymize_database.php || exit 1
+php scripts/anonymize_database.php || exit 1
 
 echo "Step 3: Verify..."
-php verify_anonymization.php || exit 1
+php scripts/verify_anonymization.php || exit 1
 
 echo "✓ Complete!"
 ```
@@ -522,27 +522,27 @@ SELECT id, custom_invoice_number, bill_to FROM sales_invoices LIMIT 3;
 ## 🆘 Support
 
 ### Files Location
-- Scripts: `/home/bwalia/webimpetus-src/`
+- Scripts: `/home/bwalia/workstation-ci4/`
   - `backup_database.php`
   - `anonymize_database.php`
   - `verify_anonymization.php`
-- Backups: `/home/bwalia/webimpetus-src/backups/`
-- Documentation: `/home/bwalia/webimpetus-src/PHP_ANONYMIZATION_GUIDE.md`
+- Backups: `/home/bwalia/workstation-ci4/backups/`
+- Documentation: `/home/bwalia/workstation-ci4/PHP_ANONYMIZATION_GUIDE.md`
 
 ### Quick Commands
 
 ```bash
 # Backup only
-php backup_database.php
+php scripts/backup_database.php
 
 # Anonymize only (DANGEROUS without backup!)
-php anonymize_database.php
+php scripts/anonymize_database.php
 
 # Verify only
-php verify_anonymization.php
+php scripts/verify_anonymization.php
 
 # All in one
-php backup_database.php && php anonymize_database.php && php verify_anonymization.php
+php scripts/backup_database.php && php scripts/anonymize_database.php && php scripts/verify_anonymization.php
 
 # Restore latest backup
 LATEST=$(ls -t backups/*.sql.gz | head -1)

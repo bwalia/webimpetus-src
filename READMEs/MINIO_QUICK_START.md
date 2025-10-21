@@ -28,13 +28,13 @@ MinIO has been successfully integrated into your Docker Compose stack for S3-com
 
 ### Method 1: Use the Start Script
 ```bash
-cd /home/bwalia/webimpetus-src
+cd /home/bwalia/workstation-ci4
 ./start-minio.sh
 ```
 
 ### Method 2: Manual Start
 ```bash
-cd /home/bwalia/webimpetus-src
+cd /home/bwalia/workstation-ci4
 
 # Start MinIO services
 docker-compose up -d minio minio-init
@@ -71,7 +71,7 @@ Should show: `Up` status on ports 9000, 9001
 
 ### On Host (Your Machine)
 ```
-/home/bwalia/webimpetus-src/minio-data/
+/home/bwalia/workstation-ci4/minio-data/
 └── webimpetus/          # bucket
     └── dev/             # directory from config
         └── [your files]

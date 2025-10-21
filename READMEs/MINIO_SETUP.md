@@ -36,7 +36,7 @@ Your application already supports S3/MinIO through:
 
 ### Step 1: Start the Services
 ```bash
-cd /home/bwalia/webimpetus-src
+cd /home/bwalia/workstation-ci4
 docker-compose up -d minio minio-init
 ```
 

@@ -157,7 +157,7 @@ chmod 600 ~/.certs/*.key
 
 ### Step 3: Install Production Certificates
 ```bash
-cd /home/bwalia/webimpetus-src
+cd /home/bwalia/workstation-ci4
 ./install-production-certs.sh ~/.certs
 ```
 
@@ -306,7 +306,7 @@ If you need to revert to workstation.local:
 # Look for files with .backup suffix
 
 # Quick rollback:
-cd /home/bwalia/webimpetus-src
+cd /home/bwalia/workstation-ci4
 
 # Restore nginx config
 cp nginx/nginx.conf.backup.[timestamp] nginx/nginx.conf

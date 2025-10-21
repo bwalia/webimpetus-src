@@ -19,7 +19,7 @@
 
 
 
-Removed from /home/bwalia/webimpetus-src/devops/kubernetes/adminer.yaml
+Removed from /home/bwalia/workstation-ci4/devops/kubernetes/adminer.yaml
       containers:
       # - env:
       #   - name: TEST_ENV

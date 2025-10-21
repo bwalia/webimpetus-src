@@ -143,7 +143,7 @@ http://localhost/health        → Health check
 
 ### 1. Deploy Nginx Gateway (Optional)
 ```bash
-cd /home/bwalia/webimpetus-src
+cd /home/bwalia/workstation-ci4
 docker-compose down
 docker-compose up -d
 docker logs -f webimpetus-nginx

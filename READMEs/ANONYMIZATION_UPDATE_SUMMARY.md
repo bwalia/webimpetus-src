@@ -111,7 +111,7 @@ After:  Task 123, Employee 1, Anonymized work description 123
 
 ### Option 1: Anonymize Existing Data
 ```bash
-cd /home/bwalia/webimpetus-src/SQLs
+cd /home/bwalia/workstation-ci4/SQLs
 ./backup_before_anonymize.sh
 docker exec -i webimpetus-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < anonymize_dev_data.sql
 ```
@@ -162,12 +162,12 @@ FROM timeslips;
 
 ## Files Modified
 
-1. `/home/bwalia/webimpetus-src/SQLs/anonymize_dev_data.sql`
+1. `/home/bwalia/workstation-ci4/SQLs/anonymize_dev_data.sql`
    - Added sections 31-35
    - Updated header comment
    - Updated verification queries
 
-2. `/home/bwalia/webimpetus-src/SQLs/create_demo_environment.sql`
+2. `/home/bwalia/workstation-ci4/SQLs/create_demo_environment.sql`
    - Added Companies demo data
    - Added Contacts demo data
    - Added Sales Invoices demo data
@@ -175,12 +175,12 @@ FROM timeslips;
    - Added Timeslips demo data
    - Updated verification output
 
-3. `/home/bwalia/webimpetus-src/DEV_DATA_ANONYMIZATION_GUIDE.md`
+3. `/home/bwalia/workstation-ci4/DEV_DATA_ANONYMIZATION_GUIDE.md`
    - Updated "What Gets Anonymized" section
    - Added new transformation examples
    - Updated preserved data section
 
-4. `/home/bwalia/webimpetus-src/SQLs/README_ANONYMIZATION.md`
+4. `/home/bwalia/workstation-ci4/SQLs/README_ANONYMIZATION.md`
    - Updated preserved/anonymized lists
    - Added warning indicators
 
@@ -241,14 +241,14 @@ If needed, restore from backup:
 
 ```bash
 # Find backup
-ls -lh /home/bwalia/webimpetus-src/backups/
+ls -lh /home/bwalia/workstation-ci4/backups/
 
 # Decompress
-gunzip /home/bwalia/webimpetus-src/backups/[backup_file].sql.gz
+gunzip /home/bwalia/workstation-ci4/backups/[backup_file].sql.gz
 
 # Restore
 docker exec -i webimpetus-db mariadb -u wsl_dev -p'CHANGE_ME' \
-  myworkstation_dev < /home/bwalia/webimpetus-src/backups/[backup_file].sql
+  myworkstation_dev < /home/bwalia/workstation-ci4/backups/[backup_file].sql
 ```
 
 ---

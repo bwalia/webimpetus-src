@@ -146,5 +146,5 @@ echo "  4. Check database records:\n";
 echo "     SELECT uuid, name, file, file_url FROM documents ORDER BY created_at DESC LIMIT 5;\n\n";
 
 echo "MinIO Storage Path:\n";
-echo "  - Host: /home/bwalia/webimpetus-src/minio-data/webimpetus/dev/documents/\n";
+echo "  - Host: /home/bwalia/workstation-ci4/minio-data/webimpetus/dev/documents/\n";
 echo "  - MinIO: http://minio:9000/webimpetus/dev/documents/\n\n";

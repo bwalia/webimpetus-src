@@ -57,7 +57,7 @@ Clarified that the application is now running CI 4.6.x with PHP 8.3.12 in produc
 ### Update Local Dependencies
 
 ```bash
-cd /Users/balinderwalia/Documents/Work/webimpetus-src/ci4
+cd /Users/balinderwalia/Documents/Work/workstation-ci4/ci4
 
 # Clear composer cache
 composer clear-cache

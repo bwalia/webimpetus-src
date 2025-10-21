@@ -6,7 +6,7 @@ Quick reference for anonymizing PII data in dev environment.
 
 ### Backup + Anonymize
 ```bash
-cd /home/bwalia/webimpetus-src/SQLs
+cd /home/bwalia/workstation-ci4/SQLs
 ./backup_before_anonymize.sh
 docker exec -i webimpetus-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < anonymize_dev_data.sql
 ```

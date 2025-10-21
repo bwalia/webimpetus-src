@@ -214,7 +214,7 @@ This is loaded during login and stays cached. Only logging out and in again refr
 
 If you want to make accounting_periods accessible without strict permission checks, modify the controller:
 
-**File:** `/home/bwalia/webimpetus-src/ci4/app/Controllers/AccountingPeriods.php`
+**File:** `/home/bwalia/workstation-ci4/ci4/app/Controllers/AccountingPeriods.php`
 
 **Change line 8:**
 ```php
@@ -342,7 +342,7 @@ After applying the fix:
 
 ### Check Server Logs:
 ```bash
-tail -f /home/bwalia/webimpetus-src/ci4/writable/logs/log-*.php
+tail -f /home/bwalia/workstation-ci4/ci4/writable/logs/log-*.php
 ```
 
 ### Contact Support:

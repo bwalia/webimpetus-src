@@ -66,7 +66,7 @@ Browser (HTTPS) → Nginx (8443) → Webimpetus App
 ## 📁 Project Structure
 
 ```
-webimpetus-src/
+workstation-ci4/
 ├── nginx/
 │   ├── nginx.conf                    # Nginx configuration
 │   ├── ssl/

@@ -48,7 +48,7 @@ If you prefer manual installation:
 ```bash
 # From your Mac, copy the certificates to this Linux system
 # Option A: Using scp
-scp /Users/balinderwalia/Documents/Work/aws_keys/workstation-cert.* user@thisserver:/home/bwalia/webimpetus-src/nginx/ssl/
+scp /Users/balinderwalia/Documents/Work/aws_keys/workstation-cert.* user@thisserver:/home/bwalia/workstation-ci4/nginx/ssl/
 
 # Option B: Copy content manually (see Step 2)
 ```
@@ -56,7 +56,7 @@ scp /Users/balinderwalia/Documents/Work/aws_keys/workstation-cert.* user@thisser
 #### Step 2: Install Certificates Manually
 
 ```bash
-cd /home/bwalia/webimpetus-src
+cd /home/bwalia/workstation-ci4
 
 # Create destination directory if needed
 mkdir -p nginx/ssl

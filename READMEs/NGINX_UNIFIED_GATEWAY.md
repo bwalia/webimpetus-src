@@ -106,7 +106,7 @@ Gzip enabled for:
 
 ### Step 1: Stop Existing Services
 ```bash
-cd /home/bwalia/webimpetus-src
+cd /home/bwalia/workstation-ci4
 docker-compose down
 ```
 

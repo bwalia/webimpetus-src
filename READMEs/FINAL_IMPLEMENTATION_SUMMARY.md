@@ -222,7 +222,7 @@ $db->table('journal_entry_lines')->insert($line);
 ## 📋 Deployment Checklist
 
 ### 1. Database Setup
-- [ ] Run `/home/bwalia/webimpetus-src/SQLs/create_hospital_tables.sql`
+- [ ] Run `/home/bwalia/workstation-ci4/SQLs/create_hospital_tables.sql`
 - [ ] Verify tables created: `SHOW TABLES LIKE 'hospital%'`
 - [ ] Update sample data with actual business UUID
 - [ ] Verify indexes: `SHOW INDEX FROM hospital_staff`

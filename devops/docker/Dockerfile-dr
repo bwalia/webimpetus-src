@@ -22,7 +22,7 @@ RUN kubectl version --client
 
 WORKDIR /app
 
-COPY ./backup_database.sh /app/backup_database.sh
+COPY ./scripts/backup_database.sh /app/backup_database.sh
 RUN chmod +x /app/backup_database.sh
 
 ENV TARGET_ENV=""

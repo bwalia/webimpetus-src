@@ -30,7 +30,7 @@ Use the helm package manager [helm](https://webimpetus.io/en/stable/) to install
 
 
 ```shell or bash
-`sudo sh ./start-dev-env.sh` or `sudo bash ./start-dev-env.sh`
+`sudo sh ./scripts/start-dev-env.sh` or `sudo bash ./scripts/start-dev-env.sh`
 ```
 
 # DEPLOY WEBIMPETUS TO KUBERNETES (SUITABLE FOR DEVELOPMENT PODS, TEST, INT, ACC and or PROD environments)
@@ -40,7 +40,7 @@ Use the helm package manager [helm](https://webimpetus.io/en/stable/) to install
 Use the helm package manager [helm](https://webimpetus.io/en/stable/) to install WebImpetus.
 
 ```shell or bash
-`sudo sh ./deploy-webimpetus-in-kubernetes.sh` or `sudo bash ./deploy-webimpetus-in-kubernetes.sh`
+`sudo sh ./scripts/deploy-webimpetus-in-kubernetes.sh` or `sudo bash ./scripts/deploy-webimpetus-in-kubernetes.sh`
 `this shell script assumes you have a working kubernetes cluster and connection to kubernetes configured and working`
 ```
 ## List of the environments:-
@@ -48,7 +48,7 @@ Use the helm package manager [helm](https://webimpetus.io/en/stable/) to install
 | Environment | Link     | Credentials                |
 | :-------- | :------- | :------------------------- |
 | `dev` | `http://localhost:8080/` | `Ask administrator` |
-| `dev with https:// tls cert` | `https://localhost:9093/` | `Ask administrator` | `see start-dev-env.sh`
+| `dev with https:// tls cert` | `https://localhost:9093/` | `Ask administrator` | `see scripts/start-dev-env.sh`
 | `int` | `https://int-my.workstation.co.uk/` | `Ask administrator` |
 | `test` | `https://test-my.workstation.co.uk/` | `Ask administrator` |
 | `acc` | `https://acc-my.workstation.co.uk/` | `Ask administrator` |
@@ -62,7 +62,7 @@ Use the helm package manager [helm](https://webimpetus.io/en/stable/) to install
 You can access API documentation here:
 ```/api-docs``` or ```https://test-my.workstation.co.uk/api-docs/```
 
-![Landing Page](https://github.com/bwalia/webimpetus-src/blob/b16260a53f53b37d6036abbc91a2c3db6e8c07c8/webimpetus_login_page_v1_2022.png)
+![Landing Page](https://github.com/bwalia/workstation-ci4/blob/b16260a53f53b37d6036abbc91a2c3db6e8c07c8/webimpetus_login_page_v1_2022.png)
 
 ## CONTRIBUTING
 

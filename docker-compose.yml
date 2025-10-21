@@ -202,4 +202,4 @@ networks:
                         # Names our volume
 volumes:
   webimpetus-db-vol:
-  webimpetus-src-vol:
+  workstation-ci4-vol:

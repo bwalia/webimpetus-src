@@ -6,7 +6,7 @@
 set -e
 
 DOMAIN="dev000.workstation.co.uk"
-NGINX_SSL_DIR="/home/bwalia/webimpetus-src/nginx/ssl"
+NGINX_SSL_DIR="/home/bwalia/workstation-ci4/nginx/ssl"
 
 echo "=========================================="
 echo "  SSL Certificate Installation"
@@ -149,7 +149,7 @@ echo ""
 
 # Update nginx configuration
 echo "Updating nginx configuration..."
-NGINX_CONF="/home/bwalia/webimpetus-src/nginx/nginx.conf"
+NGINX_CONF="/home/bwalia/workstation-ci4/nginx/nginx.conf"
 
 # Backup nginx config
 cp "$NGINX_CONF" "$NGINX_CONF.backup.$(date +%s)"
@@ -164,7 +164,7 @@ echo ""
 
 # Update .env file
 echo "Updating .env file..."
-ENV_FILE="/home/bwalia/webimpetus-src/.env"
+ENV_FILE="/home/bwalia/workstation-ci4/.env"
 cp "$ENV_FILE" "$ENV_FILE.backup.$(date +%s)"
 
 # Update base URL
@@ -196,7 +196,7 @@ echo ""
 
 # Restart nginx
 echo "Restarting nginx container..."
-cd /home/bwalia/webimpetus-src
+cd /home/bwalia/workstation-ci4
 docker-compose restart nginx
 
 echo ""

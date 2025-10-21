@@ -12,7 +12,7 @@ DB_CONTAINER="webimpetus-db"
 DB_NAME="myworkstation_dev"
 DB_USER="wsl_dev"
 DB_PASS="CHANGE_ME"
-BACKUP_DIR="/home/bwalia/webimpetus-src/backups"
+BACKUP_DIR="/home/bwalia/workstation-ci4/backups"
 TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
 BACKUP_FILE="$BACKUP_DIR/${DB_NAME}_before_anonymization_${TIMESTAMP}.sql"
 

@@ -65,7 +65,7 @@ ls -lh ~/.certs/
 
 **Automated Installation (Recommended):**
 ```bash
-cd /home/bwalia/webimpetus-src
+cd /home/bwalia/workstation-ci4
 ./install-production-certs.sh ~/.certs
 ```
 
@@ -218,10 +218,10 @@ After installation, verify:
 
 ```bash
 # 1. Certificate installed
-ls -lh /home/bwalia/webimpetus-src/nginx/ssl/
+ls -lh /home/bwalia/workstation-ci4/nginx/ssl/
 
 # 2. Nginx configuration updated
-grep dev000.workstation.co.uk /home/bwalia/webimpetus-src/nginx/nginx.conf
+grep dev000.workstation.co.uk /home/bwalia/workstation-ci4/nginx/nginx.conf
 
 # 3. Hosts file updated
 grep dev000.workstation.co.uk /etc/hosts
@@ -245,7 +245,7 @@ echo | openssl s_client -connect dev000.workstation.co.uk:8443 -servername dev00
 - **Hostname**: slworker00
 - **IP Address**: 172.20.0.1
 - **Username**: bwalia
-- **Project Path**: /home/bwalia/webimpetus-src
+- **Project Path**: /home/bwalia/workstation-ci4
 - **Cert Directory**: ~/.certs/
 
 ### Commands
@@ -261,7 +261,7 @@ ls -lh ~/.certs/
 chmod 644 ~/.certs/*.crt && chmod 600 ~/.certs/*.key
 
 # Install:
-cd /home/bwalia/webimpetus-src
+cd /home/bwalia/workstation-ci4
 ./install-production-certs.sh ~/.certs
 
 # Test:

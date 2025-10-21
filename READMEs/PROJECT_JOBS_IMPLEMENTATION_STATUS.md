@@ -30,7 +30,7 @@ All tables have been successfully created in the `myworkstation_dev` database:
 ### 2. Models Created ✅
 Three comprehensive models with full CRUD and business logic:
 
-**ProjectJobs_model.php** (`/home/bwalia/webimpetus-src/ci4/app/Models/ProjectJobs_model.php`)
+**ProjectJobs_model.php** (`/home/bwalia/workstation-ci4/ci4/app/Models/ProjectJobs_model.php`)
 - `getNextJobNumber()` - Auto-generate job numbers (JOB-001, JOB-002, etc.)
 - `getJobsWithDetails()` - Jobs with project and assignment info
 - `getJobsByProject()`, `getJobsByUser()`, `getJobsByEmployee()`
@@ -38,7 +38,7 @@ Three comprehensive models with full CRUD and business logic:
 - `getJobTimelineSummary()` - Phases, tasks summary
 - `getOverdueJobs()`, `getJobsSummary()`
 
-**ProjectJobPhases_model.php** (`/home/bwalia/webimpetus-src/ci4/app/Models/ProjectJobPhases_model.php`)
+**ProjectJobPhases_model.php** (`/home/bwalia/workstation-ci4/ci4/app/Models/ProjectJobPhases_model.php`)
 - `getNextPhaseNumber()` - Auto-generate phase numbers
 - `getPhasesByJob()`, `getPhasesWithDependencies()`
 - `updatePhaseProgress()` - Auto-updates status based on percentage
@@ -46,7 +46,7 @@ Three comprehensive models with full CRUD and business logic:
 - `getBlockedPhases()`, `reorderPhases()`
 - `getPhasesSummary()`
 
-**ProjectJobScheduler_model.php** (`/home/bwalia/webimpetus-src/ci4/app/Models/ProjectJobScheduler_model.php`)
+**ProjectJobScheduler_model.php** (`/home/bwalia/workstation-ci4/ci4/app/Models/ProjectJobScheduler_model.php`)
 - `getScheduleByDateRange()`, `getScheduleByUser()`, `getScheduleByEmployee()`
 - `getCalendarEvents()` - Returns FullCalendar.js compatible format
 - `dragDropUpdate()` - Handle calendar drag-and-drop
@@ -54,7 +54,7 @@ Three comprehensive models with full CRUD and business logic:
 ### 3. Controllers Created ✅
 Three full-featured controllers with CRUD operations:
 
-**ProjectJobs.php** (`/home/bwalia/webimpetus-src/ci4/app/Controllers/ProjectJobs.php`)
+**ProjectJobs.php** (`/home/bwalia/workstation-ci4/ci4/app/Controllers/ProjectJobs.php`)
 - `index()` - List page with summary stats
 - `jobsList()` - DataTables AJAX endpoint
 - `edit($uuid)` - Create/edit form
@@ -64,7 +64,7 @@ Three full-featured controllers with CRUD operations:
 - `assign($uuid)` - Assign to user/employee
 - `updateProgress($uuid)` - Update completion percentage
 
-**ProjectJobPhases.php** (`/home/bwalia/webimpetus-src/ci4/app/Controllers/ProjectJobPhases.php`)
+**ProjectJobPhases.php** (`/home/bwalia/workstation-ci4/ci4/app/Controllers/ProjectJobPhases.php`)
 - `index($jobUuid)` - List phases for a job
 - `edit($uuid, $jobUuid)` - Create/edit phase
 - `update()` - Save phase
@@ -74,14 +74,14 @@ Three full-featured controllers with CRUD operations:
 - `checkDependencies($uuid)` - Validate if phase can start
 - `reorder()` - Drag-to-reorder phases
 
-**ProjectJobScheduler.php** (`/home/bwalia/webimpetus-src/ci4/app/Controllers/ProjectJobScheduler.php`)
+**ProjectJobScheduler.php** (`/home/bwalia/workstation-ci4/ci4/app/Controllers/ProjectJobScheduler.php`)
 - `calendar()` - Calendar view page
 - `getEvents()` - Get events for FullCalendar.js
 - `createEvent()`, `updateEvent($uuid)`, `deleteEvent($uuid)`
 - `dragDrop()` - Handle calendar drag-and-drop
 
 ### 4. Routes Added ✅
-All routes configured in `/home/bwalia/webimpetus-src/ci4/app/Config/Routes.php`:
+All routes configured in `/home/bwalia/workstation-ci4/ci4/app/Config/Routes.php`:
 
 **Project Jobs Routes** (lines 68-80):
 ```
@@ -130,7 +130,7 @@ GET /common/searchProjectJobPhases?q={query}&job_uuid={optional}
 ```
 
 ### 6. Views Created ✅
-All views have been created in `/home/bwalia/webimpetus-src/ci4/app/Views/`:
+All views have been created in `/home/bwalia/workstation-ci4/ci4/app/Views/`:
 
 **Project Jobs Views:**
 1. ✅ `project_jobs/list.php` (8.7 KB) - DataTable list with summary cards, filters, and status badges
@@ -233,34 +233,34 @@ Need to test:
 ## 📁 Files Created
 
 ### SQL Files:
-- `/home/bwalia/webimpetus-src/ci4/SQLs/create_project_jobs_table.sql`
-- `/home/bwalia/webimpetus-src/ci4/SQLs/create_project_job_phases_table.sql`
-- `/home/bwalia/webimpetus-src/ci4/SQLs/create_project_job_scheduler_table.sql`
-- `/home/bwalia/webimpetus-src/ci4/SQLs/extend_tasks_and_timesheets_tables.sql`
+- `/home/bwalia/workstation-ci4/ci4/SQLs/create_project_jobs_table.sql`
+- `/home/bwalia/workstation-ci4/ci4/SQLs/create_project_job_phases_table.sql`
+- `/home/bwalia/workstation-ci4/ci4/SQLs/create_project_job_scheduler_table.sql`
+- `/home/bwalia/workstation-ci4/ci4/SQLs/extend_tasks_and_timesheets_tables.sql`
 
 ### Migration:
-- `/home/bwalia/webimpetus-src/ci4/app/Database/Migrations/2025-10-14-152649_CreateProjectJobsTables.php`
+- `/home/bwalia/workstation-ci4/ci4/app/Database/Migrations/2025-10-14-152649_CreateProjectJobsTables.php`
 
 ### Models:
-- `/home/bwalia/webimpetus-src/ci4/app/Models/ProjectJobs_model.php` (243 lines)
-- `/home/bwalia/webimpetus-src/ci4/app/Models/ProjectJobPhases_model.php` (177 lines)
-- `/home/bwalia/webimpetus-src/ci4/app/Models/ProjectJobScheduler_model.php` (192 lines)
+- `/home/bwalia/workstation-ci4/ci4/app/Models/ProjectJobs_model.php` (243 lines)
+- `/home/bwalia/workstation-ci4/ci4/app/Models/ProjectJobPhases_model.php` (177 lines)
+- `/home/bwalia/workstation-ci4/ci4/app/Models/ProjectJobScheduler_model.php` (192 lines)
 
 ### Controllers:
-- `/home/bwalia/webimpetus-src/ci4/app/Controllers/ProjectJobs.php` (220 lines)
-- `/home/bwalia/webimpetus-src/ci4/app/Controllers/ProjectJobPhases.php` (183 lines)
-- `/home/bwalia/webimpetus-src/ci4/app/Controllers/ProjectJobScheduler.php` (140 lines)
+- `/home/bwalia/workstation-ci4/ci4/app/Controllers/ProjectJobs.php` (220 lines)
+- `/home/bwalia/workstation-ci4/ci4/app/Controllers/ProjectJobPhases.php` (183 lines)
+- `/home/bwalia/workstation-ci4/ci4/app/Controllers/ProjectJobScheduler.php` (140 lines)
 
 ### Views:
-- `/home/bwalia/webimpetus-src/ci4/app/Views/project_jobs/list.php` (8.7 KB)
-- `/home/bwalia/webimpetus-src/ci4/app/Views/project_jobs/edit.php` (15 KB)
-- `/home/bwalia/webimpetus-src/ci4/app/Views/project_job_phases/list.php` (9.9 KB)
-- `/home/bwalia/webimpetus-src/ci4/app/Views/project_job_phases/edit.php` (13 KB)
-- `/home/bwalia/webimpetus-src/ci4/app/Views/project_job_scheduler/calendar.php` (19 KB)
+- `/home/bwalia/workstation-ci4/ci4/app/Views/project_jobs/list.php` (8.7 KB)
+- `/home/bwalia/workstation-ci4/ci4/app/Views/project_jobs/edit.php` (15 KB)
+- `/home/bwalia/workstation-ci4/ci4/app/Views/project_job_phases/list.php` (9.9 KB)
+- `/home/bwalia/workstation-ci4/ci4/app/Views/project_job_phases/edit.php` (13 KB)
+- `/home/bwalia/workstation-ci4/ci4/app/Views/project_job_scheduler/calendar.php` (19 KB)
 
 ### Modified Files:
-- `/home/bwalia/webimpetus-src/ci4/app/Config/Routes.php` - Added 36 routes
-- `/home/bwalia/webimpetus-src/ci4/app/Controllers/CommonAjax.php` - Added 2 search methods
+- `/home/bwalia/workstation-ci4/ci4/app/Config/Routes.php` - Added 36 routes
+- `/home/bwalia/workstation-ci4/ci4/app/Controllers/CommonAjax.php` - Added 2 search methods
 
 ## 🎯 Current Status
 

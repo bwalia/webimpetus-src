@@ -56,7 +56,7 @@ This guide provides instructions for anonymizing PII (Personally Identifiable In
 
 ```bash
 # Step 1: Backup current database
-cd /home/bwalia/webimpetus-src/SQLs
+cd /home/bwalia/workstation-ci4/SQLs
 ./backup_before_anonymize.sh
 
 # Step 2: Run anonymization script
@@ -80,14 +80,14 @@ docker exec -i webimpetus-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev 
 
 ```bash
 # Option A: Use automated backup script
-cd /home/bwalia/webimpetus-src/SQLs
+cd /home/bwalia/workstation-ci4/SQLs
 ./backup_before_anonymize.sh
 ```
 
 **Option B: Manual backup**
 ```bash
 # Create backup directory
-mkdir -p /home/bwalia/webimpetus-src/backups
+mkdir -p /home/bwalia/workstation-ci4/backups
 
 # Backup database
 docker exec webimpetus-db mariadb-dump \
@@ -96,13 +96,13 @@ docker exec webimpetus-db mariadb-dump \
     --single-transaction \
     --routines \
     --triggers \
-    myworkstation_dev > /home/bwalia/webimpetus-src/backups/dev_backup_$(date +%Y%m%d_%H%M%S).sql
+    myworkstation_dev > /home/bwalia/workstation-ci4/backups/dev_backup_$(date +%Y%m%d_%H%M%S).sql
 
 # Compress backup
-gzip /home/bwalia/webimpetus-src/backups/dev_backup_*.sql
+gzip /home/bwalia/workstation-ci4/backups/dev_backup_*.sql
 ```
 
-**Backup Location:** `/home/bwalia/webimpetus-src/backups/`
+**Backup Location:** `/home/bwalia/workstation-ci4/backups/`
 
 ---
 
@@ -113,7 +113,7 @@ gzip /home/bwalia/webimpetus-src/backups/dev_backup_*.sql
 This preserves all data structure but replaces PII with dummy data.
 
 ```bash
-cd /home/bwalia/webimpetus-src/SQLs
+cd /home/bwalia/workstation-ci4/SQLs
 
 # Run anonymization script
 docker exec -i webimpetus-db mariadb \
@@ -133,7 +133,7 @@ docker exec -i webimpetus-db mariadb \
 This creates a consistent demo environment that can be imported anytime.
 
 ```bash
-cd /home/bwalia/webimpetus-src/SQLs
+cd /home/bwalia/workstation-ci4/SQLs
 
 # Import demo environment
 docker exec -i webimpetus-db mariadb \
@@ -198,16 +198,16 @@ If something goes wrong, restore from backup:
 
 ```bash
 # Find your backup file
-ls -lh /home/bwalia/webimpetus-src/backups/
+ls -lh /home/bwalia/workstation-ci4/backups/
 
 # Decompress if needed
-gunzip /home/bwalia/webimpetus-src/backups/[backup_file].sql.gz
+gunzip /home/bwalia/workstation-ci4/backups/[backup_file].sql.gz
 
 # Restore database
 docker exec -i webimpetus-db mariadb \
     -u wsl_dev \
     -p'CHANGE_ME' \
-    myworkstation_dev < /home/bwalia/webimpetus-src/backups/[backup_file].sql
+    myworkstation_dev < /home/bwalia/workstation-ci4/backups/[backup_file].sql
 ```
 
 ---
@@ -275,19 +275,19 @@ docker exec -i webimpetus-db mariadb \
 ## 🗂️ Files Created
 
 ### 1. Anonymization Scripts
-- **Location:** `/home/bwalia/webimpetus-src/SQLs/`
+- **Location:** `/home/bwalia/workstation-ci4/SQLs/`
 - **Files:**
   - `anonymize_dev_data.sql` - Main anonymization script
   - `create_demo_environment.sql` - Demo environment setup
   - `backup_before_anonymize.sh` - Automated backup script
 
 ### 2. Backups
-- **Location:** `/home/bwalia/webimpetus-src/backups/`
+- **Location:** `/home/bwalia/workstation-ci4/backups/`
 - **Format:** `myworkstation_dev_before_anonymization_YYYYMMDD_HHMMSS.sql.gz`
 - **Retention:** Keep at least 3 most recent backups
 
 ### 3. Documentation
-- **Location:** `/home/bwalia/webimpetus-src/`
+- **Location:** `/home/bwalia/workstation-ci4/`
 - **File:** `DEV_DATA_ANONYMIZATION_GUIDE.md` (this file)
 
 ---
@@ -326,7 +326,7 @@ Create a cron job to refresh demo data weekly:
 crontab -e
 
 # Add this line (runs every Monday at 2 AM)
-0 2 * * 1 /home/bwalia/webimpetus-src/SQLs/backup_before_anonymize.sh && docker exec -i webimpetus-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < /home/bwalia/webimpetus-src/SQLs/create_demo_environment.sql
+0 2 * * 1 /home/bwalia/workstation-ci4/SQLs/backup_before_anonymize.sh && docker exec -i webimpetus-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < /home/bwalia/workstation-ci4/SQLs/create_demo_environment.sql
 ```
 
 ---
@@ -407,9 +407,9 @@ WHERE email NOT LIKE '%@example.com'
 ## 📞 Support
 
 ### Files Location
-- Scripts: `/home/bwalia/webimpetus-src/SQLs/`
-- Backups: `/home/bwalia/webimpetus-src/backups/`
-- Docs: `/home/bwalia/webimpetus-src/DEV_DATA_ANONYMIZATION_GUIDE.md`
+- Scripts: `/home/bwalia/workstation-ci4/SQLs/`
+- Backups: `/home/bwalia/workstation-ci4/backups/`
+- Docs: `/home/bwalia/workstation-ci4/DEV_DATA_ANONYMIZATION_GUIDE.md`
 
 ### Quick Commands Reference
 
