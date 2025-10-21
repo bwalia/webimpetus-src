@@ -12,7 +12,7 @@
  */
 
 // Configuration
-define('DB_HOST', 'webimpetus-db');
+define('DB_HOST', 'workerra-ci-db');
 define('DB_NAME', 'myworkstation_dev');
 define('DB_USER', 'wsl_dev');
 define('DB_PASS', 'CHANGE_ME');

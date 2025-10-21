@@ -7,7 +7,7 @@ use App\Controllers\Core\CommonController;
 
 /**
  * @OA\Info(
- *     title="WebImpetus API V2",
+ *     title="workerra-ci API V2",
  *     version="2.0",
  * )
  * * @OA\SecurityScheme(

@@ -10,7 +10,7 @@ DOMAIN="dev000.workstation.co.uk"
 IP="127.0.0.1"
 
 echo "=================================="
-echo "  Hosts File Setup for Webimpetus"
+echo "  Hosts File Setup for workerra-ci"
 echo "=================================="
 echo ""
 

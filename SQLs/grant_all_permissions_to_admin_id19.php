@@ -10,7 +10,7 @@
  *   php SQLs/grant_all_permissions_to_admin_id19.php
  *
  * Or via Docker:
- *   docker exec webimpetus-dev php /var/www/html/SQLs/grant_all_permissions_to_admin_id19.php
+ *   docker exec workerra-ci-dev php /var/www/html/SQLs/grant_all_permissions_to_admin_id19.php
  */
 
 // Database connection parameters

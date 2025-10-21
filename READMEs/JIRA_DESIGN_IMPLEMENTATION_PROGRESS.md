@@ -340,7 +340,7 @@ None reported yet.
 ## Resources
 
 - **CSS Framework:** `/ci4/public/css/jira-style-custom.css`
-- **Design Documentation:** `/home/bwalia/workstation-ci4/JIRA_DESIGN_SYSTEM_IMPLEMENTATION.md`
+- **Design Documentation:** `/home/bwalia/workerra-ci/JIRA_DESIGN_SYSTEM_IMPLEMENTATION.md`
 - **Atlassian Design System:** https://atlassian.design/
 
 ---

@@ -7,7 +7,7 @@
 
 ## Overview
 
-Successfully created 8 missing API v2 controllers to achieve complete API coverage for all applicable menu items in the WebImpetus application.
+Successfully created 8 missing API v2 controllers to achieve complete API coverage for all applicable menu items in the workerra-ci application.
 
 ---
 

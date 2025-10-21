@@ -1,6 +1,6 @@
 ARG TAG=latest
 
-FROM bwalia/webimpetus:$TAG
+FROM bwalia/workerra-ci:$TAG
 
 WORKDIR /var/www/html
 

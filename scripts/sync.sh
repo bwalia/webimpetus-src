@@ -1,19 +1,19 @@
 #!/bin/bash
 
-# This bash script copies files into the WebImpetus CI4 docker container for docker based dev environment.
+# This bash script copies files into the workerra-ci CI4 docker container for docker based dev environment.
 
 #  set -x
 
 clear
 
-CONTAINER_NAME=webimpetus-dev
+CONTAINER_NAME=workerra-ci-dev
 
 TARGET_DIR=/var/www/html/
-NGINX_SERVER_CONFIG=/etc/nginx/sites-enabled/webimpetus.conf
+NGINX_SERVER_CONFIG=/etc/nginx/sites-enabled/workerra-ci.conf
 
 docker exec -it ${CONTAINER_NAME} truncate -s 0 ${TARGET_DIR}.env
 
-docker cp config/vhosts/webimpetus.conf ${CONTAINER_NAME}:${NGINX_SERVER_CONFIG}
+docker cp config/vhosts/workerra-ci.conf ${CONTAINER_NAME}:${NGINX_SERVER_CONFIG}
 
 BOOTSTRAP_FILE=bootstrap_openresty_dev.sh
 

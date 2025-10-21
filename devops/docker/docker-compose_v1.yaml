@@ -12,11 +12,11 @@ services:
     command: --default-authentication-plugin=mysql_native_password
     environment:
       MYSQL_ROOT_PASSWORD: root  
-      MYSQL_DATABASE: webimpetus
+      MYSQL_DATABASE: workerra-ci
       MYSQL_USER: dbuser
       MYSQL_PASSWORD: password
     networks:
-      - webimpetus-network
+      - workerra-ci-network
 
   adminer:
       image: adminer
@@ -24,22 +24,22 @@ services:
       ports:
         - 8086:8080
       networks:
-        - webimpetus-network
+        - workerra-ci-network
 
-  webimpetus-openresty-php7:
+  workerra-ci-openresty-php7:
     depends_on:
       - mariadb-docker
-    image: localuser/webimpetus-ci4:latest
+    image: localuser/workerra-ci-ci4:latest
     ports:
       - '8084:80'
     restart: always
    # volumes:
       # - type: bind
-      #   source: ./webimpetus.co.uk
-      #   target: /var/www/html/webimpetus.co.uk
+      #   source: ./workerra-ci.co.uk
+      #   target: /var/www/html/workerra-ci.co.uk
       # - type: bind
-      #   source: ./webimpetus-microsites-php-mysql
-      #   target: /var/www/html/webimpetus-microsites-php-mysql
+      #   source: ./workerra-ci-microsites-php-mysql
+      #   target: /var/www/html/workerra-ci-microsites-php-mysql
       # - type: bind
       #   source: ./devops/nginx-servers-conf
       #   target: /opt/nginx/conf/nginx-tenants.d
@@ -47,11 +47,11 @@ services:
       MYSQL_DB_HOST: mariadb-docker:3307
       MYSQL_DB_USER: dbuser
       MYSQL_DB_PASSWORD: password
-      MYSQL_DB_NAME: webimpetus
+      MYSQL_DB_NAME: workerra-ci
     networks: 
-      - webimpetus-network
+      - workerra-ci-network
 networks:
-  webimpetus-network:
+  workerra-ci-network:
 
 
 

@@ -85,11 +85,11 @@ mariadb -u your_username -p your_database < ci4/vat_returns_deployment.sql
 
 ```bash
 # Development environment example
-docker exec webimpetus-db mariadb -u wsl_dev -pCHANGE_ME myworkstation_dev < ci4/vat_returns_deployment.sql
+docker exec workerra-ci-db mariadb -u wsl_dev -pCHANGE_ME myworkstation_dev < ci4/vat_returns_deployment.sql
 
 # Or copy file into container first
-docker cp ci4/vat_returns_deployment.sql webimpetus-db:/tmp/
-docker exec webimpetus-db mariadb -u wsl_dev -pCHANGE_ME myworkstation_dev < /tmp/vat_returns_deployment.sql
+docker cp ci4/vat_returns_deployment.sql workerra-ci-db:/tmp/
+docker exec workerra-ci-db mariadb -u wsl_dev -pCHANGE_ME myworkstation_dev < /tmp/vat_returns_deployment.sql
 ```
 
 #### Option C: Using phpMyAdmin or Database GUI
@@ -133,7 +133,7 @@ This is because:
 ### Development Environment
 - Database: `myworkstation_dev`
 - User: `wsl_dev`
-- Container: `webimpetus-db`
+- Container: `workerra-ci-db`
 - Already deployed ✅
 
 ### Testing Environment

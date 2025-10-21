@@ -10,7 +10,7 @@
 
 The original scripts were designed to run inside the Docker container:
 ```bash
-docker exec webimpetus-dev php /var/www/html/SQLs/script.php
+docker exec workerra-ci-dev php /var/www/html/SQLs/script.php
 ```
 
 However, the `SQLs/` directory was not mounted in the container, causing:
@@ -32,7 +32,7 @@ Updated all PHP scripts to:
 ```php
 // OLD (didn't work)
 $config = [
-    'hostname' => 'webimpetus-db',
+    'hostname' => 'workerra-ci-db',
     'username' => 'wsl_dev',
     'password' => 'CHANGE_ME',
     'database' => 'myworkstation_dev',
@@ -77,7 +77,7 @@ Same changes as above:
 **OLD Approach:**
 ```bash
 # Tried to run scripts via Docker
-docker exec webimpetus-dev php /var/www/html/SQLs/script.php
+docker exec workerra-ci-dev php /var/www/html/SQLs/script.php
 ```
 
 **NEW Approach:**
@@ -113,7 +113,7 @@ php SQLs/script.php
 ┌─────────────────────────┐
 │ Docker Container        │
 │                         │
-│  webimpetus-db          │
+│  workerra-ci-db          │
 │  ┌──────────────┐       │
 │  │  MariaDB     │       │
 │  │  Port: 3306  │◄──────┼── Exposed as 3309
@@ -131,7 +131,7 @@ php SQLs/script.php
 This is configured in `docker-compose.yml`:
 ```yaml
 services:
-  webimpetus-db:
+  workerra-ci-db:
     ports:
       - "3309:3306"
 ```
@@ -168,7 +168,7 @@ brew install php
 ### Before (Didn't Work)
 ```bash
 # This failed because path didn't exist
-docker exec webimpetus-dev php /var/www/html/SQLs/check_missing_routes.php
+docker exec workerra-ci-dev php /var/www/html/SQLs/check_missing_routes.php
 ```
 
 ### After (Works)
@@ -258,7 +258,7 @@ Current Menu Status:
 
 If you have other scripts that need similar updates:
 
-1. Change hostname from `webimpetus-db` to `127.0.0.1`
+1. Change hostname from `workerra-ci-db` to `127.0.0.1`
 2. Add `'port' => 3309` to config
 3. Add port as 5th parameter to mysqli constructor
 4. Update documentation to reflect host execution
@@ -273,7 +273,7 @@ If you need to revert to Docker execution:
      - ./SQLs:/var/www/html/SQLs
    ```
 
-2. Revert scripts to use `webimpetus-db` hostname
+2. Revert scripts to use `workerra-ci-db` hostname
 3. Remove port parameter
 4. Update run_menu_scripts.sh to use docker exec
 

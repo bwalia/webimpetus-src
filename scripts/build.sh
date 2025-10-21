@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This bash script build WebImpetus CI4 docker image.
+# This bash script build workerra-ci CI4 docker image.
 # as kubernetes deployment into dev,test or prod environment using k3s.
 
 #  set -x
@@ -14,7 +14,7 @@ fi
 
 DATE_GEN_VERSION=$(date +"%Y%m%d%I%M%S")
 
-IMAGE_NAME="webimpetus"
+IMAGE_NAME="workerra-ci"
 IMAGE_TAG="dev"
 IMAGE_REPO="registry.workstation.co.uk"
 TARGET_NAMESPACE="dev"
@@ -79,7 +79,7 @@ else
    ${BUILD_IMAGE_TOOL} push  ${IMAGE_REPO}/${IMAGE_NAME}:${IMAGE_TAG}
 
 # Push to docker public registry as well
-${BUILD_IMAGE_TOOL} tag ${IMAGE_NAME} bwalia/webimpetus:latest && ${BUILD_IMAGE_TOOL} push bwalia/webimpetus:latest   
+${BUILD_IMAGE_TOOL} tag ${IMAGE_NAME} bwalia/workerra-ci:latest && ${BUILD_IMAGE_TOOL} push bwalia/workerra-ci:latest   
 fi
 
 if [ $next_step == "install" ]; then

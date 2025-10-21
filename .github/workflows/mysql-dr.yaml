@@ -20,7 +20,7 @@ on:
 
 env:
     TARGET_ENV: ${{ github.event.inputs.TARGET_ENV || 'test' }}
-    IMAGE_NAME: webimpetus-dr
+    IMAGE_NAME: workerra-ci-dr
     IMAGE_TAG: "test"
     TARGET_IMAGE_TAG: "test"
     TARGET_STACK: alpine
@@ -34,9 +34,9 @@ jobs:
       - name: Checkout this repo
         uses: actions/checkout@v3
   
-      - name: Build Webimpetus MySQL DR Docker Image and push to Docker Hub
+      - name: Build workerra-ci MySQL DR Docker Image and push to Docker Hub
         run: |
-          echo "Webimpetus DR Management Docker Image builder!"
+          echo "workerra-ci DR Management Docker Image builder!"
           echo "Build, tag, and push image to the given Docker Registry."
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWD }}
           docker build -f $(pwd)/devops/docker/Dockerfile-dr \
@@ -62,9 +62,9 @@ jobs:
         steps:
         - name: Checkout this repo
           uses: actions/checkout@v3
-        - name: Run Webimpetus DR Management Docker Image based on the TARGET PLATFORM Image and push to Docker Hub
+        - name: Run workerra-ci DR Management Docker Image based on the TARGET PLATFORM Image and push to Docker Hub
           run: |
-            echo "Webimpetus DR Management Docker Image builder!"
+            echo "workerra-ci DR Management Docker Image builder!"
             docker run -e MINIO_HOST=${{ secrets.DR_MINIO_HOST }} \
             -e MINIO_ACCESS_KEY=${{ secrets.DR_MINIO_ACCESS_KEY }} \
             -e MINIO_SECRET_KEY=${{ secrets.DR_MINIO_SECRET_KEY }} \

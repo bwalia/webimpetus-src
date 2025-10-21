@@ -39,7 +39,7 @@ The `deployment_permissions` table controls which users can deploy, approve, and
 #### Option 1: Using SQL File (Quick)
 ```bash
 # Run the SQL file directly
-docker exec -i webimpetus-db mariadb -uwsl_dev -pCHANGE_ME myworkstation_dev < SQLs/create_deployment_permissions.sql
+docker exec -i workerra-ci-db mariadb -uwsl_dev -pCHANGE_ME myworkstation_dev < SQLs/create_deployment_permissions.sql
 ```
 
 #### Option 2: Using CodeIgniter Migration

@@ -190,7 +190,7 @@ if (count($missingApi) > 0) {
 }
 
 echo "\n2. After creating controllers, regenerate swagger.json:\n";
-echo "   docker exec webimpetus-dev php -r \"/* regeneration script */\"\n";
+echo "   docker exec workerra-ci-dev php -r \"/* regeneration script */\"\n";
 
 echo "\n3. Add @OA annotations to new controllers for proper API documentation\n";
 

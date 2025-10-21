@@ -32,7 +32,7 @@ Regenerated swagger.json by:
 ### Command Used
 
 ```bash
-docker exec webimpetus-dev php -r "
+docker exec workerra-ci-dev php -r "
 \$ch = curl_init('https://dev001.workstation.co.uk/swagger/json');
 curl_setopt(\$ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt(\$ch, CURLOPT_SSL_VERIFYPEER, false);
@@ -110,7 +110,7 @@ The swagger.json now documents all API v2 endpoints:
 
 ```bash
 # Check file size
-ls -lh /home/bwalia/workstation-ci4/ci4/public/swagger.json
+ls -lh /home/bwalia/workerra-ci/ci4/public/swagger.json
 
 # Validate JSON
 curl -s https://dev001.workstation.co.uk/swagger.json | python3 -m json.tool > /dev/null && echo "Valid JSON"
@@ -164,7 +164,7 @@ $routes->get('api/docs', 'Swagger::ui');        // Alternative
 curl -s https://dev001.workstation.co.uk/swagger/json -o ci4/public/swagger.json
 
 # Or from container (with debugbar removal)
-docker exec webimpetus-dev php -r "/* script from above */"
+docker exec workerra-ci-dev php -r "/* script from above */"
 ```
 
 **Option 3: Via Swagger Controller**

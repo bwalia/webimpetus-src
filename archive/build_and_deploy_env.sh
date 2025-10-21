@@ -1,6 +1,6 @@
 #!/bin/bash
 
-############ This bash script deploys WebImpetus CI4 project (mariadb, php_lamp, phpmyadmin)
+############ This bash script deploys workerra-ci CI4 project (mariadb, php_lamp, phpmyadmin)
 ############ as docker container into dev,test or prod environment using docker compose files.
 
 #set -x
@@ -37,11 +37,11 @@ WORKSPACE_DIR=$(pwd)
 fi
 
 if [[ "$targetEnv" == "test" || "$targetEnv" == "prod" ]]; then
-WORKSPACE_DIR="/tmp/webimpetus/${targetEnv}"
+WORKSPACE_DIR="/tmp/workerra-ci/${targetEnv}"
 mkdir -p ${WORKSPACE_DIR}
 chmod 777 ${WORKSPACE_DIR}
 rm -rf ${WORKSPACE_DIR}/*
-cp -r ../webimpetus/* ${WORKSPACE_DIR}/
+cp -r ../workerra-ci/* ${WORKSPACE_DIR}/
 fi
 
 if [[ "$targetEnv" == "dev" ]]; then
@@ -95,7 +95,7 @@ fi
 
 
 
-# cp -r ../webimpetus/* /tmp/$workdirname_file
+# cp -r ../workerra-ci/* /tmp/$workdirname_file
 # mv /tmp/$workdirname_file/dev.env /tmp/$workdirname_file/.env
 # docker-compose -f /tmp/$workdirname_file/docker-compose.yml down
 # # docker-compose build
@@ -106,6 +106,6 @@ fi
 # sleep 30
 # #./reset_env.sh
 # sudo -S rm -Rf ci4/
-# sudo -S rm -Rf /home/bwalia/actions-runner-webimpetus/_work/webimpetus/webimpetus/data
-# sudo -S rm -Rf /home/bwalia/actions-runner-webimpetus/_work/webimpetus/webimpetus/config
-# sudo -S rm -Rf /home/bwalia/actions-runner-webimpetus/_work/webimpetus/webimpetus/
+# sudo -S rm -Rf /home/bwalia/actions-runner-workerra-ci/_work/workerra-ci/workerra-ci/data
+# sudo -S rm -Rf /home/bwalia/actions-runner-workerra-ci/_work/workerra-ci/workerra-ci/config
+# sudo -S rm -Rf /home/bwalia/actions-runner-workerra-ci/_work/workerra-ci/workerra-ci/

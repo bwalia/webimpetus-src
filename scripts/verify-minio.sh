@@ -31,16 +31,16 @@ echo ""
 
 # Check bucket existence
 if [ "$MINIO_RUNNING" = true ]; then
-    echo "3️⃣ Checking if 'webimpetus' bucket exists..."
-    BUCKET_CHECK=$(docker exec webimpetus-minio mc ls local/webimpetus 2>&1)
+    echo "3️⃣ Checking if 'workerra-ci' bucket exists..."
+    BUCKET_CHECK=$(docker exec workerra-ci-minio mc ls local/workerra-ci 2>&1)
     if echo "$BUCKET_CHECK" | grep -q "Unable to list"; then
-        echo "   ❌ Bucket 'webimpetus' not found"
+        echo "   ❌ Bucket 'workerra-ci' not found"
         echo "   Creating bucket..."
-        docker exec webimpetus-minio mc mb local/webimpetus 2>/dev/null
-        docker exec webimpetus-minio mc anonymous set download local/webimpetus 2>/dev/null
+        docker exec workerra-ci-minio mc mb local/workerra-ci 2>/dev/null
+        docker exec workerra-ci-minio mc anonymous set download local/workerra-ci 2>/dev/null
         echo "   ✅ Bucket created"
     else
-        echo "   ✅ Bucket 'webimpetus' exists"
+        echo "   ✅ Bucket 'workerra-ci' exists"
     fi
 fi
 
@@ -54,7 +54,7 @@ else
     echo "   ❌ MinIO access key not configured in .env"
 fi
 
-if grep -q "amazons3.bucket='webimpetus'" .env; then
+if grep -q "amazons3.bucket='workerra-ci'" .env; then
     echo "   ✅ MinIO bucket configured"
 else
     echo "   ❌ MinIO bucket not configured in .env"
@@ -70,23 +70,23 @@ echo ""
 
 # Check app container can reach MinIO
 echo "5️⃣ Checking network connectivity (app → MinIO)..."
-if docker exec webimpetus-dev ping -c 1 minio > /dev/null 2>&1; then
+if docker exec workerra-ci-dev ping -c 1 minio > /dev/null 2>&1; then
     echo "   ✅ Application can reach MinIO"
 else
     echo "   ❌ Application cannot reach MinIO"
-    echo "   Try: docker-compose restart webimpetus"
+    echo "   Try: docker-compose restart workerra-ci"
 fi
 
 echo ""
 
 # Check if app has loaded MinIO config
 echo "6️⃣ Checking if application loaded MinIO config..."
-ACCESS_KEY=$(docker exec webimpetus-dev php -r "echo getenv('amazons3.access_key');" 2>/dev/null)
+ACCESS_KEY=$(docker exec workerra-ci-dev php -r "echo getenv('amazons3.access_key');" 2>/dev/null)
 if [ "$ACCESS_KEY" = "minioadmin" ]; then
     echo "   ✅ Application loaded MinIO credentials"
 else
     echo "   ❌ Application hasn't loaded MinIO credentials"
-    echo "   Run: docker-compose restart webimpetus"
+    echo "   Run: docker-compose restart workerra-ci"
 fi
 
 echo ""
@@ -112,7 +112,7 @@ else
     echo ""
     echo "📝 Quick Fix:"
     echo "   1. Run: docker-compose up -d minio minio-init"
-    echo "   2. Run: docker-compose restart webimpetus"
+    echo "   2. Run: docker-compose restart workerra-ci"
     echo "   3. Run this script again: ./verify-minio.sh"
 fi
 

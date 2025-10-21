@@ -1,6 +1,6 @@
 <?php
 // Test script for jobsList endpoint
-require '/home/bwalia/workstation-ci4/ci4/app/Config/Database.php';
+require '/home/bwalia/workerra-ci/ci4/app/Config/Database.php';
 
 $db = \Config\Database::connect();
 

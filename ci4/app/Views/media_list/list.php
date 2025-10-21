@@ -70,7 +70,7 @@
                                         <a class="dropdown-item" href="/gallery/edit/<?= $row['uuid']; ?>"> <i
                                                 class="fas fa-edit"></i> Edit</a>
                                         <a class="dropdown-item" id="copyToClipBoard"
-                                            link='<?= str_replace("https://webimpetus-images.s3.eu-west-2.amazonaws.com", base_url(), $row['name']); ?>'>
+                                            link='<?= str_replace("https://workerra-ci-images.s3.eu-west-2.amazonaws.com", base_url(), $row['name']); ?>'>
                                             <i class="fas fa-copy"></i> Copy Link</a>
                                     </div>
                                 </div>

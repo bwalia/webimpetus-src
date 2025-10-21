@@ -22,7 +22,7 @@
 
 ### 3. Database Connection Issues
 **Problem:**
-- Script was using hostname `webimpetus-db` which is only resolvable inside Docker
+- Script was using hostname `workerra-ci-db` which is only resolvable inside Docker
 - Running script from host machine couldn't resolve this hostname
 
 **Solution:**
@@ -59,7 +59,7 @@ python3.11 devops/scripts/generate_migrations.py
 
 # 4. Apply generated SQL to Integration DB (after review)
 # Uncomment and run manually after reviewing the migration file:
-# docker exec webimpetus-db mariadb -uwsl_dev -pCHANGE_ME wsl-int-db < migrations/int/V[timestamp]__sync_schema.sql
+# docker exec workerra-ci-db mariadb -uwsl_dev -pCHANGE_ME wsl-int-db < migrations/int/V[timestamp]__sync_schema.sql
 ```
 
 ### 2. devops/scripts/generate_migrations.py
@@ -90,7 +90,7 @@ print(f"SQLAlchemy version: {sqlalchemy.__version__}")  # <-- Fixed this line
 
 3. **Apply migration to integration database:**
    ```bash
-   docker exec webimpetus-db mariadb -uwsl_dev -pCHANGE_ME wsl-int-db < migrations/int/V[timestamp]__sync_schema.sql
+   docker exec workerra-ci-db mariadb -uwsl_dev -pCHANGE_ME wsl-int-db < migrations/int/V[timestamp]__sync_schema.sql
    ```
 
 ## Verification
@@ -123,9 +123,9 @@ The script detected:
 - Make sure you're using Python 3.11: `python3.11 --version`
 - Reinstall packages: `python3.11 -m pip install --user sqlalchemy pymysql alembic`
 
-### If you get "Name or service not known" for webimpetus-db
-- Check the URIs are using `localhost:3309` not `webimpetus-db`
-- Verify Docker port mapping: `docker ps | grep webimpetus-db`
+### If you get "Name or service not known" for workerra-ci-db
+- Check the URIs are using `localhost:3309` not `workerra-ci-db`
+- Verify Docker port mapping: `docker ps | grep workerra-ci-db`
 
 ### If you get "Access denied" errors
 - Check database credentials in the URIs
@@ -170,7 +170,7 @@ ALTER TABLE `contact_tags` DROP COLUMN `uuid`;
 ### Verified Working:
 The migration file can now be applied directly:
 ```bash
-docker exec webimpetus-db mariadb -uroot -pCHANGE_ME_DEFINITELY wsl-int-db < migrations/int/V202510152041__sync_schema.sql
+docker exec workerra-ci-db mariadb -uroot -pCHANGE_ME_DEFINITELY wsl-int-db < migrations/int/V202510152041__sync_schema.sql
 ```
 
 This successfully:

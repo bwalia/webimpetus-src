@@ -5,7 +5,7 @@
  */
 
 // Database connection
-$host = 'webimpetus-db';
+$host = 'workerra-ci-db';
 $dbname = 'myworkstation_dev';
 $username = 'wsl_dev';
 $password = 'CHANGE_ME';

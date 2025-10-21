@@ -2,7 +2,7 @@
 
 **Date:** 2025-10-20  
 **Auditor:** Claude Code  
-**System:** WebImpetus CRM
+**System:** workerra-ci CRM
 
 ## Executive Summary
 

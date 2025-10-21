@@ -15,7 +15,7 @@ Added comprehensive S3/MinIO configuration to [.env](.env):
 #--------------------------------------------------------------------
 amazons3.access_key='CHANGE_ME'
 amazons3.secret_key='CHANGE_ME'
-amazons3.bucket='webimpetus-documents'
+amazons3.bucket='workerra-ci-documents'
 amazons3.region='us-east-1'
 amazons3.s3_directory='dev'
 amazons3.endpoint='http://minio:9000'
@@ -73,13 +73,13 @@ docker run -d \
 2. **Create Bucket**:
    - Go to http://localhost:9001
    - Login with minioadmin/minioadmin123
-   - Create bucket: `webimpetus-documents`
+   - Create bucket: `workerra-ci-documents`
 
 3. **Update .env**:
 ```bash
 amazons3.access_key='minioadmin'
 amazons3.secret_key='minioadmin123'
-amazons3.bucket='webimpetus-documents'
+amazons3.bucket='workerra-ci-documents'
 amazons3.region='us-east-1'
 amazons3.s3_directory='dev'
 amazons3.endpoint='http://minio:9000'
@@ -139,7 +139,7 @@ CREATE TABLE documents (
 {bucket}/{s3_directory}/{category}/{timestamp}/{filename}
 
 Example:
-webimpetus-documents/dev/documents/1704816000/invoice_2024.pdf
+workerra-ci-documents/dev/documents/1704816000/invoice_2024.pdf
 ```
 
 ## API Endpoints
@@ -247,7 +247,7 @@ Response:
 1. **User uploads file** via form
 2. **Controller validates** file and form data
 3. **Amazon_s3_model** uploads to S3/MinIO
-4. **S3/MinIO returns URL** (e.g., `http://minio:9000/webimpetus-documents/dev/documents/1704816000/file.pdf`)
+4. **S3/MinIO returns URL** (e.g., `http://minio:9000/workerra-ci-documents/dev/documents/1704816000/file.pdf`)
 5. **Controller stores**:
    - `file`: S3/MinIO URL
    - `metadata`: Original filename, size, MIME type
@@ -392,7 +392,7 @@ Monitor S3/MinIO bucket size:
 mc admin info minio
 
 # AWS S3
-aws s3 ls s3://webimpetus-documents --recursive --summarize
+aws s3 ls s3://workerra-ci-documents --recursive --summarize
 ```
 
 ### Upload Success Rate

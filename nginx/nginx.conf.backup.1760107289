@@ -40,12 +40,12 @@ http {
                application/rss+xml font/truetype font/opentype
                application/vnd.ms-fontobject image/svg+xml;
 
-    upstream webimpetus_backend {
-        server webimpetus-dev:80;
+    upstream workerra-ci_backend {
+        server workerra-ci-dev:80;
     }
 
     upstream adminer_backend {
-        server webimpetus-admin:8080;
+        server workerra-ci-admin:8080;
     }
 
     upstream keycloak_backend {
@@ -87,7 +87,7 @@ http {
 
         # Main application - root path
         location / {
-            proxy_pass http://webimpetus_backend;
+            proxy_pass http://workerra-ci_backend;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -172,7 +172,7 @@ http {
 
         # Main application - root path
         location / {
-            proxy_pass http://webimpetus_backend;
+            proxy_pass http://workerra-ci_backend;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;

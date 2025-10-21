@@ -1,7 +1,7 @@
 # name: "__DO_NOT_USE__ (Test) Workstation CRM Build and Deployment pipeline"
 
 # # Description: This workflow Builds and Deploys My Workstation CRM service in Docker compose
-# # environments, both in test or Prod. My Workstation is a service provided using WebImpetus open source
+# # environments, both in test or Prod. My Workstation is a service provided using workerra-ci open source
 # # software.
 # # Note: Test environment run at host https://test-my.workstation.co.uk/
 # # ... and Prod environment run at host https://my.workstation.co.uk/
@@ -58,10 +58,10 @@
 
 #     - name: Run bash script to build the docker image and deployment
 #       run: |
-#           chmod +x ./webimpetus_kubernetes.sh
-#           ./webimpetus_kubernetes.sh test test install
+#           chmod +x ./workerra-ci_kubernetes.sh
+#           ./workerra-ci_kubernetes.sh test test install
 #       shell: bash      
-#     # For Lamp stack use release_manager_lamp_stack.sh bash script instead of webimpetus_kubernetes.sh
+#     # For Lamp stack use release_manager_lamp_stack.sh bash script instead of workerra-ci_kubernetes.sh
 #     # - name: Run bash script to exec commands in the recently deployed docker containers
 #     #   run: |
 #     #       chmod +x ./reset_containers.sh

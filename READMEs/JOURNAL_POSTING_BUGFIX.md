@@ -36,8 +36,8 @@ $db->table('journal_entry_lines')->insert($line2);
    - Receipts: Try "Accounts Receivable" first, then "Sales"
 
 ## Files Modified
-- `/home/bwalia/workstation-ci4/ci4/app/Models/Payments_model.php` (lines 83-179)
-- `/home/bwalia/workstation-ci4/ci4/app/Models/Receipts_model.php` (lines 86-179)
+- `/home/bwalia/workerra-ci/ci4/app/Models/Payments_model.php` (lines 83-179)
+- `/home/bwalia/workerra-ci/ci4/app/Models/Receipts_model.php` (lines 86-179)
 
 ## Testing
 After fix:

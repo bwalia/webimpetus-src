@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "{{ include "webimpetus.fullname" . }}-test-connection"
+  name: "{{ include "workerra-ci.fullname" . }}-test-connection"
   labels:
-    {{- include "webimpetus.labels" . | nindent 4 }}
+    {{- include "workerra-ci.labels" . | nindent 4 }}
   annotations:
     "helm.sh/hook": test
 spec:
@@ -11,5 +11,5 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['{{ include "webimpetus.fullname" . }}:{{ .Values.svcAccessPort }}']
+      args: ['{{ include "workerra-ci.fullname" . }}:{{ .Values.svcAccessPort }}']
   restartPolicy: Never

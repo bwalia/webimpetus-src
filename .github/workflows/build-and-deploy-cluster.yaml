@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main ]
   workflow_run:
-    workflows: ["Webimpetus database restore"]
+    workflows: ["workerra-ci database restore"]
     types:
       - completed
     
@@ -71,7 +71,7 @@ on:
 env:
   TARGET_IMAGE_TAG: ${{ github.event.inputs.TARGET_IMAGE_TAG || 'latest' }}
   TARGET_STACK: openresty_php
-  IMAGE_NAME: webimpetus
+  IMAGE_NAME: workerra-ci
   TARGET_ENV: ${{ github.event.inputs.TARGET_ENV || 'int' }}
   TARGET_SERVICE: ${{ github.event.inputs.TARGET_SERVICE || 'workstation-uk' }}
   minReplicas: ${{ secrets.minReplicas_test }}
@@ -104,10 +104,10 @@ jobs:
           env:
             SHA: ${{ env.SHA }}
 
-        - name: Build WebImpetus Docker image based on the TARGET PLATFORM Image and push to Docker Hub
+        - name: Build workerra-ci Docker image based on the TARGET PLATFORM Image and push to Docker Hub
           if: ${{ env.DEPLOYMENT_TYPE == 'build' || env.DEPLOYMENT_TYPE == 'build-and-deploy' }}
           run: |
-            echo "WebImpetus Docker image builder!"
+            echo "workerra-ci Docker image builder!"
             echo "Build, tag, and push image to the given Docker Registry."
             echo "Building image with tag: ${{ env.TARGET_IMAGE_TAG }}"
             docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWD }}
@@ -116,10 +116,10 @@ jobs:
             docker push ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TARGET_IMAGE_TAG }}
           shell: bash
 
-        - name: Build WebImpetus Latest Docker image based on the TARGET PLATFORM Image and push to Docker Hub
+        - name: Build workerra-ci Latest Docker image based on the TARGET PLATFORM Image and push to Docker Hub
           if: ${{ env.DEPLOYMENT_TYPE == 'build' || env.DEPLOYMENT_TYPE == 'build-and-deploy' && env.TARGET_ENV == 'prod' }}
           run: |
-            echo "WebImpetus Latest Docker image builder!"
+            echo "workerra-ci Latest Docker image builder!"
             echo "Also tagging the image as latest for production environment"
             docker tag wsl-${{ env.TARGET_STACK }} ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
             docker push ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
@@ -173,8 +173,8 @@ jobs:
           if: ${{ env.DEPLOYMENT_TYPE == 'deploy' || env.DEPLOYMENT_TYPE == 'build-and-deploy' && env.TARGET_ENV == 'prod' }}
           run: |
             helm upgrade -i wsl-${{ env.TARGET_ENV }} \
-            ./devops/webimpetus-chart \
-            -f devops/webimpetus-chart/values-${{ env.TARGET_ENV }}-${{ env.TARGET_CLUSTER }}.yaml \
+            ./devops/workerra-ci-chart \
+            -f devops/workerra-ci-chart/values-${{ env.TARGET_ENV }}-${{ env.TARGET_CLUSTER }}.yaml \
             --set-string targetImage="${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}" \
             --set-string targetImageTag="latest" \
             --namespace ${{ env.TARGET_ENV }} \
@@ -183,11 +183,11 @@ jobs:
         - name: Helm Deploy - Build and Deploy DTA Workstation CRM to K3S2 Rancher
           if: ${{ env.DEPLOYMENT_TYPE == 'build-and-deploy' && env.TARGET_ENV == 'int' || env.TARGET_ENV == 'test' || env.TARGET_ENV == 'acc' }}
           run: |
-            helm lint ./devops/webimpetus-chart -f devops/webimpetus-chart/values-${{ env.TARGET_ENV }}-${{ env.TARGET_CLUSTER }}.yaml
+            helm lint ./devops/workerra-ci-chart -f devops/workerra-ci-chart/values-${{ env.TARGET_ENV }}-${{ env.TARGET_CLUSTER }}.yaml
 
             helm upgrade -i wsl-${{ env.TARGET_ENV }} \
-            ./devops/webimpetus-chart \
-            -f devops/webimpetus-chart/values-${{ env.TARGET_ENV }}-${{ env.TARGET_CLUSTER }}.yaml \
+            ./devops/workerra-ci-chart \
+            -f devops/workerra-ci-chart/values-${{ env.TARGET_ENV }}-${{ env.TARGET_CLUSTER }}.yaml \
             --set-string targetImage="${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}" \
             --set-string targetImageTag="${{ env.TARGET_IMAGE_TAG }}" \
             --namespace ${{ env.TARGET_ENV }} \
@@ -197,11 +197,11 @@ jobs:
         - name: Helm Deploy - Deploy DTA Workstation CRM to K3S2 Rancher
           if: ${{ env.DEPLOYMENT_TYPE == 'deploy' && env.TARGET_ENV == 'int' || env.TARGET_ENV == 'test' || env.TARGET_ENV == 'acc' }}
           run: |
-            helm lint ./devops/webimpetus-chart -f devops/webimpetus-chart/values-${{ env.TARGET_ENV }}-${{ env.TARGET_CLUSTER }}.yaml
+            helm lint ./devops/workerra-ci-chart -f devops/workerra-ci-chart/values-${{ env.TARGET_ENV }}-${{ env.TARGET_CLUSTER }}.yaml
 
             helm upgrade -i wsl-${{ env.TARGET_ENV }} \
-            ./devops/webimpetus-chart \
-            -f devops/webimpetus-chart/values-${{ env.TARGET_ENV }}-${{ env.TARGET_CLUSTER }}.yaml \
+            ./devops/workerra-ci-chart \
+            -f devops/workerra-ci-chart/values-${{ env.TARGET_ENV }}-${{ env.TARGET_CLUSTER }}.yaml \
             --set-string targetImage="${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}" \
             --set-string targetImageTag="latest" \
             --namespace ${{ env.TARGET_ENV }} \

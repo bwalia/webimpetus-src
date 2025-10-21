@@ -11,11 +11,11 @@
  */
 
 // Configuration
-define('DB_CONTAINER', 'webimpetus-db');
+define('DB_CONTAINER', 'workerra-ci-db');
 define('DB_NAME', 'myworkstation_dev');
 define('DB_USER', 'wsl_dev');
 define('DB_PASS', 'CHANGE_ME');
-define('BACKUP_DIR', '/home/bwalia/workstation-ci4/backups');
+define('BACKUP_DIR', '/home/bwalia/workerra-ci/backups');
 
 // Colors for CLI output
 class Colors {

@@ -36,7 +36,7 @@ This guide explains how to use the PHP scripts to anonymize your database. These
 
 ### Step 1: Backup Database
 ```bash
-cd /home/bwalia/workstation-ci4
+cd /home/bwalia/workerra-ci
 php scripts/backup_database.php
 ```
 
@@ -52,7 +52,7 @@ php scripts/verify_anonymization.php
 
 ### All-in-One Command
 ```bash
-cd /home/bwalia/workstation-ci4
+cd /home/bwalia/workerra-ci
 php scripts/backup_database.php && php scripts/anonymize_database.php && php scripts/verify_anonymization.php
 ```
 
@@ -89,7 +89,7 @@ php scripts/backup_database.php && php scripts/anonymize_database.php && php scr
 ==============================================================
 
 Backup Details:
-  • File: /home/bwalia/workstation-ci4/backups/myworkstation_dev_before_anonymization_20251012_143022.sql.gz
+  • File: /home/bwalia/workerra-ci/backups/myworkstation_dev_before_anonymization_20251012_143022.sql.gz
   • Size: 8.7MB
   • Database: myworkstation_dev
   • Timestamp: 2025-10-12 14:30:22
@@ -259,14 +259,14 @@ If something goes wrong, restore from backup:
 
 ```bash
 # Find your backup
-ls -lh /home/bwalia/workstation-ci4/backups/
+ls -lh /home/bwalia/workerra-ci/backups/
 
 # Decompress
-gunzip /home/bwalia/workstation-ci4/backups/myworkstation_dev_before_anonymization_TIMESTAMP.sql.gz
+gunzip /home/bwalia/workerra-ci/backups/myworkstation_dev_before_anonymization_TIMESTAMP.sql.gz
 
 # Restore
-docker exec -i webimpetus-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < \
-  /home/bwalia/workstation-ci4/backups/myworkstation_dev_before_anonymization_TIMESTAMP.sql
+docker exec -i workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < \
+  /home/bwalia/workerra-ci/backups/myworkstation_dev_before_anonymization_TIMESTAMP.sql
 ```
 
 ---
@@ -277,13 +277,13 @@ All scripts use the same configuration:
 
 ```php
 // Database connection
-define('DB_HOST', 'webimpetus-db');
+define('DB_HOST', 'workerra-ci-db');
 define('DB_NAME', 'myworkstation_dev');
 define('DB_USER', 'wsl_dev');
 define('DB_PASS', 'CHANGE_ME');
 
 // Backup settings
-define('BACKUP_DIR', '/home/bwalia/workstation-ci4/backups');
+define('BACKUP_DIR', '/home/bwalia/workerra-ci/backups');
 
 // Preserved data
 define('ADMIN_EMAIL', 'admin@admin.com');
@@ -301,31 +301,31 @@ define('ADMIN_EMAIL', 'admin@admin.com');
 ### Issue: Permission Denied
 
 ```bash
-chmod +x /home/bwalia/workstation-ci4/*.php
+chmod +x /home/bwalia/workerra-ci/*.php
 ```
 
 ### Issue: Database Connection Failed
 
 **Check Docker container:**
 ```bash
-docker ps | grep webimpetus-db
+docker ps | grep workerra-ci-db
 ```
 
 **Verify credentials:**
 ```bash
-docker exec webimpetus-db mariadb -u wsl_dev -p'CHANGE_ME' -e "SELECT DATABASE();"
+docker exec workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' -e "SELECT DATABASE();"
 ```
 
 ### Issue: Backup Failed
 
 **Check disk space:**
 ```bash
-df -h /home/bwalia/workstation-ci4/backups
+df -h /home/bwalia/workerra-ci/backups
 ```
 
 **Check Docker exec:**
 ```bash
-docker exec webimpetus-db mariadb-dump --version
+docker exec workerra-ci-db mariadb-dump --version
 ```
 
 ### Issue: Some Tables Not Anonymized
@@ -337,7 +337,7 @@ php scripts/verify_anonymization.php
 
 **Check for table existence:**
 ```bash
-docker exec webimpetus-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev -e "SHOW TABLES;"
+docker exec workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev -e "SHOW TABLES;"
 ```
 
 ### Issue: Script Hangs or Crashes
@@ -407,7 +407,7 @@ Employee: John Smith → Employee: Employee 1
 
 ```bash
 # Check current database
-docker exec webimpetus-db mariadb -u wsl_dev -p'CHANGE_ME' -e "SELECT DATABASE();"
+docker exec workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' -e "SELECT DATABASE();"
 
 # Should output: myworkstation_dev
 # If not, DO NOT RUN SCRIPTS!
@@ -429,7 +429,7 @@ docker exec webimpetus-db mariadb -u wsl_dev -p'CHANGE_ME' -e "SELECT DATABASE()
 crontab -e
 
 # Add this line (runs every Monday at 2 AM)
-0 2 * * 1 cd /home/bwalia/workstation-ci4 && php scripts/backup_database.php && php scripts/anonymize_database.php
+0 2 * * 1 cd /home/bwalia/workerra-ci && php scripts/backup_database.php && php scripts/anonymize_database.php
 ```
 
 ### CI/CD Integration
@@ -453,7 +453,7 @@ steps:
 #!/bin/bash
 # anonymize.sh
 
-cd /home/bwalia/workstation-ci4
+cd /home/bwalia/workerra-ci
 
 echo "Step 1: Backup..."
 php scripts/backup_database.php || exit 1
@@ -507,7 +507,7 @@ After running scripts:
 
 ```bash
 # Check a few random records
-docker exec webimpetus-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev -e "
+docker exec workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev -e "
 SELECT id, email, phone FROM users LIMIT 5;
 SELECT id, company_name, email FROM companies LIMIT 5;
 SELECT id, first_name, surname, email FROM contacts LIMIT 5;
@@ -522,12 +522,12 @@ SELECT id, custom_invoice_number, bill_to FROM sales_invoices LIMIT 3;
 ## 🆘 Support
 
 ### Files Location
-- Scripts: `/home/bwalia/workstation-ci4/`
+- Scripts: `/home/bwalia/workerra-ci/`
   - `backup_database.php`
   - `anonymize_database.php`
   - `verify_anonymization.php`
-- Backups: `/home/bwalia/workstation-ci4/backups/`
-- Documentation: `/home/bwalia/workstation-ci4/PHP_ANONYMIZATION_GUIDE.md`
+- Backups: `/home/bwalia/workerra-ci/backups/`
+- Documentation: `/home/bwalia/workerra-ci/PHP_ANONYMIZATION_GUIDE.md`
 
 ### Quick Commands
 
@@ -547,7 +547,7 @@ php scripts/backup_database.php && php scripts/anonymize_database.php && php scr
 # Restore latest backup
 LATEST=$(ls -t backups/*.sql.gz | head -1)
 gunzip $LATEST
-docker exec -i webimpetus-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < ${LATEST%.gz}
+docker exec -i workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < ${LATEST%.gz}
 ```
 
 ### Exit Codes

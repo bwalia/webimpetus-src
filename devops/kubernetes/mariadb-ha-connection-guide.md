@@ -5,7 +5,7 @@
 ### Working Components
 - ✅ MariaDB Galera Cluster: 3 nodes running successfully
 - ✅ Database: `testCi4` created and accessible
-- ✅ User: `webimpetus` with ALL privileges on testCi4
+- ✅ User: `workerra-ci` with ALL privileges on testCi4
 - ⚠️ MaxScale: Running but not properly configured by the operator
 
 ### Known Issue
@@ -17,26 +17,26 @@ MaxScale is experiencing configuration issues with the operator. The operator is
 
 **From within the Kubernetes cluster:**
 ```bash
-mysql -h webimpetus-mariadb-ha-primary.test.svc.cluster.local -P 3306 -u webimpetus -pTestPassword123 testCi4
+mysql -h workerra-ci-mariadb-ha-primary.test.svc.cluster.local -P 3306 -u workerra-ci -pTestPassword123 testCi4
 ```
 
 **Connection Details:**
-- Host: `webimpetus-mariadb-ha-primary.test.svc.cluster.local`
+- Host: `workerra-ci-mariadb-ha-primary.test.svc.cluster.local`
 - Port: `3306`
-- User: `webimpetus`
+- User: `workerra-ci`
 - Password: `TestPassword123`
 - Database: `testCi4`
 
 ### Method 2: Direct Connection to Secondary (Read-Only)
 
 ```bash
-mysql -h webimpetus-mariadb-ha-secondary.test.svc.cluster.local -P 3306 -u webimpetus -pTestPassword123 testCi4
+mysql -h workerra-ci-mariadb-ha-secondary.test.svc.cluster.local -P 3306 -u workerra-ci -pTestPassword123 testCi4
 ```
 
 ### Method 3: Connection via ClusterIP Service
 
 ```bash
-mysql -h webimpetus-mariadb-ha.test.svc.cluster.local -P 3306 -u webimpetus -pTestPassword123 testCi4
+mysql -h workerra-ci-mariadb-ha.test.svc.cluster.local -P 3306 -u workerra-ci -pTestPassword123 testCi4
 ```
 
 ## Testing Connection from a Pod
@@ -44,7 +44,7 @@ mysql -h webimpetus-mariadb-ha.test.svc.cluster.local -P 3306 -u webimpetus -pTe
 ```bash
 # Create a test pod
 kubectl run -n test mysql-client --image=mariadb:11.8 --restart=Never -- \
-  mariadb -h webimpetus-mariadb-ha-primary -u webimpetus -pTestPassword123 testCi4 -e "SELECT DATABASE(), USER();"
+  mariadb -h workerra-ci-mariadb-ha-primary -u workerra-ci -pTestPassword123 testCi4 -e "SELECT DATABASE(), USER();"
 
 # Check logs
 kubectl logs -n test mysql-client
@@ -71,7 +71,7 @@ spec:
   type: NodePort
   selector:
     app.kubernetes.io/name: mariadb
-    app.kubernetes.io/instance: webimpetus-mariadb-ha
+    app.kubernetes.io/instance: workerra-ci-mariadb-ha
   ports:
     - port: 3306
       targetPort: 3306
@@ -80,7 +80,7 @@ spec:
 
 Then connect using:
 ```bash
-mysql -h <NODE_IP> -P 30306 -u webimpetus -pTestPassword123 testCi4
+mysql -h <NODE_IP> -P 30306 -u workerra-ci -pTestPassword123 testCi4
 ```
 
 ### Option 2: LoadBalancer Service (if MetalLB is available)
@@ -95,8 +95,8 @@ spec:
   type: LoadBalancer
   selector:
     app.kubernetes.io/name: mariadb
-    app.kubernetes.io/instance: webimpetus-mariadb-ha
-    statefulset.kubernetes.io/pod-name: webimpetus-mariadb-ha-0
+    app.kubernetes.io/instance: workerra-ci-mariadb-ha
+    statefulset.kubernetes.io/pod-name: workerra-ci-mariadb-ha-0
   ports:
     - port: 3306
       targetPort: 3306
@@ -112,8 +112,8 @@ If you have an Ingress controller that supports TCP proxying (like NGINX Ingress
 ```php
 'default' => [
     'DSN'      => '',
-    'hostname' => 'webimpetus-mariadb-ha-primary.test.svc.cluster.local',
-    'username' => 'webimpetus',
+    'hostname' => 'workerra-ci-mariadb-ha-primary.test.svc.cluster.local',
+    'username' => 'workerra-ci',
     'password' => 'TestPassword123',
     'database' => 'testCi4',
     'DBDriver' => 'MySQLi',
@@ -131,9 +131,9 @@ If you have an Ingress controller that supports TCP proxying (like NGINX Ingress
 import mysql.connector
 
 connection = mysql.connector.connect(
-    host='webimpetus-mariadb-ha-primary.test.svc.cluster.local',
+    host='workerra-ci-mariadb-ha-primary.test.svc.cluster.local',
     port=3306,
-    user='webimpetus',
+    user='workerra-ci',
     password='TestPassword123',
     database='testCi4'
 )
@@ -144,9 +144,9 @@ connection = mysql.connector.connect(
 const mysql = require('mysql2');
 
 const connection = mysql.createConnection({
-  host: 'webimpetus-mariadb-ha-primary.test.svc.cluster.local',
+  host: 'workerra-ci-mariadb-ha-primary.test.svc.cluster.local',
   port: 3306,
-  user: 'webimpetus',
+  user: 'workerra-ci',
   password: 'TestPassword123',
   database: 'testCi4'
 });
@@ -154,8 +154,8 @@ const connection = mysql.createConnection({
 
 ### Java (JDBC)
 ```java
-String url = "jdbc:mysql://webimpetus-mariadb-ha-primary.test.svc.cluster.local:3306/testCi4";
-String user = "webimpetus";
+String url = "jdbc:mysql://workerra-ci-mariadb-ha-primary.test.svc.cluster.local:3306/testCi4";
+String user = "workerra-ci";
 String password = "TestPassword123";
 
 Connection conn = DriverManager.getConnection(url, user, password);
@@ -175,7 +175,7 @@ kubectl get secret -n test mariadb-user-password -o jsonpath='{.data.password}' 
 # Result: e2dHDor0]MAf5V4!
 
 # Current working password (manually set)
-# User: webimpetus
+# User: workerra-ci
 # Password: TestPassword123
 ```
 
@@ -184,8 +184,8 @@ kubectl get secret -n test mariadb-user-password -o jsonpath='{.data.password}' 
 To change the password:
 ```bash
 kubectl run -n test mysql-client --image=mariadb:11.8 --restart=Never -- \
-  mariadb -h webimpetus-mariadb-ha-primary -uroot -p'o6W=QL473YV&kdBJ' \
-  -e "ALTER USER 'webimpetus'@'%' IDENTIFIED BY 'NewSecurePassword';"
+  mariadb -h workerra-ci-mariadb-ha-primary -uroot -p'o6W=QL473YV&kdBJ' \
+  -e "ALTER USER 'workerra-ci'@'%' IDENTIFIED BY 'NewSecurePassword';"
 ```
 
 ## High Availability Features
@@ -199,7 +199,7 @@ kubectl run -n test mysql-client --image=mariadb:11.8 --restart=Never -- \
 
 ```bash
 # Delete the primary pod to test failover
-kubectl delete pod -n test webimpetus-mariadb-ha-0
+kubectl delete pod -n test workerra-ci-mariadb-ha-0
 
 # Watch the failover happen
 kubectl get mariadb -n test -w
@@ -217,10 +217,10 @@ kubectl get mariadb -n test
 kubectl get pods -n test
 
 # Check which node is primary
-kubectl get mariadb -n test webimpetus-mariadb-ha -o jsonpath='{.status.currentPrimary}'
+kubectl get mariadb -n test workerra-ci-mariadb-ha -o jsonpath='{.status.currentPrimary}'
 
 # Check Galera cluster size (should be 3)
-kubectl exec -n test webimpetus-mariadb-ha-0 -c mariadb -- \
+kubectl exec -n test workerra-ci-mariadb-ha-0 -c mariadb -- \
   mariadb -uroot -p'o6W=QL473YV&kdBJ' -e "SHOW STATUS LIKE 'wsrep_cluster_size';"
 ```
 

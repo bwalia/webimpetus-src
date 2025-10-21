@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This bash script deploys the WebImpetus CI4 docker image to the target kubernetes cluster.
+# This bash script deploys the workerra-ci CI4 docker image to the target kubernetes cluster.
 # as kubernetes deployment into dev,test or prod environment using k3s.
 
 #  set -x
@@ -45,7 +45,7 @@ fi
 echo Target Environment: $targetEnv
 
 if [ $targetEnv == "dev" ] || [ $targetEnv == "test" ] || [ $targetEnv == "int" ] || [ $targetEnv == "acc" ] || [ $targetEnv == "prod" ]; then
- ./helper_tools/helm_deploy_webimpetus.sh $targetEnv $targetEnv install $IMAGE_TAG
+ ./helper_tools/helm_deploy_workerra-ci.sh $targetEnv $targetEnv install $IMAGE_TAG
  echo "Helper tool helm deploy executed"
 else
  echo "Environment $targetEnv is not supported by this script, check the README.md and try again! (Hint: Try default value is dev)"

@@ -14,7 +14,7 @@ MinIO has been successfully integrated into your Docker Compose stack for S3-com
    ```bash
    amazons3.access_key='minioadmin'
    amazons3.secret_key='minioadmin123'
-   amazons3.bucket='webimpetus'
+   amazons3.bucket='workerra-ci'
    amazons3.endpoint='http://minio:9000'
    amazons3.use_path_style='true'
    ```
@@ -28,19 +28,19 @@ MinIO has been successfully integrated into your Docker Compose stack for S3-com
 
 ### Method 1: Use the Start Script
 ```bash
-cd /home/bwalia/workstation-ci4
+cd /home/bwalia/workerra-ci
 ./start-minio.sh
 ```
 
 ### Method 2: Manual Start
 ```bash
-cd /home/bwalia/workstation-ci4
+cd /home/bwalia/workerra-ci
 
 # Start MinIO services
 docker-compose up -d minio minio-init
 
 # Restart application to load new config
-docker-compose restart webimpetus
+docker-compose restart workerra-ci
 ```
 
 ## 🔍 Verify It's Working
@@ -55,7 +55,7 @@ Should show: `Up` status on ports 9000, 9001
 - **URL**: http://localhost:9001
 - **Username**: minioadmin
 - **Password**: minioadmin123
-- **What to check**: You should see a bucket named `webimpetus`
+- **What to check**: You should see a bucket named `workerra-ci`
 
 ### 3. Test Document Upload
 1. Go to your app: http://localhost:5500
@@ -64,22 +64,22 @@ Should show: `Up` status on ports 9000, 9001
 4. Click **"Add New"** or **"Upload Document"**
 5. Select a test file and upload
 6. Go to MinIO Console (http://localhost:9001)
-7. Navigate to: **Buckets** → **webimpetus** → **dev/**
+7. Navigate to: **Buckets** → **workerra-ci** → **dev/**
 8. You should see your uploaded file!
 
 ## 📦 Where Files Are Stored
 
 ### On Host (Your Machine)
 ```
-/home/bwalia/workstation-ci4/minio-data/
-└── webimpetus/          # bucket
+/home/bwalia/workerra-ci/minio-data/
+└── workerra-ci/          # bucket
     └── dev/             # directory from config
         └── [your files]
 ```
 
 ### MinIO URLs
-- **Internal** (app → MinIO): `http://minio:9000/webimpetus/dev/filename.pdf`
-- **External** (browser): `http://localhost:9000/webimpetus/dev/filename.pdf`
+- **Internal** (app → MinIO): `http://minio:9000/workerra-ci/dev/filename.pdf`
+- **External** (browser): `http://localhost:9000/workerra-ci/dev/filename.pdf`
 
 ## 🛠️ Useful Commands
 
@@ -97,7 +97,7 @@ docker-compose stop minio
 docker-compose restart
 
 # Access MinIO shell
-docker exec -it webimpetus-minio sh
+docker exec -it workerra-ci-minio sh
 ```
 
 ## ⚙️ Configuration Details
@@ -105,7 +105,7 @@ docker exec -it webimpetus-minio sh
 ### MinIO Credentials
 - **Access Key**: minioadmin
 - **Secret Key**: minioadmin123
-- **Bucket Name**: webimpetus
+- **Bucket Name**: workerra-ci
 - **Directory**: dev
 
 ### Ports
@@ -114,20 +114,20 @@ docker exec -it webimpetus-minio sh
 
 ### Network
 - **IP**: 172.178.0.12
-- **Network**: webimpetus-network
+- **Network**: workerra-ci-network
 
 ## 🐛 Troubleshooting
 
 ### Problem: Upload fails with connection error
 ```bash
 # Restart app to reload .env
-docker-compose restart webimpetus
+docker-compose restart workerra-ci
 
 # Check MinIO is running
 docker-compose ps minio
 
 # Check app can reach MinIO
-docker exec -it webimpetus-dev ping minio
+docker exec -it workerra-ci-dev ping minio
 ```
 
 ### Problem: Bucket not found
@@ -136,18 +136,18 @@ docker exec -it webimpetus-dev ping minio
 docker-compose logs minio-init
 
 # Manually create bucket if needed
-docker exec -it webimpetus-minio sh
+docker exec -it workerra-ci-minio sh
 mc alias set local http://localhost:9000 minioadmin minioadmin123
-mc mb local/webimpetus
-mc anonymous set download local/webimpetus
+mc mb local/workerra-ci
+mc anonymous set download local/workerra-ci
 ```
 
 ### Problem: Can't access uploaded files
 ```bash
 # Make bucket publicly readable
-docker exec -it webimpetus-minio sh
+docker exec -it workerra-ci-minio sh
 mc alias set local http://localhost:9000 minioadmin minioadmin123
-mc anonymous set download local/webimpetus
+mc anonymous set download local/workerra-ci
 ```
 
 ## 📚 Full Documentation

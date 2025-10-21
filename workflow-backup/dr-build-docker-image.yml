@@ -1,4 +1,4 @@
-name: Webimpetus Disaster Recovery Management Docker Image
+name: workerra-ci Disaster Recovery Management Docker Image
 
 on:
   push:
@@ -29,7 +29,7 @@ env:
   IMAGE_TAG: "test"
   TARGET_IMAGE_TAG: "test"
   TARGET_STACK: openresty_php
-  IMAGE_NAME: webimpetus-dr
+  IMAGE_NAME: workerra-ci-dr
   TARGET_ENV: test
   IMAGE_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
   DR_DB_HOST: ${{ secrets.DR_DB_HOST }}
@@ -50,9 +50,9 @@ jobs:
     - name: Checkout this repo
       uses: actions/checkout@v3
 
-    - name: Build Webimpetus Disaster Recovery Management Docker Image based on the TARGET PLATFORM Image and push to Docker Hub
+    - name: Build workerra-ci Disaster Recovery Management Docker Image based on the TARGET PLATFORM Image and push to Docker Hub
       run: |
-        echo "Webimpetus Disaster Recovery Management Docker Image builder!"
+        echo "workerra-ci Disaster Recovery Management Docker Image builder!"
         echo "Build, tag, and push image to the given Docker Registry."
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWD }}
         docker build -f $(pwd)/devops/docker/Dockerfile-dr \

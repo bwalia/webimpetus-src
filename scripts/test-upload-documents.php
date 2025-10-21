@@ -141,10 +141,10 @@ echo "✅ Tests completed!\n\n";
 echo "Next Steps:\n";
 echo "  1. Verify files in MinIO Console: http://localhost:9001\n";
 echo "  2. Login: minioadmin / minioadmin123\n";
-echo "  3. Navigate to: Buckets → webimpetus → dev/documents/\n";
+echo "  3. Navigate to: Buckets → workerra-ci → dev/documents/\n";
 echo "  4. Check database records:\n";
 echo "     SELECT uuid, name, file, file_url FROM documents ORDER BY created_at DESC LIMIT 5;\n\n";
 
 echo "MinIO Storage Path:\n";
-echo "  - Host: /home/bwalia/workstation-ci4/minio-data/webimpetus/dev/documents/\n";
-echo "  - MinIO: http://minio:9000/webimpetus/dev/documents/\n\n";
+echo "  - Host: /home/bwalia/workerra-ci/minio-data/workerra-ci/dev/documents/\n";
+echo "  - MinIO: http://minio:9000/workerra-ci/dev/documents/\n\n";

@@ -1,6 +1,6 @@
 # Modern API Service
 
-A FastAPI application that provides the next-generation Webimpetus multi-tenant API.
+A FastAPI application that provides the next-generation workerra-ci multi-tenant API.
 
 ## Prerequisites
 

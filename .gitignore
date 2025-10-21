@@ -4,10 +4,10 @@ ci4/public/assets/img/.DS_Store
 cypress/cypress/e2e/.DS_Store
 .DS_Store
 .env_cypress
-webimpetusci4test_db copy.sql
-webimpetusci4test_db.sql
+workerra-cici4test_db copy.sql
+workerra-cici4test_db.sql
 myworkstation_int_db.sql
-webimpetusci4test_db-mbp.sql
+workerra-cici4test_db-mbp.sql
 myworkstation_test_db.sql
 
 # Large files that should not be in git

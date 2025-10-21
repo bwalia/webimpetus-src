@@ -40,7 +40,7 @@
                                     <a class="dropdown-item" onclick="return confirm('Are you sure want to delete?');" href=<?= "/".$tableName."/delete/".$row['id'];?>>
                                     <i class="ti-trash"></i> Delete</a>
                                     <a class="dropdown-item" href="<?= "/".$tableName."/edit/".$row['id'];?>"> <i class="fas fa-edit"></i> Edit</a>
-                                    <a class="dropdown-item" id="copyToClipBoard" link='<?=!empty($row['file'])?str_replace("https://webimpetus-images.s3.eu-west-2.amazonaws.com", $front_domain, $row['file']):'';?>'> <i class="fas fa-copy"></i> Copy Link</a>
+                                    <a class="dropdown-item" id="copyToClipBoard" link='<?=!empty($row['file'])?str_replace("https://workerra-ci-images.s3.eu-west-2.amazonaws.com", $front_domain, $row['file']):'';?>'> <i class="fas fa-copy"></i> Copy Link</a>
                                 </div>
                             </div>
                         </div>

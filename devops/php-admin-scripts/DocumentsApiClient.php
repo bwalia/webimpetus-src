@@ -2,7 +2,7 @@
 /**
  * Documents API Client
  *
- * A reusable client for uploading documents to the WebImpetus API
+ * A reusable client for uploading documents to the workerra-ci API
  * Files are stored in MinIO and metadata in MySQL
  *
  * Usage Example:

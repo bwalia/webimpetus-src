@@ -49,17 +49,17 @@
 #        SHA: ${{ env.SHA }}
      
 #       # Build and push docker image to customer AWS ECR
-#     - name: Build, tag, and push WebImpetus ci4 image to Amazon ECR
+#     - name: Build, tag, and push workerra-ci ci4 image to Amazon ECR
 #       run: |
-#         docker build -f devops/docker/Dockerfile -t 123154119074.dkr.ecr.eu-west-2.amazonaws.com/tenthmatrix/webimpetus-ci4:${{ env.SHA }} .
-#         docker push 123154119074.dkr.ecr.eu-west-2.amazonaws.com/tenthmatrix/webimpetus-ci4:${{ env.SHA }}
+#         docker build -f devops/docker/Dockerfile -t 123154119074.dkr.ecr.eu-west-2.amazonaws.com/tenthmatrix/workerra-ci-ci4:${{ env.SHA }} .
+#         docker push 123154119074.dkr.ecr.eu-west-2.amazonaws.com/tenthmatrix/workerra-ci-ci4:${{ env.SHA }}
 
 #     - name: helm deploy
 #       uses: koslib/helm-eks-action@master
 #       env:
 #         KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
 #       with:
-#         command: helm upgrade -i ci4baseimagetest ./devops/webimpetus --set=image.tag=${{ env.SHA }}
+#         command: helm upgrade -i ci4baseimagetest ./devops/workerra-ci --set=image.tag=${{ env.SHA }}
 
 #     - name: Slack Notification
 #       uses: rtCamp/action-slack-notify@v2

@@ -1,7 +1,7 @@
 apiVersion: mariadb.mariadb.com/v1alpha1
 kind: MariaDB
 metadata:
-  name: webimpetus-mariadb
+  name: workerra-ci-mariadb
   namespace: test
 spec:
   replicas: 1

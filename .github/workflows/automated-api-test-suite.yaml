@@ -1,4 +1,4 @@
-name: Webimpetus API Test Suite
+name: workerra-ci API Test Suite
 on:
   schedule:
     - cron: '0 0 * * *'

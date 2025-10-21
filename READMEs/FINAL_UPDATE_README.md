@@ -135,12 +135,12 @@ sudo yum install php-mysqlnd
 
 1. **Check if database container is running:**
    ```bash
-   docker ps | grep webimpetus-db
+   docker ps | grep workerra-ci-db
    ```
 
 2. **Check if port 3309 is exposed:**
    ```bash
-   docker port webimpetus-db
+   docker port workerra-ci-db
    ```
    Should show: `3306/tcp -> 0.0.0.0:3309`
 

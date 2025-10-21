@@ -23,12 +23,12 @@ fi
 # Check bucket creation
 echo ""
 echo "2️⃣ Checking bucket creation..."
-docker-compose logs minio-init | grep -q "successfully" && echo "✅ Bucket 'webimpetus' created successfully" || echo "⚠️  Check bucket creation logs"
+docker-compose logs minio-init | grep -q "successfully" && echo "✅ Bucket 'workerra-ci' created successfully" || echo "⚠️  Check bucket creation logs"
 
 # Restart application
 echo ""
 echo "3️⃣ Restarting application to load MinIO configuration..."
-docker-compose restart webimpetus
+docker-compose restart workerra-ci
 
 echo ""
 echo "✅ MinIO Setup Complete!"

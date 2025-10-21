@@ -48,7 +48,7 @@ If you prefer manual installation:
 ```bash
 # From your Mac, copy the certificates to this Linux system
 # Option A: Using scp
-scp /Users/balinderwalia/Documents/Work/aws_keys/workstation-cert.* user@thisserver:/home/bwalia/workstation-ci4/nginx/ssl/
+scp /Users/balinderwalia/Documents/Work/aws_keys/workstation-cert.* user@thisserver:/home/bwalia/workerra-ci/nginx/ssl/
 
 # Option B: Copy content manually (see Step 2)
 ```
@@ -56,7 +56,7 @@ scp /Users/balinderwalia/Documents/Work/aws_keys/workstation-cert.* user@thisser
 #### Step 2: Install Certificates Manually
 
 ```bash
-cd /home/bwalia/workstation-ci4
+cd /home/bwalia/workerra-ci
 
 # Create destination directory if needed
 mkdir -p nginx/ssl
@@ -208,7 +208,7 @@ openssl rsa -noout -modulus -in nginx/ssl/dev000.workstation.co.uk.key | openssl
 
 **Check logs**:
 ```bash
-docker logs webimpetus-nginx
+docker logs workerra-ci-nginx
 ```
 
 **Common causes**:
@@ -287,7 +287,7 @@ For actual production (not dev):
 
 If you encounter issues:
 
-1. Check logs: `docker logs webimpetus-nginx`
+1. Check logs: `docker logs workerra-ci-nginx`
 2. Verify certificate: Run verification commands above
 3. Test connectivity: `curl -k https://dev000.workstation.co.uk:8443/health`
 
@@ -318,7 +318,7 @@ curl -k https://dev000.workstation.co.uk:8443/health
 openssl x509 -in nginx/ssl/dev000.workstation.co.uk.crt -noout -text
 
 # Check nginx logs
-docker logs webimpetus-nginx
+docker logs workerra-ci-nginx
 
 # Verify certificate in use
 echo | openssl s_client -connect dev000.workstation.co.uk:8443 2>/dev/null | openssl x509 -noout -subject

@@ -114,7 +114,7 @@ Extra: Using index condition
 
 ### Development Environment
 ```bash
-docker exec webimpetus-dev bash -c "cd /var/www/html && php spark migrate"
+docker exec workerra-ci-dev bash -c "cd /var/www/html && php spark migrate"
 ```
 
 ### Production/DTAP Environments

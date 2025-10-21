@@ -46,7 +46,7 @@ WORKDIR /var/www/html
 #    Previous: ci4.2.10 on 12 Dec 2022 BW/HS Testing 4.2.10 but issues with cors and s3 extension
 #    COPY ./config/php/php.ini /usr/local/etc/php/php.ini
 
-COPY ./config/vhosts/webimpetus.conf /etc/nginx/sites-enabled/webimpetus.conf
+COPY ./config/vhosts/workerra-ci.conf /etc/nginx/sites-enabled/workerra-ci.conf
 COPY ./config/vhosts/nginx.conf /usr/local/openresty/nginx/conf/nginx.conf
 
      #  RUN sed -i "s|listen = 127.0.0.1:9000|listen = 127.0.0.1:9000\nlisten = /var/run/php-fpm/www.sock|g" /usr/local/etc/php-fpm.d/www.conf

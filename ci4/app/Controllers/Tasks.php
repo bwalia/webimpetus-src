@@ -207,9 +207,9 @@ class Tasks extends CommonController
             $from_email = "info@odincm.com";
             $from_name = "Web Impetus";
             $message = "<p><b>Hi " . $user->name . ",</b></p>";
-            $message .= "<p>A task has been assigned to you on Webimpetus. Please login to system for more details.</p>";
-            $message .= "<p><b>Thanks, Webimpetus Team</b></p>";
-            $subject = "Webimpetus Task Update";
+            $message .= "<p>A task has been assigned to you on workerra-ci. Please login to system for more details.</p>";
+            $message .= "<p><b>Thanks, workerra-ci Team</b></p>";
+            $subject = "workerra-ci Task Update";
             $is_send = $this->Email_model->phpmailer_send_mail($user->email, $from_name, $from_email, $message, $subject);
         }
 

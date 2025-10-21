@@ -6,7 +6,7 @@ All PHP scripts have been updated to run directly from the **host machine** inst
 
 ### Previous Setup (❌ Didn't Work)
 ```bash
-docker exec webimpetus-dev php /var/www/html/SQLs/script.php  # Path didn't exist
+docker exec workerra-ci-dev php /var/www/html/SQLs/script.php  # Path didn't exist
 ```
 
 ### New Setup (✅ Works)
@@ -165,12 +165,12 @@ brew reinstall php
 
 1. Check if database container is running:
    ```bash
-   docker ps | grep webimpetus-db
+   docker ps | grep workerra-ci-db
    ```
 
 2. Check if port 3309 is exposed:
    ```bash
-   docker port webimpetus-db
+   docker port workerra-ci-db
    ```
 
    Should show: `3306/tcp -> 0.0.0.0:3309`

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-############ This bash script deploys WebImpetus CI4 project (mariadb, php_lamp, phpmyadmin)
+############ This bash script deploys workerra-ci CI4 project (mariadb, php_lamp, phpmyadmin)
 ############ as kubernetes deployment into dev,test or prod environment using k3s.
 
 set -x

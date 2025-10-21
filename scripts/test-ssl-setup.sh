@@ -105,7 +105,7 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo ""
 
 # Check if nginx container is running
-if docker ps | grep -q "webimpetus-nginx"; then
+if docker ps | grep -q "workerra-ci-nginx"; then
     echo -e "${GREEN}✓ PASS${NC} - Nginx container is running"
     ((PASSED++))
 else
@@ -201,7 +201,7 @@ else
     echo -e "${RED}✗ Some tests failed!${NC}"
     echo ""
     echo "Please review the failures above and:"
-    echo "  1. Check docker logs: docker logs webimpetus-nginx"
+    echo "  1. Check docker logs: docker logs workerra-ci-nginx"
     echo "  2. Verify services are running: docker-compose ps"
     echo "  3. Review configuration files in nginx/"
     exit 1

@@ -37,7 +37,7 @@ if [ -f "$ENV_FILE_ACTIVE" ];then
     echo "$ENV_FILE_ACTIVE does exist."
 else
     echo "$ENV_FILE_ACTIVE does not exist."
-    echo "Please create a $ENV_FILE_ACTIVE file to run Webimpetus Dev env in Docker."
+    echo "Please create a $ENV_FILE_ACTIVE file to run workerra-ci Dev env in Docker."
     exit 1
 fi
 
@@ -51,8 +51,8 @@ fi
 docker-compose up -d --build
 docker-compose ps
 
-DOCKER_CONTAINER_NAME="webimpetus-dev"
-DOCKER_QA_CONTAINER_NAME="webimpetus-cypress"
+DOCKER_CONTAINER_NAME="workerra-ci-dev"
+DOCKER_QA_CONTAINER_NAME="workerra-ci-cypress"
 
 docker cp bootstrap-openresty-dev.sh ${DOCKER_CONTAINER_NAME}:/usr/local/bin/bootstrap-openresty.sh
 docker exec -it ${DOCKER_CONTAINER_NAME} chmod +x /usr/local/bin/bootstrap-openresty.sh
@@ -70,9 +70,9 @@ rm Dockerfile.keycloak
             
                 if [ -f "$FILE" ];then
                     echo "$FILE exists."
-                    awk '/----WEBIMPETUS-SYSTEM-INFO----/{exit} 1' $FILE > $SRC_ENV_FILE
+                    awk '/----workerra-ci-SYSTEM-INFO----/{exit} 1' $FILE > $SRC_ENV_FILE
 
-                    echo "#----WEBIMPETUS-SYSTEM-INFO----" >> $SRC_ENV_FILE
+                    echo "#----workerra-ci-SYSTEM-INFO----" >> $SRC_ENV_FILE
 
                     echo "==========================="
                     echo "Workstation Bootstrap Script Copied"
@@ -81,7 +81,7 @@ rm Dockerfile.keycloak
                 echo "Starting Workstation"
                 echo "==========================="
             echo "==========================="
-            #   sed '/"#----WEBIMPETUS-SYSTEM-INFO----"/q' $FILE
+            #   sed '/"#----workerra-ci-SYSTEM-INFO----"/q' $FILE
             echo "Workstation Src copy to /var/www/html Complete"
          fi
 

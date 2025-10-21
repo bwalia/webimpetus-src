@@ -2,8 +2,8 @@ version: '3.3'
 
 services:
   #1 - Run the mariadb database
-  webimpetus-db:
-    container_name: "webimpetus-db"
+  workerra-ci-db:
+    container_name: "workerra-ci-db"
     image: mariadb:11.2.2
     restart: always
     environment:
@@ -16,41 +16,41 @@ services:
     expose:
       - '3309'
     volumes:
-      - webimpetus-db-vol:/var/lib/mysql
+      - workerra-ci-db-vol:/var/lib/mysql
       # - ./wi-dev.sql:/docker-entrypoint-initdb.d/myworkstation_dev_db.sql
     networks: 
-    - webimpetus-network
+    - workerra-ci-network
 
   #2 - Run the mariadb database adminer access
   adminer:
-    container_name: "webimpetus-admin"
+    container_name: "workerra-ci-admin"
     image: adminer:latest
     environment:
-      ADMINER_DEFAULT_SERVER: webimpetus-db
+      ADMINER_DEFAULT_SERVER: workerra-ci-db
     restart: always
     ports:
       - 5502:8080
     networks:
-      - webimpetus-network
+      - workerra-ci-network
 
-  #3 - Run the webimpetus app
-  webimpetus:
-      container_name: "webimpetus-dev"
+  #3 - Run the workerra-ci app
+  workerra-ci:
+      container_name: "workerra-ci-dev"
       build:
         context: .
       restart: always
       links:
-          - "webimpetus-db"
+          - "workerra-ci-db"
       volumes:
       - ./ci4:/var/www/html
       - ./devops:/var/www/html/devops
       - .env:/var/www/html/.env
       networks:
-        webimpetus-network:
+        workerra-ci-network:
           ipv4_address: 172.178.0.8
 
       depends_on: 
-      - webimpetus-db # This service depends on mysql. Start that first.
+      - workerra-ci-db # This service depends on mysql. Start that first.
       ports:
         - "5500:80"
       environment:
@@ -63,7 +63,7 @@ services:
       context: ./modern-api
     restart: always
     depends_on:
-      - webimpetus-db
+      - workerra-ci-db
     environment:
       DATABASE_URL: ${MODERN_API_DATABASE_URL:-sqlite:///./modern_api.db}
     volumes:
@@ -74,7 +74,7 @@ services:
     ports:
       - "8989:8000"
     networks:
-      - webimpetus-network
+      - workerra-ci-network
 
 # Add Keycloak service
   keycloak:
@@ -91,17 +91,17 @@ services:
     ports:
       - "3010:8080"
     depends_on:
-      - webimpetus-db
+      - workerra-ci-db
     volumes:
       - ./devops/keycloak_data:/opt/keycloak/data
     networks:
-      webimpetus-network:
+      workerra-ci-network:
           ipv4_address: 172.178.0.11
   #4 - MinIO Object Storage (S3-compatible)
   # Note: Using external MinIO instance at 172.178.0.1:9000
   # Uncomment if you want a dedicated MinIO instance for this stack
   # minio:
-  #   container_name: "webimpetus-minio"
+  #   container_name: "workerra-ci-minio"
   #   image: minio/minio:latest
   #   restart: always
   #   command: server /data --console-address ":9001"
@@ -114,7 +114,7 @@ services:
   #   volumes:
   #     - ./minio-data:/data
   #   networks:
-  #     webimpetus-network:
+  #     workerra-ci-network:
   #       ipv4_address: 172.178.0.12
   #   healthcheck:
   #     test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
@@ -125,7 +125,7 @@ services:
   #5 - MinIO Client (for creating buckets on startup)
   # Note: Disabled since using external MinIO
   # minio-init:
-  #   container_name: "webimpetus-minio-init"
+  #   container_name: "workerra-ci-minio-init"
   #   image: minio/mc:latest
   #   depends_on:
   #     - minio
@@ -133,16 +133,16 @@ services:
   #     /bin/sh -c "
   #     sleep 5;
   #     mc alias set myminio http://minio:9000 minioadmin minioadmin123;
-  #     mc mb myminio/webimpetus --ignore-existing;
-  #     mc anonymous set download myminio/webimpetus;
-  #     echo 'MinIO bucket webimpetus created successfully';
+  #     mc mb myminio/workerra-ci --ignore-existing;
+  #     mc anonymous set download myminio/workerra-ci;
+  #     echo 'MinIO bucket workerra-ci created successfully';
   #     "
   #   networks:
-  #     - webimpetus-network
+  #     - workerra-ci-network
 
   #6 - Nginx Reverse Proxy (Unified Gateway)
   nginx:
-    container_name: "webimpetus-nginx"
+    container_name: "workerra-ci-nginx"
     image: nginx:alpine
     restart: always
     ports:
@@ -153,11 +153,11 @@ services:
       - ./nginx/ssl:/etc/nginx/ssl:ro
       - ./nginx/logs:/var/log/nginx
     depends_on:
-      - webimpetus
+      - workerra-ci
       - adminer
       - keycloak
     networks:
-      webimpetus-network:
+      workerra-ci-network:
         ipv4_address: 172.178.0.10
 
   #7 - Run the cypress e2e smoke tests
@@ -166,18 +166,18 @@ services:
   #   build:
   #     context: .
   #     dockerfile: ./cypress/Dockerfile-cypress
-  #   container_name: webimpetus-cypress
+  #   container_name: workerra-ci-cypress
   #   depends_on:
-  #    - webimpetus
+  #    - workerra-ci
   #   links:
-  #       - "webimpetus"
+  #       - "workerra-ci"
   #   # note: inside e2e container, the network allows accessing
   #   # "webapp" host under name "webapp"
   #   # so "curl http://webapp" would return whatever the webserver
   #   # in the "webapp" container is cooking
   #   # see https://docs.docker.com/compose/networking/
   #   environment:
-  #     - CYPRESS_baseUrl=http://webimpetus:80
+  #     - CYPRESS_baseUrl=http://workerra-ci:80
   #   command: pwd && ls -la && npm install && npx cypress run && sleep 60
   #   # npx cypress run
   #   # mount the host directory e2e/cypress and the file e2e/cypress.config.js as
@@ -189,17 +189,17 @@ services:
   #   #     machine immediately takes effect within the e2e container (no docker
   #   #     rebuild required).
   #   networks:
-  #     - webimpetus-network
+  #     - workerra-ci-network
   #   volumes:
   #     - ./cypress:/cypress
 
 
 networks:
-  webimpetus-network:
+  workerra-ci-network:
     ipam:
       config:
         - subnet: 172.178.0.0/16
                         # Names our volume
 volumes:
-  webimpetus-db-vol:
-  workstation-ci4-vol:
+  workerra-ci-db-vol:
+  workerra-ci-vol:

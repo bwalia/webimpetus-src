@@ -15,4 +15,4 @@ python3.11 devops/scripts/generate_migrations.py
 
 # 4. Apply generated SQL to Integration DB (after review)
 # Uncomment and run manually after reviewing the migration file:
-# docker exec webimpetus-db mariadb -uroot -pCHANGE_ME_DEFINITELY wsl-int-db < migrations/int/V202510152012__sync_schema.sql
+# docker exec workerra-ci-db mariadb -uroot -pCHANGE_ME_DEFINITELY wsl-int-db < migrations/int/V202510152012__sync_schema.sql

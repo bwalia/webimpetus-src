@@ -38,7 +38,7 @@ Fatal error: Cannot redeclare App\Controllers\Documents::download()
 **Issue**:
 ```
 Error: XMinioInvalidObjectName - Object name contains unsupported characters
-http://172.178.0.1:9000/webimpetus/http%3A//172.178.0.1%3A9000/webimpetus/...
+http://172.178.0.1:9000/workerra-ci/http%3A//172.178.0.1%3A9000/workerra-ci/...
 ```
 
 **Root Causes**:
@@ -73,7 +73,7 @@ if (filter_var($filePath, FILTER_VALIDATE_URL)) {
 
 **URL Mapping**:
 ```
-http://localhost/              → Webimpetus (main app)
+http://localhost/              → workerra-ci (main app)
 http://localhost/adminer/      → Database admin
 http://localhost/auth/         → Keycloak SSO
 http://localhost/minio/        → MinIO API
@@ -143,10 +143,10 @@ http://localhost/health        → Health check
 
 ### 1. Deploy Nginx Gateway (Optional)
 ```bash
-cd /home/bwalia/workstation-ci4
+cd /home/bwalia/workerra-ci
 docker-compose down
 docker-compose up -d
-docker logs -f webimpetus-nginx
+docker logs -f workerra-ci-nginx
 ```
 
 ### 2. Update Application Base URL (if using nginx)
@@ -219,15 +219,15 @@ See [NGINX_UNIFIED_GATEWAY.md](NGINX_UNIFIED_GATEWAY.md#sslhttps-setup-future) f
 
 **Current Running Containers**:
 ```
-webimpetus-dev       (172.178.0.8)  - Main app
-webimpetus-db        (internal)     - MariaDB
-webimpetus-admin     (internal)     - Adminer
+workerra-ci-dev       (172.178.0.8)  - Main app
+workerra-ci-db        (internal)     - MariaDB
+workerra-ci-admin     (internal)     - Adminer
 keycloak             (172.178.0.11) - SSO
-webimpetus-minio     (172.178.0.12) - MinIO
-webimpetus-nginx     (172.178.0.10) - Gateway (pending)
+workerra-ci-minio     (172.178.0.12) - MinIO
+workerra-ci-nginx     (172.178.0.10) - Gateway (pending)
 ```
 
-**Network**: webimpetus-network (172.178.0.0/16)
+**Network**: workerra-ci-network (172.178.0.0/16)
 
 ---
 
@@ -238,7 +238,7 @@ webimpetus-nginx     (172.178.0.10) - Gateway (pending)
 ✅ **Comprehensive documentation created**
 ✅ **Ready for deployment**
 
-The Webimpetus stack now has:
+The workerra-ci stack now has:
 - Working document preview/download from MinIO
 - Unified nginx gateway (ready to deploy)
 - Clean, well-documented codebase

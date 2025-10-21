@@ -2,15 +2,15 @@
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "webimpetus.fullname" . }}
+  name: {{ include "workerra-ci.fullname" . }}
   # namespace: {{ .Values.targetNS }}
   labels:
-    {{- include "webimpetus.labels" . | nindent 4 }}
+    {{- include "workerra-ci.labels" . | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ include "webimpetus.fullname" . }}
+    name: {{ include "workerra-ci.fullname" . }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   metrics:

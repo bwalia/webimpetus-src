@@ -20,7 +20,7 @@ Pure SQL script that grants all permissions without requiring PHP.
 **Usage:**
 ```bash
 # Via Docker (recommended)
-docker exec webimpetus-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < SQLs/grant_all_permissions_to_admin_id19.sql
+docker exec workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < SQLs/grant_all_permissions_to_admin_id19.sql
 
 # Or directly if you have MySQL client
 mysql -h 127.0.0.1 -P 3309 -u wsl_dev -p'CHANGE_ME' myworkstation_dev < SQLs/grant_all_permissions_to_admin_id19.sql
@@ -43,7 +43,7 @@ PHP script with enhanced output and error handling.
 php SQLs/grant_all_permissions_to_admin_id19.php
 
 # Or via Docker
-docker exec webimpetus-dev php /var/www/html/SQLs/grant_all_permissions_to_admin_id19.php
+docker exec workerra-ci-dev php /var/www/html/SQLs/grant_all_permissions_to_admin_id19.php
 ```
 
 ## What These Scripts Do
@@ -254,7 +254,7 @@ SELECT id, email, name FROM users WHERE id = 19;
 ```bash
 php spark migrate
 # Or use the SQL file
-docker exec webimpetus-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < SQLs/add_granular_permissions.sql
+docker exec workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < SQLs/add_granular_permissions.sql
 ```
 
 ### Issue: User still can't access some menus

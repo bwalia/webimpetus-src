@@ -8,11 +8,11 @@
 # =====================================================
 
 # Configuration
-DB_CONTAINER="webimpetus-db"
+DB_CONTAINER="workerra-ci-db"
 DB_NAME="myworkstation_dev"
 DB_USER="wsl_dev"
 DB_PASS="CHANGE_ME"
-BACKUP_DIR="/home/bwalia/workstation-ci4/backups"
+BACKUP_DIR="/home/bwalia/workerra-ci/backups"
 TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
 BACKUP_FILE="$BACKUP_DIR/${DB_NAME}_before_anonymization_${TIMESTAMP}.sql"
 
@@ -80,12 +80,12 @@ if [ $? -eq 0 ]; then
     echo -e "${GREEN}=====================================${NC}"
     echo ""
     echo -e "${YELLOW}Next Steps:${NC}"
-    echo "  1. Run: docker exec webimpetus-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < /src/SQLs/anonymize_dev_data.sql"
+    echo "  1. Run: docker exec workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < /src/SQLs/anonymize_dev_data.sql"
     echo "  2. Verify anonymization"
     echo ""
     echo -e "${YELLOW}To restore from backup:${NC}"
     echo "  gunzip ${BACKUP_FILE}.gz"
-    echo "  docker exec -i webimpetus-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < $BACKUP_FILE"
+    echo "  docker exec -i workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < $BACKUP_FILE"
     echo ""
 
     exit 0

@@ -82,7 +82,7 @@ This script dynamically fetches all menu IDs and assigns them to the admin user.
 
 **Usage:**
 ```bash
-docker exec webimpetus-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < SQLs/grant_all_menu_permissions_to_admin.sql
+docker exec workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < SQLs/grant_all_menu_permissions_to_admin.sql
 ```
 
 ### 2. PHP Script
@@ -96,7 +96,7 @@ This script provides a more detailed output with verification steps.
 php SQLs/grant_all_menu_permissions_to_admin.php
 
 # Or via Docker
-docker exec webimpetus-dev php /var/www/html/SQLs/grant_all_menu_permissions_to_admin.php
+docker exec workerra-ci-dev php /var/www/html/SQLs/grant_all_menu_permissions_to_admin.php
 ```
 
 ## Verification

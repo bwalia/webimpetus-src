@@ -28,7 +28,7 @@ public $systemDirectory = __DIR__ . '/../../vendor/codeigniter4/framework/system
 Run the following command to ensure all dependencies are up to date:
 
 ```bash
-cd /Users/balinderwalia/Documents/Work/workstation-ci4/ci4
+cd /Users/balinderwalia/Documents/Work/workerra-ci/ci4
 composer update
 ```
 
@@ -37,7 +37,7 @@ composer update
 After running composer update, check the CodeIgniter version:
 
 ```bash
-cd /Users/balinderwalia/Documents/Work/workstation-ci4/ci4
+cd /Users/balinderwalia/Documents/Work/workerra-ci/ci4
 grep "CI_VERSION" vendor/codeigniter4/framework/system/CodeIgniter.php
 ```
 
@@ -61,7 +61,7 @@ The `ci4/system` directory in your repository is outdated and should not be used
 **Recommendation:** Consider removing or renaming the old `ci4/system` directory:
 
 ```bash
-cd /Users/balinderwalia/Documents/Work/workstation-ci4/ci4
+cd /Users/balinderwalia/Documents/Work/workerra-ci/ci4
 mv system system.old.backup
 ```
 

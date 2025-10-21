@@ -27,4 +27,4 @@ phases:
     commands:
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
       - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$CODEBUILD_RESOLVED_SOURCE_VERSION
-      - "helm upgrade -i webimpetus-release ./devops/webimpetus  -f ./devops/webimpetus/staging-values.yaml --set image.tag=$CODEBUILD_RESOLVED_SOURCE_VERSION"
+      - "helm upgrade -i workerra-ci-release ./devops/workerra-ci  -f ./devops/workerra-ci/staging-values.yaml --set image.tag=$CODEBUILD_RESOLVED_SOURCE_VERSION"

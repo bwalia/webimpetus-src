@@ -2,5 +2,5 @@
 error_reporting(E_ALL); 
 ini_set('display_errors', 1);
 //phpinfo();
-echo "WebImpetus is alive!";
+echo "workerra-ci is alive!";
 ?>

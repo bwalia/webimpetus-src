@@ -199,4 +199,4 @@ For issues or questions:
 
 ## License
 
-This feature is part of the WebImpetus business management system.
+This feature is part of the workerra-ci business management system.

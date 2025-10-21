@@ -92,10 +92,10 @@ try {
 
     echo "Troubleshooting:\n";
     echo "1. Check if database container is running:\n";
-    echo "   docker ps | grep webimpetus-db\n\n";
+    echo "   docker ps | grep workerra-ci-db\n\n";
 
     echo "2. Check if port 3309 is exposed:\n";
-    echo "   docker port webimpetus-db\n\n";
+    echo "   docker port workerra-ci-db\n\n";
 
     echo "3. Test connection manually:\n";
     echo "   mysql -h 127.0.0.1 -P 3309 -u wsl_dev -p'CHANGE_ME' myworkstation_dev\n\n";

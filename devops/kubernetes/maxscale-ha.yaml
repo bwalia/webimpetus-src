@@ -1,12 +1,12 @@
 apiVersion: k8s.mariadb.com/v1alpha1
 kind: MaxScale
 metadata:
-  name: webimpetus-maxscale
+  name: workerra-ci-maxscale
   namespace: test
 spec:
   # Reference to the MariaDB cluster
   mariaDbRef:
-    name: webimpetus-mariadb-ha
+    name: workerra-ci-mariadb-ha
 
   # Number of MaxScale replicas for HA
   replicas: 2
@@ -92,4 +92,4 @@ spec:
     type: LoadBalancer
     metadata:
       annotations:
-        metallb.universe.tf/allow-shared-ip: "webimpetus-maxscale"
+        metallb.universe.tf/allow-shared-ip: "workerra-ci-maxscale"

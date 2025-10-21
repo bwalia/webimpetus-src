@@ -52,7 +52,7 @@ Automated test script demonstrating:
 
 ### 5. **MinIO Integration**
 
-- **Bucket Created**: `webimpetus` (in existing MinIO instance)
+- **Bucket Created**: `workerra-ci` (in existing MinIO instance)
 - **Storage Path**: `/dev/documents/`
 - **MinIO URL**: http://localhost:9000
 - **Console URL**: http://localhost:9001
@@ -99,7 +99,7 @@ documents table:
 ### MinIO Storage Structure
 
 ```
-webimpetus/                    # Bucket
+workerra-ci/                    # Bucket
 └── dev/                       # Environment
     └── documents/             # Document type
         ├── file1.pdf
@@ -209,13 +209,13 @@ if ($result['success']) {
         "uuid_business_id": "0f6c4e64...",
         "name": "Sample Image",
         "file": "dev/documents/filename.jpg",
-        "file_url": "http://minio:9000/webimpetus/dev/documents/filename.jpg",
+        "file_url": "http://minio:9000/workerra-ci/dev/documents/filename.jpg",
         "file_size": 72835,
         "file_type": "image/jpeg",
         "original_filename": "sample.jpg",
         "created_at": "2025-10-10 12:34:56"
     },
-    "minio_url": "http://minio:9000/webimpetus/dev/documents/filename.jpg"
+    "minio_url": "http://minio:9000/workerra-ci/dev/documents/filename.jpg"
 }
 ```
 
@@ -232,7 +232,7 @@ if ($result['success']) {
 
 1. Go to: http://localhost:9001
 2. Login: minioadmin / minioadmin123
-3. Navigate: Buckets → webimpetus → dev/documents/
+3. Navigate: Buckets → workerra-ci → dev/documents/
 4. Your uploaded files should be visible
 
 ### 2. Verify in Database
@@ -250,7 +250,7 @@ LIMIT 10;
 
 Using the `file_url` from the response:
 ```
-http://localhost:9000/webimpetus/dev/documents/[filename]
+http://localhost:9000/workerra-ci/dev/documents/[filename]
 ```
 
 ## Important Notes
@@ -271,7 +271,7 @@ Current configuration (`.env`):
 ```bash
 amazons3.access_key='minioadmin'
 amazons3.secret_key='minioadmin123'
-amazons3.bucket='webimpetus'
+amazons3.bucket='workerra-ci'
 amazons3.endpoint='http://minio:9000'
 amazons3.use_path_style='true'
 ```
@@ -319,7 +319,7 @@ For testing purposes, you can temporarily disable auth in the API:
 
 ### Issue: Files not visible in MinIO
 **Solution**:
-- Check bucket name matches: `webimpetus`
+- Check bucket name matches: `workerra-ci`
 - Verify path: `dev/documents/`
 - Check MinIO Console: http://localhost:9001
 
@@ -338,7 +338,7 @@ For testing purposes, you can temporarily disable auth in the API:
 4. **Add virus scanning** for uploads
 
 ### Backup
-1. **Regular MinIO backups**: `mc mirror local/webimpetus backup/`
+1. **Regular MinIO backups**: `mc mirror local/workerra-ci backup/`
 2. **Database backups** of metadata
 3. **Replication** to another MinIO/S3
 

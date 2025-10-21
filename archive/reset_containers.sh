@@ -21,13 +21,13 @@ export DATE_GEN_VERSION=$(date +"%Y%m%d%I%M%S")
 
 if [[ "$targetEnv" == "dev" ]]; then
 
-APP_RELEASE_NOTES_DOC_URL="https://webimpetus.dev/docs/app_release_notes"
+APP_RELEASE_NOTES_DOC_URL="https://workerra-ci.dev/docs/app_release_notes"
 
 fi
 
 if [[ "$targetEnv" == "test" ]]; then
 
-APP_RELEASE_NOTES_DOC_URL="https://test.webimpetus.dev/docs/app_release_notes"
+APP_RELEASE_NOTES_DOC_URL="https://test.workerra-ci.dev/docs/app_release_notes"
 
 fi
 
@@ -50,9 +50,9 @@ truncate -s 0 /tmp/${targetEnv}.env
 
 #  DEV   
 if [[ "$targetEnv" == "dev" ]]; then
-cp ${HOME}/env_webimpetus_myworkstation /tmp/${targetEnv}.env
+cp ${HOME}/env_workerra-ci_myworkstation /tmp/${targetEnv}.env
 else   
-cp /home/bwalia/env_webimpetus_${targetEnv}_myworkstation /tmp/${targetEnv}.env
+cp /home/bwalia/env_workerra-ci_${targetEnv}_myworkstation /tmp/${targetEnv}.env
 fi
 
 echo APP_DEPLOYED_AT=$DATE_GEN_VERSION >> /tmp/${targetEnv}.env

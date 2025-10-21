@@ -1,4 +1,4 @@
-name: Webimpetus Login Test
+name: workerra-ci Login Test
 on:
   schedule:
     - cron: '0 0 * * *'

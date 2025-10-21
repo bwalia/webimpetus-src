@@ -53,12 +53,12 @@ data:
         cp /tmp/secrets/.env /var/www/html/.env
         FILE=/var/www/html/.env
         if test -f "$FILE"; then
-        if grep -rnw $FILE -e "#----WEBIMPETUS-SYSTEM-INFO----"
+        if grep -rnw $FILE -e "#----workerra-ci-SYSTEM-INFO----"
            then
-            echo "#----WEBIMPETUS-SYSTEM-INFO---- Found"
+            echo "#----workerra-ci-SYSTEM-INFO---- Found"
         else
-            echo "#----WEBIMPETUS-SYSTEM-INFO---- Not Found, Adding"
-            echo "#----WEBIMPETUS-SYSTEM-INFO----" >> $FILE
+            echo "#----workerra-ci-SYSTEM-INFO---- Not Found, Adding"
+            echo "#----workerra-ci-SYSTEM-INFO----" >> $FILE
         fi
             echo "$FILE exists."
             echo "==========================="
@@ -69,30 +69,30 @@ data:
             echo "==========================="
             php -v
         echo "==========================="
-        #   sed '/#----WEBIMPETUS-SYSTEM-INFO----/q' $FILE
+        #   sed '/#----workerra-ci-SYSTEM-INFO----/q' $FILE
         export COMPOSER_ALLOW_SUPERUSER=1
         yes | composer update
         chmod 777 -R /var/www/html/writable/
         chmod 777 -R /var/www/html/writable/cache/
         chmod 777 -R /var/www/html/writable/session/
-        declare -a webimpetus_array # declare the array                                                                                                                                                                  
+        declare -a workerra-ci_array # declare the array                                                                                                                                                                  
         # Read each line and use regex parsing (with Bash's `=~` operator)
         # to extract the value.
         while read -r line; do
         # Extract the value from between the double quotes
         # and add it to the array.
-        [[ $line =~ :[[:blank:]]+\"(.*)\" ]] && webimpetus_array+=( "${BASH_REMATCH[1]}" )
-        done </var/www/html/webimpetus.json                                                                                                                                 
+        [[ $line =~ :[[:blank:]]+\"(.*)\" ]] && workerra-ci_array+=( "${BASH_REMATCH[1]}" )
+        done </var/www/html/workerra-ci.json                                                                                                                                 
 
-        #declare -p webimpetus_array # print the array
-        for i in ${!webimpetus_array[@]}; do
+        #declare -p workerra-ci_array # print the array
+        for i in ${!workerra-ci_array[@]}; do
         if [ $i -eq "1" ]; then
-        APP_FULL_VERSION_NO="${webimpetus_array[$i]}"
-        export APP_FULL_VERSION_NO="${webimpetus_array[$i]}"
+        APP_FULL_VERSION_NO="${workerra-ci_array[$i]}"
+        export APP_FULL_VERSION_NO="${workerra-ci_array[$i]}"
         fi
         if [ $i -eq "2" ]; then
-        APP_FULL_BUILD_NO="${webimpetus_array[$i]}"
-        export APP_FULL_BUILD_NO="${webimpetus_array[$i]}"
+        APP_FULL_BUILD_NO="${workerra-ci_array[$i]}"
+        export APP_FULL_BUILD_NO="${workerra-ci_array[$i]}"
         fi
         done
         echo $APP_FULL_VERSION_NO
@@ -332,9 +332,9 @@ data:
             
                 if [ -f "$FILE" ];then
                     echo "$FILE exists."
-                    awk '/----WEBIMPETUS-SYSTEM-INFO----/{exit} 1' $FILE > /tmp/.env
+                    awk '/----workerra-ci-SYSTEM-INFO----/{exit} 1' $FILE > /tmp/.env
                     mv /tmp/.env $FILE
-                    echo "#----WEBIMPETUS-SYSTEM-INFO----=''" >> $FILE
+                    echo "#----workerra-ci-SYSTEM-INFO----=''" >> $FILE
 
                     echo "==========================="
                     echo "Workstation Bootstrap Script Copied"
@@ -344,7 +344,7 @@ data:
                 echo "==========================="
                 php -v
             echo "==========================="
-            #   sed '/"#----WEBIMPETUS-SYSTEM-INFO----"/q' $FILE
+            #   sed '/"#----workerra-ci-SYSTEM-INFO----"/q' $FILE
             echo "Workstation Src copy to /var/www/html Complete"
             fi
             fi
@@ -379,24 +379,24 @@ data:
                 echo "$FILE exists."
                 chmod 777 -R $FILE
             fi
-            declare -a webimpetus_array # declare the array                                                                                                                                                                  
+            declare -a workerra-ci_array # declare the array                                                                                                                                                                  
             # Read each line and use regex parsing (with Bash's `=~` operator)
             # to extract the value.
             while read -r line; do
             # Extract the value from between the double quotes
             # and add it to the array.
-            [[ $line =~ :[[:blank:]]+\"(.*)\" ]] && webimpetus_array+=( "${BASH_REMATCH[1]}" )
-            done </var/www/html/webimpetus.json                                                                                                                                 
+            [[ $line =~ :[[:blank:]]+\"(.*)\" ]] && workerra-ci_array+=( "${BASH_REMATCH[1]}" )
+            done </var/www/html/workerra-ci.json                                                                                                                                 
 
-            #declare -p webimpetus_array # print the array
-            for i in ${!webimpetus_array[@]}; do
+            #declare -p workerra-ci_array # print the array
+            for i in ${!workerra-ci_array[@]}; do
             if [ $i -eq "1" ]; then
-            APP_FULL_VERSION_NO="${webimpetus_array[$i]}"
-            export APP_FULL_VERSION_NO="${webimpetus_array[$i]}"
+            APP_FULL_VERSION_NO="${workerra-ci_array[$i]}"
+            export APP_FULL_VERSION_NO="${workerra-ci_array[$i]}"
             fi
             if [ $i -eq "2" ]; then
-            APP_FULL_BUILD_NO="${webimpetus_array[$i]}"
-            export APP_FULL_BUILD_NO="${webimpetus_array[$i]}"
+            APP_FULL_BUILD_NO="${workerra-ci_array[$i]}"
+            export APP_FULL_BUILD_NO="${workerra-ci_array[$i]}"
             fi
             done
             echo $APP_FULL_VERSION_NO

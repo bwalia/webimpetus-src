@@ -43,8 +43,8 @@ if ! command -v nc &> /dev/null; then
     echo "⚠ Warning: 'nc' command not found, skipping port check"
 elif ! nc -z 127.0.0.1 3309 2>/dev/null; then
     echo "⚠ Warning: Cannot connect to database on localhost:3309"
-    echo "Make sure the webimpetus-db container is running and port 3309 is exposed"
-    echo "Run: docker ps | grep webimpetus-db"
+    echo "Make sure the workerra-ci-db container is running and port 3309 is exposed"
+    echo "Run: docker ps | grep workerra-ci-db"
     echo ""
 else
     echo "✓ Database port 3309: accessible"

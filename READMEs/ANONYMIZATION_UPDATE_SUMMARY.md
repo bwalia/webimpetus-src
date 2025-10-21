@@ -111,14 +111,14 @@ After:  Task 123, Employee 1, Anonymized work description 123
 
 ### Option 1: Anonymize Existing Data
 ```bash
-cd /home/bwalia/workstation-ci4/SQLs
+cd /home/bwalia/workerra-ci/SQLs
 ./backup_before_anonymize.sh
-docker exec -i webimpetus-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < anonymize_dev_data.sql
+docker exec -i workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < anonymize_dev_data.sql
 ```
 
 ### Option 2: Create Demo Environment
 ```bash
-docker exec -i webimpetus-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < create_demo_environment.sql
+docker exec -i workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < create_demo_environment.sql
 ```
 
 ---
@@ -128,7 +128,7 @@ docker exec -i webimpetus-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev 
 After running, verify anonymization:
 
 ```bash
-docker exec webimpetus-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev -e "
+docker exec workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev -e "
 SELECT 'Companies' AS Table_Name,
        COUNT(*) AS Total,
        SUM(CASE WHEN email LIKE '%@example.com' OR email LIKE '%@demo%' THEN 1 ELSE 0 END) AS Anonymized
@@ -162,12 +162,12 @@ FROM timeslips;
 
 ## Files Modified
 
-1. `/home/bwalia/workstation-ci4/SQLs/anonymize_dev_data.sql`
+1. `/home/bwalia/workerra-ci/SQLs/anonymize_dev_data.sql`
    - Added sections 31-35
    - Updated header comment
    - Updated verification queries
 
-2. `/home/bwalia/workstation-ci4/SQLs/create_demo_environment.sql`
+2. `/home/bwalia/workerra-ci/SQLs/create_demo_environment.sql`
    - Added Companies demo data
    - Added Contacts demo data
    - Added Sales Invoices demo data
@@ -175,12 +175,12 @@ FROM timeslips;
    - Added Timeslips demo data
    - Updated verification output
 
-3. `/home/bwalia/workstation-ci4/DEV_DATA_ANONYMIZATION_GUIDE.md`
+3. `/home/bwalia/workerra-ci/DEV_DATA_ANONYMIZATION_GUIDE.md`
    - Updated "What Gets Anonymized" section
    - Added new transformation examples
    - Updated preserved data section
 
-4. `/home/bwalia/workstation-ci4/SQLs/README_ANONYMIZATION.md`
+4. `/home/bwalia/workerra-ci/SQLs/README_ANONYMIZATION.md`
    - Updated preserved/anonymized lists
    - Added warning indicators
 
@@ -203,7 +203,7 @@ If you need to preserve some real data:
 
 1. Export specific records before anonymizing:
 ```bash
-docker exec webimpetus-db mariadb-dump -u wsl_dev -p'CHANGE_ME' myworkstation_dev \
+docker exec workerra-ci-db mariadb-dump -u wsl_dev -p'CHANGE_ME' myworkstation_dev \
   companies contacts sales_invoices sales_invoice_items timeslips \
   --where="id IN (1,2,3)" > /tmp/preserved_records.sql
 ```
@@ -212,7 +212,7 @@ docker exec webimpetus-db mariadb-dump -u wsl_dev -p'CHANGE_ME' myworkstation_de
 
 3. Re-import preserved records:
 ```bash
-docker exec -i webimpetus-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < /tmp/preserved_records.sql
+docker exec -i workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < /tmp/preserved_records.sql
 ```
 
 ---
@@ -241,14 +241,14 @@ If needed, restore from backup:
 
 ```bash
 # Find backup
-ls -lh /home/bwalia/workstation-ci4/backups/
+ls -lh /home/bwalia/workerra-ci/backups/
 
 # Decompress
-gunzip /home/bwalia/workstation-ci4/backups/[backup_file].sql.gz
+gunzip /home/bwalia/workerra-ci/backups/[backup_file].sql.gz
 
 # Restore
-docker exec -i webimpetus-db mariadb -u wsl_dev -p'CHANGE_ME' \
-  myworkstation_dev < /home/bwalia/workstation-ci4/backups/[backup_file].sql
+docker exec -i workerra-ci-db mariadb -u wsl_dev -p'CHANGE_ME' \
+  myworkstation_dev < /home/bwalia/workerra-ci/backups/[backup_file].sql
 ```
 
 ---

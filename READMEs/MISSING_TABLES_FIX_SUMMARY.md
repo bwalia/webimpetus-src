@@ -160,7 +160,7 @@ mysql -u user -p database < SQLs/create_accounts_table.sql
 #### Option 2: Run Migrations
 ```bash
 # From project root
-docker exec webimpetus-dev php /var/www/html/spark migrate
+docker exec workerra-ci-dev php /var/www/html/spark migrate
 
 # Or if running outside Docker
 cd ci4

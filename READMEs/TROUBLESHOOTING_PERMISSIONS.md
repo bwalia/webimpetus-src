@@ -231,7 +231,7 @@ If you're still having issues:
 2. Check `writable/logs/log-YYYY-MM-DD.log` for errors
 3. Run the test script:
    ```bash
-   docker exec webimpetus-dev php /var/www/html/test_permission_load.php USER_ID
+   docker exec workerra-ci-dev php /var/www/html/test_permission_load.php USER_ID
    ```
 4. Provide:
    - User ID and email
