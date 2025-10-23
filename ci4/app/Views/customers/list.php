@@ -1,4 +1,4 @@
-<?php require_once (APPPATH . 'Views/common/list-title.php'); ?>
+<?php require_once (APPPATH . 'Views/customers/list-title.php'); ?>
 <style>
 
 
@@ -64,18 +64,6 @@
         text-decoration: underline;
     }
 </style>
-
-<!-- Action Buttons -->
-<div class="white_card_body">
-    <div class="d-flex justify-content-end mb-3" style="padding-bottom: 0;">
-        <button type="button" onclick="window.location.reload();" class="btn btn-primary mr-2">
-            <i class="fa fa-refresh"></i> Refresh
-        </button>
-        <a href="/customers/edit" class="btn btn-primary">
-            <i class="fa fa-plus"></i> Add New Customer
-        </a>
-    </div>
-</div>
 
 <!-- Summary Cards -->
 <div class="summary-cards">
