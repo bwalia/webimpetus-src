@@ -25,7 +25,7 @@ class Meta_model extends Model
             return $this->select('*')->where(['code' => $code])->findAll();
         }
 
-        //$query = $this->db->query("SELECT * FROM webimpetusci4test.meta_fields WHERE code = 'service_default_secret'");
+        //$query = $this->db->query("SELECT * FROM workerra-cici4test.meta_fields WHERE code = 'service_default_secret'");
         //return $query;
     }
 

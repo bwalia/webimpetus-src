@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # -- Author: Balinder Walia --
-# -- Pushes the docker image : webimpetus into AWS ECR / or optionally into a given Docker registry --
+# -- Pushes the docker image : workerra-ci into AWS ECR / or optionally into a given Docker registry --
 # -- $1 is mandatory image version, for example : latest --
 
 set -x
@@ -11,7 +11,7 @@ REGION=$3
 
 if [ -z ${VERSION} ];
 then
-  echo "webimpetus image version not set"
+  echo "workerra-ci image version not set"
   exit 1
 fi
 if [ -z ${AWS_PROFILE_NAME} ];
@@ -24,8 +24,8 @@ then
 fi
 
 DOCKER_REG_HUB_USER=tenthmatrix # change repostory, can be changed to match customer repo domain name
-DOCKER_IMAGE_NAME=${DOCKER_REG_HUB_USER}/webimpetus-ci4
-#DOCKER_IMAGE_NAME=webimpetus
+DOCKER_IMAGE_NAME=${DOCKER_REG_HUB_USER}/workerra-ci-ci4
+#DOCKER_IMAGE_NAME=workerra-ci
 
     #TAG=$(git log -1 --pretty=%H) # Tag image same as git commit by default
     #DOCKER_IMAGE_NAME=${DOCKER_IMAGE_NAME}:${TAG}

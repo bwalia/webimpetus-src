@@ -40,9 +40,9 @@ This ensures the download uses the original filename from:
 3. Fallback: Extract filename from file path
 
 ### 3. Restarted Container
-Restarted webimpetus container to clear OpCache:
+Restarted workerra-ci container to clear OpCache:
 ```bash
-docker-compose restart webimpetus
+docker-compose restart workerra-ci
 ```
 
 ## Current State

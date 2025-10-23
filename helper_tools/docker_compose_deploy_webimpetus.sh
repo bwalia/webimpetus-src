@@ -22,7 +22,7 @@ mkdir -p ${workspace_dir}
 chmod 777 ${workspace_dir}
 
 rm -rf ${workspace_dir}*
-cp -r ../webimpetus/* ${workspace_dir}
+cp -r ../workerra-ci/* ${workspace_dir}
 
 mv ${workspace_dir}$targetEnv.env ${workspace_dir}.env
 
@@ -47,7 +47,7 @@ echo "MySQL/MariaDB endpoint..."
 
 
 
-# cp -r ../webimpetus/* /tmp/$workdirname_file
+# cp -r ../workerra-ci/* /tmp/$workdirname_file
 # mv /tmp/$workdirname_file/dev.env /tmp/$workdirname_file/.env
 # docker-compose -f /tmp/$workdirname_file/docker-compose.yml down
 # # docker-compose build
@@ -58,6 +58,6 @@ echo "MySQL/MariaDB endpoint..."
 # sleep 30
 # #./reset_env.sh
 # sudo -S rm -Rf ci4/
-# sudo -S rm -Rf /home/bwalia/actions-runner-webimpetus/_work/webimpetus/webimpetus/data
-# sudo -S rm -Rf /home/bwalia/actions-runner-webimpetus/_work/webimpetus/webimpetus/config
-# sudo -S rm -Rf /home/bwalia/actions-runner-webimpetus/_work/webimpetus/webimpetus/
+# sudo -S rm -Rf /home/bwalia/actions-runner-workerra-ci/_work/workerra-ci/workerra-ci/data
+# sudo -S rm -Rf /home/bwalia/actions-runner-workerra-ci/_work/workerra-ci/workerra-ci/config
+# sudo -S rm -Rf /home/bwalia/actions-runner-workerra-ci/_work/workerra-ci/workerra-ci/

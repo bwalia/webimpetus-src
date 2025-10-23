@@ -21,7 +21,7 @@ CI_ENVIRONMENT = development
 #--------------------------------------------------------------------
 
 amazons3.use_ssl = true
-amazons3.bucket = 'webimpetus-images'
+amazons3.bucket = 'workerra-ci-images'
 amazons3.region = 'eu-west-2'
 amazons3.s3_directory = 'dev'
 amazons3.verify_peer = true

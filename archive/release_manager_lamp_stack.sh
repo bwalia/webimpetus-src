@@ -1,6 +1,6 @@
 #!/bin/bash
 
-############ This bash script deploys WebImpetus CI4 project (mariadb, php_lamp, phpmyadmin)
+############ This bash script deploys workerra-ci CI4 project (mariadb, php_lamp, phpmyadmin)
 ############ as kubernetes deployment into dev,test or prod environment using k3s.
 
 #   set -x
@@ -65,11 +65,11 @@ fi
 HOST_ENDPOINT_UNSECURE_URL="http://${SVC_HOST}:${SVC_NODEPORT}"
 
 if [[ "$targetEnv" == "dev" ]]; then
-APP_RELEASE_NOTES_DOC_URL="https://webimpetus.dev/docs/app_release_notes"
+APP_RELEASE_NOTES_DOC_URL="https://workerra-ci.dev/docs/app_release_notes"
 fi
 
 if [[ "$targetEnv" == "test" ]]; then
-APP_RELEASE_NOTES_DOC_URL="https://test.webimpetus.dev/docs/app_release_notes"
+APP_RELEASE_NOTES_DOC_URL="https://test.workerra-ci.dev/docs/app_release_notes"
 fi
 
 if [[ "$targetEnv" == "prod" ]]; then
@@ -84,11 +84,11 @@ WORKSPACE_DIR=$(pwd)
 fi
 
 if [[ "$targetEnv" == "test" || "$targetEnv" == "prod" ]]; then
-WORKSPACE_DIR="/tmp/webimpetus/${targetEnv}"
+WORKSPACE_DIR="/tmp/workerra-ci/${targetEnv}"
 mkdir -p ${WORKSPACE_DIR}
 chmod 777 ${WORKSPACE_DIR}
 rm -rf ${WORKSPACE_DIR}/*
-cp -r ../webimpetus/* ${WORKSPACE_DIR}/
+cp -r ../workerra-ci/* ${WORKSPACE_DIR}/
 fi
 
 if [[ "$targetEnv" == "dev" ]]; then
@@ -145,8 +145,8 @@ if [[ "$deployment_stage" == "install" ]]; then
 echo ${WORKSPACE_DIR}/docker-compose.yml
 
 docker-compose -f "${WORKSPACE_DIR}/docker-compose.yml" build           #up -d --build
-docker tag ${docker_base_image} bwalia/webimpetus:${TARGET_STACK}-${DATE_GEN_VERSION}
-docker push bwalia/webimpetus:${TARGET_STACK}-${DATE_GEN_VERSION}
+docker tag ${docker_base_image} bwalia/workerra-ci:${TARGET_STACK}-${DATE_GEN_VERSION}
+docker push bwalia/workerra-ci:${TARGET_STACK}-${DATE_GEN_VERSION}
 
 #docker build -f devops/kubernetes/Dockerfile -t registry.workstation.co.uk/workstation:latest .
 docker build -f devops/docker/Dockerfile-apache2-php --build-arg TAG=${TARGET_STACK}-${DATE_GEN_VERSION} -t wsl-${TARGET_STACK} . --no-cache
@@ -156,10 +156,10 @@ docker push registry.workstation.co.uk/wsl-${TARGET_STACK}:${DATE_GEN_VERSION}
 # this deploys the image to k3s
 
 if [[ "$k3s_deployment_tool" == "helm" ]]; then
-#helm upgrade --install workstation --set image.tag=${DATE_GEN_VERSION} --set image.repository=registry.workstation.co.uk/workstation --set ingress.hosts[0].host=${HOST_ENDPOINT_UNSECURE_URL} --set ingress.hosts[0].paths[0]=/ --set ingress.hosts[0].paths[1]=/docs --set ingress.hosts[0].paths[2]=/docs/app_release_notes --set ingress.hosts[0].paths[3]=/docs/app_release_notes/${DATE_GEN_VERSION} --set ingress.hosts[0].paths[4]=/docs/app_release_notes/${DATE_GEN_VERSION}/webimpetus --set ingress.hosts[0].paths[5]=/docs/app_release_notes/${DATE_GEN_VERSION}/webimpetus/${targetEnv} --set ingress.hosts[0].paths[6]=/docs/app_release_notes/${DATE_GEN_VERSION}/webimpetus/${targetEnv}/webimpetus --set ingress.hosts[0].paths[7]=/docs/app_release_notes/${DATE_GEN_VERSION}/webimpetus/${targetEnv}/webimpetus/${targetEnv} --set ingress.hosts[0].paths[8]=/docs/app_release_notes/${DATE_GEN_VERSION}/webimpetus/${targetEnv}/webimpetus/${targetEnv}/webimpetus --set ingress.hosts[0].paths[9]=/docs/app_release_notes/${DATE_GEN_VERSION}/webimpetus/${targetEnv}/webimpetus/${targetEnv}/webimpetus/${targetEnv} --set ingress.hosts[0].paths[10]=/docs/app_release_notes/${DATE_GEN_VERSION}/webimpetus/${targetEnv}/webimpetus/${targetEnv}/webimpetus/${targetEnv}/webimpetus --set ingress.hosts[0].paths[11]=/docs/app_release_notes/${DATE_GEN_VERSION}/webimpetus/${targetEnv}/webimpetus/${targetEnv}/webimpetus/${targetEnv}/webimpetus/${targetEnv} --set ingress.hosts[0].paths[12]=/docs/app_release_notes/${DATE_GEN_VERSION}/webimpetus/${targetEnv}/webimpetus/${targetEnv}/webimpetus/${targetEnv}/webimpetus/${targetEnv}/webimpetus --set ingress.hosts[0].paths[13]=/docs/app_release_notes/${DATE_GEN_VERSION}/webimpetus/${targetEnv}/webimpetus/${targetEnv}/web
+#helm upgrade --install workstation --set image.tag=${DATE_GEN_VERSION} --set image.repository=registry.workstation.co.uk/workstation --set ingress.hosts[0].host=${HOST_ENDPOINT_UNSECURE_URL} --set ingress.hosts[0].paths[0]=/ --set ingress.hosts[0].paths[1]=/docs --set ingress.hosts[0].paths[2]=/docs/app_release_notes --set ingress.hosts[0].paths[3]=/docs/app_release_notes/${DATE_GEN_VERSION} --set ingress.hosts[0].paths[4]=/docs/app_release_notes/${DATE_GEN_VERSION}/workerra-ci --set ingress.hosts[0].paths[5]=/docs/app_release_notes/${DATE_GEN_VERSION}/workerra-ci/${targetEnv} --set ingress.hosts[0].paths[6]=/docs/app_release_notes/${DATE_GEN_VERSION}/workerra-ci/${targetEnv}/workerra-ci --set ingress.hosts[0].paths[7]=/docs/app_release_notes/${DATE_GEN_VERSION}/workerra-ci/${targetEnv}/workerra-ci/${targetEnv} --set ingress.hosts[0].paths[8]=/docs/app_release_notes/${DATE_GEN_VERSION}/workerra-ci/${targetEnv}/workerra-ci/${targetEnv}/workerra-ci --set ingress.hosts[0].paths[9]=/docs/app_release_notes/${DATE_GEN_VERSION}/workerra-ci/${targetEnv}/workerra-ci/${targetEnv}/workerra-ci/${targetEnv} --set ingress.hosts[0].paths[10]=/docs/app_release_notes/${DATE_GEN_VERSION}/workerra-ci/${targetEnv}/workerra-ci/${targetEnv}/workerra-ci/${targetEnv}/workerra-ci --set ingress.hosts[0].paths[11]=/docs/app_release_notes/${DATE_GEN_VERSION}/workerra-ci/${targetEnv}/workerra-ci/${targetEnv}/workerra-ci/${targetEnv}/workerra-ci/${targetEnv} --set ingress.hosts[0].paths[12]=/docs/app_release_notes/${DATE_GEN_VERSION}/workerra-ci/${targetEnv}/workerra-ci/${targetEnv}/workerra-ci/${targetEnv}/workerra-ci/${targetEnv}/workerra-ci --set ingress.hosts[0].paths[13]=/docs/app_release_notes/${DATE_GEN_VERSION}/workerra-ci/${targetEnv}/workerra-ci/${targetEnv}/web
 #helm uninstall wsl-${targetEnv} -n ${targetEnv}
-###helm upgrade --install -f devops/webimpetus-chart/values-${targetEnv}.yaml wsl-${targetEnv} ./devops/webimpetus-chart --set image=registry.workstation.co.uk/workstation:${DATE_GEN_VERSION} --namespace ${targetEnv}
-helm upgrade --install -f devops/webimpetus-chart/values-${targetNs}.yaml wsl-${targetNs} ./devops/webimpetus-chart --set-string targetImage="registry.workstation.co.uk/wsl-${TARGET_STACK}" --set-string targetImageTag="${DATE_GEN_VERSION}" --namespace ${targetNs}
+###helm upgrade --install -f devops/workerra-ci-chart/values-${targetEnv}.yaml wsl-${targetEnv} ./devops/workerra-ci-chart --set image=registry.workstation.co.uk/workstation:${DATE_GEN_VERSION} --namespace ${targetEnv}
+helm upgrade --install -f devops/workerra-ci-chart/values-${targetNs}.yaml wsl-${targetNs} ./devops/workerra-ci-chart --set-string targetImage="registry.workstation.co.uk/wsl-${TARGET_STACK}" --set-string targetImageTag="${DATE_GEN_VERSION}" --namespace ${targetNs}
 else
 echo "k3s_deployment_tool is not helm, so not deploying using YAML manifests"
 # kubectl delete -f devops/kubernetes/wsldeployment.yaml

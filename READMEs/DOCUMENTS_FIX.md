@@ -78,7 +78,7 @@ Before documents will upload to S3/MinIO, configure in `.env`:
 ```bash
 amazons3.access_key='YOUR_ACCESS_KEY'
 amazons3.secret_key='YOUR_SECRET_KEY'
-amazons3.bucket='webimpetus-documents'
+amazons3.bucket='workerra-ci-documents'
 amazons3.region='us-east-1'
 amazons3.s3_directory='dev'
 amazons3.endpoint='http://minio:9000'      # For MinIO
@@ -95,7 +95,7 @@ amazons3.use_path_style='false'
 
 1. **Configure S3/MinIO**
    - Set credentials in `.env`
-   - Create bucket `webimpetus-documents`
+   - Create bucket `workerra-ci-documents`
    - Test connectivity
 
 2. **Test File Upload**

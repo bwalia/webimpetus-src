@@ -389,8 +389,8 @@ class Services extends Api
 			$this->push_service_env_vars($uuid);
 			$this->gen_service_yaml_file($uuid);
 
-			//	exec('/bin/bash /var/www/html/writable/webimpetus_deploy_service.sh', $output, $return);
-			$output = shell_exec('/bin/sh /var/www/html/writable/webimpetus_delete_service.sh');
+			//	exec('/bin/bash /var/www/html/writable/workerra-ci_deploy_service.sh', $output, $return);
+			$output = shell_exec('/bin/sh /var/www/html/writable/workerra-ci_delete_service.sh');
 			// This just needs to run the delete script using helm uninstall cmd instead [BUG: This is not working as expected. Need to fix it.]
 			//	echo $output;
 			echo "Service deletion process started OK. Note: This process does not delete the tenant database.";
@@ -648,7 +648,7 @@ class Services extends Api
 		fwrite($valuesFile, $modifiedValuesString);
 		fclose($valuesFile);
 
-		// helm upgrade -i wsl-int ./devops/webimpetus-chart -f devops/webimpetus-chart/values-int-k3s2.yaml --set-string targetImage="***/webimpetus" --set-string targetImageTag="int" --namespace int --create-namespace
+		// helm upgrade -i wsl-int ./devops/workerra-ci-chart -f devops/workerra-ci-chart/values-int-k3s2.yaml --set-string targetImage="***/workerra-ci" --set-string targetImageTag="int" --namespace int --create-namespace
 	}
 
 	function run_steps($uuid, $userSelectedENV)
@@ -697,7 +697,7 @@ class Services extends Api
 	public function push_service_env_vars($uuid)
 	{
 		// Get the contents of the JSON file for service and add as env variables to pass to the deployment
-		$svcJsonFileContents = file_get_contents(WRITEPATH . "webimpetus_deployments/service-" . $uuid . ".json");
+		$svcJsonFileContents = file_get_contents(WRITEPATH . "workerra-ci_deployments/service-" . $uuid . ".json");
 		// Convert to array
 		$svcJsonFileObj = json_decode($svcJsonFileContents);
 		putenv("SERVICE_ID=" . $uuid);
@@ -712,7 +712,7 @@ class Services extends Api
 					fclose($myfile);
 				}
 
-				if ($val['key_name'] == 'webimpetus_DOCKER_IMAGE' || $val['key_name'] == 'webimpetus_DOCKER_IMAGE_TAG' || $val['key_name'] == 'KUBENETES_CLUSTER_NAME' || $val['key_name'] == 'AWS_ACCESS_KEY_ID' || $val['key_name'] == 'AWS_SECRET_ACCESS_KEY' || $val['key_name'] == 'AWS_DEFAULT_REGION') {
+				if ($val['key_name'] == 'workerra-ci_DOCKER_IMAGE' || $val['key_name'] == 'workerra-ci_DOCKER_IMAGE_TAG' || $val['key_name'] == 'KUBENETES_CLUSTER_NAME' || $val['key_name'] == 'AWS_ACCESS_KEY_ID' || $val['key_name'] == 'AWS_SECRET_ACCESS_KEY' || $val['key_name'] == 'AWS_DEFAULT_REGION') {
 					putenv($val['key_name'] . "=" . $val['key_value']);
 				}
 			}
@@ -744,19 +744,19 @@ class Services extends Api
 		$secrets = $this->secret_model->getRows();
 		if (!empty($secrets)) {
 			foreach ($secrets as $key => $val) {
-				if ($val['key_name'] == 'webimpetus_DOCKER_IMAGE' || $val['key_name'] == 'webimpetus_DOCKER_IMAGE_TAG' || $val['key_name'] == 'KUBENETES_CLUSTER_NAME' || $val['key_name'] == 'AWS_ACCESS_KEY_ID' || $val['key_name'] == 'AWS_SECRET_ACCESS_KEY' || $val['key_name'] == 'AWS_DEFAULT_REGION') {
+				if ($val['key_name'] == 'workerra-ci_DOCKER_IMAGE' || $val['key_name'] == 'workerra-ci_DOCKER_IMAGE_TAG' || $val['key_name'] == 'KUBENETES_CLUSTER_NAME' || $val['key_name'] == 'AWS_ACCESS_KEY_ID' || $val['key_name'] == 'AWS_SECRET_ACCESS_KEY' || $val['key_name'] == 'AWS_DEFAULT_REGION') {
 					$pattern = "/{{" . $val['key_name'] . "}}/i";
 					$service_data = preg_replace($pattern, $val['key_value'], $service_data);
 				}
 			}
 		}
 
-		$myfile = fopen(WRITEPATH . "webimpetus_deployments/values-" . $uuid . ".yaml", "w") or die("Unable to open file!");
+		$myfile = fopen(WRITEPATH . "workerra-ci_deployments/values-" . $uuid . ".yaml", "w") or die("Unable to open file!");
 		fwrite($myfile, $service_data);
 		fclose($myfile);
 
 		//create php seed
-		// $myfile = fopen(WRITEPATH . "webimpetus_deployments/service-".$uuid.".php", "w") or die("Unable to open file!");
+		// $myfile = fopen(WRITEPATH . "workerra-ci_deployments/service-".$uuid.".php", "w") or die("Unable to open file!");
 		// fwrite($myfile, $service_data);
 		// fclose($myfile);
 
@@ -779,14 +779,14 @@ class Services extends Api
 		$secrets = $this->secret_model->getRows();
 		if (!empty($secrets)) {
 			foreach ($secrets as $key => $val) {
-				if ($val['key_name'] == 'webimpetus_DOCKER_IMAGE' || $val['key_name'] == 'webimpetus_DOCKER_IMAGE_TAG' || $val['key_name'] == 'KUBENETES_CLUSTER_NAME' || $val['key_name'] == 'AWS_ACCESS_KEY_ID' || $val['key_name'] == 'AWS_SECRET_ACCESS_KEY' || $val['key_name'] == 'AWS_DEFAULT_REGION') {
+				if ($val['key_name'] == 'workerra-ci_DOCKER_IMAGE' || $val['key_name'] == 'workerra-ci_DOCKER_IMAGE_TAG' || $val['key_name'] == 'KUBENETES_CLUSTER_NAME' || $val['key_name'] == 'AWS_ACCESS_KEY_ID' || $val['key_name'] == 'AWS_SECRET_ACCESS_KEY' || $val['key_name'] == 'AWS_DEFAULT_REGION') {
 					$pattern = "/{{" . $val['key_name'] . "}}/i";
 					$service_data = preg_replace($pattern, $val['key_value'], $service_data);
 				}
 			}
 		}
 
-		$myfile = fopen(WRITEPATH . "webimpetus_deployments/service-" . $uuid . ".yaml", "w") or die("Unable to open file!");
+		$myfile = fopen(WRITEPATH . "workerra-ci_deployments/service-" . $uuid . ".yaml", "w") or die("Unable to open file!");
 		fwrite($myfile, $service_data);
 		fclose($myfile);
 	}

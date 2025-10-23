@@ -6,7 +6,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    app_name: str = "Webimpetus Multi-tenant API"
+    app_name: str = "Workerra CI4 Multi-tenant API"
     environment: str = "development"
     debug: bool = True
     database_url: str = "sqlite:///./modern_api.db"

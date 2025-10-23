@@ -22,7 +22,7 @@
 
 ### 3. Database Connection Issues
 **Problem:**
-- Script was using hostname `webimpetus-db` which is only resolvable inside Docker
+- Script was using hostname `workerra-ci-db` which is only resolvable inside Docker
 - Running script from host machine couldn't resolve this hostname
 
 **Solution:**
@@ -32,11 +32,11 @@
 ### 4. Missing Integration Database
 **Problem:**
 - The `wsl-int-db` database didn't exist
-- User `wsl_dev` didn't have permissions to create it
+- User `workerra-ci-dev` didn't have permissions to create it
 
 **Solution:**
 - Created database as root: `CREATE DATABASE \`wsl-int-db\``
-- Granted permissions: `GRANT ALL PRIVILEGES ON \`wsl-int-db\`.* TO 'wsl_dev'@'%'`
+- Granted permissions: `GRANT ALL PRIVILEGES ON \`wsl-int-db\`.* TO 'workerra-ci-dev'@'%'`
 
 ## Files Modified
 
@@ -46,8 +46,8 @@
 
 # 1. Export connection URIs (or edit inside the script)
 # Note: Database is running in Docker and mapped to localhost:3309
-export DEV_DB_URI="mysql+pymysql://wsl_dev:CHANGE_ME@localhost:3309/myworkstation_dev"
-export INT_DB_URI="mysql+pymysql://wsl_dev:CHANGE_ME@localhost:3309/wsl-int-db"
+export DEV_DB_URI="mysql+pymysql://workerra-ci-dev:CHANGE_ME@localhost:3309/myworkstation_dev"
+export INT_DB_URI="mysql+pymysql://workerra-ci-dev:CHANGE_ME@localhost:3309/wsl-int-db"
 
 # 2. Install dependencies using python3.11
 echo "Installing Python dependencies..."
@@ -59,7 +59,7 @@ python3.11 devops/scripts/generate_migrations.py
 
 # 4. Apply generated SQL to Integration DB (after review)
 # Uncomment and run manually after reviewing the migration file:
-# docker exec webimpetus-db mariadb -uwsl_dev -pCHANGE_ME wsl-int-db < migrations/int/V[timestamp]__sync_schema.sql
+# docker exec workerra-ci-db mariadb -uworkerra-ci-dev -pCHANGE_ME wsl-int-db < migrations/int/V[timestamp]__sync_schema.sql
 ```
 
 ### 2. devops/scripts/generate_migrations.py
@@ -90,7 +90,7 @@ print(f"SQLAlchemy version: {sqlalchemy.__version__}")  # <-- Fixed this line
 
 3. **Apply migration to integration database:**
    ```bash
-   docker exec webimpetus-db mariadb -uwsl_dev -pCHANGE_ME wsl-int-db < migrations/int/V[timestamp]__sync_schema.sql
+   docker exec workerra-ci-db mariadb -uworkerra-ci-dev -pCHANGE_ME wsl-int-db < migrations/int/V[timestamp]__sync_schema.sql
    ```
 
 ## Verification
@@ -115,7 +115,7 @@ The script detected:
 - Python 3.11+ (not Python 3.6)
 - Packages: sqlalchemy, pymysql, alembic
 - Access to database on localhost:3309
-- Database credentials: wsl_dev / CHANGE_ME
+- Database credentials: workerra-ci-dev / CHANGE_ME
 
 ## Troubleshooting
 
@@ -123,13 +123,13 @@ The script detected:
 - Make sure you're using Python 3.11: `python3.11 --version`
 - Reinstall packages: `python3.11 -m pip install --user sqlalchemy pymysql alembic`
 
-### If you get "Name or service not known" for webimpetus-db
-- Check the URIs are using `localhost:3309` not `webimpetus-db`
-- Verify Docker port mapping: `docker ps | grep webimpetus-db`
+### If you get "Name or service not known" for workerra-ci-db
+- Check the URIs are using `localhost:3309` not `workerra-ci-db`
+- Verify Docker port mapping: `docker ps | grep workerra-ci-db`
 
 ### If you get "Access denied" errors
 - Check database credentials in the URIs
-- Verify user has permissions: `GRANT ALL PRIVILEGES ON \`wsl-int-db\`.* TO 'wsl_dev'@'%'`
+- Verify user has permissions: `GRANT ALL PRIVILEGES ON \`wsl-int-db\`.* TO 'workerra-ci-dev'@'%'`
 
 ## Next Steps
 
@@ -170,7 +170,7 @@ ALTER TABLE `contact_tags` DROP COLUMN `uuid`;
 ### Verified Working:
 The migration file can now be applied directly:
 ```bash
-docker exec webimpetus-db mariadb -uroot -pCHANGE_ME_DEFINITELY wsl-int-db < migrations/int/V202510152041__sync_schema.sql
+docker exec workerra-ci-db mariadb -uroot -pCHANGE_ME_DEFINITELY wsl-int-db < migrations/int/V202510152041__sync_schema.sql
 ```
 
 This successfully:

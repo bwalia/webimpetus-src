@@ -6,7 +6,7 @@ All PHP scripts have been updated to run directly from the **host machine** inst
 
 ### Previous Setup (❌ Didn't Work)
 ```bash
-docker exec webimpetus-dev php /var/www/html/SQLs/script.php  # Path didn't exist
+docker exec workerra-ci-dev php /var/www/html/SQLs/script.php  # Path didn't exist
 ```
 
 ### New Setup (✅ Works)
@@ -21,7 +21,7 @@ All scripts now connect to the database via the **exposed Docker port**:
 - **Host:** 127.0.0.1 (localhost)
 - **Port:** 3309
 - **Database:** myworkstation_dev
-- **User:** wsl_dev
+- **User:** workerra-ci-dev
 - **Password:** CHANGE_ME
 
 The connection is configured in each script:
@@ -29,7 +29,7 @@ The connection is configured in each script:
 $config = [
     'hostname' => '127.0.0.1',
     'port' => 3309,
-    'username' => 'wsl_dev',
+    'username' => 'workerra-ci-dev',
     'password' => 'CHANGE_ME',
     'database' => 'myworkstation_dev',
 ];
@@ -165,19 +165,19 @@ brew reinstall php
 
 1. Check if database container is running:
    ```bash
-   docker ps | grep webimpetus-db
+   docker ps | grep workerra-ci-db
    ```
 
 2. Check if port 3309 is exposed:
    ```bash
-   docker port webimpetus-db
+   docker port workerra-ci-db
    ```
 
    Should show: `3306/tcp -> 0.0.0.0:3309`
 
 3. Test connection manually:
    ```bash
-   mysql -h 127.0.0.1 -P 3309 -u wsl_dev -p'CHANGE_ME' myworkstation_dev
+   mysql -h 127.0.0.1 -P 3309 -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev
    ```
 
 ### Error: "Connection failed: Access denied"
@@ -213,7 +213,7 @@ php --version
 php -m | grep mysqli
 
 # 3. Test database connection
-php -r "new mysqli('127.0.0.1', 'wsl_dev', 'CHANGE_ME', 'myworkstation_dev', 3309) or die('Failed');"
+php -r "new mysqli('127.0.0.1', 'workerra-ci-dev', 'CHANGE_ME', 'myworkstation_dev', 3309) or die('Failed');"
 
 # 4. Run check script (safe)
 ./run_menu_scripts.sh check

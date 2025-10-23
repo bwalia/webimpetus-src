@@ -11,7 +11,7 @@ envPreferences:
 architecture:
   http_server_type: openresty   # apache2 | openresty are supported
 
-targetImage: "bwalia/webimpetus"
+targetImage: "bwalia/workerra-ci"
 targetImageTag: "latest"
 
 safeSealedSecret: null

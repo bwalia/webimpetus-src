@@ -135,18 +135,18 @@ sudo yum install php-mysqlnd
 
 1. **Check if database container is running:**
    ```bash
-   docker ps | grep webimpetus-db
+   docker ps | grep workerra-ci-db
    ```
 
 2. **Check if port 3309 is exposed:**
    ```bash
-   docker port webimpetus-db
+   docker port workerra-ci-db
    ```
    Should show: `3306/tcp -> 0.0.0.0:3309`
 
 3. **Test connection manually:**
    ```bash
-   mysql -h 127.0.0.1 -P 3309 -u wsl_dev -p'CHANGE_ME' myworkstation_dev
+   mysql -h 127.0.0.1 -P 3309 -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev
    ```
 
 4. **Run the test script:**
@@ -184,7 +184,7 @@ All scripts use:
 - **Host:** 127.0.0.1 (localhost)
 - **Port:** 3309
 - **Database:** myworkstation_dev
-- **Username:** wsl_dev
+- **Username:** workerra-ci-dev
 - **Password:** CHANGE_ME
 
 ---
@@ -347,7 +347,7 @@ php SQLs/grant_all_menu_permissions_to_admin.php
 
 - **UPDATED_README.md** - Comprehensive guide
 - **SCRIPTS_UPDATE_SUMMARY.md** - Technical details
-- Test connection manually: `mysql -h 127.0.0.1 -P 3309 -u wsl_dev -p'CHANGE_ME'`
+- Test connection manually: `mysql -h 127.0.0.1 -P 3309 -u workerra-ci-dev -p'CHANGE_ME'`
 
 ---
 

@@ -1,17 +1,17 @@
-$webimpetus_info_array = $this->loadWebImpetusInfo();
+$workerra-ci_info_array = $this->loadworkerra-ciInfo();
 		
-		if (array_key_exists("version",$webimpetus_info_array))
+		if (array_key_exists("version",$workerra-ci_info_array))
 		{
-			setenv("APP_FULL_VERSION_NO", $webimpetus_info_array["version"]);
+			setenv("APP_FULL_VERSION_NO", $workerra-ci_info_array["version"]);
 		}
 	 	 else
 		{
 		echo "Version does not exist!";
 		}
 
-		if (array_key_exists("build",$webimpetus_info_array))
+		if (array_key_exists("build",$workerra-ci_info_array))
 		{
-			setenv("APP_FULL_BUILD_NO", $webimpetus_info_array["build"]);
+			setenv("APP_FULL_BUILD_NO", $workerra-ci_info_array["build"]);
 		}
 	 	 else
 		{
@@ -19,12 +19,12 @@ $webimpetus_info_array = $this->loadWebImpetusInfo();
 		}
 
 
-        public function loadWebImpetusInfo()
+        public function loadworkerra-ciInfo()
 	{
 		$json_decode = [];
-		$webimpetusJSPNFilePath = APPPATH . "webimpetus.json";
-		if (file_exists($webimpetusJSPNFilePath)) {
-			$json = file_get_contents ($webimpetusJSPNFilePath);
+		$workerra-ciJSPNFilePath = APPPATH . "workerra-ci.json";
+		if (file_exists($workerra-ciJSPNFilePath)) {
+			$json = file_get_contents ($workerra-ciJSPNFilePath);
 		// Decode the JSON file
 		$json_data = json_decode($json,true);
 		}

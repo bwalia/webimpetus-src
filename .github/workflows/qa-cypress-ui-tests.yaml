@@ -1,4 +1,4 @@
-name: Webimpetus Cypress UI tests suite by QA
+name: workerra-ci Cypress UI tests suite by QA
 on:
   schedule:
     - cron: '0 21 * * *'

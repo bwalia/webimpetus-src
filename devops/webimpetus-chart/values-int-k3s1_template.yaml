@@ -7,7 +7,7 @@ envPreferences:
     codeIgniterEnv: production
 architecture:
     http_server_type: openresty
-targetImage: bwalia/webimpetus
+targetImage: bwalia/workerra-ci
 targetImageTag: latest
 safeSealedSecret: helmfilesecretsplaceholder
 serviceAccount:

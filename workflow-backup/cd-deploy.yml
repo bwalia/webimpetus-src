@@ -42,10 +42,10 @@ on:
       IMAGE_NAME:
         type: choice
         description: 'Please choose docker image name to push'
-        default: 'webimpetus'
+        default: 'workerra-ci'
         required: true
         options:
-        - webimpetus
+        - workerra-ci
         - workstation
 
       IMAGE_TAG:
@@ -128,7 +128,7 @@ jobs:
       uses: koslib/helm-eks-action@master
       with:
         command: |
-          helm upgrade -i wsl-${{ env.TARGET_ENV }} ./devops/webimpetus-chart -f devops/webimpetus-chart/values-${{ env.TARGET_ENV }}-${{ env.TARGET_CLUSTER}}.yaml --set-string targetImage="${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}" --set-string targetImageTag="${{ env.IMAGE_TAG }}" --namespace ${{ env.TARGET_ENV }} --create-namespace
+          helm upgrade -i wsl-${{ env.TARGET_ENV }} ./devops/workerra-ci-chart -f devops/workerra-ci-chart/values-${{ env.TARGET_ENV }}-${{ env.TARGET_CLUSTER}}.yaml --set-string targetImage="${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}" --set-string targetImageTag="${{ env.IMAGE_TAG }}" --namespace ${{ env.TARGET_ENV }} --create-namespace
           kubectl rollout restart deployment/wsl-${{ env.TARGET_ENV }} -n ${{ env.TARGET_ENV }}
           kubectl rollout history deployment/wsl-${{ env.TARGET_ENV }} -n ${{ env.TARGET_ENV }}
         

@@ -1,5 +1,5 @@
 {
-	"app": "WebImpetus",
+	"app": "workerra-ci",
 	"version": "1.0.8",
 	"build": "20251015173350",
 	"stack": "CodeIgniter 4.6.3"

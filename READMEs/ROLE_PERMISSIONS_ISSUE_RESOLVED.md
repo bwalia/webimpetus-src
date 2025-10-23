@@ -177,7 +177,7 @@ This shows:
 
 Run this to verify the fix:
 ```bash
-docker exec webimpetus-dev php /var/www/html/test_permission_load.php 19
+docker exec workerra-ci-dev php /var/www/html/test_permission_load.php 19
 ```
 
 Should show **27 menus** including Deployments at the bottom.

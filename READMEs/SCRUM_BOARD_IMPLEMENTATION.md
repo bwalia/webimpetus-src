@@ -1,7 +1,7 @@
 # Scrum Board Implementation Summary
 
 ## Overview
-A complete new Scrum Board section has been added to the WebImpetus application, providing sprint-based task management alongside the existing Kanban Board.
+A complete new Scrum Board section has been added to the workerra-ci application, providing sprint-based task management alongside the existing Kanban Board.
 
 ## Key Differences: Scrum Board vs Kanban Board
 

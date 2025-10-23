@@ -73,8 +73,8 @@ async def login(
         "scopes": ["read", "write"],  # TODO: Get from database
         "exp": int(expires_at.timestamp()),
         "iat": int(datetime.now(tz=timezone.utc).timestamp()),
-        "iss": settings.jwt_issuer or "webimpetus-api",
-        "aud": settings.jwt_audience or "webimpetus-api",
+        "iss": settings.jwt_issuer or "workerra-ci-api",
+        "aud": settings.jwt_audience or "workerra-ci-api",
     }
 
     # Sign token
@@ -128,8 +128,8 @@ async def login_json(
         "scopes": ["read", "write"],
         "exp": int(expires_at.timestamp()),
         "iat": int(datetime.now(tz=timezone.utc).timestamp()),
-        "iss": settings.jwt_issuer or "webimpetus-api",
-        "aud": settings.jwt_audience or "webimpetus-api",
+        "iss": settings.jwt_issuer or "workerra-ci-api",
+        "aud": settings.jwt_audience or "workerra-ci-api",
         "type": user_type,
     }
 

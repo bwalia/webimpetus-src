@@ -18,7 +18,7 @@ env:
   IMAGE_TAG: "test"
   TARGET_IMAGE_TAG: "test"
   TARGET_STACK: openresty_php
-  IMAGE_NAME: bwalia/webimpetus-dr
+  IMAGE_NAME: bwalia/workerra-ci-dr
   TARGET_ENV: test
   IMAGE_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
   DR_DB_HOST: ${{ secrets.DR_DB_HOST }}
@@ -39,9 +39,9 @@ jobs:
     - name: Checkout this repo
       uses: actions/checkout@v3
 
-    - name: Run Webimpetus Disaster Recovery Management Docker Image based on the TARGET PLATFORM Image and push to Docker Hub
+    - name: Run workerra-ci Disaster Recovery Management Docker Image based on the TARGET PLATFORM Image and push to Docker Hub
       run: |
-        echo "Webimpetus Disaster Recovery Management Docker Image builder!"
+        echo "workerra-ci Disaster Recovery Management Docker Image builder!"
         docker run -e DR_DB_HOST=${{ env.DR_DB_HOST }} \
         -e DB_USER=${{ env.DR_DB_USER }} \
         -e DB_PASSWORD=${{ env.DR_DB_PASSWORD }} \

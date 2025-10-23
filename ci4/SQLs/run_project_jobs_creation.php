@@ -2,7 +2,7 @@
 <?php
 
 // Standalone SQL runner using mysqli
-$host = getenv('DB_HOST') ?: 'webimpetus-db';
+$host = getenv('DB_HOST') ?: 'workerra-ci-db';
 $db = getenv('DB_DATABASE') ?: 'myworkstation_dev';
 $user = getenv('DB_USERNAME') ?: 'myworkstation_dev';
 $pass = getenv('DB_PASSWORD') ?: 'myworkstation_dev';

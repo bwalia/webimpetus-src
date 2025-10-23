@@ -31,10 +31,10 @@ on:
       IMAGE_NAME:
         type: choice
         description: 'Please choose docker image name to push'
-        default: 'webimpetus'
+        default: 'workerra-ci'
         required: true
         options:
-        - webimpetus
+        - workerra-ci
         - workstation
     
       IMAGE_TAG:
@@ -61,7 +61,7 @@ jobs:
     runs-on: 'ubuntu-latest'
     steps:
 
-    - name: Checkout WebImpetus Repository
+    - name: Checkout workerra-ci Repository
       uses: actions/checkout@v3
       with:
         ref: main
@@ -79,11 +79,11 @@ jobs:
       env:
        SHA: ${{ env.SHA }}
         
-    - name: Build, tag, and push WebImpetus Docker image to the Docker Hub Public Registry
+    - name: Build, tag, and push workerra-ci Docker image to the Docker Hub Public Registry
       run: |
         IMAGE_REGISTRY=bwalia
         if [ -z "${{ env.IMAGE_NAME }}" ]; then
-          IMAGE_NAME=webimpetus
+          IMAGE_NAME=workerra-ci
         fi
         
         if [ -z "${{ env.IMAGE_TAG }}" ]; then
@@ -109,11 +109,11 @@ jobs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
 
-    - name: Build, tag, and push WebImpetus Docker image to the AWS ECR mentioned 
+    - name: Build, tag, and push workerra-ci Docker image to the AWS ECR mentioned 
       run: |
         IMAGE_REGISTRY=123154119074.dkr.ecr.eu-west-2.amazonaws.com
         if [ -z "${{ env.IMAGE_NAME }}" ]; then
-          IMAGE_NAME=webimpetus
+          IMAGE_NAME=workerra-ci
         fi
 
         if [ -z "${{ env.IMAGE_TAG }}" ]; then
@@ -142,7 +142,7 @@ jobs:
   #   - name: Push new tag
   #     run: git push origin ${{ github.event.inputs.main_version }} --force
 
-    - name: Slack Notification for Webimpetus - Docker Images Matrix Manager 
+    - name: Slack Notification for workerra-ci - Docker Images Matrix Manager 
       uses: rtCamp/action-slack-notify@v2
       env:
         SLACK_CHANNEL: general

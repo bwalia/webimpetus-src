@@ -174,8 +174,8 @@ yq .spec.encryptedData.env_file sealed_secret_wsl_${ENV_REF}.yaml > sealed_env_f
 echo "Sealed env_file base64 content saved to 'sealed_env_file_base64_wsl_${ENV_REF}.txt'"
 # cat sealed_env_file_base64_wsl_prod.txt
 
-HELM_VALUES_INPUT_PATH=devops/webimpetus-chart/values-${ENV_REF}-k3s1_template.yaml
-HELM_VALUES_OUTPUT_PATH=devops/webimpetus-chart/values-${ENV_REF}-k3s1.yaml
+HELM_VALUES_INPUT_PATH=devops/workerra-ci-chart/values-${ENV_REF}-k3s1_template.yaml
+HELM_VALUES_OUTPUT_PATH=devops/workerra-ci-chart/values-${ENV_REF}-k3s1.yaml
 
 if [ ! -f "$HELM_VALUES_INPUT_PATH" ]; then
     echo "Error: Helm values template file '$HELM_VALUES_INPUT_PATH' not found!"

@@ -12,14 +12,14 @@ MinIO has been integrated into your docker-compose stack as an S3-compatible obj
   - Access credentials: `minioadmin` / `minioadmin123`
 
 - **minio-init**
-  - Automatically creates the `webimpetus` bucket on startup
+  - Automatically creates the `workerra-ci` bucket on startup
   - Sets bucket to public download (files are downloadable)
 
 ### 2. Environment Variables (.env)
 ```bash
 amazons3.access_key='minioadmin'
 amazons3.secret_key='minioadmin123'
-amazons3.bucket='webimpetus'
+amazons3.bucket='workerra-ci'
 amazons3.region='us-east-1'
 amazons3.s3_directory='dev'
 amazons3.endpoint='http://minio:9000'
@@ -36,7 +36,7 @@ Your application already supports S3/MinIO through:
 
 ### Step 1: Start the Services
 ```bash
-cd /home/bwalia/webimpetus-src
+cd /home/bwalia/workerra-ci
 docker-compose up -d minio minio-init
 ```
 
@@ -46,8 +46,8 @@ docker-compose ps
 ```
 
 You should see:
-- `webimpetus-minio` - running on ports 9000, 9001
-- `webimpetus-minio-init` - completed (creates bucket then exits)
+- `workerra-ci-minio` - running on ports 9000, 9001
+- `workerra-ci-minio-init` - completed (creates bucket then exits)
 
 ### Step 3: Check MinIO Logs
 ```bash
@@ -61,9 +61,9 @@ docker-compose logs minio-init
 Expected output from minio-init:
 ```
 Alias 'myminio' successfully created
-Bucket created successfully `myminio/webimpetus`
+Bucket created successfully `myminio/workerra-ci`
 Access permission set to 'download' successfully
-MinIO bucket webimpetus created successfully
+MinIO bucket workerra-ci created successfully
 ```
 
 ## Access MinIO
@@ -73,7 +73,7 @@ MinIO bucket webimpetus created successfully
 2. Login:
    - Username: `minioadmin`
    - Password: `minioadmin123`
-3. Navigate to "Buckets" → You should see `webimpetus` bucket
+3. Navigate to "Buckets" → You should see `workerra-ci` bucket
 
 ### MinIO API Endpoint
 - Internal (from app): `http://minio:9000`
@@ -83,9 +83,9 @@ MinIO bucket webimpetus created successfully
 
 ### Method 1: Using the Application
 
-1. **Restart your webimpetus container** to load new .env variables:
+1. **Restart your workerra-ci container** to load new .env variables:
    ```bash
-   docker-compose restart webimpetus
+   docker-compose restart workerra-ci
    ```
 
 2. **Navigate to Documents module** in your application
@@ -99,7 +99,7 @@ MinIO bucket webimpetus created successfully
 
 4. **Verify upload in MinIO Console**
    - Go to http://localhost:9001
-   - Login and navigate to `webimpetus` bucket
+   - Login and navigate to `workerra-ci` bucket
    - Look for files in the `dev/` directory
 
 ### Method 2: Check Database Records
@@ -115,7 +115,7 @@ LIMIT 5;
 ```
 
 The `file_path` should contain MinIO URLs like:
-- `http://minio:9000/webimpetus/dev/filename.pdf`
+- `http://minio:9000/workerra-ci/dev/filename.pdf`
 
 ### Method 3: Direct MinIO Test (Optional)
 
@@ -123,7 +123,7 @@ Test MinIO directly using MinIO Client (mc):
 
 ```bash
 # Enter the minio container
-docker exec -it webimpetus-minio sh
+docker exec -it workerra-ci-minio sh
 
 # Inside container, install mc client
 mc alias set local http://localhost:9000 minioadmin minioadmin123
@@ -133,13 +133,13 @@ mc ls local
 
 # Upload a test file
 echo "test content" > test.txt
-mc cp test.txt local/webimpetus/dev/test.txt
+mc cp test.txt local/workerra-ci/dev/test.txt
 
 # List files in bucket
-mc ls local/webimpetus/dev/
+mc ls local/workerra-ci/dev/
 
 # Download test file
-mc cp local/webimpetus/dev/test.txt downloaded.txt
+mc cp local/workerra-ci/dev/test.txt downloaded.txt
 cat downloaded.txt
 ```
 
@@ -153,16 +153,16 @@ cat downloaded.txt
 1. Verify MinIO is running: `docker-compose ps minio`
 2. Check network connectivity:
    ```bash
-   docker exec -it webimpetus-dev ping minio
+   docker exec -it workerra-ci-dev ping minio
    ```
-3. Restart webimpetus to reload .env:
+3. Restart workerra-ci to reload .env:
    ```bash
-   docker-compose restart webimpetus
+   docker-compose restart workerra-ci
    ```
 
 ### Issue 2: Bucket Not Found Error
 
-**Symptoms**: Error "Bucket 'webimpetus' does not exist"
+**Symptoms**: Error "Bucket 'workerra-ci' does not exist"
 
 **Solution**:
 1. Check if bucket was created:
@@ -171,10 +171,10 @@ cat downloaded.txt
    ```
 2. Manually create bucket:
    ```bash
-   docker exec -it webimpetus-minio sh
+   docker exec -it workerra-ci-minio sh
    mc alias set local http://localhost:9000 minioadmin minioadmin123
-   mc mb local/webimpetus
-   mc anonymous set download local/webimpetus
+   mc mb local/workerra-ci
+   mc anonymous set download local/workerra-ci
    ```
 
 ### Issue 3: Permission Denied
@@ -184,9 +184,9 @@ cat downloaded.txt
 **Solution**:
 1. Set bucket policy to public:
    ```bash
-   docker exec -it webimpetus-minio sh
+   docker exec -it workerra-ci-minio sh
    mc alias set local http://localhost:9000 minioadmin minioadmin123
-   mc anonymous set download local/webimpetus
+   mc anonymous set download local/workerra-ci
    ```
 
 ### Issue 4: .env Changes Not Applied
@@ -196,10 +196,10 @@ cat downloaded.txt
 **Solution**:
 ```bash
 # Restart the application container
-docker-compose restart webimpetus
+docker-compose restart workerra-ci
 
 # Or rebuild if needed
-docker-compose up -d --build webimpetus
+docker-compose up -d --build workerra-ci
 ```
 
 ## Verify Integration
@@ -208,12 +208,12 @@ docker-compose up -d --build webimpetus
 
 1. Check the Amazon_s3_model is being used:
    ```bash
-   docker exec -it webimpetus-dev grep -r "Amazon_s3_model" /var/www/html/app/Controllers/
+   docker exec -it workerra-ci-dev grep -r "Amazon_s3_model" /var/www/html/app/Controllers/
    ```
 
 2. Look for S3 configuration loading:
    ```bash
-   docker exec -it webimpetus-dev php -r "
+   docker exec -it workerra-ci-dev php -r "
    require '/var/www/html/vendor/autoload.php';
    echo getenv('amazons3.access_key') . PHP_EOL;
    echo getenv('amazons3.endpoint') . PHP_EOL;
@@ -225,7 +225,7 @@ Expected output:
 ```
 minioadmin
 http://minio:9000
-webimpetus
+workerra-ci
 ```
 
 ## File Structure
@@ -233,7 +233,7 @@ webimpetus
 After successful upload, your MinIO structure will look like:
 
 ```
-webimpetus/                    # Bucket name
+workerra-ci/                    # Bucket name
 └── dev/                       # Directory from s3_directory config
     ├── documents/             # Uploaded documents
     │   ├── file1.pdf
@@ -250,13 +250,13 @@ webimpetus/                    # Bucket name
 ### Public URL Format
 Files can be accessed via:
 ```
-http://localhost:9000/webimpetus/dev/documents/filename.pdf
+http://localhost:9000/workerra-ci/dev/documents/filename.pdf
 ```
 
 ### From Application
 The application uses internal Docker network:
 ```
-http://minio:9000/webimpetus/dev/documents/filename.pdf
+http://minio:9000/workerra-ci/dev/documents/filename.pdf
 ```
 
 ## Production Considerations
@@ -290,7 +290,7 @@ http://minio:9000/webimpetus/dev/documents/filename.pdf
 
 2. **MinIO mirror** (to another MinIO or S3):
    ```bash
-   mc mirror local/webimpetus s3-backup/webimpetus
+   mc mirror local/workerra-ci s3-backup/workerra-ci
    ```
 
 ## Quick Commands Reference
@@ -306,13 +306,13 @@ docker-compose stop minio
 docker-compose logs -f minio
 
 # Restart application to reload env
-docker-compose restart webimpetus
+docker-compose restart workerra-ci
 
 # Access MinIO CLI
-docker exec -it webimpetus-minio sh
+docker exec -it workerra-ci-minio sh
 
 # Check bucket contents
-docker exec -it webimpetus-minio mc ls local/webimpetus/dev/
+docker exec -it workerra-ci-minio mc ls local/workerra-ci/dev/
 ```
 
 ## Summary
@@ -321,7 +321,7 @@ docker exec -it webimpetus-minio mc ls local/webimpetus/dev/
 
 **Next Steps:**
 1. Start MinIO: `docker-compose up -d minio minio-init`
-2. Restart app: `docker-compose restart webimpetus`
+2. Restart app: `docker-compose restart workerra-ci`
 3. Access console: http://localhost:9001 (minioadmin/minioadmin123)
 4. Upload a document in your app
 5. Verify in MinIO console

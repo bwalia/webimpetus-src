@@ -1,6 +1,6 @@
 apiVersion: v2
-name: webimpetus
-description: Wimp chart - A Helm chart for deploying Webimpetus in Kubernetes - WebImpetus aka Wimp
+name: workerra-ci
+description: Wimp chart - A Helm chart for deploying workerra-ci in Kubernetes - workerra-ci aka Wimp
 
 # A chart can be either an 'application' or a 'library' chart.
 #

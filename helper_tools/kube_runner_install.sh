@@ -13,7 +13,7 @@ DOCKER_CONRAINER_NAME=kube-runner-workstation
 docker container stop $DOCKER_CONRAINER_NAME
 docker container rm $DOCKER_CONRAINER_NAME
 
-docker run --name $DOCKER_CONRAINER_NAME -v $(pwd)/devops/webimpetus-chart:/helm-charts/webimpetus-chart \
+docker run --name $DOCKER_CONRAINER_NAME -v $(pwd)/devops/workerra-ci-chart:/helm-charts/workerra-ci-chart \
 --env KUBECONFIG_BASE64=$(cat $TARGET_CLUSTER_KUBECONFIG | base64) \
 --env RUN_BASH_BASE64=$(cat $BASH_FILE_TO_RUN | base64) \
 registry.workstation.co.uk/kube-runner:stable

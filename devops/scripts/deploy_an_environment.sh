@@ -27,8 +27,8 @@ else
 fi
 
 if [[ -z "$4" ]]; then
-   echo "DOCKER_IMAGE is empty, so setting DOCKER_IMAGE to webimpetus (default)"
-   DOCKER_IMAGE="webimpetus"
+   echo "DOCKER_IMAGE is empty, so setting DOCKER_IMAGE to workerra-ci (default)"
+   DOCKER_IMAGE="workerra-ci"
 else
    echo "DOCKER_IMAGE is provided, DOCKER_IMAGE is set to $4"
    DOCKER_IMAGE=$4
@@ -59,7 +59,7 @@ echo $BASH_FILE_TO_RUN
 # docker container rm $DOCKER_CONRAINER_NAME
 # fi
 
-# docker run --name $DOCKER_CONRAINER_NAME -v $(pwd)/devops/webimpetus-chart:/helm-charts/webimpetus-chart \
+# docker run --name $DOCKER_CONRAINER_NAME -v $(pwd)/devops/workerra-ci-chart:/helm-charts/workerra-ci-chart \
 # --env TARGET_ENV=$TARGET_ENV \
 # --env CLUSTER_NAME=$CLUSTER_NAME \
 # --env IMAGE_REGISTRY=$IMAGE_REGISTRY \

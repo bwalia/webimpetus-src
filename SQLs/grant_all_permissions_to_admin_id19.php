@@ -10,7 +10,7 @@
  *   php SQLs/grant_all_permissions_to_admin_id19.php
  *
  * Or via Docker:
- *   docker exec webimpetus-dev php /var/www/html/SQLs/grant_all_permissions_to_admin_id19.php
+ *   docker exec workerra-ci-dev php /var/www/html/SQLs/grant_all_permissions_to_admin_id19.php
  */
 
 // Database connection parameters
@@ -18,7 +18,7 @@
 $config = [
     'hostname' => '127.0.0.1',
     'port' => 3309,
-    'username' => 'wsl_dev',
+    'username' => 'workerra-ci-dev',
     'password' => 'CHANGE_ME',
     'database' => 'myworkstation_dev',
 ];

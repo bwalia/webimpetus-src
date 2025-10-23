@@ -111,7 +111,7 @@ http://dev000.workstation.co.uk:8888/
 
 ### Direct Access (Bypassing Nginx)
 ```
-http://localhost:5500/  (Webimpetus - no SSL)
+http://localhost:5500/  (workerra-ci - no SSL)
 http://localhost:5502/  (Adminer)
 http://localhost:3010/  (Keycloak)
 ```
@@ -122,7 +122,7 @@ http://localhost:3010/  (Keycloak)
 
 **Certificate Info**:
 ```
-Subject: C = US, ST = State, L = City, O = Webimpetus, CN = workstation.local
+Subject: C = US, ST = State, L = City, O = workerra-ci, CN = workstation.local
 Issuer: Self-signed
 Valid Until: Oct 10, 2026
 ```
@@ -157,7 +157,7 @@ chmod 600 ~/.certs/*.key
 
 ### Step 3: Install Production Certificates
 ```bash
-cd /home/bwalia/webimpetus-src
+cd /home/bwalia/workerra-ci
 ./install-production-certs.sh ~/.certs
 ```
 
@@ -182,7 +182,7 @@ curl -I http://dev000.workstation.co.uk:8888/
 echo | openssl s_client -connect dev000.workstation.co.uk:8443 -servername dev000.workstation.co.uk 2>/dev/null | openssl x509 -noout -subject
 
 # View nginx logs
-docker logs webimpetus-nginx
+docker logs workerra-ci-nginx
 
 # Restart nginx if needed
 docker-compose restart nginx
@@ -306,7 +306,7 @@ If you need to revert to workstation.local:
 # Look for files with .backup suffix
 
 # Quick rollback:
-cd /home/bwalia/webimpetus-src
+cd /home/bwalia/workerra-ci
 
 # Restore nginx config
 cp nginx/nginx.conf.backup.[timestamp] nginx/nginx.conf

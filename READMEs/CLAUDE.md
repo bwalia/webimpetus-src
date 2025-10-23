@@ -5,12 +5,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Common Development Commands
 
 ### Docker Development Environment
-- **Start development environment**: `sudo ./start-dev-docker-compose.sh` or `sudo ./start-dev-docker-compose.sh dev`
+- **Start development environment**: `sudo ./scripts/start-dev-env.sh` or `sudo ./scripts/start-dev-env.sh dev`
 - **Docker Compose operations**: 
   - `docker-compose up -d --build` - Start all services
   - `docker-compose down` - Stop all services
   - `docker-compose ps` - Check service status
-- **Container access**: `docker exec -it webimpetus-dev bash`
+- **Container access**: `docker exec -it workerra-ci-dev bash`
 
 ### CodeIgniter 4 (PHP Backend)
 - **Install dependencies**: `composer install` (run inside container or ci4/ directory)
@@ -27,8 +27,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   - `npm run allure-report-open` - Open reports
 
 ### Kubernetes Deployment
-- **Deploy to K8s**: `sudo ./deploy-webimpetus-in-kubernetes.sh`
-- **Helm operations**: Located in `devops/webimpetus-chart/`
+- **Deploy to K8s**: `sudo ./scripts/deploy-workerra-ci-in-kubernetes.sh`
+- **Helm operations**: Located in `devops/workerra-ci-chart/`
 
 ## Architecture Overview
 
@@ -64,10 +64,10 @@ The system includes these main modules:
 - **Documents & Gallery**: File management
 
 ### Database Architecture
-- **Primary DB**: MariaDB container named `webimpetus-db`
+- **Primary DB**: MariaDB container named `workerra-ci-db`
 - **Models**: Located in `ci4/app/Models/` with Core models in `Models/Core/`
 - **Migrations**: Database schema changes in `ci4/app/Database/Migrations/`
-- **Connection**: Configured via `.env` file, connects to `webimpetus-db:3306`
+- **Connection**: Configured via `.env` file, connects to `workerra-ci-db:3306`
 
 ### API Structure
 - **Main API Controller**: `ci4/app/Controllers/Api_v2.php`
@@ -89,9 +89,9 @@ The system includes these main modules:
 
 ### Development Workflow
 1. Configure `.env` file with database and application settings
-2. Run `./start-dev-docker-compose.sh` to start development environment
+2. Run `./scripts/start-dev-env.sh` to start development environment
 3. Access application at http://localhost:8080
-4. Use `docker exec -it webimpetus-dev bash` for container access
+4. Use `docker exec -it workerra-ci-dev bash` for container access
 5. Run tests with Cypress in `qa/cypress_ui_test/`
 
 ### Key Dependencies
@@ -104,13 +104,13 @@ The system includes these main modules:
 - **Testing**: PHPUnit (PHP), Cypress (E2E)
 
 ## Environment-Specific Notes
-- **Dev**: Uses `webimpetus-dev` container name, MariaDB on port 3309
+- **Dev**: Uses `workerra-ci-dev` container name, MariaDB on port 3309
 - **Production environments**: Deployed via Kubernetes with environment-specific configurations
 - **Database**: SQL dumps available in root directory for different environments
 - **SSL**: TLS certificates managed through deployment scripts
 
 ## Container Network
-- **Network**: `webimpetus-network` (172.178.0.0/16)
+- **Network**: `workerra-ci-network` (172.178.0.0/16)
 - **App Container**: 172.178.0.8
 - **Keycloak**: 172.178.0.11
-- **Database**: Accessible via service name `webimpetus-db`
+- **Database**: Accessible via service name `workerra-ci-db`

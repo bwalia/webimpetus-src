@@ -57,7 +57,7 @@ Clarified that the application is now running CI 4.6.x with PHP 8.3.12 in produc
 ### Update Local Dependencies
 
 ```bash
-cd /Users/balinderwalia/Documents/Work/webimpetus-src/ci4
+cd /Users/balinderwalia/Documents/Work/workerra-ci/ci4
 
 # Clear composer cache
 composer clear-cache
@@ -119,7 +119,7 @@ When building the image:
 ```bash
 ./build.sh
 # or
-docker build -f devops/docker/Dockerfile --build-arg BASE_TAG=latest -t webimpetus .
+docker build -f devops/docker/Dockerfile --build-arg BASE_TAG=latest -t workerra-ci .
 ```
 
 ---

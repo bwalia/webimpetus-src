@@ -201,9 +201,9 @@ If FullCalendar doesn't display:
 
 ## Support & Documentation
 
-- Full implementation status: `/home/bwalia/webimpetus-src/READMEs/PROJECT_JOBS_IMPLEMENTATION_STATUS.md`
-- Database migrations: `/home/bwalia/webimpetus-src/ci4/app/Database/Migrations/2025-10-14-152649_CreateProjectJobsTables.php`
-- SQL files: `/home/bwalia/webimpetus-src/ci4/SQLs/create_project_jobs_table.sql` (and related)
+- Full implementation status: `/home/bwalia/workerra-ci/READMEs/PROJECT_JOBS_IMPLEMENTATION_STATUS.md`
+- Database migrations: `/home/bwalia/workerra-ci/ci4/app/Database/Migrations/2025-10-14-152649_CreateProjectJobsTables.php`
+- SQL files: `/home/bwalia/workerra-ci/ci4/SQLs/create_project_jobs_table.sql` (and related)
 
 ---
 

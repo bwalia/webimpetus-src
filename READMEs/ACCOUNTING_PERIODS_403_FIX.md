@@ -52,7 +52,7 @@ SELECT id, name, link FROM menu WHERE name LIKE '%Accounting Period%';
 
 Keep only the underscore version in Routes.php and remove the hyphen version:
 
-**File:** `/home/bwalia/webimpetus-src/ci4/app/Config/Routes.php`
+**File:** `/home/bwalia/workerra-ci/ci4/app/Config/Routes.php`
 
 **Remove lines 167-175 (hyphen version):**
 ```php

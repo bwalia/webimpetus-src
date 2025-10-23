@@ -1,4 +1,4 @@
-name: Webimpetus UI tests
+name: workerra-ci UI tests
 
 on:
   workflow_dispatch:

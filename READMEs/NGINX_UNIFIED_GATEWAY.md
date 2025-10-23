@@ -2,7 +2,7 @@
 
 ## Overview
 
-This configuration sets up Nginx as a unified reverse proxy for all services in the Webimpetus stack, accessible through a **single domain** on port 80.
+This configuration sets up Nginx as a unified reverse proxy for all services in the workerra-ci stack, accessible through a **single domain** on port 80.
 
 ## Architecture
 
@@ -18,7 +18,7 @@ This configuration sets up Nginx as a unified reverse proxy for all services in 
           ┌────────────────────┼────────────────────┐
           │                    │                    │
     ┌─────▼─────┐      ┌──────▼──────┐      ┌─────▼─────┐
-    │ Webimpetus│      │  Keycloak   │      │   MinIO   │
+    │ workerra-ci│      │  Keycloak   │      │   MinIO   │
     │  :80      │      │    :8080    │      │ API :9000 │
     │ Root /    │      │ /auth/      │      │ /minio/   │
     └───────────┘      └─────────────┘      └───────────┘
@@ -42,11 +42,11 @@ All services accessible via **http://localhost** (or your domain):
 
 | Service | URL Path | Backend | Purpose |
 |---------|----------|---------|---------|
-| **Webimpetus** | `/` | webimpetus-dev:80 | Main application (CodeIgniter 4) |
-| **Adminer** | `/adminer/` | webimpetus-admin:8080 | Database administration UI |
+| **workerra-ci** | `/` | workerra-ci-dev:80 | Main application (CodeIgniter 4) |
+| **Adminer** | `/adminer/` | workerra-ci-admin:8080 | Database administration UI |
 | **Keycloak** | `/auth/` | keycloak:8080 | SSO authentication server |
-| **MinIO API** | `/minio/` | webimpetus-minio:9000 | S3-compatible storage API |
-| **MinIO Console** | `/minio-console/` | webimpetus-minio:9001 | MinIO web interface |
+| **MinIO API** | `/minio/` | workerra-ci-minio:9000 | S3-compatible storage API |
+| **MinIO Console** | `/minio-console/` | workerra-ci-minio:9001 | MinIO web interface |
 | **Health Check** | `/health` | nginx | Gateway health status |
 
 ## Files Created
@@ -72,14 +72,14 @@ All services accessible via **http://localhost** (or your domain):
 All services accessible through one domain/IP:
 ```bash
 # Before (multiple ports):
-http://localhost:5500      # Webimpetus
+http://localhost:5500      # workerra-ci
 http://localhost:5502      # Adminer
 http://localhost:3010      # Keycloak
 http://localhost:9000      # MinIO API
 http://localhost:9001      # MinIO Console
 
 # After (single port):
-http://localhost           # Webimpetus
+http://localhost           # workerra-ci
 http://localhost/adminer/  # Adminer
 http://localhost/auth/     # Keycloak
 http://localhost/minio/    # MinIO API
@@ -106,7 +106,7 @@ Gzip enabled for:
 
 ### Step 1: Stop Existing Services
 ```bash
-cd /home/bwalia/webimpetus-src
+cd /home/bwalia/workerra-ci
 docker-compose down
 ```
 
@@ -114,7 +114,7 @@ docker-compose down
 Since nginx will use port 80, you may want to remove direct port exposure from individual services (or keep them for direct access during development):
 
 **Current ports** (can keep for direct access):
-- 5500 → Webimpetus (still accessible)
+- 5500 → workerra-ci (still accessible)
 - 5502 → Adminer (still accessible)
 - 3010 → Keycloak (still accessible)
 - 9000/9001 → MinIO (still accessible)
@@ -129,7 +129,7 @@ docker-compose up -d
 ### Step 4: Verify Nginx Started
 ```bash
 docker ps | grep nginx
-docker logs webimpetus-nginx
+docker logs workerra-ci-nginx
 ```
 
 ### Step 5: Test All Endpoints
@@ -155,12 +155,12 @@ curl http://localhost/health
 
 ### Upstream Definitions
 ```nginx
-upstream webimpetus_backend {
-    server webimpetus-dev:80;
+upstream workerra-ci_backend {
+    server workerra-ci-dev:80;
 }
 
 upstream adminer_backend {
-    server webimpetus-admin:8080;
+    server workerra-ci-admin:8080;
 }
 
 upstream keycloak_backend {
@@ -168,11 +168,11 @@ upstream keycloak_backend {
 }
 
 upstream minio_api {
-    server webimpetus-minio:9000;
+    server workerra-ci-minio:9000;
 }
 
 upstream minio_console {
-    server webimpetus-minio:9001;
+    server workerra-ci-minio:9001;
 }
 ```
 
@@ -188,8 +188,8 @@ proxy_set_header X-Forwarded-Proto $scheme;
 ### Path Rewriting
 MinIO paths are rewritten to remove the prefix:
 ```nginx
-# Request: http://localhost/minio/webimpetus/file.png
-# Rewrites to: http://webimpetus-minio:9000/webimpetus/file.png
+# Request: http://localhost/minio/workerra-ci/file.png
+# Rewrites to: http://workerra-ci-minio:9000/workerra-ci/file.png
 
 location /minio/ {
     rewrite ^/minio/(.*) /$1 break;
@@ -252,7 +252,7 @@ tail -f nginx/logs/error.log
 
 ### Container Logs
 ```bash
-docker logs -f webimpetus-nginx
+docker logs -f workerra-ci-nginx
 ```
 
 ## Troubleshooting
@@ -275,10 +275,10 @@ sudo systemctl stop apache2  # or nginx, etc.
 docker ps
 
 # Check nginx logs
-docker logs webimpetus-nginx
+docker logs workerra-ci-nginx
 
 # Restart specific service
-docker-compose restart webimpetus
+docker-compose restart workerra-ci
 ```
 
 ### Issue: Large File Upload Fails
@@ -293,10 +293,10 @@ To increase further, edit [nginx/nginx.conf](nginx/nginx.conf#L27).
 
 ## Network Configuration
 
-**Network**: `webimpetus-network` (172.178.0.0/16)
+**Network**: `workerra-ci-network` (172.178.0.0/16)
 
 **Service IPs**:
-- webimpetus-dev: 172.178.0.8
+- workerra-ci-dev: 172.178.0.8
 - nginx: 172.178.0.10
 - keycloak: 172.178.0.11
 - minio: 172.178.0.12

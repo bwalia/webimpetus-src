@@ -285,7 +285,7 @@ Period-based reporting
 ### Run All Migrations
 ```bash
 # Inside Docker
-docker exec webimpetus-dev php /var/www/html/spark migrate
+docker exec workerra-ci-dev php /var/www/html/spark migrate
 
 # Outside Docker
 cd /var/www/html
@@ -451,7 +451,7 @@ Expenses:    Debit  (increases with debits)
 ✅ **100% API coverage achieved**
 ✅ **Complete double-entry accounting system functional**
 
-**Result:** The WebImpetus application now has a complete, functional accounting infrastructure with full API coverage, standard chart of accounts, and proper double-entry bookkeeping support. All critical database tables are in place and all menu modules are operational.
+**Result:** The workerra-ci application now has a complete, functional accounting infrastructure with full API coverage, standard chart of accounts, and proper double-entry bookkeeping support. All critical database tables are in place and all menu modules are operational.
 
 ---
 

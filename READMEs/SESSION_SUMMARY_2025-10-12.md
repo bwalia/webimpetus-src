@@ -221,7 +221,7 @@ WHERE name LIKE '%Accounting Period%';
 
 **Database Verification:**
 ```bash
-docker exec webimpetus-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev \
+docker exec workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev \
   -e "SELECT id, name, link, LOWER(REPLACE(link, '/', '')) as processed_link
       FROM menu WHERE name LIKE '%Accounting Period%';"
 ```
@@ -406,8 +406,8 @@ processed_link: accounting_periods
 3. `/ci4/app/Views/payments/list.php`
 
 ### Created
-1. `/home/bwalia/webimpetus-src/JIRA_DESIGN_IMPLEMENTATION_PROGRESS.md`
-2. `/home/bwalia/webimpetus-src/SESSION_SUMMARY_2025-10-12.md`
+1. `/home/bwalia/workerra-ci/JIRA_DESIGN_IMPLEMENTATION_PROGRESS.md`
+2. `/home/bwalia/workerra-ci/SESSION_SUMMARY_2025-10-12.md`
 
 ### Referenced (No Changes)
 - `/ci4/public/css/jira-style-custom.css` (created in previous session)
@@ -547,9 +547,9 @@ log_number: function(data, type, row) {
 ## References
 
 ### Documentation
-- [JIRA Design System Implementation](/home/bwalia/webimpetus-src/JIRA_DESIGN_SYSTEM_IMPLEMENTATION.md)
-- [JIRA Design Implementation Progress](/home/bwalia/webimpetus-src/JIRA_DESIGN_IMPLEMENTATION_PROGRESS.md)
-- [Accounting Periods 403 Fix](/home/bwalia/webimpetus-src/ACCOUNTING_PERIODS_403_FIX.md)
+- [JIRA Design System Implementation](/home/bwalia/workerra-ci/JIRA_DESIGN_SYSTEM_IMPLEMENTATION.md)
+- [JIRA Design Implementation Progress](/home/bwalia/workerra-ci/JIRA_DESIGN_IMPLEMENTATION_PROGRESS.md)
+- [Accounting Periods 403 Fix](/home/bwalia/workerra-ci/ACCOUNTING_PERIODS_403_FIX.md)
 
 ### External Resources
 - Atlassian Design System: https://atlassian.design/

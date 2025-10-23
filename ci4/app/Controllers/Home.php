@@ -490,7 +490,7 @@ class Home extends BaseController
 					$message = "<p><b>Hi " . $this->request->getPost('name') . ",</b></p>";
 					$message .= "<p>Please verify your email. Click on this link:</p>";
 					$message .= "<p><a href='" . $verify_link . "'>" . $verify_link . "<a></p>";
-					$message .= "<p><b>Thanks, Webimpetus Team</b></p>";
+					$message .= "<p><b>Thanks, workerra-ci Team</b></p>";
 					$subject = "Verify your domain name user registration";
 					//echo $message; die;
 					$is_send = $this->Email_model->send_mail($this->request->getPost('email'), $from_name, $from_email, $message, $subject);
@@ -590,7 +590,7 @@ class Home extends BaseController
             $dbConnection = 'Database connection failed.';
         }
 
-		$str = file_get_contents(ROOTPATH . 'webimpetus.json');
+		$str = file_get_contents(ROOTPATH . 'workerra-ci.json');
 		$json = json_decode($str, true);
 
 		$json['response'] = "pong";

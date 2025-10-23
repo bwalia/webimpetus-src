@@ -12,9 +12,9 @@ Successfully deployed MariaDB in High Availability (HA) mode using the MariaDB O
 ## Deployment Architecture
 
 ### MariaDB Galera Cluster
-- **Replicas**: 3 nodes (webimpetus-mariadb-ha-0, webimpetus-mariadb-ha-1, webimpetus-mariadb-ha-2)
+- **Replicas**: 3 nodes (workerra-ci-mariadb-ha-0, workerra-ci-mariadb-ha-1, workerra-ci-mariadb-ha-2)
 - **Replication**: Galera multi-master with automatic failover
-- **Primary Node**: webimpetus-mariadb-ha-0 (automatic failover enabled)
+- **Primary Node**: workerra-ci-mariadb-ha-0 (automatic failover enabled)
 - **SST Method**: mariabackup (for state snapshot transfer)
 - **Recovery**: Enabled with 50% minimum cluster size requirement
 
@@ -31,17 +31,17 @@ Successfully deployed MariaDB in High Availability (HA) mode using the MariaDB O
 ### Internal Cluster Access
 
 1. **Primary Service** (Read-Write):
-   - Service: `webimpetus-mariadb-ha-primary`
+   - Service: `workerra-ci-mariadb-ha-primary`
    - ClusterIP: 10.43.53.209
    - Port: 3306
 
 2. **Secondary Service** (Read-Only):
-   - Service: `webimpetus-mariadb-ha-secondary`
+   - Service: `workerra-ci-mariadb-ha-secondary`
    - ClusterIP: 10.43.82.201
    - Port: 3306
 
 3. **MaxScale Load Balancer**:
-   - Service: `webimpetus-maxscale`
+   - Service: `workerra-ci-maxscale`
    - LoadBalancer IP: 192.168.1.101
    - Ports:
      - 3306: Read-Write split router
@@ -52,13 +52,13 @@ Successfully deployed MariaDB in High Availability (HA) mode using the MariaDB O
 
 ```bash
 # Via MaxScale (recommended for applications)
-mysql -h 192.168.1.101 -P 3306 -u webimpetus -p testCi4
+mysql -h 192.168.1.101 -P 3306 -u workerra-ci -p testCi4
 
 # Direct to primary (for admin tasks)
-mysql -h webimpetus-mariadb-ha-primary.test.svc.cluster.local -P 3306 -u webimpetus -p testCi4
+mysql -h workerra-ci-mariadb-ha-primary.test.svc.cluster.local -P 3306 -u workerra-ci -p testCi4
 
 # Direct to secondary (for read-only queries)
-mysql -h webimpetus-mariadb-ha-secondary.test.svc.cluster.local -P 3306 -u webimpetus -p testCi4
+mysql -h workerra-ci-mariadb-ha-secondary.test.svc.cluster.local -P 3306 -u workerra-ci -p testCi4
 ```
 
 ## Credentials
@@ -101,7 +101,7 @@ kubectl get svc -n test
 kubectl run -n test mysql-client --image=mariadb:11.8 -it --rm --restart=Never -- bash
 
 # Inside the pod, connect via MaxScale
-mariadb -h webimpetus-maxscale -P 3306 -u webimpetus -p
+mariadb -h workerra-ci-maxscale -P 3306 -u workerra-ci -p
 
 # Test the database
 SHOW DATABASES;
@@ -112,11 +112,11 @@ USE testCi4;
 
 ```bash
 # Check cluster size (should show 3)
-kubectl exec -n test webimpetus-mariadb-ha-0 -c mariadb -- \
+kubectl exec -n test workerra-ci-mariadb-ha-0 -c mariadb -- \
   mariadb -e "SHOW STATUS LIKE 'wsrep_cluster_size';"
 
 # Check cluster status
-kubectl exec -n test webimpetus-mariadb-ha-0 -c mariadb -- \
+kubectl exec -n test workerra-ci-mariadb-ha-0 -c mariadb -- \
   mariadb -e "SHOW STATUS LIKE 'wsrep_%';"
 ```
 
@@ -127,13 +127,13 @@ kubectl exec -n test webimpetus-mariadb-ha-0 -c mariadb -- \
 # Open browser to: http://192.168.1.101:8989
 
 # Or use CLI to check servers
-kubectl exec -n test webimpetus-maxscale-0 -- maxctrl list servers
+kubectl exec -n test workerra-ci-maxscale-0 -- maxctrl list servers
 
 # Check services
-kubectl exec -n test webimpetus-maxscale-0 -- maxctrl list services
+kubectl exec -n test workerra-ci-maxscale-0 -- maxctrl list services
 
 # Check monitors
-kubectl exec -n test webimpetus-maxscale-0 -- maxctrl list monitors
+kubectl exec -n test workerra-ci-maxscale-0 -- maxctrl list monitors
 ```
 
 ## High Availability Features
@@ -191,7 +191,7 @@ metadata:
   namespace: test
 spec:
   mariaDbRef:
-    name: webimpetus-mariadb-ha
+    name: workerra-ci-mariadb-ha
   storage:
     s3:
       bucket: my-backups
@@ -204,10 +204,10 @@ spec:
 To scale the cluster:
 ```bash
 # Scale MariaDB cluster (requires careful consideration with Galera)
-kubectl patch mariadb -n test webimpetus-mariadb-ha --type='merge' -p '{"spec":{"replicas":5}}'
+kubectl patch mariadb -n test workerra-ci-mariadb-ha --type='merge' -p '{"spec":{"replicas":5}}'
 
 # Scale MaxScale
-kubectl patch maxscale -n test webimpetus-maxscale --type='merge' -p '{"spec":{"replicas":3}}'
+kubectl patch maxscale -n test workerra-ci-maxscale --type='merge' -p '{"spec":{"replicas":3}}'
 ```
 
 Note: Galera scaling should be done carefully. Always scale up by adding nodes one at a time.
@@ -217,13 +217,13 @@ Note: Galera scaling should be done carefully. Always scale up by adding nodes o
 ### Check logs
 ```bash
 # MariaDB logs
-kubectl logs -n test webimpetus-mariadb-ha-0 -c mariadb
+kubectl logs -n test workerra-ci-mariadb-ha-0 -c mariadb
 
 # Agent logs
-kubectl logs -n test webimpetus-mariadb-ha-0 -c agent
+kubectl logs -n test workerra-ci-mariadb-ha-0 -c agent
 
 # MaxScale logs
-kubectl logs -n test webimpetus-maxscale-0
+kubectl logs -n test workerra-ci-maxscale-0
 ```
 
 ### Common Issues

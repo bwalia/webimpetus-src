@@ -1,9 +1,9 @@
 openapi: 3.0.1
 info:
-  title: Webimpetus API
+  title: workerra-ci API
   version: 1.0.0
   description: |
-    Core REST API surface for Workstation (Webimpetus) services. This document enumerates all
+    Core REST API surface for Workstation (workerra-ci) services. This document enumerates all
     routes exercised by the automated QA suite so the Swagger UI remains a reliable reference for
     engineers and testers. Unless noted otherwise, every endpoint requires a valid bearer token.
 servers:

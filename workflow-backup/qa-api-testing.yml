@@ -1,4 +1,4 @@
-name: Webimpetus Test Suite
+name: workerra-ci Test Suite
 on:
   schedule:
     - cron: '0 0 * * *'

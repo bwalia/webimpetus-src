@@ -2,7 +2,7 @@
 
 ## 🎉 Setup Complete!
 
-Your Webimpetus application is now running with a **production-like HTTPS setup** using the custom domain `workstation.local`.
+Your workerra-ci application is now running with a **production-like HTTPS setup** using the custom domain `workstation.local`.
 
 ## 🔐 What You Got
 
@@ -16,7 +16,7 @@ Your Webimpetus application is now running with a **production-like HTTPS setup*
 
 ### Architecture
 ```
-Browser (HTTPS) → Nginx (8443) → Webimpetus App
+Browser (HTTPS) → Nginx (8443) → workerra-ci App
                               → Adminer
                               → Keycloak
                               → MinIO (external)
@@ -66,7 +66,7 @@ Browser (HTTPS) → Nginx (8443) → Webimpetus App
 ## 📁 Project Structure
 
 ```
-webimpetus-src/
+workerra-ci/
 ├── nginx/
 │   ├── nginx.conf                    # Nginx configuration
 │   ├── ssl/
@@ -107,16 +107,16 @@ curl -k -I https://workstation.local:8443/ | grep -i strict
 
 ### View Status
 ```bash
-docker ps | grep webimpetus
+docker ps | grep workerra-ci
 ```
 
 ### View Logs
 ```bash
 # Nginx logs
-docker logs -f webimpetus-nginx
+docker logs -f workerra-ci-nginx
 
 # Application logs
-docker logs -f webimpetus-dev
+docker logs -f workerra-ci-dev
 
 # All services
 docker-compose logs -f
@@ -184,17 +184,17 @@ X-XSS-Protection: 1; mode=block
 cat /etc/hosts | grep workstation.local
 
 # 2. Is nginx running?
-docker ps | grep webimpetus-nginx
+docker ps | grep workerra-ci-nginx
 
 # 3. Check logs
-docker logs webimpetus-nginx
+docker logs workerra-ci-nginx
 ```
 
 ### Issue: Nginx won't start
 **Check**:
 ```bash
 # View error logs
-docker logs webimpetus-nginx
+docker logs workerra-ci-nginx
 
 # Common causes:
 # - Port conflict (8443 or 8888 in use)
@@ -327,10 +327,10 @@ docker-compose restart nginx
 nano nginx/nginx.conf
 
 # Test configuration
-docker exec webimpetus-nginx nginx -t
+docker exec workerra-ci-nginx nginx -t
 
 # Reload (no downtime)
-docker exec webimpetus-nginx nginx -s reload
+docker exec workerra-ci-nginx nginx -s reload
 
 # Or restart container
 docker-compose restart nginx
@@ -413,7 +413,7 @@ You now have a **production-ready HTTPS setup** running on your local machine. T
 
 If you encounter issues:
 
-1. Check logs: `docker logs webimpetus-nginx`
+1. Check logs: `docker logs workerra-ci-nginx`
 2. Review documentation in `SSL_SETUP_COMPLETE.md`
 3. Run test script: `./test-ssl-setup.sh`
 4. Verify DNS: `cat /etc/hosts | grep workstation`
@@ -431,7 +431,7 @@ docker-compose down
 docker-compose restart nginx
 
 # View logs
-docker logs -f webimpetus-nginx
+docker logs -f workerra-ci-nginx
 
 # Test HTTPS
 curl -k https://workstation.local:8443/health

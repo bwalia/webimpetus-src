@@ -15,8 +15,8 @@
     helm uninstall wsl-$TARGET_ENV -n $TARGET_ENV
 
     helm upgrade -i wsl-$TARGET_ENV \
-    /helm-charts/webimpetus-chart \
-    -f /helm-charts/webimpetus-chart/values-$TARGET_ENV-$CLUSTER_NAME.yaml \
+    /helm-charts/workerra-ci-chart \
+    -f /helm-charts/workerra-ci-chart/values-$TARGET_ENV-$CLUSTER_NAME.yaml \
     --set-string targetImage="$DOCKER_IMAGE" \
     --set-string targetImageTag="$IMAGE_TAG" \
     --namespace $TARGET_ENV \

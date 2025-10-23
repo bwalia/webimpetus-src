@@ -56,18 +56,18 @@ This guide provides instructions for anonymizing PII (Personally Identifiable In
 
 ```bash
 # Step 1: Backup current database
-cd /home/bwalia/webimpetus-src/SQLs
+cd /home/bwalia/workerra-ci/SQLs
 ./backup_before_anonymize.sh
 
 # Step 2: Run anonymization script
-docker exec -i webimpetus-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < anonymize_dev_data.sql
+docker exec -i workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev < anonymize_dev_data.sql
 ```
 
 ### Option 2: Create Fresh Demo Environment
 
 ```bash
 # Import demo environment (resets to demo state)
-docker exec -i webimpetus-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < create_demo_environment.sql
+docker exec -i workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev < create_demo_environment.sql
 ```
 
 ---
@@ -80,29 +80,29 @@ docker exec -i webimpetus-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev 
 
 ```bash
 # Option A: Use automated backup script
-cd /home/bwalia/webimpetus-src/SQLs
+cd /home/bwalia/workerra-ci/SQLs
 ./backup_before_anonymize.sh
 ```
 
 **Option B: Manual backup**
 ```bash
 # Create backup directory
-mkdir -p /home/bwalia/webimpetus-src/backups
+mkdir -p /home/bwalia/workerra-ci/backups
 
 # Backup database
-docker exec webimpetus-db mariadb-dump \
-    -u wsl_dev \
+docker exec workerra-ci-db mariadb-dump \
+    -u workerra-ci-dev \
     -p'CHANGE_ME' \
     --single-transaction \
     --routines \
     --triggers \
-    myworkstation_dev > /home/bwalia/webimpetus-src/backups/dev_backup_$(date +%Y%m%d_%H%M%S).sql
+    myworkstation_dev > /home/bwalia/workerra-ci/backups/dev_backup_$(date +%Y%m%d_%H%M%S).sql
 
 # Compress backup
-gzip /home/bwalia/webimpetus-src/backups/dev_backup_*.sql
+gzip /home/bwalia/workerra-ci/backups/dev_backup_*.sql
 ```
 
-**Backup Location:** `/home/bwalia/webimpetus-src/backups/`
+**Backup Location:** `/home/bwalia/workerra-ci/backups/`
 
 ---
 
@@ -113,11 +113,11 @@ gzip /home/bwalia/webimpetus-src/backups/dev_backup_*.sql
 This preserves all data structure but replaces PII with dummy data.
 
 ```bash
-cd /home/bwalia/webimpetus-src/SQLs
+cd /home/bwalia/workerra-ci/SQLs
 
 # Run anonymization script
-docker exec -i webimpetus-db mariadb \
-    -u wsl_dev \
+docker exec -i workerra-ci-db mariadb \
+    -u workerra-ci-dev \
     -p'CHANGE_ME' \
     myworkstation_dev < anonymize_dev_data.sql
 ```
@@ -133,11 +133,11 @@ docker exec -i webimpetus-db mariadb \
 This creates a consistent demo environment that can be imported anytime.
 
 ```bash
-cd /home/bwalia/webimpetus-src/SQLs
+cd /home/bwalia/workerra-ci/SQLs
 
 # Import demo environment
-docker exec -i webimpetus-db mariadb \
-    -u wsl_dev \
+docker exec -i workerra-ci-db mariadb \
+    -u workerra-ci-dev \
     -p'CHANGE_ME' \
     myworkstation_dev < create_demo_environment.sql
 ```
@@ -154,7 +154,7 @@ docker exec -i webimpetus-db mariadb \
 
 ```bash
 # Check anonymized data
-docker exec webimpetus-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev -e "
+docker exec workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev -e "
 SELECT 'Users' AS Table_Name, COUNT(*) AS Total,
        SUM(CASE WHEN email LIKE '%@example.com' OR email LIKE '%@demo.example.com' THEN 1 ELSE 0 END) AS Anonymized
 FROM users WHERE email != 'admin@admin.com'
@@ -198,16 +198,16 @@ If something goes wrong, restore from backup:
 
 ```bash
 # Find your backup file
-ls -lh /home/bwalia/webimpetus-src/backups/
+ls -lh /home/bwalia/workerra-ci/backups/
 
 # Decompress if needed
-gunzip /home/bwalia/webimpetus-src/backups/[backup_file].sql.gz
+gunzip /home/bwalia/workerra-ci/backups/[backup_file].sql.gz
 
 # Restore database
-docker exec -i webimpetus-db mariadb \
-    -u wsl_dev \
+docker exec -i workerra-ci-db mariadb \
+    -u workerra-ci-dev \
     -p'CHANGE_ME' \
-    myworkstation_dev < /home/bwalia/webimpetus-src/backups/[backup_file].sql
+    myworkstation_dev < /home/bwalia/workerra-ci/backups/[backup_file].sql
 ```
 
 ---
@@ -275,19 +275,19 @@ docker exec -i webimpetus-db mariadb \
 ## 🗂️ Files Created
 
 ### 1. Anonymization Scripts
-- **Location:** `/home/bwalia/webimpetus-src/SQLs/`
+- **Location:** `/home/bwalia/workerra-ci/SQLs/`
 - **Files:**
   - `anonymize_dev_data.sql` - Main anonymization script
   - `create_demo_environment.sql` - Demo environment setup
   - `backup_before_anonymize.sh` - Automated backup script
 
 ### 2. Backups
-- **Location:** `/home/bwalia/webimpetus-src/backups/`
+- **Location:** `/home/bwalia/workerra-ci/backups/`
 - **Format:** `myworkstation_dev_before_anonymization_YYYYMMDD_HHMMSS.sql.gz`
 - **Retention:** Keep at least 3 most recent backups
 
 ### 3. Documentation
-- **Location:** `/home/bwalia/webimpetus-src/`
+- **Location:** `/home/bwalia/workerra-ci/`
 - **File:** `DEV_DATA_ANONYMIZATION_GUIDE.md` (this file)
 
 ---
@@ -303,7 +303,7 @@ docker exec -i webimpetus-db mariadb \
 ### Database Connection Check
 ```bash
 # Verify you're on DEV database
-docker exec webimpetus-db mariadb -u wsl_dev -p'CHANGE_ME' -e "SELECT DATABASE();"
+docker exec workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' -e "SELECT DATABASE();"
 
 # Should output: myworkstation_dev
 ```
@@ -326,7 +326,7 @@ Create a cron job to refresh demo data weekly:
 crontab -e
 
 # Add this line (runs every Monday at 2 AM)
-0 2 * * 1 /home/bwalia/webimpetus-src/SQLs/backup_before_anonymize.sh && docker exec -i webimpetus-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < /home/bwalia/webimpetus-src/SQLs/create_demo_environment.sql
+0 2 * * 1 /home/bwalia/workerra-ci/SQLs/backup_before_anonymize.sh && docker exec -i workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev < /home/bwalia/workerra-ci/SQLs/create_demo_environment.sql
 ```
 
 ---
@@ -336,25 +336,25 @@ crontab -e
 ### Issue: Backup Script Fails
 ```bash
 # Check Docker container is running
-docker ps | grep webimpetus-db
+docker ps | grep workerra-ci-db
 
 # Check database exists
-docker exec webimpetus-db mariadb -u wsl_dev -p'CHANGE_ME' -e "SHOW DATABASES;"
+docker exec workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' -e "SHOW DATABASES;"
 ```
 
 ### Issue: Anonymization Script Fails
 ```bash
 # Check SQL syntax
-docker exec -i webimpetus-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev -e "SELECT VERSION();"
+docker exec -i workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev -e "SELECT VERSION();"
 
 # Run with verbose error output
-docker exec -i webimpetus-db mariadb -u wsl_dev -p'CHANGE_ME' --verbose myworkstation_dev < anonymize_dev_data.sql
+docker exec -i workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' --verbose myworkstation_dev < anonymize_dev_data.sql
 ```
 
 ### Issue: Can't Login After Anonymization
 ```bash
 # Reset admin password
-docker exec webimpetus-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev -e "
+docker exec workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev -e "
 UPDATE users SET password = '\$2y\$10\$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi'
 WHERE email = 'admin@admin.com';
 "
@@ -364,7 +364,7 @@ WHERE email = 'admin@admin.com';
 ### Issue: Foreign Key Errors
 ```bash
 # Temporarily disable foreign key checks
-docker exec webimpetus-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev -e "
+docker exec workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev -e "
 SET FOREIGN_KEY_CHECKS = 0;
 SOURCE /src/SQLs/anonymize_dev_data.sql;
 SET FOREIGN_KEY_CHECKS = 1;
@@ -390,7 +390,7 @@ After anonymization, verify:
 
 ### Quick Verification Script
 ```bash
-docker exec webimpetus-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev -e "
+docker exec workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev -e "
 SELECT 'Real Data Check' AS Test;
 SELECT 'Users with real emails' AS Issue, COUNT(*) AS Count
 FROM users
@@ -407,9 +407,9 @@ WHERE email NOT LIKE '%@example.com'
 ## 📞 Support
 
 ### Files Location
-- Scripts: `/home/bwalia/webimpetus-src/SQLs/`
-- Backups: `/home/bwalia/webimpetus-src/backups/`
-- Docs: `/home/bwalia/webimpetus-src/DEV_DATA_ANONYMIZATION_GUIDE.md`
+- Scripts: `/home/bwalia/workerra-ci/SQLs/`
+- Backups: `/home/bwalia/workerra-ci/backups/`
+- Docs: `/home/bwalia/workerra-ci/DEV_DATA_ANONYMIZATION_GUIDE.md`
 
 ### Quick Commands Reference
 
@@ -418,16 +418,16 @@ WHERE email NOT LIKE '%@example.com'
 ./backup_before_anonymize.sh
 
 # Anonymize existing data
-docker exec -i webimpetus-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < anonymize_dev_data.sql
+docker exec -i workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev < anonymize_dev_data.sql
 
 # Create demo environment
-docker exec -i webimpetus-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < create_demo_environment.sql
+docker exec -i workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev < create_demo_environment.sql
 
 # Restore from backup
-docker exec -i webimpetus-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev < /path/to/backup.sql
+docker exec -i workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev < /path/to/backup.sql
 
 # Verify anonymization
-docker exec webimpetus-db mariadb -u wsl_dev -p'CHANGE_ME' myworkstation_dev -e "SELECT COUNT(*) FROM users WHERE email LIKE '%@example.com';"
+docker exec workerra-ci-db mariadb -u workerra-ci-dev -p'CHANGE_ME' myworkstation_dev -e "SELECT COUNT(*) FROM users WHERE email LIKE '%@example.com';"
 ```
 
 ---

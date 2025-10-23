@@ -24,19 +24,19 @@ This directory contains scripts to generate 300 test work orders with realistic 
 
 ```bash
 # Navigate to the directory
-cd /home/bwalia/webimpetus-src/ci4/app/Database/Seeds
+cd /home/bwalia/workerra-ci/ci4/app/Database/Seeds
 
 # Import into your database
-mysql -u root -p webimpetus-dev < work_orders_300_full.sql
+mysql -u root -p workerra-ci-dev < work_orders_300_full.sql
 
 # Or with credentials in one line
-mysql -u root -p'your_password' webimpetus-dev < work_orders_300_full.sql
+mysql -u root -p'your_password' workerra-ci-dev < work_orders_300_full.sql
 ```
 
 ### Option 2: Import via phpMyAdmin
 
 1. Open phpMyAdmin
-2. Select your database (webimpetus-dev)
+2. Select your database (workerra-ci-dev)
 3. Go to "Import" tab
 4. Choose file: `work_orders_300_full.sql`
 5. Click "Go"
@@ -44,7 +44,7 @@ mysql -u root -p'your_password' webimpetus-dev < work_orders_300_full.sql
 ### Option 3: Use CodeIgniter Seeder
 
 ```bash
-cd /home/bwalia/webimpetus-src/ci4
+cd /home/bwalia/workerra-ci/ci4
 php spark db:seed WorkOrdersSeeder
 ```
 

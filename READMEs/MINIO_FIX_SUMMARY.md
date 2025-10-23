@@ -4,7 +4,7 @@
 
 Documents were failing to upload with error:
 ```
-Error executing "PutObject" on "https://webimpetus.s3.amazonaws.com/..."
+Error executing "PutObject" on "https://workerra-ci.s3.amazonaws.com/..."
 403 Forbidden: InvalidAccessKeyId
 The AWS Access Key Id you provided does not exist in our records.
 ```
@@ -76,7 +76,7 @@ public function __construct(){
 ```bash
 amazons3.access_key='minioadmin'
 amazons3.secret_key='minioadmin123'
-amazons3.bucket='webimpetus'
+amazons3.bucket='workerra-ci'
 amazons3.region='us-east-1'
 amazons3.s3_directory='dev'
 amazons3.endpoint='http://172.178.0.1:9000'  # Docker gateway IP
@@ -104,7 +104,7 @@ amazons3.use_path_style='true'               # Required for MinIO
 
 1. Open: http://localhost:9001
 2. Login: `minioadmin` / `minioadmin123`
-3. Navigate: Buckets → webimpetus → dev/documents/[timestamp]/
+3. Navigate: Buckets → workerra-ci → dev/documents/[timestamp]/
 4. Your uploaded file should be visible
 
 ### 3. Check Database Record
@@ -122,7 +122,7 @@ LIMIT 1;
 
 Using the file path from database:
 ```
-http://localhost:9000/webimpetus/dev/documents/[timestamp]/[filename]
+http://localhost:9000/workerra-ci/dev/documents/[timestamp]/[filename]
 ```
 
 ## What Changed
@@ -173,7 +173,7 @@ amazons3.secret_key='YOUR_AWS_SECRET'
 ### Issue: Still getting AWS S3 error
 
 **Solution**:
-1. Clear OpCache: `docker-compose restart webimpetus`
+1. Clear OpCache: `docker-compose restart workerra-ci`
 2. Verify .env changes are applied
 3. Check AmazonS3 config loads correctly
 
@@ -182,7 +182,7 @@ amazons3.secret_key='YOUR_AWS_SECRET'
 **Solution**:
 1. Verify MinIO is running: `docker ps | grep minio`
 2. Check MinIO is accessible: `curl http://localhost:9000/minio/health/live`
-3. Verify gateway IP: `docker exec webimpetus-dev ip route | grep default`
+3. Verify gateway IP: `docker exec workerra-ci-dev ip route | grep default`
 
 ### Issue: Bucket not found
 
@@ -191,8 +191,8 @@ amazons3.secret_key='YOUR_AWS_SECRET'
 # Create bucket manually
 docker exec bootstrap-app-built-by-ai-minio-1 sh -c \
   "mc alias set local http://localhost:9000 minioadmin minioadmin123 && \
-   mc mb local/webimpetus --ignore-existing && \
-   mc anonymous set download local/webimpetus"
+   mc mb local/workerra-ci --ignore-existing && \
+   mc anonymous set download local/workerra-ci"
 ```
 
 ## Testing the Fix
@@ -203,7 +203,7 @@ Try uploading a document now:
 2. **Click "Upload Document"** or "Edit" → attach file
 3. **Fill in details** and save
 4. **Check MinIO Console**: http://localhost:9001
-5. **Verify** file appears in: Buckets → webimpetus → dev/documents/
+5. **Verify** file appears in: Buckets → workerra-ci → dev/documents/
 
 ## Summary
 

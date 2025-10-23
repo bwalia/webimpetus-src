@@ -65,7 +65,7 @@ ls -lh ~/.certs/
 
 **Automated Installation (Recommended):**
 ```bash
-cd /home/bwalia/webimpetus-src
+cd /home/bwalia/workerra-ci
 ./install-production-certs.sh ~/.certs
 ```
 
@@ -206,7 +206,7 @@ Both should output the same MD5 hash.
 
 **Check logs:**
 ```bash
-docker logs webimpetus-nginx
+docker logs workerra-ci-nginx
 ```
 
 **Manual installation:**
@@ -218,16 +218,16 @@ After installation, verify:
 
 ```bash
 # 1. Certificate installed
-ls -lh /home/bwalia/webimpetus-src/nginx/ssl/
+ls -lh /home/bwalia/workerra-ci/nginx/ssl/
 
 # 2. Nginx configuration updated
-grep dev000.workstation.co.uk /home/bwalia/webimpetus-src/nginx/nginx.conf
+grep dev000.workstation.co.uk /home/bwalia/workerra-ci/nginx/nginx.conf
 
 # 3. Hosts file updated
 grep dev000.workstation.co.uk /etc/hosts
 
 # 4. Nginx running
-docker ps | grep webimpetus-nginx
+docker ps | grep workerra-ci-nginx
 
 # 5. HTTPS working
 curl -k https://dev000.workstation.co.uk:8443/health
@@ -245,7 +245,7 @@ echo | openssl s_client -connect dev000.workstation.co.uk:8443 -servername dev00
 - **Hostname**: slworker00
 - **IP Address**: 172.20.0.1
 - **Username**: bwalia
-- **Project Path**: /home/bwalia/webimpetus-src
+- **Project Path**: /home/bwalia/workerra-ci
 - **Cert Directory**: ~/.certs/
 
 ### Commands
@@ -261,7 +261,7 @@ ls -lh ~/.certs/
 chmod 644 ~/.certs/*.crt && chmod 600 ~/.certs/*.key
 
 # Install:
-cd /home/bwalia/webimpetus-src
+cd /home/bwalia/workerra-ci
 ./install-production-certs.sh ~/.certs
 
 # Test:
@@ -286,7 +286,7 @@ If you encounter any issues:
 1. Check this document first
 2. Review [PRODUCTION_CERT_SETUP.md](PRODUCTION_CERT_SETUP.md)
 3. Run verification commands above
-4. Check docker logs: `docker logs webimpetus-nginx`
+4. Check docker logs: `docker logs workerra-ci-nginx`
 5. Review nginx config: `cat nginx/nginx.conf | grep -A5 -B5 dev000`
 
 ## Status

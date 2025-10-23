@@ -74,27 +74,27 @@
                     $targetCluster = getenv('APP_TARGET_CLUSTER') ?: "k3s0";
                     $hostName = getenv('HOSTNAME') ?: "hostname-env-var-not-set";
 
-                    $webImpetusCopyRight = "Cluster: " . $targetCluster . ".";
+                    $workerraCopyRight = "Cluster: " . $targetCluster . ".";
                     if ($appEnvironment == "prod" || $appEnvironment == "Prod") {
                         // in production hide environment details
-                        $webImpetusCopyRight .= " Environment: " . ucfirst($appEnvironment) . ".";
-                        //$webImpetusCopyRight .= " CodeIgniter Version: " . \CodeIgniter\CodeIgniter::CI_VERSION . ".";
-                        $webImpetusCopyRight .= " Hostname: " . $hostName . ".";
+                        $workerraCopyRight .= " Environment: " . ucfirst($appEnvironment) . ".";
+                        //$workerraCopyRight .= " CodeIgniter Version: " . \CodeIgniter\CodeIgniter::CI_VERSION . ".";
+                        $workerraCopyRight .= " Hostname: " . $hostName . ".";
 
                     } else {
-                        $webImpetusCopyRight .= " Environment: " . ucfirst($appEnvironment) . ".";
-                        $webImpetusCopyRight .= " CodeIgniter Version: " . \CodeIgniter\CodeIgniter::CI_VERSION . ".";
-                        $webImpetusCopyRight .= " Hostname: " . $hostName . ".";
+                        $workerraCopyRight .= " Environment: " . ucfirst($appEnvironment) . ".";
+                        $workerraCopyRight .= " CodeIgniter Version: " . \CodeIgniter\CodeIgniter::CI_VERSION . ".";
+                        $workerraCopyRight .= " Hostname: " . $hostName . ".";
                     }
-                    $webImpetusCopyRight .= " Deployment Time: " . getenv('APP_DEPLOYED_AT') . ".";
+                    $workerraCopyRight .= " Deployment Time: " . getenv('APP_DEPLOYED_AT') . ".";
                     ?>
                     <p class="typography small"><?php auto_copyright("2009"); ?>&nbsp;&copy;&nbsp;Workstation</p>
                     <p class="typography small">© All rights reserved.<br /></p>
                     <p class="typography small"><br /></p>
-                    <p class="typography small">Powered&nbsp;by&nbsp;<a href="https://webaimpetus.com/"> <i class="ti-heart"></i>&nbsp;Webimpetus</a></p>
-                    <p class="typography small">WebImpetus <a target="_blank" href="<?php echo $appReleaseNotesDocURL; ?>">v <?php echo getenv('APP_FULL_VERSION_NO') . " build " . getenv('APP_FULL_BUILD_NO'); ?></a></p>
+                    <p class="typography small">Powered&nbsp;by&nbsp;<a href="https://ci4.workerra.org/"> <i class="ti-heart"></i>&nbsp;WORKERRA</a></p>
+                    <p class="typography small">WORKERRA.ORG <a target="_blank" href="<?php echo $appReleaseNotesDocURL; ?>">v <?php echo getenv('APP_FULL_VERSION_NO') . " build " . getenv('APP_FULL_BUILD_NO'); ?></a></p>
                     <p class="typography small"><br /></p>
-                    <p class="typography small"><?php echo $webImpetusCopyRight; ?></p>
+                    <p class="typography small"><?php echo $workerraCopyRight; ?></p>
                 </div>
             </div>
         </div>

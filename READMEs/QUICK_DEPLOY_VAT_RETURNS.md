@@ -39,7 +39,7 @@ docker exec CONTAINER_NAME mariadb -u USERNAME -pPASSWORD DATABASE_NAME < ci4/va
 ```bash
 # Already deployed ✅
 # If needed to re-run SQL:
-docker exec webimpetus-db mariadb -u wsl_dev -pCHANGE_ME myworkstation_dev < ci4/vat_returns_deployment.sql
+docker exec workerra-ci-db mariadb -u workerra-ci-dev -pCHANGE_ME myworkstation_dev < ci4/vat_returns_deployment.sql
 ```
 
 ### Testing Environment

@@ -14,7 +14,7 @@ The edit view ([ci4/app/Views/documents/edit.php](ci4/app/Views/documents/edit.p
 **Why this failed:**
 - MinIO URLs are not publicly accessible from Google's servers
 - Google Drive viewer cannot access private/local MinIO instances
-- The document file is stored in MinIO at `http://172.178.0.1:9000/webimpetus/dev/documents/...`
+- The document file is stored in MinIO at `http://172.178.0.1:9000/workerra-ci/dev/documents/...`
 
 ## Solution Applied
 
@@ -70,7 +70,7 @@ Replaced Google Drive viewer with direct preview using our MinIO-compatible prev
 ### Example Document
 Document ID 6 details:
 - **UUID**: `a2f6e5f8-5292-55f3-913b-2958649c9360`
-- **File**: `http://172.178.0.1:9000/webimpetus/dev/documents/1760080169/build-a-full-vat-return-app-in-15-mins.png`
+- **File**: `http://172.178.0.1:9000/workerra-ci/dev/documents/1760080169/build-a-full-vat-return-app-in-15-mins.png`
 - **Type**: Image (PNG)
 - **Preview URL**: `/documents/preview/a2f6e5f8-5292-55f3-913b-2958649c9360`
 

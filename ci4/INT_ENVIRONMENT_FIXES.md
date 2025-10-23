@@ -226,27 +226,27 @@
 ### Required Actions
 The int environment is currently running Docker image:
 ```
-bwalia/webimpetus:2b10e43045e11416180f5f979757a41c3ec42072
+bwalia/workerra-ci:2b10e43045e11416180f5f979757a41c3ec42072
 ```
 
 **To apply the fixes, a new Docker image must be built with the latest code and deployed:**
 
 1. **Build New Docker Image**:
    ```bash
-   cd /path/to/webimpetus-src
+   cd /path/to/workerra-ci
    git checkout devops-full-automation
    git pull origin devops-full-automation
    
    # Build with new commit hash
    NEW_TAG=$(git rev-parse HEAD)
    cd devops/docker
-   docker build -t bwalia/webimpetus:${NEW_TAG} -f Dockerfile ../..
-   docker push bwalia/webimpetus:${NEW_TAG}
+   docker build -t bwalia/workerra-ci:${NEW_TAG} -f Dockerfile ../..
+   docker push bwalia/workerra-ci:${NEW_TAG}
    ```
 
 2. **Update Kubernetes Deployment**:
    ```bash
-   kubectl set image deployment/wsl-int wsl-int=bwalia/webimpetus:${NEW_TAG} -n int
+   kubectl set image deployment/wsl-int wsl-int=bwalia/workerra-ci:${NEW_TAG} -n int
    kubectl rollout status deployment/wsl-int -n int
    ```
 

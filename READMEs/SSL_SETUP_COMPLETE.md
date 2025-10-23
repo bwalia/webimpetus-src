@@ -16,7 +16,7 @@ Successfully configured production-like HTTPS setup with self-signed SSL certifi
   - DNS:*.workstation.local
 
 ### 2. Nginx Reverse Proxy
-- **Container**: webimpetus-nginx
+- **Container**: workerra-ci-nginx
 - **HTTP Port**: 8888 (redirects to HTTPS)
 - **HTTPS Port**: 8443
 - **Features**:
@@ -54,7 +54,7 @@ Successfully configured production-like HTTPS setup with self-signed SSL certifi
 - http://workstation.local:8888/ → https://workstation.local:8443/
 
 ### Localhost Access (Still Available)
-- http://localhost:5500/ - Direct webimpetus access (no SSL)
+- http://localhost:5500/ - Direct workerra-ci access (no SSL)
 - http://localhost:5502/ - Direct adminer access
 - http://localhost:3010/ - Direct keycloak access
 
@@ -201,14 +201,14 @@ sudo update-ca-certificates
 
 ```bash
 # Check nginx status
-docker ps --filter "name=webimpetus-nginx"
+docker ps --filter "name=workerra-ci-nginx"
 
 # Expected output:
 # NAMES              STATUS        PORTS
-# webimpetus-nginx   Up X minutes  0.0.0.0:8888->80/tcp, 0.0.0.0:8443->443/tcp
+# workerra-ci-nginx   Up X minutes  0.0.0.0:8888->80/tcp, 0.0.0.0:8443->443/tcp
 
 # View logs
-docker logs -f webimpetus-nginx
+docker logs -f workerra-ci-nginx
 
 # Restart if needed
 docker-compose restart nginx
@@ -221,7 +221,7 @@ docker-compose restart nginx
 
 **Solution**:
 ```bash
-docker logs webimpetus-nginx
+docker logs workerra-ci-nginx
 docker-compose restart nginx
 ```
 
@@ -256,7 +256,7 @@ docker ps | grep nginx
 curl -k https://workstation.local:8443/minio/
 
 # Check MinIO upstream config
-docker exec webimpetus-nginx cat /etc/nginx/nginx.conf | grep minio_api
+docker exec workerra-ci-nginx cat /etc/nginx/nginx.conf | grep minio_api
 ```
 
 ### Issue: Port already in use

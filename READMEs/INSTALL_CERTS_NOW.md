@@ -52,7 +52,7 @@ ls -lh ~/.certs/
 **Still on Linux**, run:
 
 ```bash
-cd /home/bwalia/webimpetus-src
+cd /home/bwalia/workerra-ci
 ./install-production-certs.sh ~/.certs
 ```
 
@@ -119,7 +119,7 @@ chmod 600 ~/.certs/workstation-ca.key
 #### 5. Install
 
 ```bash
-cd /home/bwalia/webimpetus-src
+cd /home/bwalia/workerra-ci
 ./install-production-certs.sh ~/.certs
 ```
 
@@ -129,7 +129,7 @@ cd /home/bwalia/webimpetus-src
 
 ```bash
 # 1. Check certificate is installed
-ls -lh /home/bwalia/webimpetus-src/nginx/ssl/dev000.workstation.co.uk.*
+ls -lh /home/bwalia/workerra-ci/nginx/ssl/dev000.workstation.co.uk.*
 
 # 2. Test HTTPS
 curl -k https://dev000.workstation.co.uk:8443/health

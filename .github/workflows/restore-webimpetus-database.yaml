@@ -1,4 +1,4 @@
-name: Webimpetus database restore
+name: workerra-ci database restore
 
 on:
   workflow_dispatch:

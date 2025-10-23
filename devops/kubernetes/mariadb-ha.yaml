@@ -1,7 +1,7 @@
 apiVersion: k8s.mariadb.com/v1alpha1
 kind: MariaDB
 metadata:
-  name: webimpetus-mariadb-ha
+  name: workerra-ci-mariadb-ha
   namespace: test
 spec:
   # HA configuration with 3 replicas for Galera cluster
@@ -42,7 +42,7 @@ spec:
     generate: true
 
   database: testCi4
-  username: webimpetus
+  username: workerra-ci
   passwordSecretKeyRef:
     name: mariadb-user-password
     key: password

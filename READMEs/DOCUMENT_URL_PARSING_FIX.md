@@ -4,7 +4,7 @@
 Download/preview URLs were failing with error:
 ```
 Error downloading document: Error executing "GetObject" on
-"http://172.178.0.1:9000/webimpetus/http%3A//172.178.0.1%3A9000/webimpetus/dev/documents/..."
+"http://172.178.0.1:9000/workerra-ci/http%3A//172.178.0.1%3A9000/workerra-ci/dev/documents/..."
 XMinioInvalidObjectName (client): Object name contains unsupported characters.
 ```
 
@@ -13,14 +13,14 @@ XMinioInvalidObjectName (client): Object name contains unsupported characters.
 ### Problem 1: Double Path
 The `file` field in the database contained **full URLs**:
 ```
-http://172.178.0.1:9000/webimpetus/dev/documents/1760080169/build-a-full-vat-return-app-in-15-mins.png
+http://172.178.0.1:9000/workerra-ci/dev/documents/1760080169/build-a-full-vat-return-app-in-15-mins.png
 ```
 
 But the preview/download methods treated it as a **key** and prepended bucket + endpoint again:
 ```
-Bucket: webimpetus
-Key: http://172.178.0.1:9000/webimpetus/dev/documents/...
-Result: http://172.178.0.1:9000/webimpetus/http://172.178.0.1:9000/webimpetus/dev/documents/...
+Bucket: workerra-ci
+Key: http://172.178.0.1:9000/workerra-ci/dev/documents/...
+Result: http://172.178.0.1:9000/workerra-ci/http://172.178.0.1:9000/workerra-ci/dev/documents/...
 ```
 
 ### Problem 2: Newline Character
@@ -44,7 +44,7 @@ if (filter_var($filePath, FILTER_VALIDATE_URL)) {
     $path = $parsedUrl['path'] ?? '';
 
     // Remove leading slash and bucket name from path
-    // Example: /webimpetus/dev/documents/... -> dev/documents/...
+    // Example: /workerra-ci/dev/documents/... -> dev/documents/...
     $path = ltrim($path, '/');
     if (strpos($path, $bucket . '/') === 0) {
         $filePath = substr($path, strlen($bucket) + 1);
@@ -58,22 +58,22 @@ if (filter_var($filePath, FILTER_VALIDATE_URL)) {
 
 **Input (from database):**
 ```
-http://172.178.0.1:9000/webimpetus/dev/documents/1760080169/build-a-full-vat-return-app-in-15-mins.png\n
+http://172.178.0.1:9000/workerra-ci/dev/documents/1760080169/build-a-full-vat-return-app-in-15-mins.png\n
 ```
 
 **Step 1 - Trim:**
 ```
-http://172.178.0.1:9000/webimpetus/dev/documents/1760080169/build-a-full-vat-return-app-in-15-mins.png
+http://172.178.0.1:9000/workerra-ci/dev/documents/1760080169/build-a-full-vat-return-app-in-15-mins.png
 ```
 
 **Step 2 - Parse URL:**
 ```php
-parse_url() -> ['path' => '/webimpetus/dev/documents/1760080169/build-a-full-vat-return-app-in-15-mins.png']
+parse_url() -> ['path' => '/workerra-ci/dev/documents/1760080169/build-a-full-vat-return-app-in-15-mins.png']
 ```
 
 **Step 3 - Remove leading slash:**
 ```
-webimpetus/dev/documents/1760080169/build-a-full-vat-return-app-in-15-mins.png
+workerra-ci/dev/documents/1760080169/build-a-full-vat-return-app-in-15-mins.png
 ```
 
 **Step 4 - Remove bucket name:**
@@ -84,7 +84,7 @@ dev/documents/1760080169/build-a-full-vat-return-app-in-15-mins.png
 **Final S3 Request:**
 ```php
 $s3Client->getObject([
-    'Bucket' => 'webimpetus',
+    'Bucket' => 'workerra-ci',
     'Key' => 'dev/documents/1760080169/build-a-full-vat-return-app-in-15-mins.png'
 ]);
 ```

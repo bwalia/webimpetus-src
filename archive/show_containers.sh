@@ -11,7 +11,7 @@ set -x
 
 mv .env dev.env
 
-# docker cp /home/bwalia/env_webimpetus_dev_ci4baseimagetest lamp-php74:/var/www/html/.env
+# docker cp /home/bwalia/env_workerra-ci_dev_ci4baseimagetest lamp-php74:/var/www/html/.env
 # docker exec -it lamp-php74 chown -R www-data:www-data /var/www/html/writable/
 
 # sleep 30
@@ -19,6 +19,6 @@ mv .env dev.env
 # #./reset_env.sh
 
 # sudo -S rm -Rf ci4/
-# sudo -S rm -Rf /home/bwalia/actions-runner-webimpetus/_work/webimpetus/webimpetus/data
-# sudo -S rm -Rf /home/bwalia/actions-runner-webimpetus/_work/webimpetus/webimpetus/config
-# sudo -S rm -Rf /home/bwalia/actions-runner-webimpetus/_work/webimpetus/webimpetus/
+# sudo -S rm -Rf /home/bwalia/actions-runner-workerra-ci/_work/workerra-ci/workerra-ci/data
+# sudo -S rm -Rf /home/bwalia/actions-runner-workerra-ci/_work/workerra-ci/workerra-ci/config
+# sudo -S rm -Rf /home/bwalia/actions-runner-workerra-ci/_work/workerra-ci/workerra-ci/

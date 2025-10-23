@@ -382,7 +382,7 @@ class Documents extends CommonController
                 $path = $parsedUrl['path'] ?? '';
 
                 // Remove leading slash and bucket name from path
-                // Example: /webimpetus/dev/documents/... -> dev/documents/...
+                // Example: /workerra-ci/dev/documents/... -> dev/documents/...
                 $path = ltrim($path, '/');
                 if (strpos($path, $bucket . '/') === 0) {
                     $filePath = substr($path, strlen($bucket) + 1);
@@ -464,7 +464,7 @@ class Documents extends CommonController
                 $path = $parsedUrl['path'] ?? '';
 
                 // Remove leading slash and bucket name from path
-                // Example: /webimpetus/dev/documents/... -> dev/documents/...
+                // Example: /workerra-ci/dev/documents/... -> dev/documents/...
                 $path = ltrim($path, '/');
                 if (strpos($path, $bucket . '/') === 0) {
                     $filePath = substr($path, strlen($bucket) + 1);

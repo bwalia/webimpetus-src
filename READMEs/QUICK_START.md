@@ -1,4 +1,4 @@
-# Quick Start Guide - Webimpetus HTTPS
+# Quick Start Guide - workerra-ci HTTPS
 
 ## 🚀 Access Your Application
 
@@ -42,10 +42,10 @@ docker-compose restart nginx
 ### View Logs
 ```bash
 # Nginx
-docker logs -f webimpetus-nginx
+docker logs -f workerra-ci-nginx
 
 # Application
-docker logs -f webimpetus-dev
+docker logs -f workerra-ci-dev
 
 # All services
 docker-compose logs -f
@@ -82,10 +82,10 @@ docker-compose restart nginx
 ### "404 Not Found"
 ```bash
 # Check application is running
-docker ps | grep webimpetus-dev
+docker ps | grep workerra-ci-dev
 
 # Restart application
-docker-compose restart webimpetus
+docker-compose restart workerra-ci
 ```
 
 ## 📁 Important Files

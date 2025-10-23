@@ -11,8 +11,8 @@ spec:
   type: LoadBalancer
   selector:
     app.kubernetes.io/name: mariadb
-    app.kubernetes.io/instance: webimpetus-mariadb-ha
-    statefulset.kubernetes.io/pod-name: webimpetus-mariadb-ha-0
+    app.kubernetes.io/instance: workerra-ci-mariadb-ha
+    statefulset.kubernetes.io/pod-name: workerra-ci-mariadb-ha-0
   ports:
     - name: mysql
       port: 3306

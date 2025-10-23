@@ -28,11 +28,11 @@ MySQL stored procedure version (may not work in all environments)
 
 ```bash
 # From host machine
-docker exec webimpetus-dev php /var/www/html/generate_domains_mysqli.php
+docker exec workerra-ci-dev php /var/www/html/generate_domains_mysqli.php
 
 # Or copy to container first
-docker cp ci4/generate_domains_mysqli.php webimpetus-dev:/var/www/html/
-docker exec webimpetus-dev php /var/www/html/generate_domains_mysqli.php
+docker cp ci4/generate_domains_mysqli.php workerra-ci-dev:/var/www/html/
+docker exec workerra-ci-dev php /var/www/html/generate_domains_mysqli.php
 ```
 
 **Expected Output:**
@@ -61,10 +61,10 @@ Test domains created: 3000
 
 ```bash
 # Using MariaDB CLI
-docker exec webimpetus-db mariadb -u wsl_dev -pCHANGE_ME myworkstation_dev < ci4/cleanup_test_domains.sql
+docker exec workerra-ci-db mariadb -u workerra-ci-dev -pCHANGE_ME myworkstation_dev < ci4/cleanup_test_domains.sql
 
 # Using MySQL CLI
-docker exec webimpetus-db mysql -u wsl_dev -pCHANGE_ME myworkstation_dev < ci4/cleanup_test_domains.sql
+docker exec workerra-ci-db mysql -u workerra-ci-dev -pCHANGE_ME myworkstation_dev < ci4/cleanup_test_domains.sql
 ```
 
 **Expected Output:**
@@ -172,10 +172,10 @@ The cleanup script:
 If needed, regenerate test data:
 ```bash
 # Clean old test data
-docker exec webimpetus-db mariadb -u wsl_dev -pCHANGE_ME myworkstation_dev < ci4/cleanup_test_domains.sql
+docker exec workerra-ci-db mariadb -u workerra-ci-dev -pCHANGE_ME myworkstation_dev < ci4/cleanup_test_domains.sql
 
 # Generate fresh test data
-docker exec webimpetus-dev php /var/www/html/generate_domains_mysqli.php
+docker exec workerra-ci-dev php /var/www/html/generate_domains_mysqli.php
 ```
 
 ## Customization
@@ -204,7 +204,7 @@ $paths = ['api', 'app', 'web', ...];      // Modify paths
 ### Issue: "Connection failed"
 **Solution**: Check database container is running
 ```bash
-docker ps | grep webimpetus-db
+docker ps | grep workerra-ci-db
 ```
 
 ### Issue: "No customer/service found"

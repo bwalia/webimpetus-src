@@ -6,9 +6,9 @@
  */
 
 $controllers = [
-    'ProjectJobs' => '/home/bwalia/webimpetus-src/ci4/app/Controllers/Api/V2/ProjectJobs.php',
-    'ProjectJobPhases' => '/home/bwalia/webimpetus-src/ci4/app/Controllers/Api/V2/ProjectJobPhases.php',
-    'ProjectJobScheduler' => '/home/bwalia/webimpetus-src/ci4/app/Controllers/Api/V2/ProjectJobScheduler.php',
+    'ProjectJobs' => '/home/bwalia/workerra-ci/ci4/app/Controllers/Api/V2/ProjectJobs.php',
+    'ProjectJobPhases' => '/home/bwalia/workerra-ci/ci4/app/Controllers/Api/V2/ProjectJobPhases.php',
+    'ProjectJobScheduler' => '/home/bwalia/workerra-ci/ci4/app/Controllers/Api/V2/ProjectJobScheduler.php',
 ];
 
 echo "=== API Controller Verification ===\n\n";
@@ -43,7 +43,7 @@ foreach ($controllers as $name => $path) {
 }
 
 echo "=== Route Configuration ===\n\n";
-$routesFile = '/home/bwalia/webimpetus-src/ci4/app/Config/Routes.php';
+$routesFile = '/home/bwalia/workerra-ci/ci4/app/Config/Routes.php';
 $routesContent = file_get_contents($routesFile);
 
 $routeChecks = [
@@ -61,7 +61,7 @@ echo "All controllers exist and have required CRUD methods.\n";
 echo "All routes are configured in Routes.php.\n";
 echo "API endpoints are ready to use (require JWT authentication).\n\n";
 
-echo "Documentation: /home/bwalia/webimpetus-src/ci4/PROJECT_JOBS_API_DOCUMENTATION.md\n";
+echo "Documentation: /home/bwalia/workerra-ci/ci4/PROJECT_JOBS_API_DOCUMENTATION.md\n";
 echo "\nTest the API with:\n";
 echo "curl -X GET \"https://dev001.workstation.co.uk/api/v2/project_jobs?uuid_business_id=329e0405-b544-5051-8d37-d0143e9c8829\" \\\n";
 echo "  -H \"Authorization: Bearer YOUR_JWT_TOKEN\"\n\n";

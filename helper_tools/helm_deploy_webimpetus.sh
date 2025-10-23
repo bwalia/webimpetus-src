@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This bash script deploys WebImpetus CI4 project (mariadb, php_lamp, phpmyadmin)
+# This bash script deploys workerra-ci CI4 project (mariadb, php_lamp, phpmyadmin)
 # as kubernetes deployment into dev,test or prod environment using k3s.
 
 #   set -x
@@ -15,7 +15,7 @@ SVC_NODEPORT=31178
 DATE_GEN_VERSION=$(date +"%Y%m%d%I%M%S")
 
 HTTP_SERVER_TYPE="openresty"
-IMAGE_NAME="webimpetus"
+IMAGE_NAME="workerra-ci"
 TARGET_CLUSTER="k3s0"
 IMAGE_TAG="latest"
 IMAGE_REPO="bwalia"
@@ -68,11 +68,11 @@ fi
 HOST_ENDPOINT_UNSECURE_URL="http://${SVC_HOST}:${SVC_NODEPORT}"
 
 if [ $targetEnv = "dev" ]; then
-APP_RELEASE_NOTES_DOC_URL="https://webimpetus.dev/docs/app_release_notes"
+APP_RELEASE_NOTES_DOC_URL="https://workerra-ci.dev/docs/app_release_notes"
 fi
 
 if [ $targetEnv = "test" ]; then
-APP_RELEASE_NOTES_DOC_URL="https://test.webimpetus.dev/docs/app_release_notes"
+APP_RELEASE_NOTES_DOC_URL="https://test.workerra-ci.dev/docs/app_release_notes"
 fi
 
 if [ $targetEnv = "prod" ]; then
@@ -89,11 +89,11 @@ fi
 
 if [ $targetEnv = "test" ] || [ $targetEnv = "prod" ];
 then
-WORKSPACE_DIR="/tmp/webimpetus/${targetEnv}"
+WORKSPACE_DIR="/tmp/workerra-ci/${targetEnv}"
 mkdir -p ${WORKSPACE_DIR}
 chmod 777 ${WORKSPACE_DIR}
 rm -rf ${WORKSPACE_DIR}/*
-cp -r ../webimpetus/* ${WORKSPACE_DIR}/
+cp -r ../workerra-ci/* ${WORKSPACE_DIR}/
 fi
 
 if [ $targetEnv = "dev" ];
@@ -200,10 +200,10 @@ helm $helm_cmd
 fi
 
 if [ $deployment_stage = "install" ]; then
-         #helm upgrade --install workstation --set image.tag=${IMAGE_TAG} --set image.repository=${IMAGE_REPO}/workstation --set ingress.hosts[0].host=${HOST_ENDPOINT_UNSECURE_URL} --set ingress.hosts[0].paths[0]=/ --set ingress.hosts[0].paths[1]=/docs --set ingress.hosts[0].paths[2]=/docs/app_release_notes --set ingress.hosts[0].paths[3]=/docs/app_release_notes/${IMAGE_TAG} --set ingress.hosts[0].paths[4]=/docs/app_release_notes/${IMAGE_TAG}/webimpetus --set ingress.hosts[0].paths[5]=/docs/app_release_notes/${IMAGE_TAG}/webimpetus/${targetEnv} --set ingress.hosts[0].paths[6]=/docs/app_release_notes/${IMAGE_TAG}/webimpetus/${targetEnv}/webimpetus --set ingress.hosts[0].paths[7]=/docs/app_release_notes/${IMAGE_TAG}/webimpetus/${targetEnv}/webimpetus/${targetEnv} --set ingress.hosts[0].paths[8]=/docs/app_release_notes/${IMAGE_TAG}/webimpetus/${targetEnv}/webimpetus/${targetEnv}/webimpetus --set ingress.hosts[0].paths[9]=/docs/app_release_notes/${IMAGE_TAG}/webimpetus/${targetEnv}/webimpetus/${targetEnv}/webimpetus/${targetEnv} --set ingress.hosts[0].paths[10]=/docs/app_release_notes/${IMAGE_TAG}/webimpetus/${targetEnv}/webimpetus/${targetEnv}/webimpetus/${targetEnv}/webimpetus --set ingress.hosts[0].paths[11]=/docs/app_release_notes/${IMAGE_TAG}/webimpetus/${targetEnv}/webimpetus/${targetEnv}/webimpetus/${targetEnv}/webimpetus/${targetEnv} --set ingress.hosts[0].paths[12]=/docs/app_release_notes/${IMAGE_TAG}/webimpetus/${targetEnv}/webimpetus/${targetEnv}/webimpetus/${targetEnv}/webimpetus/${targetEnv}/webimpetus --set ingress.hosts[0].paths[13]=/docs/app_release_notes/${IMAGE_TAG}/webimpetus/${targetEnv}/webimpetus/${targetEnv}/web
+         #helm upgrade --install workstation --set image.tag=${IMAGE_TAG} --set image.repository=${IMAGE_REPO}/workstation --set ingress.hosts[0].host=${HOST_ENDPOINT_UNSECURE_URL} --set ingress.hosts[0].paths[0]=/ --set ingress.hosts[0].paths[1]=/docs --set ingress.hosts[0].paths[2]=/docs/app_release_notes --set ingress.hosts[0].paths[3]=/docs/app_release_notes/${IMAGE_TAG} --set ingress.hosts[0].paths[4]=/docs/app_release_notes/${IMAGE_TAG}/workerra-ci --set ingress.hosts[0].paths[5]=/docs/app_release_notes/${IMAGE_TAG}/workerra-ci/${targetEnv} --set ingress.hosts[0].paths[6]=/docs/app_release_notes/${IMAGE_TAG}/workerra-ci/${targetEnv}/workerra-ci --set ingress.hosts[0].paths[7]=/docs/app_release_notes/${IMAGE_TAG}/workerra-ci/${targetEnv}/workerra-ci/${targetEnv} --set ingress.hosts[0].paths[8]=/docs/app_release_notes/${IMAGE_TAG}/workerra-ci/${targetEnv}/workerra-ci/${targetEnv}/workerra-ci --set ingress.hosts[0].paths[9]=/docs/app_release_notes/${IMAGE_TAG}/workerra-ci/${targetEnv}/workerra-ci/${targetEnv}/workerra-ci/${targetEnv} --set ingress.hosts[0].paths[10]=/docs/app_release_notes/${IMAGE_TAG}/workerra-ci/${targetEnv}/workerra-ci/${targetEnv}/workerra-ci/${targetEnv}/workerra-ci --set ingress.hosts[0].paths[11]=/docs/app_release_notes/${IMAGE_TAG}/workerra-ci/${targetEnv}/workerra-ci/${targetEnv}/workerra-ci/${targetEnv}/workerra-ci/${targetEnv} --set ingress.hosts[0].paths[12]=/docs/app_release_notes/${IMAGE_TAG}/workerra-ci/${targetEnv}/workerra-ci/${targetEnv}/workerra-ci/${targetEnv}/workerra-ci/${targetEnv}/workerra-ci --set ingress.hosts[0].paths[13]=/docs/app_release_notes/${IMAGE_TAG}/workerra-ci/${targetEnv}/workerra-ci/${targetEnv}/web
          #helm uninstall wsl-${targetEnv} -n ${targetEnv}
-         ###helm upgrade --install -f devops/webimpetus-chart/values-${targetEnv}.yaml wsl-${targetEnv} ./devops/webimpetus-chart --set image=${IMAGE_REPO}/workstation:${IMAGE_TAG} --namespace ${targetEnv}
-   helm_cmd=$(echo upgrade --install -f devops/webimpetus-chart/${VALUES_FILE_PATH} wsl-${TARGET_NAMESPACE} devops/webimpetus-chart/ --set-string targetImage="${IMAGE_REPO}/${IMAGE_NAME}" --set-string targetImageTag="${IMAGE_TAG}" --namespace ${TARGET_NAMESPACE} --create-namespace)
+         ###helm upgrade --install -f devops/workerra-ci-chart/values-${targetEnv}.yaml wsl-${targetEnv} ./devops/workerra-ci-chart --set image=${IMAGE_REPO}/workstation:${IMAGE_TAG} --namespace ${targetEnv}
+   helm_cmd=$(echo upgrade --install -f devops/workerra-ci-chart/${VALUES_FILE_PATH} wsl-${TARGET_NAMESPACE} devops/workerra-ci-chart/ --set-string targetImage="${IMAGE_REPO}/${IMAGE_NAME}" --set-string targetImageTag="${IMAGE_TAG}" --namespace ${TARGET_NAMESPACE} --create-namespace)
    echo -e "$GREEN helm $helm_cmd"
    helm $helm_cmd
 
